@@ -1,0 +1,33 @@
+:root {
+  --font-color: #404040;
+  --font-color_dark: #292929;
+  --font-color_light: #7c7c7c;
+
+  --x-small-font-size: 8px;
+  --small-font-size: 12px;
+  --medium-font-size: 14px;
+  --large-font-size: 16px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+*,
+::before,
+::after {
+  background-repeat: no-repeat;
+  box-sizing: inherit;
+  -webkit-box-sizing: inherit;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  word-break: normal;
+  tab-size: 4;
+}
