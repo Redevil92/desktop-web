@@ -1,111 +1,131 @@
-import FS from "@/models/FileSystem";
-import Directory, { DIRECTORY_TYPE } from "@/models/Directory";
-import _ from "lodash";
-import FileItem from "@/models/FileItem";
-import Item from "@/models/Item";
+import { getDesktopFiles } from "@/context/fileSystemController";
+import DesktopItem from "@/models/DesktopItem";
+import ItemDialog from "@/models/ItemDialog";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   namespaced: true,
   state(): FileSystemState {
     return {
-      fileSystem: {} as FS,
+      desktopItems: [],
+      itemsDialog: [],
+      fileCopied: undefined,
+      fileCut: undefined,
+      actionsBox: undefined,
     };
   },
   mutations: {
-    INITIALIZE_FILE_SYSTEM: (state: FileSystemState, fileSystem: FS) => {
-      state.fileSystem = fileSystem;
+    ADD_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
+      state.itemsDialog.push(itemDialog);
+      state.itemsDialog = [...state.itemsDialog];
     },
-    // CREATE_DIRECTORY: (state: FileSystemState, directory: Directory) => {
-    //   state.fileSystem.currentDirectory.children.push(directory);
-    //   state.fileSystem = Object.assign({}, state.fileSystem);
-    // },
-    CREATE_FILE: (state: FileSystemState, fileItem: Item) => {
-      state.fileSystem.currentDirectory.children.push(fileItem);
-      state.fileSystem = Object.assign({}, state.fileSystem);
+    CLOSE_ITEM_DIALOG: (state: FileSystemState, itemDialogGuid: string) => {
+      const index = state.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
+      state.itemsDialog.splice(index, 1);
+      state.itemsDialog = [...state.itemsDialog];
     },
-    OPEN_DIRECTORY: (state: FileSystemState, fileSystem: FS) => {
-      state.fileSystem = fileSystem;
+    UPDATE_ITEM_DIALOG_POSITION: (state: FileSystemState, itemToUpdate: ItemDialog) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemToUpdate.guid);
+      if (index !== -1) {
+        state.itemsDialog[index].position = itemToUpdate.position;
+      }
+
+      state.itemsDialog = [...state.itemsDialog];
+    },
+    UPDATE_ITEM_DIALOG_DIMENSION: (state: FileSystemState, itemToUpdate: ItemDialog) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemToUpdate.guid);
+      if (index !== -1) {
+        state.itemsDialog[index].dimension = itemToUpdate.dimension;
+      }
+
+      state.itemsDialog = [...state.itemsDialog];
+    },
+    MINIMIZE_ITEM_DIALOG: (state: FileSystemState, itemGuid: string) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemGuid);
+      if (index !== -1) {
+        state.itemsDialog[index].isCollapsed = true;
+      }
+      state.itemsDialog = [...state.itemsDialog];
+    },
+    OPEN_MINIMIZED_ITEM_DIALOG: (state: FileSystemState, itemGuid: string) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemGuid);
+      if (index !== -1) {
+        state.itemsDialog[index].isCollapsed = false;
+      }
+      state.itemsDialog = [...state.itemsDialog];
+    },
+    SET_FOCUSED_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
+      const itemsToUpdate = [...state.itemsDialog];
+      itemsToUpdate.forEach((item) => (item.isFocused = false));
+      const index = itemsToUpdate.findIndex((item) => item.guid === itemDialog.guid);
+      if (index !== -1) {
+        itemsToUpdate[index].isFocused = true;
+      }
+      state.itemsDialog = itemsToUpdate;
+    },
+    SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: File[]) => {
+      state.desktopItems = desktopItems;
     },
   },
   actions: {
-    INITIALIZE_FILE_SYSTEM: ({ commit }: any) => {
-      const rootDirectory: Directory = {
-        name: "root",
-        parent: null,
-        type: DIRECTORY_TYPE.DEFAULT,
-        children: [],
-      };
-
-      const fileSystem: FS = { currentDirectory: rootDirectory, currentDirectoryPath: [rootDirectory] };
-
-      commit("INITIALIZE_FILE_SYSTEM", fileSystem);
+    ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
+      const newItemDialog = {
+        name: itemDialogName.name,
+        mimeType: itemDialogName.mimeType,
+        guid: uuidv4(),
+        isCollapsed: false,
+        zIndex: 1,
+        dimension: { height: 300, width: 500 },
+      } as ItemDialog;
+      commit("ADD_ITEM_DIALOG", newItemDialog);
+      dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
-    CREATE_DIRECTORY: ({ commit, getters }: any, name: string) => {
-      const currentDirectory: Directory = getters["GET_CURRENT_DIRECTORY"];
-
-      const newDirectory: Directory = {
-        name,
-        parent: currentDirectory,
-        type: DIRECTORY_TYPE.DEFAULT,
-        children: [],
-      };
-
-      commit("CREATE_FILE", newDirectory);
+    CLOSE_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
+      commit("CLOSE_ITEM_DIALOG", itemDialogGuid);
     },
-    CREATE_FILE: ({ commit, getters }: any, name: string) => {
-      const currentDirectory: Directory = getters["GET_CURRENT_DIRECTORY"];
-
-      const fileItem: FileItem = {
-        name: name,
-        parent: currentDirectory,
-        type: "text",
-        mimeType: "txt",
-        source: {},
-      };
-
-      commit("CREATE_FILE", fileItem);
+    MINIMIZE_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
+      commit("MINIMIZE_ITEM_DIALOG", itemDialogGuid);
     },
-    OPEN_DIRECTORY_BY_NAME: ({ dispatch, getters }: any, directoryName: string) => {
-      const currentDirectory: Directory = getters["GET_CURRENT_DIRECTORY"];
-      const directoryFound = currentDirectory.children.find((item: Item) => {
-        /* eslint-disable */
-        if (item.name === directoryName && item.hasOwnProperty("children")) {
-          return item;
-        }
-        /* eslint-enable */
-      });
-      console.log("DIR FOUND", directoryFound);
-      if (directoryFound) {
-        dispatch("OPEN_DIRECTORY", directoryFound);
-      }
+    UPDATE_ITEM_DIALOG_POSITION: ({ commit }: any, itemDialogToUpdate: ItemDialog) => {
+      commit("UPDATE_ITEM_DIALOG_POSITION", itemDialogToUpdate);
     },
-    OPEN_DIRECTORY: ({ commit, getters }: any, directory: Directory) => {
-      const newDirectoryPath = [];
-      // console.log("DIR TO OPEN", directory.parent);
-
-      let currentDirectory: Directory | null = directory;
-      while (currentDirectory) {
-        newDirectoryPath.unshift(currentDirectory);
-        currentDirectory = currentDirectory.parent;
-      }
-      console.log("NED DIR", newDirectoryPath);
-
-      const newFileSystem: FS = { currentDirectory: directory, currentDirectoryPath: newDirectoryPath };
-      commit("OPEN_DIRECTORY", newFileSystem);
+    UPDATE_ITEM_DIALOG_DIMENSION: ({ commit }: any, itemDialogToUpdate: ItemDialog) => {
+      commit("UPDATE_ITEM_DIALOG_DIMENSION", itemDialogToUpdate);
+    },
+    OPEN_MINIMIZED_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
+      commit("OPEN_MINIMIZED_ITEM_DIALOG", itemDialogGuid);
+    },
+    SET_FOCUSED_ITEM_DIALOG: ({ commit }: any, itemDialog: ItemDialog) => {
+      commit("SET_FOCUSED_ITEM_DIALOG", itemDialog);
+    },
+    FETCH_DESKTOP_FILES: ({ commit }: any) => {
+      const desktopFiles = getDesktopFiles(true);
+      console.log(desktopFiles);
+      commit("SET_DESKTOP_ITEMS", desktopFiles);
     },
   },
   getters: {
-    GET_FILE_SYSTEM: (state: FileSystemState) => state.fileSystem,
-    GET_CURRENT_DIRECTORY: (state: FileSystemState) => state.fileSystem.currentDirectory,
-    GET_CURRENT_DIRECTORY_FILE: (state: FileSystemState) => state.fileSystem.currentDirectory.children,
-    GET_CURRENT_DIRECTORY_PATH: (state: FileSystemState): Directory[] => state.fileSystem.currentDirectoryPath,
-    GET_CURRENT_DIRECTORY_PATH_NAMES: (state: FileSystemState) =>
-      state.fileSystem.currentDirectoryPath.map((dir: Directory) => {
-        return dir.name;
-      }),
+    GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
+    GET_FOCUSED_ITEM_DIALOG: (state: FileSystemState) => state.itemsDialog.find((item: ItemDialog) => item.isFocused),
+    GET_DESKTOP_FILES: (state: FileSystemState) => state.desktopItems,
   },
 };
 
 interface FileSystemState {
-  fileSystem: FS;
+  desktopItems: File[]; // done
+  itemsDialog: ItemDialog[]; // in progress
+  fileCopied?: File; // todo
+  fileCut?: File; // todo
+  actionsBox?: ActionsBox; // todo
+}
+
+interface ActionsBox {
+  isVisible: boolean;
+  activeFile: File;
+  availableActions: Action[];
+}
+
+interface Action {
+  text: string;
+  icon?: string;
 }

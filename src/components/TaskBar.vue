@@ -1,19 +1,72 @@
 <template>
-  <div class="task-bar">
-    <span class="mdi mdi-microsoft-windows window-icon"></span>
+  <div class="task-bar" ref="itemsContainerRef">
+    <div class="flex">
+      <span class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
+      <div class="flex">
+        <div
+          v-for="(taskBarItem, index) in taskBarItems"
+          :key="`task-bar-item-${index}`"
+          class="task-bar-item"
+          :style="`margin-left: ${itemMargin}px`"
+        >
+          <task-bar-item :style="`width: ${itemWidth}px`" :item="taskBarItem"></task-bar-item>
+        </div>
+      </div>
+    </div>
+
+    <div ref="currentDateRef">
+      <span class="current-date">{{ currentDate }}</span>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import store from "@/store";
+
+import ItemDialog from "@/models/ItemDialog";
+
+import taskBarItem from "@/components/TaskBarItem.vue";
 
 export default defineComponent({
   props: {
     msg: String,
   },
-  components: {},
+  components: { taskBarItem },
   setup() {
-    return {};
+    const itemsContainerRef = ref(null);
+    const currentDateRef = ref(null);
+    const windowIconRef = ref(null);
+    const maxItemWidth = 160;
+    const itemMargin = 4;
+
+    const currentDate = ref(new Date().toLocaleString().replace(",", " "));
+
+    const taskBarItems = computed(function () {
+      return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
+    });
+
+    const itemWidth = computed(function () {
+      const itemContainerWidth =
+        (itemsContainerRef.value as unknown as HTMLElement).clientWidth -
+        (windowIconRef.value as unknown as HTMLElement).clientWidth -
+        (currentDateRef.value as unknown as HTMLElement).clientWidth;
+
+      const calculatedItemWidth =
+        (itemContainerWidth - (taskBarItems.value.length + 1) * itemMargin) / taskBarItems.value.length;
+      console.log(itemContainerWidth, calculatedItemWidth, taskBarItems.value.length);
+      return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
+    });
+
+    const updateDate = () => {
+      currentDate.value = new Date().toLocaleString().replace(",", " ");
+    };
+
+    onMounted(function () {
+      setInterval(updateDate, 1000);
+    });
+
+    return { taskBarItems, itemsContainerRef, itemWidth, currentDateRef, windowIconRef, itemMargin, currentDate };
   },
 });
 </script>
@@ -44,5 +97,21 @@ export default defineComponent({
   display: flex;
   z-index: 1000;
   align-items: center;
+  justify-content: space-between;
+}
+
+.current-date {
+  font-size: var(--small-font-size);
+  color: white;
+  padding: 0px 10px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-grow {
+  display: flex;
+  flex-grow: 1;
 }
 </style>
