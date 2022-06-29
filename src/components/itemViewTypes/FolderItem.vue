@@ -11,13 +11,11 @@
 </template>
 
 <script lang="ts">
-import Item from "@/models/Item";
-
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   props: {
-    items: Array as PropType<Item[]>,
+    items: Array as PropType<string[]>,
   },
   components: {},
   emits: [],
