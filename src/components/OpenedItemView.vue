@@ -73,18 +73,9 @@
         <div class="mdi mdi-close action-icon" @click="closeFolderDialog"></div>
       </div>
     </div>
-
+    {{ itemDialog }}
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-    <folder-item v-if="isDirectory">
-      <div class="flex folder-actions"></div>
-      Top: {{ topPosition }} <br />
-      Left: {{ leftPosition }}<br />
-      Guid: {{ itemDialog.guid }}<br />
-      **** ITEMS :{{ items.length }} *****
-      <div class="footer">
-        <span class="footer-text">{{ `${items.length} item${items.length > 0 ? "s" : ""} |` }}</span>
-      </div>
-    </folder-item>
+    <folder-item v-if="isDirectory" :items="itemDialog.filesPath"> </folder-item>
     <div v-else-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
 
@@ -97,9 +88,8 @@
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
-import Item from "@/models/Item";
 import store from "@/store";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import Dimension from "@/models/Dimension";
 
 import VuePdfEmbed from "vue-pdf-embed";
@@ -108,7 +98,6 @@ import { isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
-    items: Array as PropType<Item[]>,
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
@@ -129,6 +118,8 @@ export default defineComponent({
     const minWidth = 200;
 
     const draggableElement = ref({} as HTMLElement);
+
+    const items = reactive([] as File[]);
 
     const topPosition = computed(function () {
       return props.itemDialog.position ? props.itemDialog.position.x : 0;

@@ -11,8 +11,9 @@ export default interface ItemDialog {
   dimension: Dimension;
   icon?: string;
   mimeType: string;
+  isFolder: boolean;
 }
 
 export interface FolderDialog extends ItemDialog {
-  files: File[];
+  filesPath: string[];
 }

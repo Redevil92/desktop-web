@@ -3,6 +3,7 @@
     <div class="flex folder-actions"></div>
 
     FOLDER VIEW
+    {{ items }}
 
     <!-- GET ALL ELEMENTS -->
     <div class="footer"></div>

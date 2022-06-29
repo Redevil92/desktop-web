@@ -10,7 +10,7 @@
     <DesktopWorkSpace :items="desktopContent" @onFileItemPositionChange="changeItemPositionHandler" />
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
-      <OpenedItemView v-if="!item.isCollapsed" :items="getContentFromDirectoryPath(item.name)" :itemDialog="item" />
+      <OpenedItemView v-if="!item.isCollapsed" :itemDialog="item" />
     </div>
 
     <TaskBar />

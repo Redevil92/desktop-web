@@ -1,6 +1,6 @@
-import { getDesktopFiles } from "@/context/fileSystemController";
+import { getDesktopFiles, getFiles, isDir } from "@/context/fileSystemController";
 import DesktopItem from "@/models/DesktopItem";
-import ItemDialog from "@/models/ItemDialog";
+import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
@@ -74,9 +74,21 @@ export default {
         mimeType: itemDialogName.mimeType,
         guid: uuidv4(),
         isCollapsed: false,
+        isFolder: false,
         zIndex: 1,
         dimension: { height: 300, width: 500 },
       } as ItemDialog;
+      // check if it is folder
+      // add the items in the case
+
+      const idItemADir = isDir(newItemDialog.name);
+      if (idItemADir) {
+        const filesPath = getFiles(newItemDialog.name, true);
+        newItemDialog.isFolder = true;
+        (newItemDialog as FolderDialog).filesPath = filesPath;
+        // WORKING ON WHY I DONT GET ANY FILESSS
+      }
+
       commit("ADD_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
