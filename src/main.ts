@@ -18,8 +18,8 @@ createDirectory("my PC/Desktop");
 
 createFile("my PC/Desktop/Resume.txt", "my beautiful text");
 createDirectory("my PC/Desktop/FOLDER");
-createDirectory("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
-createDirectory("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
+createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
+createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
 createFile("my PC/Desktop/Resume2.txt", "my beautiful text");
 createFile("my PC/Desktop/Resume3.txt", "my beautiful text");
 

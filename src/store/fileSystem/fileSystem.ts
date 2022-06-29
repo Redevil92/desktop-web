@@ -86,7 +86,6 @@ export default {
         const filesPath = getFiles(newItemDialog.name, true);
         newItemDialog.isFolder = true;
         (newItemDialog as FolderDialog).filesPath = filesPath;
-        // WORKING ON WHY I DONT GET ANY FILESSS
       }
 
       commit("ADD_ITEM_DIALOG", newItemDialog);

@@ -21,14 +21,8 @@ export const createFile = (path: string, text = "", encoding = "utf8") => {
 export const getFiles = (path: string, fullPath = false): string[] => {
   const fs = (window as any).fs;
 
-  try {
-    const result: string[] = fs.readdirSync(path);
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
   const result: string[] = fs.readdirSync(path);
-
+  console.log(path, result);
   if (fullPath) {
     return result.map((file) => path + "/" + file);
   }
