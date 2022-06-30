@@ -32,6 +32,13 @@ export default {
 
       state.itemsDialog = [...state.itemsDialog];
     },
+    UPDATE_ITEM_DIALOG: (state: FileSystemState, itemToUpdate: ItemDialog) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemToUpdate.guid);
+      if (index !== -1) {
+        state.itemsDialog[index] = itemToUpdate;
+      }
+      state.itemsDialog = [...state.itemsDialog];
+    },
     UPDATE_ITEM_DIALOG_DIMENSION: (state: FileSystemState, itemToUpdate: ItemDialog) => {
       const index = state.itemsDialog.findIndex((item) => item.guid === itemToUpdate.guid);
       if (index !== -1) {
@@ -90,6 +97,18 @@ export default {
 
       commit("ADD_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
+    },
+    UPDATE_ITEM_DIALOG_NAME: (
+      { commit, dispatch }: any,
+      pathAndItemToUpdate: { newPath: string; itemDialog: FolderDialog }
+    ) => {
+      const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);
+      itemToUpdate.name = pathAndItemToUpdate.newPath;
+
+      const filesPath = getFiles(itemToUpdate.name, true);
+      itemToUpdate.filesPath = filesPath;
+
+      commit("UPDATE_ITEM_DIALOG", itemToUpdate);
     },
     CLOSE_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
       commit("CLOSE_ITEM_DIALOG", itemDialogGuid);

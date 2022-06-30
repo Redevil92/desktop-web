@@ -74,7 +74,7 @@
       </div>
     </div>
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-    <folder-item v-if="itemDialog.isFolder" :items="itemDialog.filesPath"> </folder-item>
+    <folder-item v-if="itemDialog.isFolder" :folderDialog="itemDialog"> </folder-item>
     <div v-else-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
 

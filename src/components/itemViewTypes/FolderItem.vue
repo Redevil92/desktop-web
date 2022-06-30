@@ -5,7 +5,7 @@
 
       <div
         :class="index % 2 === 0 ? 'folder-item folder-item-odd' : 'folder-item'"
-        v-for="(item, index) in items"
+        v-for="(item, index) in folderDialog.filesPath"
         :key="`item-${index}-${item}`"
         @click="doubleClickHandler"
       >
@@ -30,19 +30,23 @@ import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/
 import { defineComponent, PropType } from "vue";
 
 import store from "@/store";
+import { FolderDialog } from "@/models/ItemDialog";
 
 export default defineComponent({
   props: {
-    items: Array as PropType<string[]>,
+    folderDialog: Object as PropType<FolderDialog>,
   },
   components: {},
   emits: [],
   setup(props, _) {
     const doubleClickHandler = (fileName: string) => {
       // check if file is dir
+      const isFolder = isDir(fileName);
+      if (isFolder) {
+      }
       // if dir update current item dialog
       // else open a new one
-      store.dispatch("fileSystem/ADD_ITEM_DIALOG", fileName);
+      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.folderDialog });
     };
 
     return { getFileNameFromPath, doubleClickHandler, isDir, getFileExtensionFromName };
@@ -57,7 +61,7 @@ export default defineComponent({
 }
 
 .folder-item {
-  background-color: rgb(96, 96, 96);
+  background-color: rgb(112, 112, 112);
   height: 22px;
   margin: 0px 10px;
   border-radius: 7px;
