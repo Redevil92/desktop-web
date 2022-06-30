@@ -9,8 +9,14 @@
         :key="`item-${index}-${item}`"
         @click="doubleClickHandler"
       >
-        {{ index % 1 }}
-        {{ getFileNameFromPath(item) }}
+        <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+        <span
+          class="mdi mdi-file-word extension-icon"
+          style="color: #01014a"
+          v-else-if="getFileExtensionFromName(item)"
+        ></span>
+        <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span>
+        <span class="file-text">{{ getFileNameFromPath(item) }}</span>
       </div>
     </div>
 
@@ -20,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { getFileNameFromPath } from "@/context/fileSystemController";
+import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
 import { defineComponent, PropType } from "vue";
 
 import store from "@/store";
@@ -39,7 +45,7 @@ export default defineComponent({
       store.dispatch("fileSystem/ADD_ITEM_DIALOG", fileName);
     };
 
-    return { getFileNameFromPath, doubleClickHandler };
+    return { getFileNameFromPath, doubleClickHandler, isDir, getFileExtensionFromName };
   },
 });
 </script>
@@ -52,11 +58,15 @@ export default defineComponent({
 
 .folder-item {
   background-color: rgb(96, 96, 96);
-  height: 20px;
+  height: 22px;
   margin: 0px 10px;
   border-radius: 7px;
   color: rgb(239, 238, 238);
   font-size: var(--medium-font-size);
+  text-align: left;
+  padding-left: 10px;
+  align-content: center;
+  cursor: pointer;
 }
 
 .folder-item-odd {
@@ -89,5 +99,19 @@ export default defineComponent({
   font-size: var(--small-font-size);
   text-align: start;
   margin-left: 5px;
+}
+
+.file-icon {
+  height: 12px;
+  width: 12px;
+  margin-right: 7px;
+}
+
+.extension-icon {
+  font-size: 16px;
+}
+
+.file-text {
+  margin-left: 10px;
 }
 </style>
