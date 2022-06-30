@@ -62,3 +62,16 @@ export const getFileNameFromPath = (filePath: string): string => {
 
   return "";
 };
+
+export const getFileExtensionFromName = (fileName: string): string => {
+  const fileSplits = fileName.split(".");
+
+  if (fileSplits.length > 0) {
+    return fileSplits[fileSplits.length - 1];
+  }
+  return "";
+};
+
+export const getExtensionIcon = (extension: string, folderPath = "./src/assets/fileIcons"): string => {
+  return folderPath + "/" + "icon-" + extension;
+};
