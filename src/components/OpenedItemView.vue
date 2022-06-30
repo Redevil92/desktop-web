@@ -73,9 +73,8 @@
         <div class="mdi mdi-close action-icon" @click="closeFolderDialog"></div>
       </div>
     </div>
-    {{ itemDialog }}
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-    <folder-item v-if="isDirectory" :items="itemDialog.filesPath"> </folder-item>
+    <folder-item v-if="itemDialog.isFolder" :items="itemDialog.filesPath"> </folder-item>
     <div v-else-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
 

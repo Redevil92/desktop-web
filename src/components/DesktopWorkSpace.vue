@@ -30,14 +30,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, onMounted, ref, reactive } from "vue";
+import { defineComponent, PropType, onMounted, ref, reactive } from "vue";
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
 
-import Coordinates from "@/models/Coordinates";
 import DesktopItem from "@/models/DesktopItem";
-import { getFiles } from "@/context/fileSystemController";
 import { useStore } from "vuex";
 
 export default defineComponent({

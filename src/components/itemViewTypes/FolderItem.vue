@@ -1,9 +1,18 @@
 <template>
   <div>
-    <div class="flex folder-actions"></div>
+    <div class="folder-item-container">
+      <div class="flex folder-actions"></div>
 
-    FOLDER VIEW
-    {{ items }}
+      <div
+        :class="index % 2 === 0 ? 'folder-item folder-item-odd' : 'folder-item'"
+        v-for="(item, index) in items"
+        :key="`item-${index}-${item}`"
+        @click="doubleClickHandler"
+      >
+        {{ index % 1 }}
+        {{ getFileNameFromPath(item) }}
+      </div>
+    </div>
 
     <!-- GET ALL ELEMENTS -->
     <div class="footer"></div>
@@ -11,7 +20,10 @@
 </template>
 
 <script lang="ts">
+import { getFileNameFromPath } from "@/context/fileSystemController";
 import { defineComponent, PropType } from "vue";
+
+import store from "@/store";
 
 export default defineComponent({
   props: {
@@ -20,7 +32,14 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
-    return {};
+    const doubleClickHandler = (fileName: string) => {
+      // check if file is dir
+      // if dir update current item dialog
+      // else open a new one
+      store.dispatch("fileSystem/ADD_ITEM_DIALOG", fileName);
+    };
+
+    return { getFileNameFromPath, doubleClickHandler };
   },
 });
 </script>
@@ -31,9 +50,22 @@ export default defineComponent({
   align-items: center;
 }
 
-.folder-actions {
-  background-color: rgb(25, 25, 25);
-  height: 43px;
+.folder-item {
+  background-color: rgb(96, 96, 96);
+  height: 20px;
+  margin: 0px 10px;
+  border-radius: 7px;
+  color: rgb(239, 238, 238);
+  font-size: var(--medium-font-size);
+}
+
+.folder-item-odd {
+  background-color: rgb(170, 170, 170) !important;
+}
+
+.folder-item-container {
+  /* background-color: rgb(33, 33, 33);
+  height: -webkit-fill-available; */
 }
 
 .action-icon:hover {

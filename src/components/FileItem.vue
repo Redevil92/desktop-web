@@ -37,7 +37,6 @@ export default defineComponent({
     });
 
     const doubleClickHandler = () => {
-      console.log(props.fileItem);
       store.dispatch("fileSystem/ADD_ITEM_DIALOG", props.fileItem);
     };
 

@@ -51,3 +51,14 @@ export const getFile = (path: string, encoding = "utf8"): ArrayBuffer => {
 
   return data;
 };
+
+// utilities
+export const getFileNameFromPath = (filePath: string): string => {
+  const filePaths = filePath.split("/");
+
+  if (filePaths.length > 0) {
+    return filePaths[filePaths.length - 1];
+  }
+
+  return "";
+};
