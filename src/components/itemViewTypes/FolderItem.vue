@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="folder-item-container">
-      <div class="flex folder-actions"></div>
+      <div class="flex folder-actions">
+        <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
+          <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }} </span>
+          <span v-if="filePathSplitted.length > index + 1"> > </span>
+        </span>
+      </div>
 
       <div
         :class="index % 2 === 0 ? 'folder-item folder-item-odd' : 'folder-item'"
@@ -27,7 +32,7 @@
 
 <script lang="ts">
 import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -44,13 +49,41 @@ export default defineComponent({
       // check if file is dir
       const isFolder = isDir(fileName);
       if (isFolder) {
+        updateItemDialogPath(fileName);
       }
       // if dir update current item dialog
       // else open a new one
+    };
+
+    const updateItemDialogPath = (fileName: string) => {
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.folderDialog });
     };
 
-    return { getFileNameFromPath, doubleClickHandler, isDir, getFileExtensionFromName };
+    const buildPath = (fullPathSplitted: string[], index: number) => {
+      let newPath = "";
+      for (let i = 0; i <= index; i++) {
+        if (i !== 0) {
+          newPath += "/";
+        }
+        newPath += fullPathSplitted[i];
+      }
+      console.log(newPath);
+      return newPath;
+    };
+
+    const filePathSplitted = computed(function () {
+      return props.folderDialog?.name.split("/");
+    });
+
+    return {
+      getFileNameFromPath,
+      doubleClickHandler,
+      isDir,
+      getFileExtensionFromName,
+      filePathSplitted,
+      updateItemDialogPath,
+      buildPath,
+    };
   },
 });
 </script>
@@ -118,5 +151,21 @@ export default defineComponent({
 
 .file-text {
   margin-left: 10px;
+}
+
+.folder-actions {
+  font-size: var(--medium-font-size);
+  background-color: rgb(61, 61, 61);
+  color: white;
+  padding: 5px 10px;
+  font-weight: 600;
+}
+
+.path-item {
+  cursor: pointer;
+}
+
+.path-item:hover {
+  text-decoration: underline white;
 }
 </style>

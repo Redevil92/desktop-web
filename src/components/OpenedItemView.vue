@@ -66,7 +66,7 @@
 
     <div class="flex folder-header" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
       <div class="mdi mdi-folder-open folder-icon"></div>
-      <div class="directory-name">{{ itemDialog.name }}</div>
+      <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
       <div class="flex">
         <div class="mdi mdi-minus action-icon" @click="minimizeFolderDialog"></div>
         <div class="mdi mdi-crop-square action-icon" @click="setFolderDialogFullScreen"></div>
@@ -93,7 +93,7 @@ import Dimension from "@/models/Dimension";
 
 import VuePdfEmbed from "vue-pdf-embed";
 import { MIME_TYPE } from "@/constants";
-import { isDir } from "@/context/fileSystemController";
+import { getFileNameFromPath, isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -245,6 +245,7 @@ export default defineComponent({
       dragMouseDown,
       closeFolderDialog,
       minimizeFolderDialog,
+      getFileNameFromPath,
       actionTypes,
       pdfSource,
       MIME_TYPE,
