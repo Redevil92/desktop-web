@@ -7,7 +7,7 @@
         :class="index % 2 === 0 ? 'folder-item folder-item-odd' : 'folder-item'"
         v-for="(item, index) in folderDialog.filesPath"
         :key="`item-${index}-${item}`"
-        @click="doubleClickHandler"
+        @dblclick="doubleClickHandler(item)"
       >
         <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
         <span
@@ -40,6 +40,7 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const doubleClickHandler = (fileName: string) => {
+      console.log("double clk", fileName);
       // check if file is dir
       const isFolder = isDir(fileName);
       if (isFolder) {
