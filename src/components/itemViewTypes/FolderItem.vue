@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="folder-item-container">
+    <div class="folder-item-container" @click="selectedItem = ''" :style="`height:${height - 5}px`">
       <div class="flex folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
           <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }} </span>
@@ -9,10 +9,12 @@
       </div>
 
       <div
-        :class="index % 2 === 0 ? 'folder-item folder-item-odd' : 'folder-item'"
+        class="folder-item"
+        :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
         v-for="(item, index) in folderDialog.filesPath"
         :key="`item-${index}-${item}`"
         @dblclick="doubleClickHandler(item)"
+        @click.stop="itemClickHandler(item)"
       >
         <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
         <span
@@ -24,15 +26,12 @@
         <span class="file-text">{{ getFileNameFromPath(item) }}</span>
       </div>
     </div>
-
-    <!-- GET ALL ELEMENTS -->
-    <div class="footer"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -40,12 +39,12 @@ import { FolderDialog } from "@/models/ItemDialog";
 export default defineComponent({
   props: {
     folderDialog: Object as PropType<FolderDialog>,
+    height: Number,
   },
   components: {},
   emits: [],
   setup(props, _) {
     const doubleClickHandler = (fileName: string) => {
-      console.log("double clk", fileName);
       // check if file is dir
       const isFolder = isDir(fileName);
       if (isFolder) {
@@ -54,6 +53,15 @@ export default defineComponent({
       // if dir update current item dialog
       // else open a new one
     };
+
+    const itemClickHandler = (fileName: string) => {
+      // if item is already selected, open for edit
+
+      // select item
+      selectedItem.value = fileName;
+    };
+
+    const selectedItem = ref("");
 
     const updateItemDialogPath = (fileName: string) => {
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.folderDialog });
@@ -83,6 +91,8 @@ export default defineComponent({
       filePathSplitted,
       updateItemDialogPath,
       buildPath,
+      selectedItem,
+      itemClickHandler,
     };
   },
 });
@@ -95,7 +105,7 @@ export default defineComponent({
 }
 
 .folder-item {
-  background-color: rgb(112, 112, 112);
+  background-color: #868484;
   height: 22px;
   margin: 0px 10px;
   border-radius: 7px;
@@ -155,7 +165,7 @@ export default defineComponent({
 
 .folder-actions {
   font-size: var(--medium-font-size);
-  background-color: rgb(61, 61, 61);
+  background-color: rgb(110, 110, 110);
   color: white;
   padding: 5px 10px;
   font-weight: 600;
@@ -167,5 +177,9 @@ export default defineComponent({
 
 .path-item:hover {
   text-decoration: underline white;
+}
+
+.selected-item {
+  background-color: rgb(60, 60, 185) !important;
 }
 </style>

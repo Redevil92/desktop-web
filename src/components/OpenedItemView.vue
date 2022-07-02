@@ -64,7 +64,7 @@
       <!-- LB -->
     </div>
 
-    <div class="flex folder-header" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
+    <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
       <div class="mdi mdi-folder-open folder-icon"></div>
       <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
       <div class="flex">
@@ -74,7 +74,8 @@
       </div>
     </div>
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-    <folder-item v-if="itemDialog.isFolder" :folderDialog="itemDialog"> </folder-item>
+
+    <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
     <div v-else-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
 
@@ -116,9 +117,12 @@ export default defineComponent({
     const minHeight = 80;
     const minWidth = 200;
 
+    const dialogHeader = ref({} as HTMLElement);
     const draggableElement = ref({} as HTMLElement);
 
-    const items = reactive([] as File[]);
+    const contentHeight = computed(function () {
+      return props.itemDialog.dimension.height - dialogHeader.value.clientHeight;
+    });
 
     const topPosition = computed(function () {
       return props.itemDialog.position ? props.itemDialog.position.x : 0;
@@ -250,6 +254,8 @@ export default defineComponent({
       pdfSource,
       MIME_TYPE,
       isDirectory,
+      dialogHeader,
+      contentHeight,
     };
   },
 });
@@ -267,7 +273,8 @@ export default defineComponent({
   position: absolute;
   top: 50px;
   left: 200px;
-  border: 1px solid #959595;
+  border: 2px solid #959595;
+  border-radius: 10px;
   background-color: rgb(170, 170, 170);
 }
 
