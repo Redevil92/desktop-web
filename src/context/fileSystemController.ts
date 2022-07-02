@@ -18,6 +18,11 @@ export const createFile = (path: string, text = "", encoding = "utf8") => {
   });
 };
 
+export const renameFile = (oldFilePath: string, newFilePath: string) => {
+  const fs = (window as any).fs;
+  fs.renameSync(oldFilePath, newFilePath);
+};
+
 export const getFiles = (path: string, fullPath = false): string[] => {
   const fs = (window as any).fs;
 

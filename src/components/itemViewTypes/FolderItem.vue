@@ -7,7 +7,7 @@
           <span v-if="filePathSplitted.length > index + 1"> > </span>
         </span>
       </div>
-
+      {{ isEditingSelectedValue }}
       <div
         class="folder-item"
         :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
@@ -23,7 +23,10 @@
           v-else-if="getFileExtensionFromName(item)"
         ></span>
         <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span>
-        <span class="file-text">{{ getFileNameFromPath(item) }}</span>
+        <span v-if="item === selectedItem && isEditingSelectedValue">
+          <input class="file-text no-outline" v-model="fileNameToChange" @click.stop="" type="text" />
+        </span>
+        <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
       </div>
     </div>
   </div>
@@ -56,12 +59,18 @@ export default defineComponent({
 
     const itemClickHandler = (fileName: string) => {
       // if item is already selected, open for edit
+      if (fileName === selectedItem.value) {
+        isEditingSelectedValue.value = !isEditingSelectedValue.value;
+        fileNameToChange.value = getFileNameFromPath(fileName);
+      }
 
       // select item
       selectedItem.value = fileName;
     };
 
     const selectedItem = ref("");
+    const isEditingSelectedValue = ref(false);
+    const fileNameToChange = ref("");
 
     const updateItemDialogPath = (fileName: string) => {
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.folderDialog });
@@ -93,6 +102,8 @@ export default defineComponent({
       buildPath,
       selectedItem,
       itemClickHandler,
+      isEditingSelectedValue,
+      fileNameToChange,
     };
   },
 });
@@ -181,5 +192,21 @@ export default defineComponent({
 
 .selected-item {
   background-color: rgb(60, 60, 185) !important;
+}
+
+input {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: none;
+  background-color: #5e5e5e;
+  color: white;
+  outline: 3px solid #5353e8;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+.no-outline:focus {
+  outline: none;
 }
 </style>
