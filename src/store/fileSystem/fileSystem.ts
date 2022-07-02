@@ -143,6 +143,7 @@ export default {
     },
     FETCH_DESKTOP_FILES: ({ commit }: any) => {
       const desktopFiles = getDesktopFiles(true);
+
       commit("SET_DESKTOP_ITEMS", desktopFiles);
     },
   },

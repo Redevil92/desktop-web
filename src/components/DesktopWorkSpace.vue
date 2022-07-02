@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, onMounted, ref, reactive } from "vue";
+import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
@@ -56,27 +56,25 @@ export default defineComponent({
     const columnsNumber = ref(0);
     const rowHeight = ref(0);
 
-    // const desktopStringFiles = getFiles("/my PC/Desktop");
-    const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
-
-    let desktopFiles: any[] = [];
-    if (desktopStringFiles && desktopStringFiles.length > 0) {
-      desktopFiles = desktopStringFiles.map((fileName: string, index: number) => {
-        const mimeType = ".txt";
-        return {
-          x: index * 10,
-          y: index * 10,
-          w: 0.7,
-          h: 2.2,
-          i: fileName,
-          name: fileName,
-          static: false,
-          mimeType: mimeType,
-        };
-      });
-    }
-
-    console.log(desktopFiles);
+    const desktopFiles = computed(function (): any[] {
+      const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
+      if (desktopStringFiles && desktopStringFiles.length > 0) {
+        return desktopStringFiles.map((fileName: string, index: number) => {
+          const mimeType = ".txt";
+          return {
+            x: index * 5,
+            y: index * 5,
+            w: 0.7,
+            h: 2.2,
+            i: fileName,
+            name: fileName,
+            static: false,
+            mimeType: mimeType,
+          };
+        });
+      }
+      return [];
+    });
 
     const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
       console.log(itemName, newX, newY);
