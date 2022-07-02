@@ -8,6 +8,9 @@
         </span>
       </div>
       <div class="folder-item-list" :style="`height:${height - 35}px`">
+        <span style="show: hidde" class="input-placeholder" ref="fileNameToChangeSpanRef">{{
+          getFileNameFromPath(fileNameToChange)
+        }}</span>
         <div
           class="folder-item"
           :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
@@ -33,6 +36,7 @@
               @blur="changeFileName"
               @keyup.esc="isEditingSelectedValue = false"
               type="text"
+              :style="`width:${fileFocusedWidth}px`"
             />
           </span>
           <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
@@ -44,7 +48,7 @@
 
 <script lang="ts">
 import { getFileExtensionFromName, getFileNameFromPath, isDir, renameFile } from "@/context/fileSystemController";
-import { computed, defineComponent, nextTick, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -77,6 +81,18 @@ export default defineComponent({
     const isEditingSelectedValue = ref(false);
     const fileNameToChange = ref("");
     const fileNameInputRef = ref(null);
+    const fileNameToChangeSpanRef = ref(null);
+
+    const fileFocusedWidth = computed(function (): number {
+      console.log(selectedItem.value, fileNameToChange.value);
+      if (!fileNameToChangeSpanRef.value) {
+        return 200;
+      }
+      return Math.min(
+        (fileNameToChangeSpanRef.value as HTMLElement).getBoundingClientRect().width,
+        props.folderDialog ? props.folderDialog?.dimension.width - 30 : 200
+      );
+    });
 
     const itemClickHandler = async (fileName: string) => {
       if (fileName === selectedItem.value) {
@@ -111,11 +127,13 @@ export default defineComponent({
       const newName = props.folderDialog?.name + "/" + fileNameToChange.value;
       if (newName !== selectedItem.value) {
         renameFile(newName, selectedItem.value);
-        //isEditingSelectedValue.value = false;
-
-        store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-        store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+        refreshFileSystemFiles();
       }
+    };
+
+    const refreshFileSystemFiles = () => {
+      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
     };
 
     // *** UTILITIES METHODS
@@ -150,6 +168,8 @@ export default defineComponent({
       deselectItem,
       fileNameInputRef,
       changeFileName,
+      fileNameToChangeSpanRef,
+      fileFocusedWidth,
     };
   },
 });
@@ -174,6 +194,12 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.input-placeholder {
+  font-size: var(--medium-font-size);
+  visibility: hidden;
+  position: absolute;
+}
+
 .folder-item-odd {
   background-color: rgb(170, 170, 170) !important;
 }
@@ -191,7 +217,6 @@ export default defineComponent({
 .footer {
   position: absolute;
   height: 20px;
-
   background-color: rgb(25, 25, 25);
   bottom: 0px;
   width: inherit;
@@ -226,7 +251,7 @@ export default defineComponent({
   color: white;
   padding: 5px 10px;
   font-weight: 600;
-  text-align: right;
+  text-align: left;
   white-space: nowrap;
   overflow-x: scroll;
 }
