@@ -7,7 +7,7 @@
       :contextRef="desktopRef"
     ></actions-dialog-box>
 
-    <DesktopWorkSpace :items="desktopContent" @onFileItemPositionChange="changeItemPositionHandler" />
+    <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
       <OpenedItemView v-if="!item.isCollapsed" :itemDialog="item" />
@@ -56,6 +56,10 @@ export default defineComponent({
       return myName;
     };
 
+    const createNewDirectory = () => {
+      console.log("should create a new directory");
+    };
+
     const itemsDialog = computed(function () {
       return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
     });
@@ -68,6 +72,7 @@ export default defineComponent({
       changeItemPositionHandler,
       itemsDialog,
       desktopRef,
+      createNewDirectory,
     };
   },
 });
