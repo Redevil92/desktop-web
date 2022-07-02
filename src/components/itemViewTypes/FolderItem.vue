@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
-      <div class="flex folder-actions">
+      <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
-          <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }} </span>
-          <span v-if="filePathSplitted.length > index + 1"> > </span>
+          <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }}</span
+          >{{ filePathSplitted.length > index + 1 ? " > " : "" }}
         </span>
       </div>
       <div class="folder-item-list" :style="`height:${height - 35}px`">
@@ -30,6 +30,7 @@
               v-model="fileNameToChange"
               @click.stop=""
               @keyup.enter="changeFileName"
+              @blur="changeFileName"
               @keyup.esc="isEditingSelectedValue = false"
               type="text"
             />
@@ -98,19 +99,23 @@ export default defineComponent({
     };
 
     const selectInputText = async () => {
-      await nextTick();
-      if (fileNameInputRef.value) {
-        console.log("INPUT REF", fileNameInputRef.value);
-      }
+      setTimeout(async () => {
+        console.log("MFFF");
+        if (fileNameInputRef.value) {
+          console.log("INPUT REF", fileNameInputRef.value);
+        }
+      }, 2000);
     };
 
     const changeFileName = () => {
       const newName = props.folderDialog?.name + "/" + fileNameToChange.value;
-      renameFile(newName, selectedItem.value);
-      //isEditingSelectedValue.value = false;
+      if (newName !== selectedItem.value) {
+        renameFile(newName, selectedItem.value);
+        //isEditingSelectedValue.value = false;
 
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+        store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
+        store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+      }
     };
 
     // *** UTILITIES METHODS
@@ -221,6 +226,9 @@ export default defineComponent({
   color: white;
   padding: 5px 10px;
   font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+  overflow-x: scroll;
 }
 
 .path-item {
