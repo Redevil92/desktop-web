@@ -73,6 +73,9 @@ export default {
     SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: File[]) => {
       state.desktopItems = desktopItems;
     },
+    SET_ITEMS_DIALOG: (state: FileSystemState, itemsDialog: ItemDialog[]) => {
+      state.itemsDialog = itemsDialog;
+    },
   },
   actions: {
     ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
@@ -88,8 +91,7 @@ export default {
       // check if it is folder
       // add the items in the case
 
-      const idItemADir = isDir(newItemDialog.name);
-      if (idItemADir) {
+      if (isDir(newItemDialog.name)) {
         const filesPath = getFiles(newItemDialog.name, true);
         newItemDialog.isFolder = true;
         (newItemDialog as FolderDialog).filesPath = filesPath;
@@ -109,6 +111,17 @@ export default {
       itemToUpdate.filesPath = filesPath;
 
       commit("UPDATE_ITEM_DIALOG", itemToUpdate);
+    },
+    REFRESH_ALL_ITEM_DIALOG_FILES: ({ commit, getters }: any) => {
+      const itemsDialog = Object.assign([], getters["GET_ITEMS_DIALOG"]) as ItemDialog[];
+      itemsDialog.forEach((itemDialog) => {
+        if (isDir(itemDialog.name)) {
+          const newFilespath = getFiles(itemDialog.name, true);
+          (itemDialog as FolderDialog).filesPath = newFilespath;
+        }
+      });
+
+      commit("SET_ITEMS_DIALOG", itemsDialog);
     },
     CLOSE_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
       commit("CLOSE_ITEM_DIALOG", itemDialogGuid);
@@ -130,7 +143,6 @@ export default {
     },
     FETCH_DESKTOP_FILES: ({ commit }: any) => {
       const desktopFiles = getDesktopFiles(true);
-      console.log(desktopFiles);
       commit("SET_DESKTOP_ITEMS", desktopFiles);
     },
   },

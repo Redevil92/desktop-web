@@ -1,40 +1,49 @@
 <template>
   <div>
-    <div class="folder-item-container" @click="selectedItem = ''" :style="`height:${height - 5}px`">
+    <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
       <div class="flex folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
           <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }} </span>
           <span v-if="filePathSplitted.length > index + 1"> > </span>
         </span>
       </div>
-      {{ isEditingSelectedValue }}
-      <div
-        class="folder-item"
-        :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
-        v-for="(item, index) in folderDialog.filesPath"
-        :key="`item-${index}-${item}`"
-        @dblclick="doubleClickHandler(item)"
-        @click.stop="itemClickHandler(item)"
-      >
-        <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
-        <span
-          class="mdi mdi-file-word extension-icon"
-          style="color: #01014a"
-          v-else-if="getFileExtensionFromName(item)"
-        ></span>
-        <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span>
-        <span v-if="item === selectedItem && isEditingSelectedValue">
-          <input class="file-text no-outline" v-model="fileNameToChange" @click.stop="" type="text" />
-        </span>
-        <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
+      <div class="folder-item-list" :style="`height:${height - 35}px`">
+        <div
+          class="folder-item"
+          :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
+          v-for="(item, index) in folderDialog.filesPath"
+          :key="`item-${index}-${item}`"
+          @dblclick="doubleClickHandler(item)"
+          @click.stop="itemClickHandler(item)"
+        >
+          <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+          <span
+            class="mdi mdi-file-word extension-icon"
+            style="color: #01014a"
+            v-else-if="getFileExtensionFromName(item)"
+          ></span>
+          <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span>
+          <span v-if="item === selectedItem && isEditingSelectedValue">
+            <input
+              ref="fileNameInputRef"
+              class="file-text no-outline"
+              v-model="fileNameToChange"
+              @click.stop=""
+              @keyup.enter="changeFileName"
+              @keyup.esc="isEditingSelectedValue = false"
+              type="text"
+            />
+          </span>
+          <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { getFileExtensionFromName, getFileNameFromPath, isDir, renameFile } from "@/context/fileSystemController";
+import { computed, defineComponent, nextTick, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -47,6 +56,7 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
+    // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = (fileName: string) => {
       // check if file is dir
       const isFolder = isDir(fileName);
@@ -57,24 +67,56 @@ export default defineComponent({
       // else open a new one
     };
 
-    const itemClickHandler = (fileName: string) => {
-      // if item is already selected, open for edit
-      if (fileName === selectedItem.value) {
-        isEditingSelectedValue.value = !isEditingSelectedValue.value;
-        fileNameToChange.value = getFileNameFromPath(fileName);
-      }
-
-      // select item
-      selectedItem.value = fileName;
-    };
-
-    const selectedItem = ref("");
-    const isEditingSelectedValue = ref(false);
-    const fileNameToChange = ref("");
-
     const updateItemDialogPath = (fileName: string) => {
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.folderDialog });
     };
+
+    // *** ITEM SELECTION AND CHANGE NAME
+    const selectedItem = ref("");
+    const isEditingSelectedValue = ref(false);
+    const fileNameToChange = ref("");
+    const fileNameInputRef = ref(null);
+
+    const itemClickHandler = async (fileName: string) => {
+      if (fileName === selectedItem.value) {
+        fileNameToChange.value = getFileNameFromPath(fileName);
+        setTimeout(async () => {
+          isEditingSelectedValue.value = !isEditingSelectedValue.value;
+          await selectInputText();
+        }, 200);
+
+        return;
+      }
+
+      selectedItem.value = fileName;
+      isEditingSelectedValue.value = false;
+    };
+
+    const deselectItem = () => {
+      selectedItem.value = "";
+      isEditingSelectedValue.value = false;
+    };
+
+    const selectInputText = async () => {
+      await nextTick();
+      if (fileNameInputRef.value) {
+        console.log("INPUT REF", fileNameInputRef.value);
+      }
+    };
+
+    const changeFileName = () => {
+      const newName = props.folderDialog?.name + "/" + fileNameToChange.value;
+      renameFile(newName, selectedItem.value);
+      //isEditingSelectedValue.value = false;
+
+      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+    };
+
+    // *** UTILITIES METHODS
+    const filePathSplitted = computed(function () {
+      return props.folderDialog?.name.split("/");
+    });
 
     const buildPath = (fullPathSplitted: string[], index: number) => {
       let newPath = "";
@@ -88,10 +130,6 @@ export default defineComponent({
       return newPath;
     };
 
-    const filePathSplitted = computed(function () {
-      return props.folderDialog?.name.split("/");
-    });
-
     return {
       getFileNameFromPath,
       doubleClickHandler,
@@ -104,6 +142,9 @@ export default defineComponent({
       itemClickHandler,
       isEditingSelectedValue,
       fileNameToChange,
+      deselectItem,
+      fileNameInputRef,
+      changeFileName,
     };
   },
 });
@@ -208,5 +249,9 @@ input {
 
 .no-outline:focus {
   outline: none;
+}
+
+.folder-item-list {
+  overflow-y: auto;
 }
 </style>

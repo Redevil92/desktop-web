@@ -18,7 +18,7 @@ export const createFile = (path: string, text = "", encoding = "utf8") => {
   });
 };
 
-export const renameFile = (oldFilePath: string, newFilePath: string) => {
+export const renameFile = (newFilePath: string, oldFilePath: string) => {
   const fs = (window as any).fs;
   fs.renameSync(oldFilePath, newFilePath);
 };
