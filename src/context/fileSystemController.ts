@@ -23,6 +23,11 @@ export const renameFile = (newFilePath: string, oldFilePath: string) => {
   fs.renameSync(oldFilePath, newFilePath);
 };
 
+export const deleteFile = (filePath: string) => {
+  const fs = (window as any).fs;
+  fs.unlinkSync(filePath);
+};
+
 export const getFiles = (path: string, fullPath = false): string[] => {
   const fs = (window as any).fs;
 
