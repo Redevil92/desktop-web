@@ -8,9 +8,7 @@
         </span>
       </div>
       <div class="folder-item-list" :style="`height:${height - 35}px`">
-        <span style="show: hidde" class="input-placeholder" ref="fileNameToChangeSpanRef">{{
-          getFileNameFromPath(fileNameToChange)
-        }}</span>
+        <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
         <div
           class="folder-item"
           :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
@@ -47,7 +45,13 @@
 </template>
 
 <script lang="ts">
-import { getFileExtensionFromName, getFileNameFromPath, isDir, renameFile } from "@/context/fileSystemController";
+import {
+  deleteFile,
+  getFileExtensionFromName,
+  getFileNameFromPath,
+  isDir,
+  renameFile,
+} from "@/context/fileSystemController";
 import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
@@ -95,6 +99,9 @@ export default defineComponent({
     });
 
     const itemClickHandler = async (fileName: string) => {
+      if (!props.folderDialog?.isFocused) {
+        store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.folderDialog);
+      }
       if (fileName === selectedItem.value) {
         fileNameToChange.value = getFileNameFromPath(fileName);
         setTimeout(async () => {
@@ -152,9 +159,26 @@ export default defineComponent({
       return newPath;
     };
 
-    const deleteFileHandler = (event: Event) => {
-      if (event.code === "Delete" && props.folderDialog?.isFocused && selectedItem) {
-        // delete item
+    const deleteFileHandler = (event: { code: string }) => {
+      console.log(event.code);
+      if (props.folderDialog?.isFocused && selectedItem.value) {
+        if (event.code === "Delete" && props.folderDialog?.isFocused && selectedItem.value) {
+          // delete item
+          deleteFile(selectedItem.value);
+          refreshFileSystemFiles();
+        } else if (event.code === "ArrowDown") {
+          const index = props.folderDialog.filesPath.findIndex((filePath) => filePath === selectedItem.value);
+          if (index !== -1 && props.folderDialog.filesPath.length > index + 1) {
+            selectedItem.value = props.folderDialog.filesPath[index + 1];
+          }
+        } else if (event.code === "ArrowUp") {
+          const index = props.folderDialog.filesPath.findIndex((filePath) => filePath === selectedItem.value);
+          if (index > 0) {
+            selectedItem.value = props.folderDialog.filesPath[index - 1];
+          }
+        } else if (event.code === "ArrowRight") {
+          doubleClickHandler(selectedItem.value);
+        }
       }
     };
 

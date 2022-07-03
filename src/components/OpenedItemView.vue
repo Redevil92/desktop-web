@@ -2,6 +2,7 @@
   <div
     class="folder-dialog"
     ref="draggableElement"
+    @click="setItemDialogFocused"
     :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px;`"
   >
     <!-- RESIZABLE -->
@@ -228,6 +229,10 @@ export default defineComponent({
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_POSITION", { guid: props.itemDialog.guid, position: newPosition });
     }
 
+    function setItemDialogFocused() {
+      store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.itemDialog);
+    }
+
     function closeDragElement() {
       /* stop moving when mouse button is released:*/
       document.onmouseup = null;
@@ -250,6 +255,7 @@ export default defineComponent({
       closeFolderDialog,
       minimizeFolderDialog,
       getFileNameFromPath,
+      setItemDialogFocused,
       actionTypes,
       pdfSource,
       MIME_TYPE,
