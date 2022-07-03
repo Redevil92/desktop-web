@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="selectFile({})">
     <grid-layout
       class="grid-layout-dimension"
       :layout="desktopFiles"
@@ -65,6 +65,7 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopFile) => {
       selectedFile.value = newFileSelected;
+
       console.log("Selecting", selectedFile.value.name);
     };
 

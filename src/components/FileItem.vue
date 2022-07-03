@@ -1,13 +1,15 @@
 <template>
-  <div class="file-item" @dblclick="doubleClickHandler" @click="clickHandler" @click.right="rightClickHandler">
-    <div :class="isSelected ? 'file-item-selected' : ''">
+  <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
+    <div :class="isSelected ? 'file-item-selected' : 'invisible-border'">
       <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
       <div v-else>
         <span class="mdi mdi-file file-icon"></span>
       </div>
     </div>
 
-    <div class="file-text">{{ getFileNameFromPath(fileItem.name) }}</div>
+    <div :class="isSelected ? 'file-text-selected' : ''" class="file-text">
+      {{ getFileNameFromPath(fileItem.name) }}
+    </div>
   </div>
 </template>
 
@@ -55,15 +57,15 @@ export default defineComponent({
 
 <style scoped>
 .file-text {
-  font-size: var(--small-font-size);
+  font-size: var(--medium-font-size);
   color: rgb(255, 255, 255);
-  font-size: 12px;
-  letter-spacing: -0.1px;
+
+  font-weight: 600;
   line-height: 1.2;
   margin: 1px 0px;
-  padding: 2px 1px;
-  text-shadow: rgb(0 0 0 / 75%) 0px 0px 1px, rgb(0 0 0 / 50%) 0px 0px 2px, rgb(0 0 0 / 75%) 0px 1px 1px,
-    rgb(0 0 0 / 50%) 0px 1px 2px, rgb(0 0 0 / 75%) 0px 2px 1px, rgb(0 0 0 / 50%) 0px 2px 2px;
+  padding: 1px 1px;
+  margin-top: 2px;
+
   word-break: break-word;
 
   overflow: hidden;
@@ -88,9 +90,19 @@ export default defineComponent({
   font-size: 45px;
 }
 
+.invisible-border {
+  border: 3px solid rgba(195, 195, 195, 0);
+}
+
 .file-item-selected {
-  outline: 3px solid rgb(195, 195, 195);
+  border: 3px solid rgb(195, 195, 195);
   border-radius: 3px;
   background-color: rgba(214, 214, 214, 0.553);
+}
+
+.file-text-selected {
+  background-color: rgba(214, 214, 214, 0.553);
+  border-radius: 3px;
+  background-color: rgb(60, 60, 185);
 }
 </style>
