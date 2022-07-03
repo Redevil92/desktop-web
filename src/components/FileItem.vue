@@ -1,50 +1,51 @@
 <template>
-  <div ref="fileItemRef" class="file-item" @dblclick="doubleClickHandler" @click.right="rightClickHandler">
-    <span v-if="isDirectory" class="mdi mdi-folder-open folder-icon"></span>
+  <div class="file-item" @dblclick="doubleClickHandler" @click="clickHandler" @click.right="rightClickHandler">
+    <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
     <div v-else>
-      <div class="file-icon">{{ fileItem.mimeType }}</div>
+      <span class="mdi mdi-file file-icon"></span>
     </div>
     <div class="file-text">{{ getFileNameFromPath(fileItem.name) }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue";
+import { defineComponent, PropType } from "vue";
 
 import DesktopItem from "@/models/DesktopItem";
 
 import store from "@/store";
+import { isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
+    isSelected: { type: Boolean, default: false },
   },
   components: {},
-  emits: ["onDoubleClick", "onRightClick"],
+  emits: ["onClick", "onRightClick"],
   setup(props, context) {
-    const fileItemRef = ref(null);
-
     const getFileNameFromPath = (path: string) => {
       const filesName = path.split("/");
       return filesName[filesName.length - 1];
     };
 
-    const isDirectory = computed(function (): boolean {
-      if (props.fileItem.mimeType === "inode/directory") {
-        return true;
-      }
-      return false;
-    });
+    const isFolder = (filePath: string) => {
+      return isDir(filePath);
+    };
+
+    const clickHandler = () => {
+      context.emit("onClick", props.fileItem);
+    };
 
     const doubleClickHandler = () => {
       store.dispatch("fileSystem/ADD_ITEM_DIALOG", props.fileItem);
     };
 
-    // const rightClickHandler = () => {
-    //   context.emit("onRightClick");
-    // };
+    const rightClickHandler = () => {
+      context.emit("onRightClick");
+    };
 
-    return { doubleClickHandler, isDirectory, getFileNameFromPath };
+    return { doubleClickHandler, isFolder, getFileNameFromPath, clickHandler, rightClickHandler };
   },
 });
 </script>
@@ -75,14 +76,12 @@ export default defineComponent({
   text-align: -webkit-center;
 }
 
-.file-icon {
-  height: 48px;
-  width: 48px;
-  border: 1px solid black;
-}
-
 .folder-icon {
   color: #f6d573;
+  font-size: 45px;
+}
+
+.file-icon {
   font-size: 45px;
 }
 </style>

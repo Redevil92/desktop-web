@@ -23,7 +23,12 @@
         :i="item.i"
         @moved="fileItemMovedHandler"
       >
-        <FileItem :ref="item.name + 'FileRef'" :fileItem="item" @onRightClick="rightClickHandler(item)" />
+        <FileItem
+          :ref="item.name + 'FileRef'"
+          :fileItem="item"
+          @onClick="selectFile"
+          :isSelected="selectedFile && selectedFile.name === item.name"
+        />
       </grid-item>
     </grid-layout>
   </div>
@@ -56,11 +61,17 @@ export default defineComponent({
     const columnsNumber = ref(0);
     const rowHeight = ref(0);
 
-    const desktopFiles = computed(function (): any[] {
+    const selectedFile = ref({} as DesktopFile);
+
+    const selectFile = (newFileSelected: DesktopFile) => {
+      selectedFile.value = newFileSelected;
+      console.log("Selecting", selectedFile.value.name);
+    };
+
+    const desktopFiles = computed(function (): DesktopFile[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         return desktopStringFiles.map((fileName: string, index: number) => {
-          const mimeType = ".txt";
           return {
             x: index * 5,
             y: index * 5,
@@ -69,7 +80,6 @@ export default defineComponent({
             i: fileName,
             name: fileName,
             static: false,
-            mimeType: mimeType,
           };
         });
       }
@@ -78,7 +88,6 @@ export default defineComponent({
 
     const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
       console.log(itemName, newX, newY);
-
       // const newCoordinates = { x: newX, y: newY } as Coordinates;
       // const fileItemToUpdate: DesktopItem | undefined = props.items?.find((item: DesktopItem) => {
       //   if (item.name === itemName) {
@@ -89,9 +98,9 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
-    const rightClickHandler = (item: DesktopItem) => {
-      console.log("RIGH");
-    };
+    // const rightClickHandler = (item: DesktopItem) => {
+    //   console.log("RIGH");
+    // };
 
     onMounted(() => {
       columnsNumber.value = window.innerWidth / 85;
@@ -100,16 +109,26 @@ export default defineComponent({
 
     return {
       desktopFiles,
-
-      rightClickHandler,
       fileItemMovedHandler,
       itemWidth,
       itemHeight,
       columnsNumber,
       rowHeight,
+      selectFile,
+      selectedFile,
     };
   },
 });
+
+interface DesktopFile {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  i: string;
+  name: string;
+  static: boolean;
+}
 </script>
 
 <style scoped>
