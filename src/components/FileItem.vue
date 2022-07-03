@@ -1,9 +1,12 @@
 <template>
   <div class="file-item" @dblclick="doubleClickHandler" @click="clickHandler" @click.right="rightClickHandler">
-    <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
-    <div v-else>
-      <span class="mdi mdi-file file-icon"></span>
+    <div :class="isSelected ? 'file-item-selected' : ''">
+      <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
+      <div v-else>
+        <span class="mdi mdi-file file-icon"></span>
+      </div>
     </div>
+
     <div class="file-text">{{ getFileNameFromPath(fileItem.name) }}</div>
   </div>
 </template>
@@ -83,5 +86,11 @@ export default defineComponent({
 
 .file-icon {
   font-size: 45px;
+}
+
+.file-item-selected {
+  outline: 3px solid rgb(195, 195, 195);
+  border-radius: 3px;
+  background-color: rgba(214, 214, 214, 0.553);
 }
 </style>
