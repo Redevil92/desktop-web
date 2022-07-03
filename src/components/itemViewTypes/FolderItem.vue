@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { getFileExtensionFromName, getFileNameFromPath, isDir, renameFile } from "@/context/fileSystemController";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -116,7 +116,6 @@ export default defineComponent({
 
     const selectInputText = async () => {
       setTimeout(async () => {
-        console.log("MFFF");
         if (fileNameInputRef.value) {
           console.log("INPUT REF", fileNameInputRef.value);
         }
@@ -152,6 +151,20 @@ export default defineComponent({
       console.log(newPath);
       return newPath;
     };
+
+    const deleteFileHandler = (event: Event) => {
+      if (event.code === "Delete" && props.folderDialog?.isFocused && selectedItem) {
+        // delete item
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener("keydown", deleteFileHandler);
+    });
+
+    onDeactivated(() => {
+      window.removeEventListener("keydown", deleteFileHandler);
+    });
 
     return {
       getFileNameFromPath,
