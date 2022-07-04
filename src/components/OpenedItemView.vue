@@ -5,6 +5,14 @@
     @click="setItemDialogFocused"
     :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`"
   >
+    <div
+      @mousedown="setItemDialogFocused"
+      class="not-focused-dialog"
+      v-if="!itemDialog.isFocused"
+      :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${
+        itemDialog.dimension.width
+      }px; z-index: ${itemDialog.zIndex + 1}`"
+    ></div>
     <!-- RESIZABLE -->
     <div
       class="resize-element"
@@ -368,5 +376,11 @@ export default defineComponent({
   font-size: var(--small-font-size);
   text-align: start;
   margin-left: 5px;
+}
+
+.not-focused-dialog {
+  background-color: #3c3c3c75;
+  position: fixed;
+  border-radius: 10px;
 }
 </style>
