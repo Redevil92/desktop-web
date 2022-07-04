@@ -63,10 +63,14 @@ export default {
     },
     SET_FOCUSED_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
       const itemsToUpdate = [...state.itemsDialog];
-      itemsToUpdate.forEach((item) => (item.isFocused = false));
+      itemsToUpdate.forEach((item) => {
+        item.isFocused = false;
+        item.zIndex = Math.max(item.zIndex - 1, 1);
+      });
       const index = itemsToUpdate.findIndex((item) => item.guid === itemDialog.guid);
       if (index !== -1) {
         itemsToUpdate[index].isFocused = true;
+        itemsToUpdate[index].zIndex = itemsToUpdate.length;
       }
       state.itemsDialog = itemsToUpdate;
     },

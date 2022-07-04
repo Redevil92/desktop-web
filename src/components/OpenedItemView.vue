@@ -3,7 +3,7 @@
     class="folder-dialog"
     ref="draggableElement"
     @click="setItemDialogFocused"
-    :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px;`"
+    :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`"
   >
     <!-- RESIZABLE -->
     <div
