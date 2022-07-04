@@ -68,10 +68,18 @@
     <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
       <div class="mdi mdi-folder-open folder-icon"></div>
       <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
-      <div class="flex">
-        <div class="mdi mdi-minus action-icon" @click="minimizeFolderDialog"></div>
-        <div class="mdi mdi-crop-square action-icon" @click="setFolderDialogFullScreen"></div>
-        <div class="mdi mdi-close action-icon" @click="closeFolderDialog"></div>
+      <div class="flex action-group">
+        <div
+          class="mdi mdi-minus-thick action-icon"
+          style="background-color: #e5d83c"
+          @click="minimizeFolderDialog"
+        ></div>
+        <div
+          class="mdi mdi-crop-square action-icon"
+          style="background-color: #36d936"
+          @click="setFolderDialogFullScreen"
+        ></div>
+        <div class="mdi mdi-close-thick action-icon" style="background-color: #d64242" @click="closeFolderDialog"></div>
       </div>
     </div>
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
@@ -298,6 +306,7 @@ export default defineComponent({
 .folder-header {
   background-color: rgb(170, 170, 170);
   height: 30px;
+  border-radius: 10px;
 }
 
 .folder-actions {
@@ -317,16 +326,31 @@ export default defineComponent({
 }
 
 .action-icon {
-  width: 40px;
-  height: 30px;
+  background-color: yellow;
+  border-radius: 50px;
+  width: 13px;
+  height: 13px;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0px 5px;
 }
 
 .action-icon:hover {
-  background-color: rgb(33, 33, 33);
-  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(120, 120, 120);
+}
+
+.action-group {
+  font-size: 0px;
+  margin-right: 10px;
+}
+
+.action-group:hover {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(83, 83, 83);
 }
 
 .footer {
