@@ -2,7 +2,7 @@
   <div class="task-bar-item" :class="isFocused ? 'task-bar-item-focused' : ''" @click="taskBarItemClickHandler">
     <span class="mdi mdi-folder-open folder-icon"></span>
     <p class="text">
-      {{ item.name }}
+      {{ getFileNameFromPath(item.name) }}
     </p>
   </div>
 </template>
@@ -12,6 +12,7 @@ import { computed, defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import store from "@/store";
+import { getFileNameFromPath } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -38,7 +39,7 @@ export default defineComponent({
       }
     };
 
-    return { taskBarItemClickHandler, isFocused };
+    return { taskBarItemClickHandler, isFocused, getFileNameFromPath };
   },
 });
 </script>
