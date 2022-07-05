@@ -94,7 +94,10 @@
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
     <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
 
-    <div v-else-if="isCodeFile">
+    <div v-else-if="isTextFile()">
+      <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
+    </div>
+    <div v-else-if="isCodeFile()">
       <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
     </div>
     <div v-if="itemDialog.mimeType === MIME_TYPE.pdf">
@@ -116,13 +119,14 @@ import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/
 
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
+import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
 
 export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { VuePdfEmbed, FolderItem, CodeFileItem },
+  components: { VuePdfEmbed, FolderItem, CodeFileItem, TextFileItem },
   emits: [],
   setup(props, _) {
     const actionTypes = {
@@ -159,6 +163,12 @@ export default defineComponent({
       const codeExtensions = ["css", "html", "ts", "js"];
       const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
 
+      return codeExtensions.includes(currentFileExtension);
+    }
+
+    function isTextFile(): boolean {
+      const codeExtensions = ["txt", "text"];
+      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
       return codeExtensions.includes(currentFileExtension);
     }
 
@@ -290,6 +300,7 @@ export default defineComponent({
       dialogHeader,
       contentHeight,
       isCodeFile,
+      isTextFile,
     };
   },
 });
