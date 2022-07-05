@@ -134,7 +134,11 @@ interface DesktopFile {
 
 <style scoped>
 .vue-grid-layout {
-  background: #eee;
+  background-image: url("/src/assets/desktopImages/mountain.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   height: 100vh !important;
 }
 .vue-grid-item.vue-grid-placeholder {

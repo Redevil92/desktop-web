@@ -298,6 +298,8 @@ export default defineComponent({
   border: 2px solid #959595;
   border-radius: 10px;
   background-color: rgb(170, 170, 170);
+  box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
+  -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
 }
 
 .flex {
