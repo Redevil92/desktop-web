@@ -1,6 +1,8 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
+      :style="`height: ${height - 14}px;  `"
+      api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
       :init="{
         plugins: 'lists link image table code help wordcount',
       }"
