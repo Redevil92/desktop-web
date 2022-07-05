@@ -290,7 +290,7 @@ export default defineComponent({
   font-weight: 600;
   text-align: left;
   white-space: nowrap;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .path-item {

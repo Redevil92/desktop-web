@@ -93,10 +93,11 @@
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
 
     <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
-    <div v-else-if="itemDialog.mimeType === MIME_TYPE.pdf">
+    <div v-else>
+      <MonacoEditor style="width: 600px; height: 800px" :v-model="'ssss'" language="javascript" />
+    </div>
+    <div v-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
-
-      <!-- <div v-for="(item, index) in items" :key="`opened-folder-${index}`">INDEX::{{ index }}</div> -->
     </div>
   </div>
 </template>
@@ -113,12 +114,14 @@ import VuePdfEmbed from "vue-pdf-embed";
 import { MIME_TYPE } from "@/constants";
 import { getFileNameFromPath, isDir } from "@/context/fileSystemController";
 
+import MonacoEditor from "monaco-editor-vue3";
+
 export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { VuePdfEmbed, FolderItem },
+  components: { VuePdfEmbed, FolderItem, MonacoEditor },
   emits: [],
   setup(props, _) {
     const actionTypes = {
