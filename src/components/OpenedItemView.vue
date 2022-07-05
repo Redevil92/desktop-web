@@ -91,10 +91,10 @@
       </div>
     </div>
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-
     <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
-    <div v-else>
-      <MonacoEditor style="width: 600px; height: 800px" :v-model="'ssss'" language="javascript" />
+
+    <div v-else-if="isCodeFile">
+      <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
     </div>
     <div v-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
@@ -105,23 +105,23 @@
 <script lang="ts">
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
-import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
 import store from "@/store";
 import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import Dimension from "@/models/Dimension";
 
 import VuePdfEmbed from "vue-pdf-embed";
 import { MIME_TYPE } from "@/constants";
-import { getFileNameFromPath, isDir } from "@/context/fileSystemController";
+import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
 
-import MonacoEditor from "monaco-editor-vue3";
+import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
+import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 
 export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { VuePdfEmbed, FolderItem, MonacoEditor },
+  components: { VuePdfEmbed, FolderItem, CodeFileItem },
   emits: [],
   setup(props, _) {
     const actionTypes = {
@@ -153,6 +153,12 @@ export default defineComponent({
     });
 
     const isDirectory = isDir(props.itemDialog.name);
+
+    function isCodeFile(): boolean {
+      const codeExtensions = [".css", ".html", ".ts", "js"];
+      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
+      return codeExtensions.includes(currentFileExtension);
+    }
 
     let pos1 = 0,
       pos2 = 0,
@@ -281,6 +287,7 @@ export default defineComponent({
       isDirectory,
       dialogHeader,
       contentHeight,
+      isCodeFile,
     };
   },
 });

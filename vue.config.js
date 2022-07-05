@@ -11,6 +11,8 @@ module.exports = defineConfig({
       // e.g. Build full languages support with webpack 4.0 takes over 80 seconds
       // Languages are loaded on demand at runtime
       languages: ["javascript", "css", "html", "typescript"],
+      features: ["coreCommands", "find"],
+      autolayout: true,
     }),
   ],
 });
