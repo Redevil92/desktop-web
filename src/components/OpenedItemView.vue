@@ -90,6 +90,7 @@
         <div class="mdi mdi-close-thick action-icon" style="background-color: #d64242" @click="closeFolderDialog"></div>
       </div>
     </div>
+
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
     <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
 
@@ -155,8 +156,9 @@ export default defineComponent({
     const isDirectory = isDir(props.itemDialog.name);
 
     function isCodeFile(): boolean {
-      const codeExtensions = [".css", ".html", ".ts", "js"];
+      const codeExtensions = ["css", "html", "ts", "js"];
       const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
+
       return codeExtensions.includes(currentFileExtension);
     }
 

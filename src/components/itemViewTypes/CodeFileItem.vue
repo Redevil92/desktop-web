@@ -2,9 +2,9 @@
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <MonacoEditor
       class="monaco-editor"
-      v-model="code"
       theme="vs-dark"
       automaticLayout
+      :value="code"
       :options="monacoEditorOptions"
       language="javascript"
     />
@@ -12,10 +12,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
+import { getFileExtensionFromName } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -25,21 +26,45 @@ export default defineComponent({
   components: { MonacoEditor },
   emits: [],
   setup(props, _) {
-    const code = () => {
-      return "hello";
-    };
+    let code = ref("const noop = () => {}");
+
+    function getFileTypeFromExtension(): string {
+      let fileType = "";
+      if (props.itemDialog) {
+        const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
+        switch (currentFileExtension) {
+          case "css":
+            fileType = "css";
+            break;
+          case "js":
+            fileType = "javascript";
+            break;
+          case "html":
+            fileType = "html";
+            break;
+          case "ts":
+            fileType = "typescript";
+            break;
+          default:
+            break;
+        }
+      }
+      return fileType;
+    }
 
     const monacoEditorOptions = {
       automaticLayout: true,
       lineNumbers: "on",
-      language: "javascript",
       // try "same", "indent" or "none"
       wrappingIndent: "indent",
       // Set this to false to not auto word wrap minified files
       wordWrapMinified: true,
+      //value: "dddd",
     };
 
-    return { monacoEditorOptions };
+    const fileType = getFileTypeFromExtension();
+
+    return { monacoEditorOptions, fileType, code };
   },
 });
 </script>
