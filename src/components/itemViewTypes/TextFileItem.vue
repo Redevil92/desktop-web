@@ -14,18 +14,6 @@
 </template>
 
 <script lang="ts">
-//   :init="{
-//     max_height: height - 14,
-//     min_height: height - 14,
-
-//     menubar: false,
-//     plugins: ['autoresize', 'lists link image table code help wordcount'],
-//     toolbar:
-//       'undo redo | formatselect | bold italic backcolor | \
-//        alignleft aligncenter alignright alignjustify | \
-//        bullist numlist outdent indent | removeformat | help',
-//   }"
-
 import { defineComponent, PropType, ref, watch } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
@@ -43,15 +31,7 @@ export default defineComponent({
   components: { Editor },
   emits: [],
   setup(props, _) {
-    const index = ref(0);
-    watch(
-      () => props.height,
-      function (val, oldValue) {
-        index.value += index.value + 1;
-        console.log(`NEW VALUE: ${val} ///// OLD COUNT: ${oldValue}`);
-      }
-    );
-    return { index };
+    return {};
   },
 });
 </script>
