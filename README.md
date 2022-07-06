@@ -1,4 +1,4 @@
-# my-portfolio
+# Desktop web
 
 ## Project setup
 ```
