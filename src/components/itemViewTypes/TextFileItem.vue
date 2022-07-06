@@ -36,12 +36,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.mce-editor + div {
-  border: 5px solid red;
-}
-
-.mce-editor div div {
-  border: 5px solid red;
-}
-</style>
+<style scoped></style>
