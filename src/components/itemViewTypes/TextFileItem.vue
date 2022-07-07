@@ -4,11 +4,20 @@
       class="mce-editor"
       api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
       :init="{
-        plugins: 'lists link image table code help wordcount',
+        plugins: ['lists link image table code help wordcount', 'save'],
         height: '100%',
         resize: false,
+
+        selector: 'textarea', // change this value according to your HTML
+        plugins: 'save',
+        toolbar: 'save',
+        menubar: false,
+        toolbar:
+          'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+        save_onsavecallback: 'saveFile',
       }"
       :initial-value="fileText"
+      @saveContent="saveFile"
     />
   </div>
 </template>
@@ -19,7 +28,7 @@ import { defineComponent, PropType, ref, watch } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 
 import Editor from "@tinymce/tinymce-vue";
-import { readFile } from "@/context/fileSystemController";
+import { createFile, readFile } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -38,7 +47,15 @@ export default defineComponent({
       fileText.value = readFile(props.itemDialog?.name);
     }
 
-    return { fileText };
+    const saveFile = (content: any, html: any, body: any) => {
+      console.log("SAVING", content.content, html, body);
+
+      if (props.itemDialog?.name) {
+        createFile(props.itemDialog?.name, content.content);
+      }
+    };
+
+    return { fileText, saveFile };
   },
 });
 </script>
