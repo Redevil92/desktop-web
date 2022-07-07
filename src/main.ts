@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import { initializeFileSystem } from "./context/fileSystem";
-import { createDirectory, createFile, getFile, getFiles, getStat } from "./context/fileSystemController";
+import { createDirectory, createFile } from "./context/fileSystemController";
 import router from "./router";
 import store from "./store";
 
@@ -16,7 +16,7 @@ createFile("my PC/mysecondFile.txt", "my beautiful text");
 
 createDirectory("my PC/Desktop");
 
-createFile("my PC/Desktop/Resume.txt", "my beautiful text");
+createFile("my PC/Desktop/Resume.txt", "MY start text to test.");
 createDirectory("my PC/Desktop/FOLDER");
 createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
 createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");

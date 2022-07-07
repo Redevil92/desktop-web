@@ -32,7 +32,6 @@ export const getFiles = (path: string, fullPath = false): string[] => {
   const fs = (window as any).fs;
 
   const result: string[] = fs.readdirSync(path);
-  console.log(path, result);
   if (fullPath) {
     return result.map((file) => path + "/" + file);
   }
@@ -55,9 +54,9 @@ export const getStat = (path: string): FileStats => {
   return fs.statSync(path);
 };
 
-export const getFile = (path: string, encoding = "utf8"): ArrayBuffer => {
+export const readFile = (path: string, encoding = "utf8"): string => {
   const fs = (window as any).fs;
-  const data: any = fs.readFileSync(path);
+  const data: any = fs.readFileSync(path).toString(encoding).split("\n");
 
   return data;
 };
