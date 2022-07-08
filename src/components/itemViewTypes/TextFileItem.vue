@@ -4,17 +4,16 @@
       class="mce-editor"
       api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
       :init="{
-        plugins: ['lists link image table code help wordcount', 'save'],
+        plugins: ['lists link image table code help wordcount'],
         height: '100%',
         resize: false,
-
         selector: 'textarea', // change this value according to your HTML
         plugins: 'save',
-        toolbar: 'save',
+
         menubar: false,
         toolbar:
-          'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
-        save_onsavecallback: 'saveFile',
+          'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | \
+           bullist numlist outdent indent | removeformat |',
       }"
       :initial-value="fileText"
       @saveContent="saveFile"

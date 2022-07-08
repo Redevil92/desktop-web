@@ -31,3 +31,7 @@ html {
   word-break: normal;
   tab-size: 4;
 }
+
+.tox-notification--error {
+  visibility: hidden;
+}
