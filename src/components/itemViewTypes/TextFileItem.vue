@@ -2,7 +2,7 @@
   <div :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
       class="mce-editor"
-      api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
+      api-key=""
       :init="{
         plugins: ['lists link image table code help wordcount'],
         height: '100%',
