@@ -24,14 +24,23 @@ export const processDirectory: any = {
     icon: "FOLDER_ICON",
     title: "File Explorer",
   },
-  MonacoEditor: {
-    background: "#1E1E1E",
+  html: {
+    defaultSize: {
+      height: 480,
+      width: 550,
+    },
+  },
+  js: {
     defaultSize: {
       height: 480,
       width: 544,
     },
-    icon: "/System/Icons/monaco.webp",
-    title: "Monaco Editor",
+  },
+  css: {
+    defaultSize: {
+      height: 480,
+      width: 544,
+    },
   },
   PDF: {
     background: "rgb(82, 86, 89)",
