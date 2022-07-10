@@ -1,4 +1,4 @@
-const processDirectory = {
+export const processDirectory: any = {
   DevTools: {
     background: "rgb(36, 36, 36)",
     defaultSize: {
@@ -9,12 +9,21 @@ const processDirectory = {
     singleton: true,
     title: "DevTools",
   },
+  txt: {
+    background: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/tinymce.webp",
+    singleton: true,
+    title: "TinyMCE",
+  },
   FileExplorer: {
     background: "#202020",
     icon: "FOLDER_ICON",
     title: "File Explorer",
   },
-
   MonacoEditor: {
     background: "#1E1E1E",
     defaultSize: {
@@ -71,16 +80,7 @@ const processDirectory = {
     lockAspectRatio: true,
     title: "Terminal",
   },
-  TinyMCE: {
-    background: "#FFF",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
-    icon: "/System/Icons/tinymce.webp",
-    singleton: true,
-    title: "TinyMCE",
-  },
+
   TransferDialog: {
     allowResizing: false,
     background: "#FFF",

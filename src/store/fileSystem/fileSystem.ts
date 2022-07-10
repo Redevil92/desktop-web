@@ -1,5 +1,6 @@
-import { getDesktopFiles, getFiles, isDir } from "@/context/fileSystemController";
+import { getDesktopFiles, getFileExtensionFromName, getFiles, isDir } from "@/context/fileSystemController";
 import DesktopItem from "@/models/DesktopItem";
+import processDirectory from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
 import { v4 as uuidv4 } from "uuid";
 
@@ -83,6 +84,14 @@ export default {
   },
   actions: {
     ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
+      const itemExtension = getFileExtensionFromName(itemDialogName.name);
+
+      let dimension = processDirectory[itemExtension];
+      if (!dimension) {
+        dimension = { height: 300, width: 500 };
+      }
+      console.log(dimension);
+
       const newItemDialog = {
         name: itemDialogName.name,
         mimeType: itemDialogName.mimeType,
@@ -90,10 +99,8 @@ export default {
         isCollapsed: false,
         isFolder: false,
         zIndex: 1,
-        dimension: { height: 300, width: 500 },
+        dimension,
       } as ItemDialog;
-      // check if it is folder
-      // add the items in the case
 
       if (isDir(newItemDialog.name)) {
         const filesPath = getFiles(newItemDialog.name, true);
