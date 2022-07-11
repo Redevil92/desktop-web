@@ -86,11 +86,12 @@ export default {
     ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
       const itemExtension = getFileExtensionFromName(itemDialogName.name);
 
-      let dimension = processDirectory[itemExtension].defaultSize;
+      let dimension = processDirectory[itemExtension];
       if (!dimension) {
         dimension = { height: 300, width: 500 };
+      } else {
+        dimension = dimension.defaultSize;
       }
-      console.log(dimension);
 
       const newItemDialog = {
         name: itemDialogName.name,

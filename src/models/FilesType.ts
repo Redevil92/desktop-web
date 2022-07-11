@@ -10,14 +10,10 @@ export const processDirectory: any = {
     title: "DevTools",
   },
   txt: {
-    background: "#FFF",
     defaultSize: {
       height: 480,
-      width: 640,
+      width: 760,
     },
-    icon: "/System/Icons/tinymce.webp",
-    singleton: true,
-    title: "TinyMCE",
   },
   FileExplorer: {
     background: "#202020",

@@ -100,6 +100,9 @@
     <div v-else-if="isCodeFile()">
       <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
     </div>
+    <div v-else-if="isImageFile()">
+      <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
+    </div>
     <div v-if="itemDialog.mimeType === MIME_TYPE.pdf">
       <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
     </div>
@@ -120,13 +123,14 @@ import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
+import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
 
 export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { VuePdfEmbed, FolderItem, CodeFileItem, TextFileItem },
+  components: { VuePdfEmbed, FolderItem, CodeFileItem, TextFileItem, ImageFileItem },
   emits: [],
   setup(props, _) {
     const actionTypes = {
@@ -161,6 +165,13 @@ export default defineComponent({
 
     function isCodeFile(): boolean {
       const codeExtensions = ["css", "html", "ts", "js"];
+      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
+
+      return codeExtensions.includes(currentFileExtension);
+    }
+
+    function isImageFile(): boolean {
+      const codeExtensions = ["png", "jpg", "jpeg"];
       const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
 
       return codeExtensions.includes(currentFileExtension);
@@ -301,6 +312,7 @@ export default defineComponent({
       contentHeight,
       isCodeFile,
       isTextFile,
+      isImageFile,
     };
   },
 });

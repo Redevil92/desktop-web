@@ -1,5 +1,12 @@
 <template>
-  <div @click="selectFile({})">
+  <div
+    @click="selectFile({})"
+    style="border: 10px solid red"
+    id="drop_zone"
+    :data-active="true"
+    @drop.prevent="dropHandler"
+    @dragover.prevent="dropHandler"
+  >
     <grid-layout
       class="grid-layout-dimension"
       :layout="desktopFiles"
@@ -99,9 +106,10 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
-    // const rightClickHandler = (item: DesktopItem) => {
-    //   console.log("RIGH");
-    // };
+    const dropHandler = (event: any) => {
+      event.preventDefault();
+      console.log("DROP HANDLER ---->", event);
+    };
 
     onMounted(() => {
       columnsNumber.value = window.innerWidth / 85;
@@ -117,6 +125,7 @@ export default defineComponent({
       rowHeight,
       selectFile,
       selectedFile,
+      dropHandler,
     };
   },
 });
