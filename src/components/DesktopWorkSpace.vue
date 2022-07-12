@@ -1,44 +1,39 @@
 <template>
-  <div
-    @click="selectFile({})"
-    style="border: 10px solid red"
-    id="drop_zone"
-    :data-active="true"
-    @drop.prevent="dropHandler"
-    @dragover.prevent="dropHandler"
-  >
-    <grid-layout
-      class="grid-layout-dimension"
-      :layout="desktopFiles"
-      :col-num="columnsNumber"
-      :row-height="rowHeight"
-      :is-draggable="true"
-      :is-resizable="false"
-      :responsive="false"
-      :vertical-compact="false"
-      :prevent-collision="true"
-      :use-css-transforms="true"
-    >
-      <grid-item
-        v-for="(item, index) in desktopFiles"
-        :key="`${item.i}-${index}`"
-        :static="item.static"
-        :x="item.x"
-        :y="item.y"
-        :w="item.w"
-        :h="item.h"
-        :i="item.i"
-        @moved="fileItemMovedHandler"
+  <drop-zone @onFilesDropped="filesDroppedHandler">
+    <div @click="selectFile({})" id="drop_zone">
+      <grid-layout
+        class="grid-layout-dimension"
+        :layout="desktopFiles"
+        :col-num="columnsNumber"
+        :row-height="rowHeight"
+        :is-draggable="true"
+        :is-resizable="false"
+        :responsive="false"
+        :vertical-compact="false"
+        :prevent-collision="true"
+        :use-css-transforms="true"
       >
-        <FileItem
-          :ref="item.name + 'FileRef'"
-          :fileItem="item"
-          @onClick="selectFile"
-          :isSelected="selectedFile && selectedFile.name === item.name"
-        />
-      </grid-item>
-    </grid-layout>
-  </div>
+        <grid-item
+          v-for="(item, index) in desktopFiles"
+          :key="`${item.i}-${index}`"
+          :static="item.static"
+          :x="item.x"
+          :y="item.y"
+          :w="item.w"
+          :h="item.h"
+          :i="item.i"
+          @moved="fileItemMovedHandler"
+        >
+          <FileItem
+            :ref="item.name + 'FileRef'"
+            :fileItem="item"
+            @onClick="selectFile"
+            :isSelected="selectedFile && selectedFile.name === item.name"
+          />
+        </grid-item>
+      </grid-layout>
+    </div>
+  </drop-zone>
 </template>
 
 <script lang="ts">
@@ -46,6 +41,7 @@ import { defineComponent, PropType, onMounted, ref, reactive, computed } from "v
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
+import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
@@ -55,7 +51,7 @@ export default defineComponent({
     msg: String,
     items: Array as PropType<DesktopItem[]>,
   },
-  components: { GridLayout, GridItem, FileItem },
+  components: { GridLayout, GridItem, FileItem, DropZone },
   emits: ["onFileItemPositionChange"],
   setup(props, context) {
     const store = useStore();
@@ -106,9 +102,8 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
-    const dropHandler = (event: any) => {
-      event.preventDefault();
-      console.log("DROP HANDLER ---->", event);
+    const filesDroppedHandler = (files: any) => {
+      console.log(files);
     };
 
     onMounted(() => {
@@ -125,7 +120,7 @@ export default defineComponent({
       rowHeight,
       selectFile,
       selectedFile,
-      dropHandler,
+      filesDroppedHandler,
     };
   },
 });
