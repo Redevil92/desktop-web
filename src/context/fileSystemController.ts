@@ -1,7 +1,6 @@
 import FileStats from "@/models/FileSystem/FileStats";
-import { reject } from "lodash";
 
-export const createDirectory = (path: string, storage = ""): Promise<any> => {
+export const createDirectory = (path: string): Promise<any> => {
   const fs = (window as any).fs;
 
   return new Promise((resolve, reject) => {
@@ -23,7 +22,7 @@ export const renameFile = (newFilePath: string, oldFilePath: string) => {
   const fs = (window as any).fs;
 
   return new Promise((resolve, reject) => {
-    fs.rename(oldFilePath, newFilePath, (error: any) => (error: any) => error ? reject(error) : resolve(true));
+    fs.rename(oldFilePath, newFilePath, (error: any) => (error ? reject(error) : resolve(true)));
   });
 };
 
@@ -31,41 +30,55 @@ export const deleteFile = (filePath: string) => {
   const fs = (window as any).fs;
 
   return new Promise((resolve, reject) => {
-    fs.unlink(filePath, (error: any) => (error: any) => error ? reject(error) : resolve(true));
+    fs.unlink(filePath, (error: any) => (error ? reject(error) : resolve(true)));
   });
 };
 
-export const getFiles = (path: string, fullPath = false): string[] => {
+export const getFiles = async (path: string, fullPath = false): Promise<string[]> => {
   const fs = (window as any).fs;
 
-  const result: string[] = fs.readdirSync(path);
+  const filesPromise: string[] = await new Promise((resolve, reject) => {
+    fs.readdir(path, (error: any) => (error ? reject(error) : resolve([])));
+  });
+
   if (fullPath) {
-    return result.map((file) => path + "/" + file);
+    return filesPromise.map((file) => path + "/" + file);
   }
-  return result;
+
+  return filesPromise;
 };
 
-export const getDesktopFiles = (fullPath = false): string[] => {
+export const getDesktopFiles = async (fullPath = false): Promise<string[]> => {
   const desktopPath = "my PC/Desktop";
   return getFiles(desktopPath, fullPath);
 };
 
-export const isDir = (path: string): boolean => {
+export const isDir = async (path: string): Promise<boolean> => {
   const fs = (window as any).fs;
-  const isDir = fs.statSync(path).isDirectory();
-  return isDir;
+
+  const fileStat: any = await new Promise((resolve, reject) => {
+    fs.stat(path, (error: any) => (error ? reject(error) : resolve([])));
+  });
+
+  return fileStat.isDirectory();
 };
 
-export const getStat = (path: string): FileStats => {
+export const getStat = (path: string): Promise<FileStats> => {
   const fs = (window as any).fs;
-  return fs.statSync(path);
+
+  return new Promise((resolve, reject) => {
+    fs.stat(path, (error: any) => (error ? reject(error) : resolve({} as FileStats)));
+  });
 };
 
-export const readFile = (path: string, encoding = "utf8"): string => {
+export const readFile = async (path: string, encoding = "utf8"): Promise<string> => {
   const fs = (window as any).fs;
-  const data: any = fs.readFileSync(path).toString(encoding).split("\n");
 
-  return data;
+  const fileToRead: any = await new Promise((resolve, reject) => {
+    fs.readFile(path, (error: any) => (error ? reject(error) : resolve([])));
+  });
+
+  return fileToRead.toString(encoding).split("\n");
 };
 
 // utilities
