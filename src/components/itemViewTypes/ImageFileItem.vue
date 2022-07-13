@@ -1,6 +1,6 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
-    <img :src="imageFile" alt="" />
+    <img :src="`${imageFile}`" alt="" />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default defineComponent({
     const imageFile = ref("");
 
     if (props.itemDialog?.name) {
-      imageFile.value = readFile(props.itemDialog?.name);
+      imageFile.value = readFile(props.itemDialog?.name).toString();
       console.log(imageFile.value);
     }
 
