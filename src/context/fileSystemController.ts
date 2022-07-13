@@ -1,23 +1,19 @@
 import FileStats from "@/models/FileSystem/FileStats";
 import { reject } from "lodash";
 
-export const createDirectory = (path: string, storage = ""): void => {
+export const createDirectory = (path: string, storage = ""): Promise<any> => {
   const fs = (window as any).fs;
-  try {
-    fs.mkdir(storage + path, { recursive: true });
-  } catch (error) {
-    console.error(error);
-  }
+
+  return new Promise((resolve, reject) => {
+    fs.mkdir(path, { recursive: true }, (error: any) => (error ? reject(error) : resolve(true)));
+  });
 };
 
 export const createFile = (path: string, text = "", encoding = "utf8") => {
   const fs = (window as any).fs;
 
-  console.log(window, (window as any).fs);
-  console.log((window as any).fs.writeFileSync, path);
-
-  new Promise((resolve, reject) => {
-    fs.writeFileSync(path, text, encoding, (error: any) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, text, encoding, (error: any) => {
       error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
     });
   });
@@ -25,12 +21,18 @@ export const createFile = (path: string, text = "", encoding = "utf8") => {
 
 export const renameFile = (newFilePath: string, oldFilePath: string) => {
   const fs = (window as any).fs;
-  fs.renameSync(oldFilePath, newFilePath);
+
+  return new Promise((resolve, reject) => {
+    fs.rename(oldFilePath, newFilePath, (error: any) => (error: any) => error ? reject(error) : resolve(true));
+  });
 };
 
 export const deleteFile = (filePath: string) => {
   const fs = (window as any).fs;
-  fs.unlinkSync(filePath);
+
+  return new Promise((resolve, reject) => {
+    fs.unlink(filePath, (error: any) => (error: any) => error ? reject(error) : resolve(true));
+  });
 };
 
 export const getFiles = (path: string, fullPath = false): string[] => {
