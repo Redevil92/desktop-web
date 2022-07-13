@@ -1,4 +1,5 @@
 import FileStats from "@/models/FileSystem/FileStats";
+import { reject } from "lodash";
 
 export const createDirectory = (path: string, storage = ""): void => {
   const fs = (window as any).fs;
@@ -11,10 +12,14 @@ export const createDirectory = (path: string, storage = ""): void => {
 
 export const createFile = (path: string, text = "", encoding = "utf8") => {
   const fs = (window as any).fs;
-  fs.writeFileSync(path, text, encoding, (err: any) => {
-    if (err) {
-      alert(err);
-    }
+
+  console.log(window, (window as any).fs);
+  console.log((window as any).fs.writeFileSync, path);
+
+  new Promise((resolve, reject) => {
+    fs.writeFileSync(path, text, encoding, (error: any) => {
+      error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
+    });
   });
 };
 

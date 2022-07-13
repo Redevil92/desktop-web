@@ -45,6 +45,7 @@ import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
+import { createFile } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -56,7 +57,9 @@ export default defineComponent({
   setup(props, context) {
     const store = useStore();
 
-    store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    setTimeout(() => {
+      store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    }, 2000);
 
     const itemWidth = 0.7;
     const itemHeight = 2.2;
@@ -102,8 +105,20 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
-    const filesDroppedHandler = (files: any) => {
+    const filesDroppedHandler = (files: any[]) => {
       console.log(files);
+
+      const file = files[0];
+
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        console.log(reader);
+        createFile("my PC/Desktop/new.png", reader.result?.toString());
+        console.log(reader.result);
+      };
+
+      reader.readAsDataURL(file);
     };
 
     onMounted(() => {
