@@ -45,6 +45,7 @@ import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
+import { createFile } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -104,6 +105,17 @@ export default defineComponent({
 
     const filesDroppedHandler = (files: any) => {
       console.log(files);
+
+      const file = files[0];
+
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        console.log(reader);
+        createFile("my PC/Desktop/new.png", reader.result?.toString());
+      };
+
+      reader.readAsDataURL(file);
     };
 
     onMounted(() => {
