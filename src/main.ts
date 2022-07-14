@@ -29,13 +29,13 @@ const img =
 
 createFile("my PC/Desktop/image.png", img);
 
-createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
+//createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
 createFile("my PC/Desktop/FOLDER/mountain.jpg", "");
-createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
+//createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
 createDirectory("my PC/Desktop/FOLDER/sub directory");
 createDirectory("my PC/Desktop/FOLDER/another sub directory");
 createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This is my text file 2.");
-createFile("my PC/Desktop/file_desktop1.txt", "my beautiful text");
-createFile("my PC/Desktop/file_desktop2.txt", "my beautiful text");
+//createFile("my PC/Desktop/file_desktop1.txt", "my beautiful text");
+//createFile("my PC/Desktop/file_desktop2.txt", "my beautiful text");
 
 createApp(App).use(store).use(router).mount("#app");

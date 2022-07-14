@@ -1,6 +1,12 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
-    <img :src="`${imageFile}`" alt="" />
+    <img
+      :src="`${imageFile}`"
+      :height="height - 15"
+      :width="itemDialog.dimension.width - 6"
+      alt=""
+      class="file-image"
+    />
   </div>
 </template>
 
@@ -30,4 +36,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.file-image {
+  object-fit: cover;
+}
+</style>
