@@ -113,6 +113,7 @@ export default defineComponent({
       reader.onload = function () {
         console.log(reader);
         createFile("my PC/Desktop/new.png", reader.result?.toString());
+        store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
       };
 
       reader.readAsDataURL(file);
