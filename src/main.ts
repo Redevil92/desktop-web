@@ -5,6 +5,9 @@ import { createDirectory, createFile } from "./context/fileSystemController";
 import router from "./router";
 import store from "./store";
 
+// import vue-panzoom
+import panZoom from "vue-panzoom";
+
 // eslint-disable-next-line
 initializeFileSystem();
 createFile("newFile.txt");
@@ -38,4 +41,4 @@ createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This 
 //createFile("my PC/Desktop/file_desktop1.txt", "my beautiful text");
 //createFile("my PC/Desktop/file_desktop2.txt", "my beautiful text");
 
-createApp(App).use(store).use(router).mount("#app");
+createApp(App).use(store).use(router).use(panZoom).mount("#app");

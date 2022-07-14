@@ -1,12 +1,17 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
-    <img
-      :src="`${imageFile}`"
-      :height="height - 15"
-      :width="itemDialog.dimension.width - 6"
-      alt=""
-      class="file-image"
-    />
+    <panZoom>
+      <img src="https://picsum.photos/300" />
+    </panZoom>
+    <!-- <panZoom>
+      <img
+        :src="`${imageFile}`"
+        :height="height - 15"
+        :width="itemDialog.dimension.width - 6"
+        alt=""
+        class="file-image"
+      />
+    </panZoom> -->
   </div>
 </template>
 
@@ -16,12 +21,14 @@ import { defineComponent, PropType, ref } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
+import panZoom from "vue-panzoom";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: {},
+  components: { panZoom },
   emits: [],
   setup(props, _) {
     const imageFile = ref("");
