@@ -83,7 +83,7 @@ export default {
     },
   },
   actions: {
-    ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
+    ADD_ITEM_DIALOG: async ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
       const itemExtension = getFileExtensionFromName(itemDialogName.name);
 
       let dimension = processDirectory[itemExtension];
@@ -103,8 +103,10 @@ export default {
         dimension,
       } as ItemDialog;
 
-      if (isDir(newItemDialog.name)) {
-        const filesPath = getFiles(newItemDialog.name, true);
+      const isFolder = await isDir(newItemDialog.name);
+
+      if (isFolder) {
+        const filesPath = await getFiles(newItemDialog.name, true);
         newItemDialog.isFolder = true;
         (newItemDialog as FolderDialog).filesPath = filesPath;
       }
@@ -112,23 +114,24 @@ export default {
       commit("ADD_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
-    UPDATE_ITEM_DIALOG_NAME: (
+    UPDATE_ITEM_DIALOG_NAME: async (
       { commit, dispatch }: any,
       pathAndItemToUpdate: { newPath: string; itemDialog: FolderDialog }
     ) => {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);
       itemToUpdate.name = pathAndItemToUpdate.newPath;
 
-      const filesPath = getFiles(itemToUpdate.name, true);
+      const filesPath = await getFiles(itemToUpdate.name, true);
       itemToUpdate.filesPath = filesPath;
 
       commit("UPDATE_ITEM_DIALOG", itemToUpdate);
     },
     REFRESH_ALL_ITEM_DIALOG_FILES: ({ commit, getters }: any) => {
       const itemsDialog = Object.assign([], getters["GET_ITEMS_DIALOG"]) as ItemDialog[];
-      itemsDialog.forEach((itemDialog) => {
-        if (isDir(itemDialog.name)) {
-          const newFilespath = getFiles(itemDialog.name, true);
+      itemsDialog.forEach(async (itemDialog) => {
+        const isDirectory = await isDir(itemDialog.name);
+        if (isDirectory) {
+          const newFilespath = await getFiles(itemDialog.name, true);
           (itemDialog as FolderDialog).filesPath = newFilespath;
         }
       });

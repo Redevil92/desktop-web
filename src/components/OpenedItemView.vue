@@ -132,7 +132,7 @@ export default defineComponent({
   },
   components: { VuePdfEmbed, FolderItem, CodeFileItem, TextFileItem, ImageFileItem },
   emits: [],
-  setup(props, _) {
+  async setup(props, _) {
     const actionTypes = {
       RESIZING_LEFT: "resizing_left",
       RESIZING_RIGHT: "resizing_right",
@@ -161,7 +161,7 @@ export default defineComponent({
       return props.itemDialog.position ? props.itemDialog.position.y : 0;
     });
 
-    const isDirectory = isDir(props.itemDialog.name);
+    const isDirectory = await isDir(props.itemDialog.name);
 
     function isCodeFile(): boolean {
       const codeExtensions = ["css", "html", "ts", "js"];

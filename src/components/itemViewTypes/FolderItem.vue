@@ -17,7 +17,7 @@
           @dblclick="doubleClickHandler(item)"
           @click.stop="itemClickHandler(item)"
         >
-          <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+          <span class="mdi mdi-folder extension-icon" v-if="isFolder(item)"></span>
           <span
             class="mdi mdi-file-word extension-icon"
             style="color: #01014a"
@@ -66,9 +66,9 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
-    const doubleClickHandler = (fileName: string) => {
+    const doubleClickHandler = async (fileName: string) => {
       // check if file is dir
-      const isFolder = isDir(fileName);
+      const isFolder = await isDir(fileName);
       if (isFolder) {
         updateItemDialogPath(fileName);
       }
@@ -182,6 +182,10 @@ export default defineComponent({
       }
     };
 
+    const isFolder = async (fileName: string): Promise<boolean> => {
+      return await isDir(fileName);
+    };
+
     onMounted(() => {
       window.addEventListener("keydown", deleteFileHandler);
     });
@@ -207,6 +211,7 @@ export default defineComponent({
       changeFileName,
       fileNameToChangeSpanRef,
       fileFocusedWidth,
+      isFolder,
     };
   },
 });

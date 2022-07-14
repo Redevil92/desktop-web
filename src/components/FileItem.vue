@@ -34,8 +34,8 @@ export default defineComponent({
       return filesName[filesName.length - 1];
     };
 
-    const isFolder = (filePath: string) => {
-      return isDir(filePath);
+    const isFolder = async (filePath: string) => {
+      return await isDir(filePath);
     };
 
     const clickHandler = () => {

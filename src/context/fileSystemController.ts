@@ -104,3 +104,47 @@ export const getFileExtensionFromName = (fileName: string): string => {
 export const getExtensionIcon = (extension: string, folderPath = "./src/assets/fileIcons"): string => {
   return folderPath + "/" + "icon-" + extension;
 };
+
+export const initializeFiles = async () => {
+  console.log("CREATING ALL");
+  await createFile("/newFile.txt", "mama");
+  await createFile("/newFile2.txt", "mama");
+  setTimeout(async () => {
+    console.log("TRYING 0");
+    const files = await getFiles("/");
+    console.log("FILEEESSS!", files);
+  }, 5000);
+  // createFile("secondFile.txt", "my beautiful text");
+
+  const fileRead = await readFile("newFile.txt");
+  console.log("File:", fileRead);
+
+  console.log("TRYING", window);
+
+  await createDirectory("my PC");
+  // await createDirectory("my PC1");
+  // await createDirectory("my PC2");
+  // await createDirectory("my PC3");
+  // await createDirectory("my PC4");
+  // await createDirectory("my PC5");
+  // await createDirectory("my PC6");
+  // await createDirectory("my PC7");
+  // await createDirectory("my PC8");
+  // await createDirectory("my PC9");
+  // await createDirectory("my PC11");
+
+  // await createFile("my PC/mysecondFile.txt", "my beautiful text");
+
+  await createDirectory("my PC/Desktop");
+
+  await createFile("my PC/Desktop/file_desktop3.txt", "MY start text to test.");
+
+  // await createDirectory("my PC/Desktop/FOLDER");
+
+  // await createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
+  // await createFile("my PC/Desktop/FOLDER/mountain.jpg", "");
+  // await createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
+  // await createDirectory("my PC/Desktop/FOLDER/sub directory");
+  // await createDirectory("my PC/Desktop/FOLDER/another sub directory");
+  // await createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This is my text file 2.");
+};

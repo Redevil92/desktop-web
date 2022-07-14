@@ -59,7 +59,7 @@ export default defineComponent({
 
     setTimeout(() => {
       store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
-    }, 2000);
+    }, 3000);
 
     const itemWidth = 0.7;
     const itemHeight = 2.2;
