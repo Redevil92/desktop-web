@@ -5,9 +5,6 @@ import { createDirectory, createFile } from "./context/fileSystemController";
 import router from "./router";
 import store from "./store";
 
-// import vue-panzoom
-import panZoom from "vue-panzoom";
-
 // eslint-disable-next-line
 initializeFileSystem();
 createFile("newFile.txt");
