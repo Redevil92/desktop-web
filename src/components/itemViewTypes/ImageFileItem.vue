@@ -1,8 +1,11 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
-    <panZoom>
-      <img src="https://picsum.photos/300" />
-    </panZoom>
+    <!-- <panZoom selector=".zoomable" :options="{ minZoom: 0.5, maxZoom: 5 }">
+      <img class="zoomable" src="https://picsum.photos/300" />
+    </panZoom> -->
+    <div class="img-wrapper" :style="`height: ${height - 14}px; `">
+      <img :src="`${imageFile}`" alt="" class="file-image" />
+    </div>
     <!-- <panZoom>
       <img
         :src="`${imageFile}`"
@@ -21,14 +24,14 @@ import { defineComponent, PropType, ref } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
-import panZoom from "vue-panzoom";
+// import panZoom from "vue-panzoom";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { panZoom },
+  components: {},
   emits: [],
   setup(props, _) {
     const imageFile = ref("");
@@ -44,7 +47,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.file-image {
+/* .file-image {
   object-fit: cover;
+} */
+
+.img-wrapper {
+  overflow: auto;
+
+  position: relative;
+}
+
+.img-wrapper > img {
+  /* height: 100%;
+  width: 100%; */
+  vertical-align: bottom;
 }
 </style>
