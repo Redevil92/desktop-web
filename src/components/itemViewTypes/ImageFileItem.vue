@@ -3,8 +3,8 @@
     <!-- <panZoom selector=".zoomable" :options="{ minZoom: 0.5, maxZoom: 5 }">
       <img class="zoomable" src="https://picsum.photos/300" />
     </panZoom> -->
-    <div>
-      <span class="image-calculated-height">{{ calculatedHeight }}</span>
+    <div class="flex">
+      <div class="image-zoom">{{ truncatedZoomLevel }}%</div>
       <span @click="zoomImage(false)" class="mdi mdi-magnify-minus-outline zoom-icon"></span>
       <span @click="zoomImage(true)" class="mdi mdi-magnify-plus-outline zoom-icon"></span>
     </div>
@@ -53,16 +53,20 @@ export default defineComponent({
       return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
     });
 
+    const truncatedZoomLevel = computed(() => {
+      return Math.trunc(zoomLevel.value);
+    });
+
     if (props.itemDialog?.name) {
       imageFile.value = readFile(props.itemDialog?.name).toString();
     }
 
     const zoomImage = (zoom: boolean) => {
-      if (zoom && zoomLevel.value < 600) {
-        zoomLevel.value = zoomLevel.value * 1.1;
+      if (zoom && zoomLevel.value < 900) {
+        zoomLevel.value = zoomLevel.value * 1.3;
       }
-      if (!zoom && zoomLevel.value > 40) {
-        zoomLevel.value = zoomLevel.value * 0.9;
+      if (!zoom && zoomLevel.value > 20) {
+        zoomLevel.value = zoomLevel.value * 0.75;
       }
     };
 
@@ -74,7 +78,7 @@ export default defineComponent({
       }
     });
 
-    return { imageFile, calculatedHeight, zoomImage };
+    return { imageFile, zoomImage, calculatedHeight, truncatedZoomLevel };
   },
 });
 </script>
@@ -83,6 +87,11 @@ export default defineComponent({
 /* .file-image {
   object-fit: cover;
 } */
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .img-wrapper {
   overflow: auto;
@@ -104,6 +113,7 @@ export default defineComponent({
   color: white;
   padding-left: 5px;
   padding-right: 5px;
+  padding-top: 2px;
 }
 
 .zoom-icon:hover {
@@ -111,7 +121,9 @@ export default defineComponent({
   border-radius: 7px;
 }
 
-.image-calculated-height {
+.image-zoom {
   color: white;
+  margin-right: 10px;
+  width: 70px;
 }
 </style>
