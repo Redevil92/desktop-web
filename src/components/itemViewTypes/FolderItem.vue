@@ -238,7 +238,7 @@ export default defineComponent({
 }
 
 .folder-item-odd {
-  background-color: rgb(74, 74, 74) !important;
+  background-color: var(--dialog-background-color_dark) !important;
 }
 
 .folder-item-container {

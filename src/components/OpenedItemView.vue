@@ -330,9 +330,9 @@ export default defineComponent({
   position: absolute;
   top: 50px;
   left: 200px;
-  border: 2px solid #626262;
+  border: 2px solid var(--dialog-border-color_dark);
   border-radius: 10px;
-  background-color: rgb(74, 74, 74);
+  background-color: var(--dialog-background-color_dark);
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
   -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
 }
@@ -349,14 +349,10 @@ export default defineComponent({
 }
 
 .folder-header {
-  background-color: rgb(74, 74, 74);
+  background-color: var(--dialog-header-color_dark);
   height: 30px;
-  border-radius: 10px;
-}
-
-.folder-actions {
-  background-color: rgb(25, 25, 25);
-  height: 43px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .directory-name {
