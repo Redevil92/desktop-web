@@ -238,7 +238,7 @@ export default defineComponent({
 }
 
 .folder-item-odd {
-  background-color: rgb(170, 170, 170) !important;
+  background-color: rgb(74, 74, 74) !important;
 }
 
 .folder-item-container {

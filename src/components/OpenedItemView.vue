@@ -330,9 +330,9 @@ export default defineComponent({
   position: absolute;
   top: 50px;
   left: 200px;
-  border: 2px solid #959595;
+  border: 2px solid #626262;
   border-radius: 10px;
-  background-color: rgb(170, 170, 170);
+  background-color: rgb(74, 74, 74);
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
   -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
 }
@@ -349,7 +349,7 @@ export default defineComponent({
 }
 
 .folder-header {
-  background-color: rgb(170, 170, 170);
+  background-color: rgb(74, 74, 74);
   height: 30px;
   border-radius: 10px;
 }
