@@ -4,9 +4,9 @@
       <img class="zoomable" src="https://picsum.photos/300" />
     </panZoom> -->
     <div>
-      {{ calculatedHeight }}
-      <span @click="zoomImage(true)" class="mdi mdi-magnify-plus zoom-icon"></span>
-      <span @click="zoomImage(false)" class="mdi mdi-magnify-minus zoom-icon"></span>
+      <span class="image-calculated-height">{{ calculatedHeight }}</span>
+      <span @click="zoomImage(false)" class="mdi mdi-magnify-minus-outline zoom-icon"></span>
+      <span @click="zoomImage(true)" class="mdi mdi-magnify-plus-outline zoom-icon"></span>
     </div>
 
     <div class="img-wrapper" :style="`height: ${height - 40}px; `">
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
@@ -48,9 +48,9 @@ export default defineComponent({
   setup(props, _) {
     const imageFile = ref("");
     const zoomLevel = ref(100);
-    const originalHeight = ref(0);
+    const originalHeight = ref();
     const calculatedHeight = computed(() => {
-      return originalHeight.value * (zoomLevel.value / 100);
+      return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
     });
 
     if (props.itemDialog?.name) {
@@ -66,11 +66,11 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
+    onMounted(async () => {
+      await nextTick();
       if (props.itemDialog?.name) {
         const imageRef = document.getElementById("image-" + props.itemDialog.guid);
-        originalHeight.value = imageRef?.clientHeight || 0;
-        console.log(imageRef?.clientHeight, imageRef?.getBoundingClientRect());
+        originalHeight.value = imageRef?.getBoundingClientRect().height;
       }
     });
 
@@ -88,6 +88,9 @@ export default defineComponent({
   overflow: auto;
 
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .img-wrapper > img {
@@ -101,5 +104,14 @@ export default defineComponent({
   color: white;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.zoom-icon:hover {
+  background-color: rgba(163, 162, 162, 0.224);
+  border-radius: 7px;
+}
+
+.image-calculated-height {
+  color: white;
 }
 </style>
