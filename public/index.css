@@ -6,6 +6,7 @@
   --dialog-header-color_dark: rgb(42, 42, 42);
   --dialog-sub-header-color_dark: rgb(25, 25, 25);
   --dialog-background-color_dark: rgb(74, 74, 74);
+  --dialog-background-color_contrast_dark: rgb(125, 125, 125);
   --dialog-border-color_dark: #626262;
 
   --x-small-font-size: 8px;
@@ -39,4 +40,37 @@ html {
 
 .tox-notification--error {
   visibility: hidden;
+}
+
+/* Custom scrollbar */
+
+/* Customize website's scrollbar like Mac OS
+Not supports in Firefox and IE */
+
+/* total width */
+::-webkit-scrollbar {
+  background-color: var(--dialog-background-color_dark);
+  width: 14px;
+  height: 14px;
+}
+
+/* background of the scrollbar except button or resizer */
+::-webkit-scrollbar-track {
+  background-color: var(--dialog-background-color_dark);
+}
+
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+  background-color: var(--dialog-background-color_contrast_dark);
+  border-radius: 14px;
+  border: 3px solid var(--dialog-background-color_dark);
+}
+
+/* set button(top and bottom of the scrollbar) */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--dialog-background-color_dark);
 }
