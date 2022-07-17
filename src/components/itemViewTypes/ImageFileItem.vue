@@ -3,8 +3,9 @@
     <!-- <panZoom selector=".zoomable" :options="{ minZoom: 0.5, maxZoom: 5 }">
       <img class="zoomable" src="https://picsum.photos/300" />
     </panZoom> -->
-    <div class="flex">
-      <div class="image-zoom">{{ truncatedZoomLevel }}%</div>
+    <div class="flex" style="position: relative">
+      <input v-model="zoomLevel" class="image-zoom zoom-input" type="number" />
+      <span class="mdi mdi-percent percent-icon" style="position: absolute"></span>
       <span @click="zoomImage(false)" class="mdi mdi-magnify-minus-outline zoom-icon"></span>
       <span @click="zoomImage(true)" class="mdi mdi-magnify-plus-outline zoom-icon"></span>
     </div>
@@ -53,22 +54,28 @@ export default defineComponent({
       return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
     });
 
-    const truncatedZoomLevel = computed(() => {
-      return Math.trunc(zoomLevel.value);
-    });
-
     if (props.itemDialog?.name) {
       imageFile.value = readFile(props.itemDialog?.name).toString();
     }
 
     const zoomImage = (zoom: boolean) => {
       if (zoom && zoomLevel.value < 900) {
-        zoomLevel.value = zoomLevel.value * 1.3;
+        zoomLevel.value = Math.trunc(zoomLevel.value * 1.3);
       }
       if (!zoom && zoomLevel.value > 20) {
-        zoomLevel.value = zoomLevel.value * 0.75;
+        zoomLevel.value = Math.trunc(zoomLevel.value * 0.75);
       }
     };
+
+    // const setZoomLevel = (event: any) => {
+    //   console.log(event);
+    //   if (event) {
+    //     const percentValue = event.target.value;
+    //     if (percentValue < 900 && percentValue > 10) {
+    //       zoomLevel.value = event.target.value as number;
+    //     }
+    //   }
+    // };
 
     onMounted(async () => {
       await nextTick();
@@ -78,7 +85,7 @@ export default defineComponent({
       }
     });
 
-    return { imageFile, zoomImage, calculatedHeight, truncatedZoomLevel };
+    return { imageFile, zoomImage, calculatedHeight, zoomLevel };
   },
 });
 </script>
@@ -116,6 +123,12 @@ export default defineComponent({
   padding-top: 2px;
 }
 
+.zoom-input {
+  width: 70px;
+  text-align: right;
+  padding-right: 25px;
+}
+
 .zoom-icon:hover {
   background-color: rgba(163, 162, 162, 0.224);
   border-radius: 7px;
@@ -124,6 +137,33 @@ export default defineComponent({
 .image-zoom {
   color: white;
   margin-right: 10px;
-  width: 70px;
+}
+
+.percent-icon {
+  color: white;
+  font-size: 20px;
+}
+
+input {
+  border: none;
+  -webkit-appearance: none;
+  all: unset;
+}
+
+input:focus {
+  outline: 2px solid white; /* Removes the border when the input is clicked */
+  border-radius: 5px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
