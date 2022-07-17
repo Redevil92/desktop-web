@@ -1,6 +1,6 @@
 import { getDesktopFiles, getFileExtensionFromName, getFiles, isDir } from "@/context/fileSystemController";
 import DesktopItem from "@/models/DesktopItem";
-import processDirectory from "@/models/FilesType";
+import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
 import { v4 as uuidv4 } from "uuid";
 
@@ -86,7 +86,7 @@ export default {
     ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
       const itemExtension = getFileExtensionFromName(itemDialogName.name);
 
-      const fileTypeConfiguration = processDirectory[itemExtension];
+      const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
       let dimension = { height: 300, width: 500 };
       let icon = "";
       if (fileTypeConfiguration) {

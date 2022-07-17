@@ -1,4 +1,4 @@
-export const processDirectory: any = {
+const fileTypesConfiguration: any = {
   DevTools: {
     background: "rgb(36, 36, 36)",
     defaultSize: {
@@ -99,4 +99,4 @@ export const processDirectory: any = {
   },
 };
 
-export default processDirectory;
+export default fileTypesConfiguration;
