@@ -74,7 +74,11 @@
     </div>
 
     <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
-      <div class="mdi mdi-folder-open folder-icon"></div>
+      <div v-if="itemDialog.icon">
+        {{ itemDialog.icon }}
+      </div>
+      <div v-else class="mdi mdi-folder-open folder-icon"></div>
+
       <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
       <div class="flex action-group">
         <div

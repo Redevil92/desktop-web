@@ -14,6 +14,7 @@ export const processDirectory: any = {
       height: 480,
       width: 760,
     },
+    icon: "text.icon",
   },
   FileExplorer: {
     background: "#202020",
