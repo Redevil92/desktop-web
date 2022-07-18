@@ -14,7 +14,7 @@ const fileTypesConfiguration: any = {
       height: 480,
       width: 760,
     },
-    icon: "text.icon",
+    icon: "text.png",
   },
   FileExplorer: {
     background: "#202020",

@@ -75,7 +75,7 @@
 
     <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
       <div v-if="itemDialog.icon">
-        {{ itemDialog.icon }}
+        <img height="20" :src="'assets/fileIcons/' + itemDialog.icon" alt="" />
       </div>
       <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
