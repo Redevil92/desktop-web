@@ -75,7 +75,7 @@
 
     <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
       <div v-if="itemDialog.icon">
-        <img height="20" :src="'/src/assets/fileIcons/' + itemDialog.icon" alt="" />
+        <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
       </div>
       <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
@@ -419,5 +419,10 @@ export default defineComponent({
   background-color: #3c3c3c75;
   position: fixed;
   border-radius: 10px;
+}
+
+.file-icon {
+  margin-left: 10px;
+  margin-top: 3px;
 }
 </style>
