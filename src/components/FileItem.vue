@@ -3,7 +3,10 @@
     <div :class="isSelected ? 'file-item-selected' : 'invisible-border'">
       <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
       <div v-else>
-        <span class="mdi mdi-file file-icon"></span>
+        <div>
+          <img height="50" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
+        </div>
+        <!-- <span class="mdi mdi-file file-icon"></span> -->
       </div>
     </div>
 
@@ -14,12 +17,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 import DesktopItem from "@/models/DesktopItem";
 
 import store from "@/store";
-import { isDir } from "@/context/fileSystemController";
+import { getFileExtensionFromName, isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -29,6 +32,10 @@ export default defineComponent({
   components: {},
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
+    const fileExtension = computed(function () {
+      return getFileExtensionFromName(props.fileItem.name);
+    });
+
     const getFileNameFromPath = (path: string) => {
       const filesName = path.split("/");
       return filesName[filesName.length - 1];
@@ -50,7 +57,7 @@ export default defineComponent({
       context.emit("onRightClick");
     };
 
-    return { doubleClickHandler, isFolder, getFileNameFromPath, clickHandler, rightClickHandler };
+    return { doubleClickHandler, isFolder, getFileNameFromPath, clickHandler, rightClickHandler, fileExtension };
   },
 });
 </script>
