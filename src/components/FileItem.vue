@@ -1,7 +1,7 @@
 <template>
   <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
     <div :class="isSelected ? 'file-item-selected' : 'invisible-border'">
-      <span v-if="isFolder(fileItem.name)" class="mdi mdi-folder-open folder-icon"></span>
+      <img v-if="isFolder(fileItem.name)" height="50" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
       <div v-else>
         <div>
           <img height="50" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
@@ -110,6 +110,6 @@ export default defineComponent({
 .file-text-selected {
   background-color: rgba(214, 214, 214, 0.553);
   border-radius: 3px;
-  background-color: rgb(60, 60, 185);
+  background-color: var(--selected-color);
 }
 </style>
