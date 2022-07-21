@@ -3,9 +3,22 @@
 TO DECIDE WHAT ACTIONS TO DISPLAY -->
 
   <div v-show="showActionsDialog" ref="actionsDialogRef" class="actions-dialog padding">
-    <div class="action-button" @click="addNewFile">New file</div>
-    <hr class="" />
-    <div class="action-button" @click="addNewFolder">New folder</div>
+    <div v-if="path === 'desktop'">
+      <div class="action-button" @click="addNewFile">New file</div>
+      <div class="action-button" @click="addNewFolder">New folder</div>
+      <hr class="" />
+      <div class="action-button" @click="addNewFolder">Change desktop image</div>
+    </div>
+    <div>
+      <div class="action-button" @click="addNewFolder">Open</div>
+      <div class="action-button" @click="addNewFolder">Open with</div>
+      <hr class="" />
+      <div class="action-button" @click="addNewFolder">Cut</div>
+      <div class="action-button" @click="addNewFolder">Copy</div>
+      <div class="action-button" @click="addNewFolder">Delete</div>
+      <div class="action-button" @click="addNewFolder">Rename</div>
+      <div class="action-button" @click="addNewFolder">Create shortcut</div>
+    </div>
   </div>
 </template>
 
@@ -23,6 +36,9 @@ export default defineComponent({
   emits: ["onAddNewFile", "onAddNewFolder"],
   setup(props, context) {
     // props -> path
+    const createFile = () => {};
+
+    const createDirectory = () => {};
 
     // new -> folder/ file
     // change desktop
@@ -55,7 +71,7 @@ export default defineComponent({
     };
 
     const openActionsDialog = (event: Event) => {
-      console.log("Opened action dialo", props.path);
+      console.log("Opened action dialo", event);
       const pointerEvent = event as PointerEvent;
 
       event.preventDefault();
@@ -112,5 +128,9 @@ export default defineComponent({
 
 .action-button:hover {
   background-color: var(--selected-color);
+}
+
+hr {
+  margin: 5px 0px;
 }
 </style>
