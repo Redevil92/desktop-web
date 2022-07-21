@@ -2,7 +2,7 @@
   <!-- THIS COMPONENT SHOULD BE A SINGLETON, WE SHOULD IMPLEMENT A STORE FOR DISPLAYING IT AND 
 TO DECIDE WHAT ACTIONS TO DISPLAY -->
 
-  <div v-show="showActionsDialog" ref="actionsDialogRef" class="actions-dialog padding">
+  <div v-show="show && position" :style="`top: ${position.y}px; left: ${position.x}px;`" class="actions-dialog padding">
     <div v-if="path === 'desktop'">
       <div class="action-button" @click="addNewFile">New file</div>
       <div class="action-button" @click="addNewFolder">New folder</div>
@@ -29,8 +29,8 @@ import { defineComponent, ref, reactive, computed, watch, PropType, onMounted, o
 export default defineComponent({
   props: {
     path: String,
-    contextName: String,
-    actions: Array as PropType<string[]>,
+    show: Boolean,
+    position: Object as PropType<Coordinates>,
   },
   components: {},
   emits: ["onAddNewFile", "onAddNewFolder"],
@@ -65,30 +65,6 @@ export default defineComponent({
       const coordinates = { x: event.x, y: event.y } as Coordinates;
       context.emit("onAddNewFolder", coordinates);
     };
-
-    const closeActionDialog = () => {
-      showActionsDialog.value = false;
-    };
-
-    const openActionsDialog = (event: Event) => {
-      console.log("Opened action dialo", event);
-      const pointerEvent = event as PointerEvent;
-
-      event.preventDefault();
-      showActionsDialog.value = true;
-      (actionsDialogRef.value as unknown as HTMLElement).style.top = pointerEvent.clientY + "px";
-      (actionsDialogRef.value as unknown as HTMLElement).style.left = pointerEvent.clientX + "px";
-    };
-
-    onMounted(() => {
-      window.addEventListener("contextmenu", openActionsDialog);
-      window.addEventListener("click", closeActionDialog);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("contextmenu", openActionsDialog);
-      window.removeEventListener("click", closeActionDialog);
-    });
 
     return {
       addNewFile,

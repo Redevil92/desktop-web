@@ -1,11 +1,6 @@
 <template>
   <div class="home" ref="desktopRef">
-    <actions-dialog-box
-      v-if="desktopRef"
-      @onAddNewFolder="createNewDirectory"
-      path="desktop"
-      :contextRef="desktopRef"
-    ></actions-dialog-box>
+    <actions-dialog-box path="desktop" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
 
     <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
 
@@ -18,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onUnmounted, onMounted } from "vue";
 import { useStore } from "vuex";
 
 import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
@@ -38,6 +33,8 @@ export default defineComponent({
     const store = useStore();
 
     const desktopRef = ref(null);
+    const actionDialogPos = ref({ x: 0, y: 0 } as Coordinates);
+    const showActionsDialog = ref(false);
 
     //openedFolders.push(desktopFs);
 
@@ -68,11 +65,37 @@ export default defineComponent({
       // TODO change item position in the store
     };
 
+    const openActionsDialog = (event: Event) => {
+      const pointerEvent = event as PointerEvent;
+      console.log("Showing");
+
+      event.preventDefault();
+
+      actionDialogPos.value = { x: pointerEvent.clientX, y: pointerEvent.clientY };
+      showActionsDialog.value = true;
+    };
+
+    const closeActionDialog = () => {
+      showActionsDialog.value = false;
+    };
+
+    onMounted(() => {
+      window.addEventListener("contextmenu", openActionsDialog);
+      window.addEventListener("click", closeActionDialog);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("contextmenu", openActionsDialog);
+      window.removeEventListener("click", closeActionDialog);
+    });
+
     return {
       changeItemPositionHandler,
       itemsDialog,
       desktopRef,
       createNewDirectory,
+      showActionsDialog,
+      actionDialogPos,
     };
   },
 });
