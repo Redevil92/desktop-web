@@ -151,7 +151,7 @@ interface DesktopFile {
 
 <style scoped>
 .vue-grid-layout {
-  background-image: url("/src/assets/desktopImages/mountain.jpg");
+  background-image: url("/src/assets/desktopImages/mountain.png");
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
