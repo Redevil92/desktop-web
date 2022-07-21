@@ -302,7 +302,7 @@ export default defineComponent({
 }
 
 .selected-item {
-  background-color: rgb(60, 60, 185) !important;
+  background-color: var(--selected-color) !important;
 }
 
 input {

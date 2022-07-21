@@ -2,9 +2,9 @@
   <!-- THIS COMPONENT SHOULD BE A SINGLETON, WE SHOULD IMPLEMENT A STORE FOR DISPLAYING IT AND 
 TO DECIDE WHAT ACTIONS TO DISPLAY -->
 
-  <div v-show="showActionsDialog" ref="actionsDialogRef" class="actions-dialog">
+  <div v-show="showActionsDialog" ref="actionsDialogRef" class="actions-dialog padding">
     <div class="action-button" @click="addNewFile">New file</div>
-    <hr />
+    <hr class="" />
     <div class="action-button" @click="addNewFolder">New folder</div>
   </div>
 </template>
@@ -86,18 +86,31 @@ export default defineComponent({
 
 <style scoped>
 .actions-dialog {
-  border: 1px solid red;
+  border: 1px solid #aaaaaab3;
+  outline: 1px solid #575757;
+  color: white;
+  border-radius: 7px;
   position: absolute;
+  background-color: #616161d6;
   top: 160px;
   left: 600px;
   z-index: 1;
+  text-align: left;
+  box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
+  -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
+}
+
+.padding {
+  padding: 3px 10px;
 }
 
 .action-button {
+  padding: 0px 7px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .action-button:hover {
-  background-color: rgba(128, 128, 128, 0.19);
+  background-color: var(--selected-color);
 }
 </style>
