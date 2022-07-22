@@ -10,9 +10,8 @@ export default {
     return {
       desktopItems: [],
       itemsDialog: [],
-      fileCopied: undefined,
-      fileCut: undefined,
-      actionsBox: undefined,
+      fileCopiedPath: "",
+      fileCutPath: "",
     };
   },
   mutations: {
@@ -171,9 +170,8 @@ export default {
 interface FileSystemState {
   desktopItems: File[]; // done
   itemsDialog: ItemDialog[]; // in progress
-  fileCopied?: File; // todo
-  fileCut?: File; // todo
-  actionsBox?: ActionsBox; // todo
+  fileCopiedPath: string; // in progress
+  fileCutPath: string; // in progress
 }
 
 interface ActionsBox {
