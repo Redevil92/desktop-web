@@ -1,9 +1,5 @@
 <template>
-  <actions-dialog-box
-    :path="folderDialog.name"
-    :position="actionDialogPos"
-    :show="showActionsDialog"
-  ></actions-dialog-box>
+  <ActionsDialogBox :path="folderDialog.name" :position="actionDialogPos" :show="showActionsDialog"></ActionsDialogBox>
 
   <div :ref="`folderRef`">
     <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
@@ -60,6 +56,8 @@ import {
 } from "@/context/fileSystemController";
 import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref } from "vue";
 
+import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
+
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
 import Coordinates from "@/models/Coordinates";
@@ -69,7 +67,7 @@ export default defineComponent({
     folderDialog: Object as PropType<FolderDialog>,
     height: Number,
   },
-  components: {},
+  components: { ActionsDialogBox },
   emits: [],
   setup(props, _) {
     const folderRef = ref({} as HTMLElement);
