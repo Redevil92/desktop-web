@@ -67,7 +67,6 @@ export default defineComponent({
 
     const openActionsDialog = (event: Event) => {
       const pointerEvent = event as PointerEvent;
-      console.log("Showing");
 
       event.preventDefault();
 

@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <actions-dialog-box
+    :path="folderDialog.name"
+    :position="actionDialogPos"
+    :show="showActionsDialog"
+  ></actions-dialog-box>
+
+  <div :ref="`folderRef`">
     <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
@@ -52,10 +58,11 @@ import {
   isDir,
   renameFile,
 } from "@/context/fileSystemController";
-import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
+import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {
@@ -65,6 +72,10 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
+    const folderRef = ref({} as HTMLElement);
+    const actionDialogPos = ref({ x: 0, y: 0 } as Coordinates);
+    const showActionsDialog = ref(false);
+
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = (fileName: string) => {
       // check if file is dir
@@ -182,12 +193,32 @@ export default defineComponent({
       }
     };
 
+    const openActionsDialog = (event: Event) => {
+      const pointerEvent = event as PointerEvent;
+      event.stopPropagation();
+      event.preventDefault();
+
+      actionDialogPos.value = { x: pointerEvent.clientX, y: pointerEvent.clientY };
+      showActionsDialog.value = true;
+    };
+
+    const closeActionDialog = () => {
+      showActionsDialog.value = false;
+    };
+
     onMounted(() => {
-      window.addEventListener("keydown", deleteFileHandler);
+      console.log(1, folderRef.value);
+      folderRef.value.addEventListener("keydown", deleteFileHandler);
+
+      folderRef.value.addEventListener("contextmenu", openActionsDialog);
+      folderRef.value.addEventListener("click", closeActionDialog);
     });
 
     onDeactivated(() => {
-      window.removeEventListener("keydown", deleteFileHandler);
+      folderRef.value.removeEventListener("keydown", deleteFileHandler);
+
+      folderRef.value.removeEventListener("contextmenu", openActionsDialog);
+      folderRef.value.removeEventListener("click", closeActionDialog);
     });
 
     return {
@@ -207,6 +238,9 @@ export default defineComponent({
       changeFileName,
       fileNameToChangeSpanRef,
       fileFocusedWidth,
+      folderRef,
+      actionDialogPos,
+      showActionsDialog,
     };
   },
 });
