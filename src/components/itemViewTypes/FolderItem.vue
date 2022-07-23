@@ -209,14 +209,14 @@ export default defineComponent({
       folderRef.value.addEventListener("keydown", deleteFileHandler);
 
       folderRef.value.addEventListener("contextmenu", openActionsDialog);
-      folderRef.value.addEventListener("click", closeActionDialog);
+      window.addEventListener("click", closeActionDialog);
     });
 
     onDeactivated(() => {
       folderRef.value.removeEventListener("keydown", deleteFileHandler);
 
       folderRef.value.removeEventListener("contextmenu", openActionsDialog);
-      folderRef.value.removeEventListener("click", closeActionDialog);
+      window.removeEventListener("click", closeActionDialog);
     });
 
     return {
