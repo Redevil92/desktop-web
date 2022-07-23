@@ -71,6 +71,7 @@ import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
 import Coordinates from "@/models/Coordinates";
+import DesktopItem from "@/models/DesktopItem";
 
 export default defineComponent({
   props: {
@@ -92,9 +93,10 @@ export default defineComponent({
       const isFolder = isDir(fileName);
       if (isFolder && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
+      } else {
+        const newItemDialog = { name: fileName, coordinates: { x: 0, y: 0 }, mimeType: "" } as DesktopItem;
+        store.dispatch("fileSystem/ADD_ITEM_DIALOG", newItemDialog);
       }
-      // if dir update current item dialog
-      // else open a new one
     };
 
     const updateItemDialogPath = (fileName: string) => {
@@ -128,7 +130,7 @@ export default defineComponent({
         setTimeout(async () => {
           isEditingSelectedValue.value = !isEditingSelectedValue.value;
           await selectInputText();
-        }, 200);
+        }, 300);
 
         return;
       }

@@ -75,7 +75,7 @@ export default {
       }
       state.itemsDialog = itemsToUpdate;
     },
-    SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: File[]) => {
+    SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: string[]) => {
       state.desktopItems = desktopItems;
     },
     SET_ITEMS_DIALOG: (state: FileSystemState, itemsDialog: ItemDialog[]) => {
@@ -83,8 +83,8 @@ export default {
     },
   },
   actions: {
-    ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialogName: DesktopItem) => {
-      const itemExtension = getFileExtensionFromName(itemDialogName.name);
+    ADD_ITEM_DIALOG: ({ commit, dispatch }: any, itemDialog: DesktopItem) => {
+      const itemExtension = getFileExtensionFromName(itemDialog.name);
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
       let dimension = { height: 300, width: 500 };
@@ -95,8 +95,8 @@ export default {
       }
 
       const newItemDialog = {
-        name: itemDialogName.name,
-        mimeType: itemDialogName.mimeType,
+        name: itemDialog.name,
+        mimeType: itemDialog.mimeType,
         guid: uuidv4(),
         isCollapsed: false,
         isFolder: false,
