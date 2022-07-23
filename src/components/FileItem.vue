@@ -1,6 +1,6 @@
 <template>
   <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
-    <div>
+    <div @click="isEditingText = false">
       <img
         :class="isSelected ? 'file-item-selected' : 'invisible-border'"
         v-if="isFolder(fileItem.name)"
@@ -27,14 +27,15 @@
         @keyup.esc="isEditingSelectedValue = false" -->
       <textarea
         ref="fileNameInputRef"
+        @click="setIsEditingText"
         @keyup.enter="changeFileName"
         @blur="changeFileName"
-        :disabled="!isEditingText"
+        :disabled="!isEditingText && !isSelected"
         rows="2"
         class="no-outline file-text"
         v-model="fileName"
       />
-      {{ getFileNameFromPath(fileItem.name) }}
+      <!-- {{ getFileNameFromPath(fileItem.name) }} -->
     </div>
   </div>
 </template>
@@ -72,6 +73,12 @@ export default defineComponent({
       return isDir(filePath);
     };
 
+    const setIsEditingText = () => {
+      if (props.isSelected) {
+        isEditingText.value = true;
+      }
+    };
+
     const clickHandler = () => {
       context.emit("onClick", props.fileItem);
     };
@@ -101,6 +108,7 @@ export default defineComponent({
       fileExtension,
       fileName,
       changeFileName,
+      setIsEditingText,
     };
   },
 });
