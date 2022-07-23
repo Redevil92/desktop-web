@@ -1,5 +1,7 @@
 import FileStats from "@/models/FileSystem/FileStats";
 
+export const DESKTOP_PATH = "my PC/Desktop";
+
 export const createDirectory = (path: string, storage = ""): void => {
   const fs = (window as any).fs;
   try {
@@ -39,8 +41,7 @@ export const getFiles = (path: string, fullPath = false): string[] => {
 };
 
 export const getDesktopFiles = (fullPath = false): string[] => {
-  const desktopPath = "my PC/Desktop";
-  return getFiles(desktopPath, fullPath);
+  return getFiles(DESKTOP_PATH, fullPath);
 };
 
 export const isDir = (path: string): boolean => {

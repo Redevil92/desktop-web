@@ -1,6 +1,10 @@
 <template>
-  <ActionsDialogBox :path="folderDialog.name" :position="actionDialogPos" :show="showActionsDialog"></ActionsDialogBox>
-
+  <ActionsDialogBox
+    :isOpenedFolder="actionDialogIsOpenedFolder"
+    :path="actionDialogPath"
+    :position="actionDialogPos"
+    :show="showActionsDialog"
+  ></ActionsDialogBox>
   <div :ref="`folderRef`">
     <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
@@ -18,6 +22,12 @@
           :key="`item-${index}-${item}`"
           @dblclick="doubleClickHandler(item)"
           @click.stop="itemClickHandler(item)"
+          @click.right="
+            {
+              actionDialogPath = item;
+              actionDialogIsOpenedFolder = false;
+            }
+          "
         >
           <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
           <span
@@ -73,6 +83,8 @@ export default defineComponent({
     const folderRef = ref({} as HTMLElement);
     const actionDialogPos = ref({ x: 0, y: 0 } as Coordinates);
     const showActionsDialog = ref(false);
+    const actionDialogPath = ref(props.folderDialog?.name || "");
+    const actionDialogIsOpenedFolder = ref(true);
 
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = (fileName: string) => {
@@ -202,10 +214,11 @@ export default defineComponent({
 
     const closeActionDialog = () => {
       showActionsDialog.value = false;
+      actionDialogPath.value = props.folderDialog?.name || "";
+      actionDialogIsOpenedFolder.value = true;
     };
 
     onMounted(() => {
-      console.log(1, folderRef.value);
       folderRef.value.addEventListener("keydown", deleteFileHandler);
 
       folderRef.value.addEventListener("contextmenu", openActionsDialog);
@@ -239,6 +252,8 @@ export default defineComponent({
       folderRef,
       actionDialogPos,
       showActionsDialog,
+      actionDialogPath,
+      actionDialogIsOpenedFolder,
     };
   },
 });

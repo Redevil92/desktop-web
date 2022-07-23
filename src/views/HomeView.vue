@@ -1,6 +1,6 @@
 <template>
   <div class="home" ref="desktopRef">
-    <actions-dialog-box path="desktop" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
+    <actions-dialog-box :path="DESKTOP_PATH" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
 
     <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
 
@@ -23,11 +23,10 @@ import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
 
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
+import { DESKTOP_PATH } from "@/context/fileSystemController";
 
 export default defineComponent({
-  props: {
-    msg: String,
-  },
+  props: {},
   components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionsDialogBox },
   setup() {
     const store = useStore();
@@ -95,6 +94,7 @@ export default defineComponent({
       createNewDirectory,
       showActionsDialog,
       actionDialogPos,
+      DESKTOP_PATH,
     };
   },
 });

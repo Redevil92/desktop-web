@@ -1,20 +1,25 @@
 <template>
   <!-- THIS COMPONENT SHOULD BE A SINGLETON, WE SHOULD IMPLEMENT A STORE FOR DISPLAYING IT AND 
 TO DECIDE WHAT ACTIONS TO DISPLAY -->
-
   <div v-show="show && position" :style="`top: ${position.y}px; left: ${position.x}px;`" class="actions-dialog padding">
-    <div v-if="path === 'desktop'">
+    <div v-if="(isFolder && isOpenedFolder) || isDesktop">
       <div class="action-button" @click="addNewFile">New file</div>
       <div class="action-button" @click="addNewFolder">New folder</div>
-      <hr class="" />
-      <div class="action-button" @click="addNewFolder">Change desktop image</div>
+      <div v-if="isDesktop">
+        <hr class="" />
+        <div class="action-button" @click="addNewFolder">Change desktop image</div>
+      </div>
     </div>
-    <div>
+
+    <div v-if="!isFolder">
       <div class="action-button" @click="addNewFolder">Open</div>
       <div class="action-button" @click="addNewFolder">Open with</div>
       <hr class="" />
       <div class="action-button" @click="addNewFolder">Cut</div>
       <div class="action-button" @click="addNewFolder">Copy</div>
+    </div>
+
+    <div v-if="!isOpenedFolder">
       <div class="action-button" @click="addNewFolder">Delete</div>
       <div class="action-button" @click="addNewFolder">Rename</div>
       <div class="action-button" @click="addNewFolder">Create shortcut</div>
@@ -23,6 +28,7 @@ TO DECIDE WHAT ACTIONS TO DISPLAY -->
 </template>
 
 <script lang="ts">
+import { DESKTOP_PATH, isDir } from "@/context/fileSystemController";
 import Coordinates from "@/models/Coordinates";
 import { defineComponent, ref, reactive, computed, watch, PropType, onMounted, onUnmounted } from "vue";
 
@@ -31,6 +37,7 @@ export default defineComponent({
     path: String,
     show: Boolean,
     position: Object as PropType<Coordinates>,
+    isOpenedFolder: { type: Boolean, default: false }, // right click on a not opened folder, you cannot create file
   },
   components: {},
   emits: ["onAddNewFile", "onAddNewFolder"],
@@ -40,18 +47,13 @@ export default defineComponent({
 
     const createDirectory = () => {};
 
-    // new -> folder/ file
-    // change desktop
-    // add files
+    const isFolder = computed(function () {
+      return isDir(props.path || "");
+    });
 
-    // **** FILE ONLY
-    // Open (detect file type to open the item with the right ...)
-    // Open with
-    // Cut
-    // Copy
-    // Create shortcut
-    // Delete
-    // Rename
+    const isDesktop = computed(function () {
+      return props.path === DESKTOP_PATH;
+    });
 
     const showActionsDialog = ref(false);
     const actionsDialogRef = ref(null);
@@ -71,6 +73,8 @@ export default defineComponent({
       addNewFolder,
       showActionsDialog,
       actionsDialogRef,
+      isFolder,
+      isDesktop,
     };
   },
 });
