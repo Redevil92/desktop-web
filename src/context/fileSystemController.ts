@@ -74,10 +74,6 @@ export const getFileNameFromPath = (filePath: string): string => {
 };
 
 export const getFileExtensionFromName = (fileName: string): string => {
-  // path.parse(filename).name; //=> "hello"
-  // path.parse(filename).ext; //=> ".html"
-  // path.parse(filename).base;
-
   const fileSplits = fileName.split(".");
 
   if (fileSplits.length > 0) {
