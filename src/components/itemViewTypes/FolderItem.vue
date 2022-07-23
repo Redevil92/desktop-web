@@ -90,7 +90,7 @@ export default defineComponent({
     const doubleClickHandler = (fileName: string) => {
       // check if file is dir
       const isFolder = isDir(fileName);
-      if (isFolder) {
+      if (isFolder && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
       }
       // if dir update current item dialog

@@ -1,7 +1,8 @@
-import { getDesktopFiles, getFileExtensionFromName, getFiles, isDir } from "@/context/fileSystemController";
+import { createFile, getDesktopFiles, getFileExtensionFromName, getFiles, isDir } from "@/context/fileSystemController";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
+import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
@@ -156,8 +157,13 @@ export default {
     },
     FETCH_DESKTOP_FILES: ({ commit }: any) => {
       const desktopFiles = getDesktopFiles(true);
-
       commit("SET_DESKTOP_ITEMS", desktopFiles);
+    },
+    UPDATE_FILE: ({ commit }: any, pathAndContent: PathAndContent) => {
+      createFile(pathAndContent.path, pathAndContent.content);
+    },
+    CREATE_FILE: ({ commit }: any, pathAndContent: PathAndContent) => {
+      createFile(pathAndContent.path, pathAndContent.content);
     },
   },
   getters: {
@@ -168,7 +174,7 @@ export default {
 };
 
 interface FileSystemState {
-  desktopItems: File[]; // done
+  desktopItems: string[]; // done
   itemsDialog: ItemDialog[]; // in progress
   fileCopiedPath: string; // in progress
   fileCutPath: string; // in progress

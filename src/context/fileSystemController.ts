@@ -74,6 +74,10 @@ export const getFileNameFromPath = (filePath: string): string => {
 };
 
 export const getFileExtensionFromName = (fileName: string): string => {
+  // path.parse(filename).name; //=> "hello"
+  // path.parse(filename).ext; //=> ".html"
+  // path.parse(filename).base;
+
   const fileSplits = fileName.split(".");
 
   if (fileSplits.length > 0) {
@@ -84,4 +88,8 @@ export const getFileExtensionFromName = (fileName: string): string => {
 
 export const getExtensionIcon = (extension: string, folderPath = "./src/assets/fileIcons"): string => {
   return folderPath + "/" + "icon-" + extension;
+};
+
+export const getFileNameWithoutExtension = (path: string): string => {
+  return path.replace(/\.[^/.]+$/, "");
 };

@@ -54,7 +54,7 @@ export default defineComponent({
 
       const calculatedItemWidth =
         (itemContainerWidth - (taskBarItems.value.length + 1) * itemMargin) / taskBarItems.value.length;
-      console.log(itemContainerWidth, calculatedItemWidth, taskBarItems.value.length);
+
       return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
     });
 

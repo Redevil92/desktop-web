@@ -37,21 +37,6 @@ export default defineComponent({
 
     //openedFolders.push(desktopFs);
 
-    const generateUniqueName = (name: string, existingNameMap: Map<string, any>) => {
-      let myName = name;
-      let currentIndex = 0;
-      let isUnique = false;
-      while (!isUnique && currentIndex < 100) {
-        isUnique = !existingNameMap.get(myName);
-        console.log(currentIndex, isUnique);
-        if (!isUnique) {
-          currentIndex++;
-          myName = `${name} (${currentIndex})`;
-        }
-      }
-      return myName;
-    };
-
     const createNewDirectory = () => {
       console.log("should create a new directory");
     };

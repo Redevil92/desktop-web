@@ -3,7 +3,7 @@
 TO DECIDE WHAT ACTIONS TO DISPLAY -->
   <div v-show="show && position" :style="`top: ${position.y}px; left: ${position.x}px;`" class="actions-dialog padding">
     <div v-if="(isFolder && isOpenedFolder) || isDesktop">
-      <div class="action-button" @click="addNewFile">New file</div>
+      <div class="action-button" @click="createFile">New file</div>
       <div class="action-button" @click="addNewFolder">New folder</div>
       <div v-if="isDesktop">
         <hr class="" />
@@ -28,8 +28,11 @@ TO DECIDE WHAT ACTIONS TO DISPLAY -->
 </template>
 
 <script lang="ts">
-import { DESKTOP_PATH, isDir } from "@/context/fileSystemController";
+import { DESKTOP_PATH, getFileNameFromPath, getFileNameWithoutExtension, isDir } from "@/context/fileSystemController";
 import Coordinates from "@/models/Coordinates";
+import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
+import PathAndContent from "@/models/PathAndContent";
+import store from "@/store";
 import { defineComponent, ref, reactive, computed, watch, PropType, onMounted, onUnmounted } from "vue";
 
 export default defineComponent({
@@ -40,10 +43,44 @@ export default defineComponent({
     isOpenedFolder: { type: Boolean, default: false }, // right click on a not opened folder, you cannot create file
   },
   components: {},
-  emits: ["onAddNewFile", "onAddNewFolder"],
+  emits: [],
   setup(props, context) {
     // props -> path
-    const createFile = () => {};
+    const createFile = async () => {
+      const currentFolderFiles: string[] = isDesktop.value
+        ? store.getters["fileSystem/GET_DESKTOP_FILES"]
+        : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as FolderDialog).filesPath;
+
+      const newUniquePath = generateUniqueName(props.path + "/" + "new name", currentFolderFiles);
+
+      console.log(666, newUniquePath);
+      console.log(newUniquePath + ".txt");
+      await store.dispatch("fileSystem/CREATE_FILE", {
+        path: newUniquePath + ".txt",
+        content: "",
+      } as PathAndContent);
+      if (isDesktop.value) {
+        store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+      } else {
+        store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
+      }
+    };
+
+    const generateUniqueName = (name: string, nameList: string[]) => {
+      console.log(name, nameList);
+      let myName = name;
+      let currentIndex = 0;
+      let isUnique = false;
+      while (!isUnique && currentIndex < 100) {
+        isUnique = nameList.findIndex((name) => getFileNameWithoutExtension(name) === myName) === -1;
+        console.log(isUnique);
+        if (!isUnique) {
+          currentIndex++;
+          myName = `${name} (${currentIndex})`;
+        }
+      }
+      return myName;
+    };
 
     const createDirectory = () => {};
 
@@ -75,6 +112,7 @@ export default defineComponent({
       actionsDialogRef,
       isFolder,
       isDesktop,
+      createFile,
     };
   },
 });

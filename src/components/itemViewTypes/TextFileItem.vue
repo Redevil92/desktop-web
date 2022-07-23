@@ -28,6 +28,8 @@ import ItemDialog from "@/models/ItemDialog";
 
 import Editor from "@tinymce/tinymce-vue";
 import { createFile, readFile } from "@/context/fileSystemController";
+import store from "@/store";
+import PathAndContent from "@/models/PathAndContent";
 
 export default defineComponent({
   props: {
@@ -50,7 +52,11 @@ export default defineComponent({
       console.log("SAVING", content.content, html, body);
 
       if (props.itemDialog?.name) {
-        createFile(props.itemDialog?.name, content.content);
+        store.dispatch("fileSystem/UPDATE_FILE", {
+          path: props.itemDialog?.name,
+          content: content.content,
+        } as PathAndContent);
+        //createFile(props.itemDialog?.name, content.content);
       }
     };
 
