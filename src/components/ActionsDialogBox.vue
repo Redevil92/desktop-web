@@ -104,6 +104,7 @@ export default defineComponent({
   padding: 0px 7px;
   border-radius: 5px;
   cursor: pointer;
+  width: max-content;
 }
 
 .action-button:hover {

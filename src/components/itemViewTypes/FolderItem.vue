@@ -180,8 +180,8 @@ export default defineComponent({
       return newPath;
     };
 
-    const deleteFileHandler = (event: { code: string }) => {
-      console.log(event.code);
+    const keyDownHandler = (event: { code: string }) => {
+      console.log(event.code, 666);
       if (props.folderDialog?.isFocused && selectedItem.value) {
         if (event.code === "Delete" && props.folderDialog?.isFocused && selectedItem.value) {
           // delete item
@@ -219,14 +219,14 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      folderRef.value.addEventListener("keydown", deleteFileHandler);
+      window.addEventListener("keydown", keyDownHandler);
 
       folderRef.value.addEventListener("contextmenu", openActionsDialog);
       window.addEventListener("click", closeActionDialog);
     });
 
     onDeactivated(() => {
-      folderRef.value.removeEventListener("keydown", deleteFileHandler);
+      window.removeEventListener("keydown", keyDownHandler);
 
       folderRef.value.removeEventListener("contextmenu", openActionsDialog);
       window.removeEventListener("click", closeActionDialog);
