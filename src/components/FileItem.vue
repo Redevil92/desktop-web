@@ -91,11 +91,16 @@ export default defineComponent({
       context.emit("onRightClick");
     };
 
+    const refreshFileSystemFiles = () => {
+      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+    };
+
     const changeFileName = () => {
       const newName = DESKTOP_PATH + "/" + fileName.value;
       if (newName !== props.fileItem.name) {
         renameFile(newName, props.fileItem.name);
-        store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+        refreshFileSystemFiles();
       }
     };
 
@@ -169,9 +174,13 @@ export default defineComponent({
 
 .no-outline {
   background-color: rgba(255, 255, 255, 0);
+  resize: none;
+  border: 1px solid rgba(255, 255, 255, 0);
 }
 
 .no-outline:focus {
+  border: 1px solid grey;
   outline: none;
+  background-color: rgba(42, 136, 190, 0.635);
 }
 </style>
