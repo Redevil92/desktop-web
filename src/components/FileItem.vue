@@ -106,11 +106,14 @@ export default defineComponent({
     const changeFileName = () => {
       fileName.value = fileName.value.replace(/[\n\r]/g, "");
       const newName = DESKTOP_PATH + "/" + fileName.value;
-      isEditingText.value = false;
-      if (newName !== props.fileItem.name) {
+
+      // check if the name is already taken
+
+      if (newName !== props.fileItem.name && isEditingText.value) {
         renameFile(newName, props.fileItem.name);
         refreshFileSystemFiles();
       }
+      isEditingText.value = false;
     };
 
     return {
