@@ -25,23 +25,27 @@
         @keyup.enter="changeFileName"
         @blur="changeFileName"
         @keyup.esc="isEditingSelectedValue = false" -->
+
+      <div v-show="!isEditingText" class="file-text" @click="setIsEditingText">
+        {{ fileName }}
+      </div>
       <textarea
+        v-show="isEditingText"
         ref="fileNameInputRef"
-        @click="setIsEditingText"
         @keyup.enter="changeFileName"
         @blur="changeFileName"
-        :disabled="!isEditingText && !isSelected"
         rows="2"
         class="no-outline file-text"
         v-model="fileName"
       />
+
       <!-- {{ getFileNameFromPath(fileItem.name) }} -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, PropType, ref } from "vue";
 
 import DesktopItem from "@/models/DesktopItem";
 
@@ -64,6 +68,7 @@ export default defineComponent({
   setup(props, context) {
     const fileName = ref(getFileNameFromPath(props.fileItem.name));
     const isEditingText = ref(false);
+    const fileNameInputRef = ref(null);
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
@@ -73,9 +78,11 @@ export default defineComponent({
       return isDir(filePath);
     };
 
-    const setIsEditingText = () => {
+    const setIsEditingText = async () => {
       if (props.isSelected) {
         isEditingText.value = true;
+        await nextTick();
+        (fileNameInputRef.value as unknown as HTMLElement).focus();
       }
     };
 
@@ -99,9 +106,9 @@ export default defineComponent({
     const changeFileName = () => {
       fileName.value = fileName.value.replace(/[\n\r]/g, "");
       const newName = DESKTOP_PATH + "/" + fileName.value;
+      isEditingText.value = false;
       if (newName !== props.fileItem.name) {
         renameFile(newName, props.fileItem.name);
-        isEditingText.value = true;
         refreshFileSystemFiles();
       }
     };
@@ -116,6 +123,8 @@ export default defineComponent({
       fileName,
       changeFileName,
       setIsEditingText,
+      isEditingText,
+      fileNameInputRef,
     };
   },
 });
@@ -183,6 +192,6 @@ export default defineComponent({
 .no-outline:focus {
   border: 1px solid grey;
   outline: none;
-  background-color: rgba(42, 136, 190, 0.635);
+  background-color: rgb(87, 163, 207);
 }
 </style>
