@@ -52,6 +52,7 @@ import DesktopItem from "@/models/DesktopItem";
 import store from "@/store";
 import {
   DESKTOP_PATH,
+  existsFile,
   getFileExtensionFromName,
   getFileNameFromPath,
   isDir,
@@ -104,16 +105,25 @@ export default defineComponent({
     };
 
     const changeFileName = () => {
-      fileName.value = fileName.value.replace(/[\n\r]/g, "");
-      const newName = DESKTOP_PATH + "/" + fileName.value;
+      if (isEditingText.value) {
+        fileName.value = fileName.value.replace(/[\n\r]/g, "");
+        const newName = DESKTOP_PATH + "/" + fileName.value;
 
-      // check if the name is already taken
+        // check if the name is already taken
+        const test = existsFile(newName);
 
-      if (newName !== props.fileItem.name && isEditingText.value) {
-        renameFile(newName, props.fileItem.name);
-        refreshFileSystemFiles();
+        if (test) {
+          alert("file exist");
+          isEditingText.value = false;
+          return;
+        }
+
+        if (newName !== props.fileItem.name && isEditingText.value) {
+          renameFile(newName, props.fileItem.name);
+          refreshFileSystemFiles();
+        }
+        isEditingText.value = false;
       }
-      isEditingText.value = false;
     };
 
     return {
