@@ -35,6 +35,7 @@ html {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
+  font-family: Avenir;
   word-break: normal;
   tab-size: 4;
 }

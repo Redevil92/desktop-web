@@ -1,5 +1,6 @@
 <template>
   <div class="home" ref="desktopRef">
+    <SnackBar></SnackBar>
     <actions-dialog-box :path="DESKTOP_PATH" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
 
     <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
@@ -20,6 +21,7 @@ import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
 import OpenedItemView from "@/components/OpenedItemView.vue";
 import TaskBar from "@/components/TaskBar.vue";
 import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
+import SnackBar from "@/components/shared/SnackBar.vue";
 
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
@@ -27,7 +29,7 @@ import { DESKTOP_PATH } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionsDialogBox },
+  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionsDialogBox, SnackBar },
   setup() {
     const store = useStore();
 
@@ -95,5 +97,6 @@ export default defineComponent({
 
 .home {
   overflow: hidden;
+  position: relative;
 }
 </style>

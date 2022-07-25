@@ -43,7 +43,7 @@ export default defineComponent({
     isOpenedFolder: { type: Boolean, default: false }, // right click on a not opened folder, you cannot create file
   },
   components: {},
-  emits: [],
+  emits: ["onAddNewFile", "onAddNewFolder"],
   setup(props, context) {
     // props -> path
     const createFile = async () => {
