@@ -1,6 +1,5 @@
 <template>
   <div class="home" ref="desktopRef">
-    <SnackBar></SnackBar>
     <actions-dialog-box :path="DESKTOP_PATH" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
 
     <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
@@ -97,6 +96,5 @@ export default defineComponent({
 
 .home {
   overflow: hidden;
-  position: relative;
 }
 </style>

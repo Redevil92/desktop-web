@@ -1,4 +1,8 @@
 <template>
+  <base-dialog v-if="showDialog">
+    {{ errorMessage }}
+    <button @click="showDialog = false">OK</button>
+  </base-dialog>
   <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
     <div @click="isEditingText = false">
       <img
@@ -47,6 +51,7 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, PropType, ref } from "vue";
 
+import BaseDialog from "@/components/shared/BaseDialog.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import store from "@/store";
@@ -64,12 +69,14 @@ export default defineComponent({
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
     isSelected: { type: Boolean, default: false },
   },
-  components: {},
+  components: { BaseDialog },
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
     const fileName = ref(getFileNameFromPath(props.fileItem.name));
     const isEditingText = ref(false);
     const fileNameInputRef = ref(null);
+    const showDialog = ref(false);
+    const errorMessage = ref("");
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
@@ -113,7 +120,8 @@ export default defineComponent({
         const test = existsFile(newName);
 
         if (test) {
-          alert("file exist");
+          showDialog.value = true;
+          errorMessage.value = `The name ${fileName.value} is already taken. Find a new one.`;
           isEditingText.value = false;
           return;
         }
@@ -138,6 +146,8 @@ export default defineComponent({
       setIsEditingText,
       isEditingText,
       fileNameInputRef,
+      showDialog,
+      errorMessage,
     };
   },
 });
