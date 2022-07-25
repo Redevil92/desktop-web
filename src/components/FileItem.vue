@@ -116,13 +116,11 @@ export default defineComponent({
         fileName.value = fileName.value.replace(/[\n\r]/g, "");
         const newName = DESKTOP_PATH + "/" + fileName.value;
 
-        // check if the name is already taken
-        const test = existsFile(newName);
-
-        if (test) {
+        if (existsFile(newName)) {
           showDialog.value = true;
           errorMessage.value = `The name ${fileName.value} is already taken. Find a new one.`;
           isEditingText.value = false;
+          fileName.value = getFileNameFromPath(props.fileItem.name);
           return;
         }
 
