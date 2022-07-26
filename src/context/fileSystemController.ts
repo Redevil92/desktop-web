@@ -82,11 +82,11 @@ export const getFileNameFromPath = (filePath: string): string => {
   return "";
 };
 
-export const getFileExtensionFromName = (fileName: string): string => {
-  const fileSplits = fileName.split(".");
-
-  if (fileSplits.length > 0) {
-    return fileSplits[fileSplits.length - 1];
+export const getFileExtensionFromName = (filePath: string): string => {
+  const fileName = getFileNameFromPath(filePath);
+  if (fileName.includes(".")) {
+    const splittedFile = fileName.split(".");
+    return splittedFile[splittedFile.length - 1];
   }
   return "";
 };

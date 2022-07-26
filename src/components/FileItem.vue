@@ -16,7 +16,7 @@
         alt=""
       />
       <div v-else>
-        <div>
+        <div v-if="fileExtension">
           <img
             :class="isSelected ? 'file-item-selected' : 'invisible-border'"
             height="60"
