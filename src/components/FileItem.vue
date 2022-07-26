@@ -173,6 +173,9 @@ export default defineComponent({
   font-family: inherit;
   text-align: center;
   width: 100%;
+
+  text-shadow: rgb(0 0 0 / 25%) 0px 0px 1px, rgb(0 0 0 / 20%) 0px 0px 2px, rgb(0 0 0 / 35%) 0px 1px 1px,
+    rgb(0 0 0 / 20%) 0px 1px 2px, rgb(0 0 0 / 35%) 0px 2px 1px, rgb(0 0 0 / 20%) 0px 2px 2px;
 }
 
 .file-item {
