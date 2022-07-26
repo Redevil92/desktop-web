@@ -3,7 +3,7 @@
     <div class="error-message">
       <img height="85" :src="require('/src/assets/icons/error-robot.svg')" alt="" />
       <div>{{ errorMessage }}</div>
-      <button @click="showDialog = false" style="margin-top: 20px">OK</button>
+      <BaseButton @click="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
   </base-dialog>
   <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
@@ -55,6 +55,7 @@
 import { computed, defineComponent, nextTick, PropType, ref } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
+import BaseButton from "@/components/shared/BaseButton.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import store from "@/store";
@@ -72,7 +73,7 @@ export default defineComponent({
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
     isSelected: { type: Boolean, default: false },
   },
-  components: { BaseDialog },
+  components: { BaseDialog, BaseButton },
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
     const fileName = ref(getFileNameFromPath(props.fileItem.name));
@@ -115,10 +116,10 @@ export default defineComponent({
     };
 
     const changeFileName = () => {
-      if (isEditingText.value) {
-        fileName.value = fileName.value.replace(/[\n\r]/g, "");
-        const newName = DESKTOP_PATH + "/" + fileName.value;
+      fileName.value = fileName.value.replace(/[\n\r]/g, "");
+      const newName = DESKTOP_PATH + "/" + fileName.value;
 
+      if (isEditingText.value && newName !== props.fileItem.name) {
         if (existsFile(newName)) {
           showDialog.value = true;
           errorMessage.value = `The name "${fileName.value}" is already taken. Please find a new one.`;
@@ -224,5 +225,10 @@ export default defineComponent({
   color: white;
   max-width: 400px;
   text-align: center;
+}
+
+.ok-button {
+  margin-top: 20px;
+  width: 100%;
 }
 </style>
