@@ -4,7 +4,7 @@ TO DECIDE WHAT ACTIONS TO DISPLAY -->
   <div v-show="show && position" :style="`top: ${position.y}px; left: ${position.x}px;`" class="actions-dialog padding">
     <div v-if="(isFolder && isOpenedFolder) || isDesktop">
       <div class="action-button" @click="createFile">New file</div>
-      <div class="action-button" @click="addNewFolder">New folder</div>
+      <div class="action-button" @click="createFile(true)">New folder</div>
       <div v-if="isDesktop">
         <hr class="" />
         <div class="action-button" @click="addNewFolder">Change desktop image</div>
@@ -46,19 +46,22 @@ export default defineComponent({
   emits: ["onAddNewFile", "onAddNewFolder"],
   setup(props, context) {
     // props -> path
-    const createFile = async () => {
+    const createFile = async (createFolder: false) => {
       const currentFolderFiles: string[] = isDesktop.value
         ? store.getters["fileSystem/GET_DESKTOP_FILES"]
         : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as FolderDialog).filesPath;
 
-      const newUniquePath = generateUniqueName(props.path + "/" + "new name", currentFolderFiles);
+      if (!createFolder) {
+        const newUniquePath = generateUniqueName(props.path + "/" + "new file", currentFolderFiles);
+        await store.dispatch("fileSystem/CREATE_FILE", {
+          path: newUniquePath + ".txt",
+          content: "",
+        } as PathAndContent);
+      } else {
+        const newUniquePath = generateUniqueName(props.path + "/" + "new folder", currentFolderFiles);
+        await store.dispatch("fileSystem/CREATE_FOLDER", newUniquePath);
+      }
 
-      console.log(666, newUniquePath);
-      console.log(newUniquePath + ".txt");
-      await store.dispatch("fileSystem/CREATE_FILE", {
-        path: newUniquePath + ".txt",
-        content: "",
-      } as PathAndContent);
       if (isDesktop.value) {
         store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
       } else {
@@ -141,6 +144,7 @@ export default defineComponent({
 .action-button {
   padding: 0px 7px;
   border-radius: 5px;
+  width: 100% !important;
   cursor: pointer;
   width: max-content;
 }

@@ -1,4 +1,11 @@
-import { createFile, getDesktopFiles, getFileExtensionFromName, getFiles, isDir } from "@/context/fileSystemController";
+import {
+  createDirectory,
+  createFile,
+  getDesktopFiles,
+  getFileExtensionFromName,
+  getFiles,
+  isDir,
+} from "@/context/fileSystemController";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
@@ -164,6 +171,9 @@ export default {
     },
     CREATE_FILE: ({ commit }: any, pathAndContent: PathAndContent) => {
       createFile(pathAndContent.path, pathAndContent.content);
+    },
+    CREATE_FOLDER: ({ commit }: any, path: string) => {
+      createDirectory(path);
     },
   },
   getters: {
