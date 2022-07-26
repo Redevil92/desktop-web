@@ -3,6 +3,9 @@
   --font-color_dark: #292929;
   --font-color_light: #7c7c7c;
 
+  --primary-color: #4545c9;
+  --primary-color_darker: #2323c6;
+
   --dialog-header-color_dark: rgb(42, 42, 42);
   --dialog-sub-header-color_dark: rgb(25, 25, 25);
   --dialog-background-color_dark: rgb(74, 74, 74);
