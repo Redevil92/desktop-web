@@ -1,7 +1,10 @@
 <template>
   <base-dialog v-if="showDialog">
-    {{ errorMessage }}
-    <button @click="showDialog = false">OK</button>
+    <div class="error-message">
+      <img height="85" :src="require('/src/assets/icons/error-robot.svg')" alt="" />
+      <div>{{ errorMessage }}</div>
+      <button @click="showDialog = false" style="margin-top: 20px">OK</button>
+    </div>
   </base-dialog>
   <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
     <div @click="isEditingText = false">
@@ -118,7 +121,7 @@ export default defineComponent({
 
         if (existsFile(newName)) {
           showDialog.value = true;
-          errorMessage.value = `The name ${fileName.value} is already taken. Find a new one.`;
+          errorMessage.value = `The name "${fileName.value}" is already taken. Please find a new one.`;
           isEditingText.value = false;
           fileName.value = getFileNameFromPath(props.fileItem.name);
           return;
@@ -214,5 +217,12 @@ export default defineComponent({
   border: 1px solid grey;
   outline: none;
   background-color: rgb(87, 163, 207);
+}
+
+.error-message {
+  padding: 20px;
+  color: white;
+  max-width: 400px;
+  text-align: center;
 }
 </style>

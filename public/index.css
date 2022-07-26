@@ -7,7 +7,7 @@
   --dialog-sub-header-color_dark: rgb(25, 25, 25);
   --dialog-background-color_dark: rgb(74, 74, 74);
   --dialog-background-color_contrast_dark: rgb(125, 125, 125);
-  --dialog-background-color_with_opacity: rgb(80 80 80 / 31%);
+  --dialog-background-color_with_opacity: #737272e3;
   --dialog-border-color_dark: #626262;
   --selected-color: #3434d1;
 
