@@ -24,6 +24,14 @@
             alt=""
           />
         </div>
+        <div v-else>
+          <img
+            :class="isSelected ? 'file-item-selected' : 'invisible-border'"
+            height="60"
+            :src="require('/src/assets/fileIcons/unknow.svg')"
+            alt=""
+          />
+        </div>
       </div>
     </div>
 
