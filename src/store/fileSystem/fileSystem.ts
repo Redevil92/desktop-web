@@ -1,11 +1,13 @@
 import {
   createDirectory,
   createFile,
+  deleteFile,
   getDesktopFiles,
   getFileExtensionFromName,
   getFiles,
   isDir,
 } from "@/context/fileSystemController";
+import ActionMenu from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
@@ -18,8 +20,14 @@ export default {
     return {
       desktopItems: [],
       itemsDialog: [],
-      fileCopiedPath: "",
-      fileCutPath: "",
+      filePathsToCopy: [],
+      filePathsToCut: [],
+      actionMenu: {
+        show: false,
+        path: "",
+        position: { x: 0, y: 0 },
+        isOpenedFolder: false,
+      },
     };
   },
   mutations: {
@@ -87,6 +95,15 @@ export default {
     },
     SET_ITEMS_DIALOG: (state: FileSystemState, itemsDialog: ItemDialog[]) => {
       state.itemsDialog = itemsDialog;
+    },
+    SET_ACTION_MENU: (state: FileSystemState, actionMenu: ActionMenu) => {
+      state.actionMenu = actionMenu;
+    },
+    SET_FILE_PATHS_TO_COPY: (state: FileSystemState, paths: string[]) => {
+      state.filePathsToCopy = paths;
+    },
+    SET_FILE_PATHS_TO_CUT: (state: FileSystemState, paths: string[]) => {
+      state.filePathsToCut = paths;
     },
   },
   actions: {
@@ -172,28 +189,49 @@ export default {
     CREATE_FILE: ({ commit }: any, pathAndContent: PathAndContent) => {
       createFile(pathAndContent.path, pathAndContent.content);
     },
+    DELETE_FILE: ({ commit }: any, path: string) => {
+      deleteFile(path);
+    },
     CREATE_FOLDER: ({ commit }: any, path: string) => {
       createDirectory(path);
+    },
+    SET_ACTION_MENU: ({ commit }: any, actionMenu: ActionMenu) => {
+      commit("SET_ACTION_MENU", actionMenu);
+    },
+    CLOSE_ACTION_MENU: ({ commit }: any) => {
+      const emptyActionMenu: ActionMenu = {
+        show: false,
+        path: "",
+        position: { x: 0, y: 0 },
+        isOpenedFolder: false,
+      };
+      commit("SET_ACTION_MENU", emptyActionMenu);
+    },
+    SET_FILE_PATHS_TO_CUT: ({ commit }: any, paths: string[]) => {
+      commit("SET_FILE_PATHS_TO_CUT", paths);
+      commit("SET_FILE_PATHS_TO_COPY", []);
+    },
+    SET_FILE_PATHS_TO_COPY: ({ commit }: any, paths: string[]) => {
+      commit("SET_FILE_PATHS_TO_COPY", paths);
+      commit("SET_FILE_PATHS_TO_CUT", []);
     },
   },
   getters: {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
     GET_FOCUSED_ITEM_DIALOG: (state: FileSystemState) => state.itemsDialog.find((item: ItemDialog) => item.isFocused),
     GET_DESKTOP_FILES: (state: FileSystemState) => state.desktopItems,
+    GET_ACTION_MENU: (state: FileSystemState) => state.actionMenu,
+    GET_FILE_PATHS_TO_COPY: (state: FileSystemState) => state.filePathsToCopy,
+    GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
   },
 };
 
 interface FileSystemState {
   desktopItems: string[]; // done
   itemsDialog: ItemDialog[]; // in progress
-  fileCopiedPath: string; // in progress
-  fileCutPath: string; // in progress
-}
-
-interface ActionsBox {
-  isVisible: boolean;
-  activeFile: File;
-  availableActions: Action[];
+  actionMenu: ActionMenu;
+  filePathsToCopy: string[]; // in progress
+  filePathsToCut: string[]; // in progress
 }
 
 interface Action {
