@@ -7,7 +7,7 @@
     <div v-if="(isFolder && actionMenuParams.isOpenedFolder) || isDesktop">
       <div class="action-button" @click="createFile">New file</div>
       <div class="action-button" @click="createFile($event, true)">New folder</div>
-      <div :class="{ 'disabled-action-button': !canPasteFiles, 'action-button': canPasteFile }" @click="pasteFiles">
+      <div :class="{ 'disabled-action-button': !canPasteFiles, 'action-button': canPasteFiles }" @click="pasteFiles">
         Paste
       </div>
       <div v-if="isDesktop">
@@ -20,8 +20,8 @@
       <div class="action-button">Open</div>
       <div class="action-button">Open with</div>
       <hr class="" />
-      <div class="action-button">Cut</div>
-      <div class="action-button">Copy</div>
+      <div class="action-button" @click="cutFiles">Cut</div>
+      <div class="action-button" @click="copyFiles">Copy</div>
     </div>
 
     <div v-if="!actionMenuParams.isOpenedFolder">
@@ -89,14 +89,21 @@ export default defineComponent({
       refreshFiles();
     };
 
+    const copyFiles = () => {
+      store.dispatch("fileSystem/SET_FILE_PATHS_TO_COPY", [actionMenuParams.value.path]);
+    };
+
+    const cutFiles = () => {
+      store.dispatch("fileSystem/SET_FILE_PATHS_TO_CUT", [actionMenuParams.value.path]);
+    };
+
     const pasteFiles = async (event: Event) => {
-      if (canPasteFiles) {
+      if (!canPasteFiles.value) {
         event.preventDefault();
         event.stopPropagation();
-
         return;
       }
-      console.log("Implement paste");
+      store.dispatch("fileSystem/PASTE_FILES", [actionMenuParams.value.path]);
     };
 
     const generateUniqueName = (name: string, nameList: string[]) => {
@@ -160,6 +167,9 @@ export default defineComponent({
       actionMenuParams,
       deleteFile,
       canPasteFiles,
+      pasteFiles,
+      copyFiles,
+      cutFiles,
     };
   },
 });

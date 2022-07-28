@@ -215,6 +215,9 @@ export default {
       commit("SET_FILE_PATHS_TO_COPY", paths);
       commit("SET_FILE_PATHS_TO_CUT", []);
     },
+    PASTE_FILES: ({ commit, getters }: any, destinationPath: string) => {
+      console.log(getters);
+    },
   },
   getters: {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
