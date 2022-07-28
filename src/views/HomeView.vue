@@ -1,8 +1,10 @@
 <template>
   <div class="home" ref="desktopRef">
-    <actions-dialog-box :path="DESKTOP_PATH" :position="actionDialogPos" :show="showActionsDialog"></actions-dialog-box>
+    <ActionMenu />
 
-    <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
+    <div @click.right="rightClickHandler">
+      <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
+    </div>
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
       <OpenedItemView v-if="!item.isCollapsed" :itemDialog="item" />
@@ -19,24 +21,32 @@ import { useStore } from "vuex";
 import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
 import OpenedItemView from "@/components/OpenedItemView.vue";
 import TaskBar from "@/components/TaskBar.vue";
-import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
+import ActionMenu from "@/components/ActionMenu.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 
 import Coordinates from "@/models/Coordinates";
+import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionsDialogBox, SnackBar },
+  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionMenu, SnackBar },
   setup() {
     const store = useStore();
 
-    const desktopRef = ref(null);
-    const actionDialogPos = ref({ x: 0, y: 0 } as Coordinates);
-    const showActionsDialog = ref(false);
+    const rightClickHandler = (event: any) => {
+      event.preventDefault();
 
-    //openedFolders.push(desktopFs);
+      const pointerEvent = event as PointerEvent;
+
+      store.dispatch("fileSystem/SET_ACTION_MENU", {
+        show: true,
+        path: DESKTOP_PATH,
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: false,
+      } as ActionMenuModel);
+    };
 
     const createNewDirectory = () => {
       console.log("should create a new directory");
@@ -50,37 +60,11 @@ export default defineComponent({
       // TODO change item position in the store
     };
 
-    const openActionsDialog = (event: Event) => {
-      const pointerEvent = event as PointerEvent;
-
-      event.preventDefault();
-
-      actionDialogPos.value = { x: pointerEvent.clientX, y: pointerEvent.clientY };
-      showActionsDialog.value = true;
-    };
-
-    const closeActionDialog = () => {
-      showActionsDialog.value = false;
-    };
-
-    onMounted(() => {
-      window.addEventListener("contextmenu", openActionsDialog);
-      window.addEventListener("click", closeActionDialog);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("contextmenu", openActionsDialog);
-      window.removeEventListener("click", closeActionDialog);
-    });
-
     return {
       changeItemPositionHandler,
       itemsDialog,
-      desktopRef,
       createNewDirectory,
-      showActionsDialog,
-      actionDialogPos,
-      DESKTOP_PATH,
+      rightClickHandler,
     };
   },
 });

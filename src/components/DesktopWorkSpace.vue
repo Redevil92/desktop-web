@@ -24,12 +24,14 @@
           :i="item.i"
           @moved="fileItemMovedHandler"
         >
-          <FileItem
-            :ref="item.name + 'FileRef'"
-            :fileItem="item"
-            @onClick="selectFile"
-            :isSelected="selectedFile && selectedFile.name === item.name"
-          />
+          <div @click.right="openActionMenu($event, item)">
+            <FileItem
+              :ref="item.name + 'FileRef'"
+              :fileItem="item"
+              @onClick="selectFile"
+              :isSelected="selectedFile && selectedFile.name === item.name"
+            />
+          </div>
         </grid-item>
       </grid-layout>
     </div>
@@ -46,6 +48,7 @@ import DropZone from "@/components/shared/DropZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import { createFile } from "@/context/fileSystemController";
+import ActionMenu from "@/models/ActionMenu";
 
 export default defineComponent({
   props: {
@@ -56,7 +59,6 @@ export default defineComponent({
   emits: ["onFileItemPositionChange"],
   setup(props, context) {
     const store = useStore();
-
     store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
 
     const itemWidth = 0.7;
@@ -69,8 +71,20 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopFile) => {
       selectedFile.value = newFileSelected;
+    };
 
-      console.log("Selecting", selectedFile.value.name);
+    const openActionMenu = (event: any, item: DesktopFile) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerEvent = event as PointerEvent;
+      selectFile(item);
+
+      store.dispatch("fileSystem/SET_ACTION_MENU", {
+        show: true,
+        path: item.name,
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: false,
+      } as ActionMenu);
     };
 
     const desktopFiles = computed(function (): DesktopFile[] {
@@ -134,6 +148,7 @@ export default defineComponent({
       selectFile,
       selectedFile,
       filesDroppedHandler,
+      openActionMenu,
     };
   },
 });

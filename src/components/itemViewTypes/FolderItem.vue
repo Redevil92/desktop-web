@@ -1,11 +1,5 @@
 <template>
-  <ActionsDialogBox
-    :isOpenedFolder="actionDialogIsOpenedFolder"
-    :path="actionDialogPath"
-    :position="actionDialogPos"
-    :show="showActionsDialog"
-  ></ActionsDialogBox>
-  <div :ref="`folderRef`">
+  <div @click.right="openActionMenu($event, true)">
     <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
@@ -22,20 +16,39 @@
           :key="`item-${index}-${item}`"
           @dblclick="doubleClickHandler(item)"
           @click.stop="itemClickHandler(item)"
-          @click.right="
-            {
-              actionDialogPath = item;
-              actionDialogIsOpenedFolder = false;
-            }
-          "
+          @click.right="openActionMenu($event, false, item)"
         >
-          <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+          <!-- <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+
           <span
             class="mdi mdi-file-word extension-icon"
             style="color: #01014a"
             v-else-if="getFileExtensionFromName(item)"
-          ></span>
-          <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span>
+          ></span> -->
+
+          <div v-if="getFileExtensionFromName(item)">
+            <img
+              class="file-icon"
+              style="margin-top: 3px"
+              height="16"
+              :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
+              alt=""
+            />
+          </div>
+          <div v-else-if="isDir(item)">
+            <img
+              :class="isSelected ? 'file-item-selected' : 'invisible-border'"
+              height="16"
+              style="margin-top: 3px"
+              :src="require('/src/assets/fileIcons/folder.svg')"
+              alt=""
+            />
+          </div>
+          <div v-else>
+            <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+          </div>
+
+          <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
           <span v-if="item === selectedItem && isEditingSelectedValue">
             <input
               ref="fileNameInputRef"
@@ -66,37 +79,44 @@ import {
 } from "@/context/fileSystemController";
 import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref } from "vue";
 
-import ActionsDialogBox from "@/components/ActionsDialogBox.vue";
+// import MenuAction from "@/components/MenuAction.vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
-import Coordinates from "@/models/Coordinates";
 import DesktopItem from "@/models/DesktopItem";
+import ActionMenu from "@/models/ActionMenu";
 
 export default defineComponent({
   props: {
     folderDialog: Object as PropType<FolderDialog>,
     height: Number,
   },
-  components: { ActionsDialogBox },
+  components: {},
   emits: [],
   setup(props, _) {
-    const folderRef = ref({} as HTMLElement);
-    const actionDialogPos = ref({ x: 0, y: 0 } as Coordinates);
-    const showActionsDialog = ref(false);
-    const actionDialogPath = ref(props.folderDialog?.name || "");
-    const actionDialogIsOpenedFolder = ref(true);
-
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = (fileName: string) => {
       // check if file is dir
-      const isFolder = isDir(fileName);
-      if (isFolder && !isEditingSelectedValue.value) {
+      const isDirectory = isDir(fileName);
+      if (isDirectory && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
       } else {
         const newItemDialog = { name: fileName, coordinates: { x: 0, y: 0 }, mimeType: "" } as DesktopItem;
         store.dispatch("fileSystem/ADD_ITEM_DIALOG", newItemDialog);
       }
+    };
+
+    const openActionMenu = (event: any, isOpenedFolder: boolean = false, customPath?: string) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerEvent = event as PointerEvent;
+
+      store.dispatch("fileSystem/SET_ACTION_MENU", {
+        show: true,
+        path: !!customPath ? customPath : props.folderDialog?.name,
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: isOpenedFolder,
+      } as ActionMenu);
     };
 
     const updateItemDialogPath = (fileName: string) => {
@@ -205,33 +225,12 @@ export default defineComponent({
       }
     };
 
-    const openActionsDialog = (event: Event) => {
-      const pointerEvent = event as PointerEvent;
-      event.stopPropagation();
-      event.preventDefault();
-
-      actionDialogPos.value = { x: pointerEvent.clientX, y: pointerEvent.clientY };
-      showActionsDialog.value = true;
-    };
-
-    const closeActionDialog = () => {
-      showActionsDialog.value = false;
-      actionDialogPath.value = props.folderDialog?.name || "";
-      actionDialogIsOpenedFolder.value = true;
-    };
-
     onMounted(() => {
       window.addEventListener("keydown", keyDownHandler);
-
-      folderRef.value.addEventListener("contextmenu", openActionsDialog);
-      window.addEventListener("click", closeActionDialog);
     });
 
     onDeactivated(() => {
       window.removeEventListener("keydown", keyDownHandler);
-
-      folderRef.value.removeEventListener("contextmenu", openActionsDialog);
-      window.removeEventListener("click", closeActionDialog);
     });
 
     return {
@@ -251,11 +250,7 @@ export default defineComponent({
       changeFileName,
       fileNameToChangeSpanRef,
       fileFocusedWidth,
-      folderRef,
-      actionDialogPos,
-      showActionsDialog,
-      actionDialogPath,
-      actionDialogIsOpenedFolder,
+      openActionMenu,
     };
   },
 });
@@ -268,7 +263,7 @@ export default defineComponent({
 }
 
 .folder-item {
-  background-color: #868484;
+  background-color: #86848463;
   height: 22px;
   margin: 0px 10px;
   border-radius: 7px;
@@ -278,6 +273,7 @@ export default defineComponent({
   padding-left: 10px;
   align-content: center;
   cursor: pointer;
+  display: flex;
 }
 
 .input-placeholder {
@@ -318,9 +314,10 @@ export default defineComponent({
 }
 
 .file-icon {
-  height: 12px;
+  /* height: 12px;
   width: 12px;
-  margin-right: 7px;
+  margin-right: 7px; */
+  margin-top: 3px;
 }
 
 .extension-icon {
