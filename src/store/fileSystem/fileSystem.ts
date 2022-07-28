@@ -215,8 +215,18 @@ export default {
       commit("SET_FILE_PATHS_TO_COPY", paths);
       commit("SET_FILE_PATHS_TO_CUT", []);
     },
-    PASTE_FILES: ({ commit, getters }: any, destinationPath: string) => {
-      console.log(getters);
+    PASTE_FILES: ({ commit, getters, dispatch }: any, destinationPath: string) => {
+      console.log(getters.GET_FILE_PATHS_TO_COPY);
+      const filesToCopy: string[] = getters.GET_FILE_PATHS_TO_COPY;
+      const filesToCut: string[] = getters.GET_FILE_PATHS_TO_CUT;
+
+      if (filesToCopy.length > 0) {
+        // copy file to cut
+      } else if (filesToCut.length > 0) {
+        // copy file to cut
+        // delete file to cut
+        dispatch("SET_FILE_PATHS_TO_CUT", []);
+      }
     },
   },
   getters: {
