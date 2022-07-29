@@ -22,7 +22,6 @@ import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
 import OpenedItemView from "@/components/OpenedItemView.vue";
 import TaskBar from "@/components/TaskBar.vue";
 import ActionMenu from "@/components/ActionMenu.vue";
-import SnackBar from "@/components/shared/SnackBar.vue";
 
 import Coordinates from "@/models/Coordinates";
 import ActionMenuModel from "@/models/ActionMenu";
@@ -31,7 +30,7 @@ import { DESKTOP_PATH } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionMenu, SnackBar },
+  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionMenu },
   setup() {
     const store = useStore();
 

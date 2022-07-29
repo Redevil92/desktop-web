@@ -51,7 +51,7 @@ export const deleteFile = (filePath: string): Promise<any> => {
 };
 
 export const copyFile = (filePath: string, destinationPath: string) => {
-  const fs = require("fs");
+  //const fs = require("fs");
 
   console.log("need implementation");
   // create  a file should have the path and the buffer if not a directory

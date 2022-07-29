@@ -95,9 +95,9 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
-    const doubleClickHandler = (fileName: string) => {
+    const doubleClickHandler = async (fileName: string) => {
       // check if file is dir
-      const isDirectory = isDir(fileName);
+      const isDirectory = await isDir(fileName);
       if (isDirectory && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
       } else {
@@ -106,14 +106,14 @@ export default defineComponent({
       }
     };
 
-    const openActionMenu = (event: any, isOpenedFolder: boolean = false, customPath?: string) => {
+    const openActionMenu = (event: any, isOpenedFolder = false, customPath?: string) => {
       event.preventDefault();
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
 
       store.dispatch("fileSystem/SET_ACTION_MENU", {
         show: true,
-        path: !!customPath ? customPath : props.folderDialog?.name,
+        path: customPath ? customPath : props.folderDialog?.name,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: isOpenedFolder,
       } as ActionMenu);

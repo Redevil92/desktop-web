@@ -41,11 +41,11 @@ export default defineComponent({
   },
   components: { Editor },
   emits: [],
-  setup(props, _) {
+  async setup(props, _) {
     const fileText = ref("");
 
     if (props.itemDialog?.name) {
-      fileText.value = readFile(props.itemDialog?.name);
+      fileText.value = await readFile(props.itemDialog?.name);
     }
 
     const saveFile = (content: any, html: any, body: any) => {

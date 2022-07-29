@@ -123,12 +123,12 @@ export default defineComponent({
       store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
     };
 
-    const changeFileName = () => {
+    const changeFileName = async () => {
       fileName.value = fileName.value.replace(/[\n\r]/g, "");
       const newName = DESKTOP_PATH + "/" + fileName.value;
 
       if (isEditingText.value && newName !== props.fileItem.name) {
-        if (existsFile(newName)) {
+        if (await existsFile(newName)) {
           showDialog.value = true;
           errorMessage.value = `The name "${fileName.value}" is already taken. Please find a new one.`;
           isEditingText.value = false;
