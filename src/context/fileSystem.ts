@@ -2,6 +2,7 @@
 const BrowserFS = require("browserfs");
 
 export function initializeFileSystem() {
+  window.localStorage.clear();
   BrowserFS.install(window);
 
   BrowserFS.configure(
