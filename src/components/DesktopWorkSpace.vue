@@ -48,7 +48,7 @@ import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
-import { createFile } from "@/context/fileSystemController";
+import { createFile, testCreateFiles } from "@/context/fileSystemController";
 import ActionMenu from "@/models/ActionMenu";
 
 export default defineComponent({
@@ -58,10 +58,9 @@ export default defineComponent({
   },
   components: { GridLayout, GridItem, FileItem, DropZone },
   emits: ["onFileItemPositionChange"],
-  async setup() {
+  setup() {
     const store = useStore();
     console.log("SETTING Up");
-    //await testCreateFiles();
 
     store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
 
@@ -138,9 +137,11 @@ export default defineComponent({
       reader.readAsDataURL(file);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       columnsNumber.value = window.innerWidth / 85;
       rowHeight.value = 22;
+
+      //await testCreateFiles();
     });
 
     return {
