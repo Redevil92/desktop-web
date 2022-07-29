@@ -1,4 +1,5 @@
 <template>
+  KKKKK
   <drop-zone @onFilesDropped="filesDroppedHandler">
     <div @click="selectFile({})" id="drop_zone">
       <grid-layout
@@ -57,8 +58,11 @@ export default defineComponent({
   },
   components: { GridLayout, GridItem, FileItem, DropZone },
   emits: ["onFileItemPositionChange"],
-  setup(props, context) {
+  async setup() {
     const store = useStore();
+    console.log("SETTING Up");
+    //await testCreateFiles();
+
     store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
 
     const itemWidth = 0.7;
@@ -89,6 +93,7 @@ export default defineComponent({
 
     const desktopFiles = computed(function (): DesktopFile[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
+
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         return desktopStringFiles.map((fileName: string, index: number) => {
           return {
