@@ -95,6 +95,7 @@ export default defineComponent({
 
     const cutFiles = () => {
       store.dispatch("fileSystem/SET_FILE_PATHS_TO_CUT", [actionMenuParams.value.path]);
+      refreshFiles();
     };
 
     const pasteFiles = async (event: Event) => {
@@ -104,6 +105,7 @@ export default defineComponent({
         return;
       }
       store.dispatch("fileSystem/PASTE_FILES", [actionMenuParams.value.path]);
+      refreshFiles();
     };
 
     const generateUniqueName = (name: string, nameList: string[]) => {
