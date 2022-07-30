@@ -1,5 +1,4 @@
 <template>
-  KKKKK
   <drop-zone @onFilesDropped="filesDroppedHandler">
     <div @click="selectFile({})" id="drop_zone">
       <grid-layout
@@ -60,9 +59,6 @@ export default defineComponent({
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
-    console.log("SETTING Up");
-
-    store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
 
     const itemWidth = 0.7;
     const itemHeight = 2.2;
@@ -131,7 +127,6 @@ export default defineComponent({
       reader.onload = function () {
         console.log(reader);
         createFile("my PC/Desktop/new.png", reader.result?.toString());
-        store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
       };
 
       reader.readAsDataURL(file);
@@ -141,7 +136,8 @@ export default defineComponent({
       columnsNumber.value = window.innerWidth / 85;
       rowHeight.value = 22;
 
-      //await testCreateFiles();
+      await testCreateFiles();
+      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     });
 
     return {
