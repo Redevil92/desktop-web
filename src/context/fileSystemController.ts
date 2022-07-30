@@ -19,7 +19,7 @@ export const createDirectory = (path: string, overwrite = false): Promise<any> =
 
 export const createFile = (path: string, text = "", encoding = "utf8"): Promise<any> => {
   const fs = (window as any).fs;
-  console.log("CREATING FILE", path);
+  console.log("CREATING FILE", path, fs);
   return new Promise((resolve, reject) => {
     fs.writeFile(path, text, encoding, (error: any) => {
       error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
@@ -150,11 +150,11 @@ export const getFileNameWithoutExtension = (path: string): string => {
 export const testCreateFiles = async () => {
   //window.localStorage.clear();
 
-  const file = await createFile("newFile.txt");
-  console.log(file);
-  await createFile("secondFile.txt", "my beautiful text");
+  await createFile("newFile.txt");
 
   await createDirectory("my PC");
+
+  await createFile("secondFile.txt", "my beautiful text");
 
   await createFile("my PC/mysecondFile.txt", "my beautiful text");
 
@@ -164,23 +164,17 @@ export const testCreateFiles = async () => {
   await createDirectory("my PC/Desktop/FOLDER");
 
   // base64 string
-  const img =
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0" +
-    "NAAAAKElEQVQ4jWNgYGD4Twzu6FhFFGYYNXDUwGFpIAk2E4dHDRw1cDgaCAASFOffhEIO" +
-    "3gAAAABJRU5ErkJggg==";
+  // const img =
+  //   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0" +
+  //   "NAAAAKElEQVQ4jWNgYGD4Twzu6FhFFGYYNXDUwGFpIAk2E4dHDRw1cDgaCAASFOffhEIO" +
+  //   "3gAAAABJRU5ErkJggg==";
 
-  //var data = img.replace(/^data:image\/\w+;base64,/, "");
-
-  await createFile("my PC/Desktop/image.png", img);
+  // await createFile("my PC/Desktop/image.png", img);
 
   //createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
   await createFile("my PC/Desktop/FOLDER/mountain", "");
-  //createFile("my PC/Desktop/FOLDER/new_file2.txt", "This is my text file 2.");
+
   await createDirectory("my PC/Desktop/FOLDER/sub directory");
   await createDirectory("my PC/Desktop/FOLDER/another sub directory");
   await createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This is my text file 2.");
-  //createFile("my PC/Desktop/file_desktop1.txt", "my beautiful text");
-  //createFile("my PC/Desktop/file_desktop2.txt", "my beautiful text");
-  const res = await getDesktopFiles();
-  console.log("DESKTOP", res);
 };

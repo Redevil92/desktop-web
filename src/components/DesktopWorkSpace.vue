@@ -136,7 +136,6 @@ export default defineComponent({
       columnsNumber.value = window.innerWidth / 85;
       rowHeight.value = 22;
 
-      await testCreateFiles();
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     });
 
