@@ -135,7 +135,7 @@ export default defineComponent({
     onMounted(async () => {
       columnsNumber.value = window.innerWidth / 85;
       rowHeight.value = 22;
-
+      console.log("MOUNTED");
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     });
 

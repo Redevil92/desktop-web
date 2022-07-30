@@ -1,11 +1,38 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { initializeFileSystem } from "./context/fileSystem";
-import { createDirectory, createFile } from "./context/fileSystemController";
+import { testCreateFiles } from "./context/fileSystemController";
 import router from "./router";
 import store from "./store";
 
 // eslint-disable-next-line
-initializeFileSystem();
+const BrowserFS = require("browserfs");
 
-createApp(App).use(store).use(router).mount("#app");
+export async function initializeAppAndFileSystem() {
+  BrowserFS.install(window);
+
+  BrowserFS.configure(
+    {
+      fs: "IndexedDB",
+      // options: {
+      //   "/": { fs: "IndexedDB" },
+      //   "/tmp": { fs: "InMemory" },
+      //   storeName: "mydata",
+      // },
+      options: { storeName: "storeName" },
+    },
+    async function (e: any) {
+      if (e) {
+        // An error occurred.
+        // SHOW SOME ERRORS
+        console.error("Error in initialization BrowserFS (main.ts):", e);
+        throw e;
+      }
+
+      (window as any).fs = window.require("fs");
+      testCreateFiles();
+      createApp(App).use(store).use(router).mount("#app");
+    }
+  );
+}
+
+initializeAppAndFileSystem();
