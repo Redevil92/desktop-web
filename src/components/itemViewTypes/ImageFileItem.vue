@@ -1,8 +1,5 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
-    <!-- <panZoom selector=".zoomable" :options="{ minZoom: 0.5, maxZoom: 5 }">
-      <img class="zoomable" src="https://picsum.photos/300" />
-    </panZoom> -->
     <div class="flex" style="position: relative">
       <input v-model="zoomLevel" class="image-zoom zoom-input" type="number" />
       <span class="mdi mdi-percent percent-icon" style="position: absolute"></span>
@@ -19,25 +16,14 @@
         class="file-image"
       />
     </div>
-    <!-- <panZoom>
-      <img
-        :src="`${imageFile}`"
-        :height="height - 15"
-        :width="itemDialog.dimension.width - 6"
-        alt=""
-        class="file-image"
-      />
-    </panZoom> -->
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
-
-// import panZoom from "vue-panzoom";
 
 export default defineComponent({
   props: {
@@ -49,16 +35,21 @@ export default defineComponent({
   setup(props, _) {
     const imageFile = ref("");
     const zoomLevel = ref(100);
-    const originalHeight = ref();
+    const originalHeight = ref(0);
+
     const calculatedHeight = computed(() => {
       return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
     });
 
-    if (props.itemDialog?.name) {
-      imageFile.value = readFile(props.itemDialog?.name).toString();
-    }
-
     const zoomImage = (zoom: boolean) => {
+      if (props.itemDialog?.guid) {
+        const imageRef = document.getElementById("image-" + props.itemDialog.guid);
+        if (originalHeight.value === 0 && imageRef?.getBoundingClientRect()) {
+          console.log(imageRef?.getBoundingClientRect().height);
+          originalHeight.value = (imageRef?.getBoundingClientRect().height * 100) / zoomLevel.value;
+        }
+      }
+
       if (zoom && zoomLevel.value < 900) {
         zoomLevel.value = Math.trunc(zoomLevel.value * 1.3);
       }
@@ -77,12 +68,15 @@ export default defineComponent({
     //   }
     // };
 
+    onBeforeMount(async () => {
+      if (props.itemDialog?.name) {
+        const file = await readFile(props.itemDialog?.name);
+        imageFile.value = file.toString();
+      }
+    });
+
     onMounted(async () => {
       await nextTick();
-      if (props.itemDialog?.name) {
-        const imageRef = document.getElementById("image-" + props.itemDialog.guid);
-        originalHeight.value = imageRef?.getBoundingClientRect().height;
-      }
     });
 
     return { imageFile, zoomImage, calculatedHeight, zoomLevel };
