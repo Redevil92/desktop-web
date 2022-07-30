@@ -45,9 +45,15 @@ export default defineComponent({
   components: {},
   emits: ["onAddNewFile", "onAddNewFolder"],
   setup(_, context) {
+    const isFolder = ref(false);
+
     // props -> path
     const actionMenuParams = computed(function () {
       return store.getters["fileSystem/GET_ACTION_MENU"] as ActionMenu;
+    });
+
+    watch(actionMenuParams, async function (_1, _2) {
+      isFolder.value = await isDir(actionMenuParams.value.path || "");
     });
 
     const canPasteFiles = computed(() => {
@@ -123,11 +129,6 @@ export default defineComponent({
       }
       return myName;
     };
-
-    const isFolder = computed(function () {
-      console.log(actionMenuParams.value.path);
-      return isDir(actionMenuParams.value.path || "");
-    });
 
     const isDesktop = computed(function () {
       return actionMenuParams.value.path === DESKTOP_PATH;

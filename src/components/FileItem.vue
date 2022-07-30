@@ -6,7 +6,7 @@
       <BaseButton @click="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
   </base-dialog>
-  <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler" @click.right="rightClickHandler">
+  <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler">
     <div @click="isEditingText = false">
       <img
         :class="isSelected ? 'file-item-selected' : 'invisible-border'"
@@ -112,10 +112,6 @@ export default defineComponent({
       store.dispatch("fileSystem/ADD_ITEM_DIALOG", props.fileItem);
     };
 
-    const rightClickHandler = () => {
-      context.emit("onRightClick");
-    };
-
     const refreshFileSystemFiles = () => {
       store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
       store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
@@ -151,7 +147,6 @@ export default defineComponent({
       isFolder,
       getFileNameFromPath,
       clickHandler,
-      rightClickHandler,
       fileExtension,
       fileName,
       changeFileName,
