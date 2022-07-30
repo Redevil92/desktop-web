@@ -12,12 +12,16 @@
 </template>
 
 <script lang="ts">
+import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
+import store from "@/store";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-  props: {},
+  props: {
+    dropPath: String,
+  },
   components: {},
-  emits: ["onFilesDropped"],
+
   setup(props, context) {
     let active = ref(false);
 
@@ -30,8 +34,27 @@ export default defineComponent({
 
     function onDrop(event: any) {
       setInactive();
-      context.emit("onFilesDropped", [...event.dataTransfer.files]);
+      filesDroppedHandler([...event.dataTransfer.files]);
+      //context.emit("onFilesDropped", [...event.dataTransfer.files]);
     }
+
+    const filesDroppedHandler = (files: any) => {
+      files.forEach((file: any) => {
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          const dropPathFiles = store.getters["fileSystem/GET_DESKTOP_FILES"];
+          const uniquePath =
+            generateUniqueName(getFileNameWithoutExtension(props.dropPath + file.name), dropPathFiles) +
+            "." +
+            getFileExtensionFromName(file.name);
+
+          await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
+          //await createFile("my PC/Desktop/new.png", reader.result?.toString());
+          await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+        };
+        reader.readAsDataURL(file);
+      });
+    };
 
     return { onDrop, active };
   },

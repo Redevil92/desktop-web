@@ -1,5 +1,5 @@
 <template>
-  <drop-zone @onFilesDropped="filesDroppedHandler">
+  <drop-zone :dropPath="'my PC/Desktop/'">
     <div @click="selectFile({})" id="drop_zone">
       <grid-layout
         class="grid-layout-dimension"
@@ -117,24 +117,6 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
-    const filesDroppedHandler = (files: any) => {
-      files.forEach((file: any) => {
-        const reader = new FileReader();
-        reader.onload = async function (e) {
-          const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"];
-          const uniquePath =
-            generateUniqueName(getFileNameWithoutExtension("my PC/Desktop/" + file.name), desktopPaths) +
-            "." +
-            getFileExtensionFromName(file.name);
-
-          await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
-          //await createFile("my PC/Desktop/new.png", reader.result?.toString());
-          await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
-        };
-        reader.readAsDataURL(file);
-      });
-    };
-
     onMounted(async () => {
       columnsNumber.value = window.innerWidth / 85;
       rowHeight.value = 22;
@@ -151,7 +133,6 @@ export default defineComponent({
       rowHeight,
       selectFile,
       selectedFile,
-      filesDroppedHandler,
       openActionMenu,
     };
   },
