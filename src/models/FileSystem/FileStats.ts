@@ -14,4 +14,5 @@ export default interface FileStats {
   rdev: number;
   size: number;
   uid: number;
+  isDirectory(): boolean;
 }

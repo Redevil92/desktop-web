@@ -86,9 +86,9 @@ export const getFilesAsync = (path: string, fullPath = false): string[] => {
   return result;
 };
 
-export const getDesktopFiles = async (fullPath = false): Promise<string[]> => {
+export const getDesktopFiles = (fullPath = false): Promise<string[]> => {
   const desktopPath = "my PC/Desktop";
-  return await getFiles(desktopPath, fullPath);
+  return getFiles(desktopPath, fullPath);
 };
 
 export const isDir = async (path: string): Promise<boolean> => {

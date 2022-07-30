@@ -10,7 +10,7 @@
     <div @click="isEditingText = false">
       <img
         :class="isSelected ? 'file-item-selected' : 'invisible-border'"
-        v-if="isFolder(fileItem.name)"
+        v-if="isFolder"
         height="60"
         :src="require('/src/assets/fileIcons/folder.svg')"
         alt=""
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onMounted, PropType, ref } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
@@ -72,6 +72,7 @@ import {
   existsFile,
   getFileExtensionFromName,
   getFileNameFromPath,
+  getStat,
   isDir,
   renameFile,
 } from "@/context/fileSystemController";
@@ -89,14 +90,11 @@ export default defineComponent({
     const fileNameInputRef = ref(null);
     const showDialog = ref(false);
     const errorMessage = ref("");
+    const isFolder = ref(false);
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
     });
-
-    const isFolder = (filePath: string) => {
-      return isDir(filePath);
-    };
 
     const setIsEditingText = async () => {
       if (props.isSelected) {
@@ -143,6 +141,10 @@ export default defineComponent({
         isEditingText.value = false;
       }
     };
+
+    onMounted(async () => {
+      isFolder.value = await isDir(props.fileItem.name);
+    });
 
     return {
       doubleClickHandler,

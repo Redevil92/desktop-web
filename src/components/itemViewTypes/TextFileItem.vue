@@ -1,6 +1,7 @@
 <template>
   <div :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
+      v-if="isLoaded"
       class="mce-editor"
       api-key=""
       :init="{
@@ -22,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from "vue";
+import { defineComponent, onBeforeMount, onMounted, PropType, ref, watch } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
@@ -41,12 +42,9 @@ export default defineComponent({
   },
   components: { Editor },
   emits: [],
-  async setup(props, _) {
+  setup(props, _) {
     const fileText = ref("");
-
-    if (props.itemDialog?.name) {
-      fileText.value = await readFile(props.itemDialog?.name);
-    }
+    const isLoaded = ref(false);
 
     const saveFile = (content: any, html: any, body: any) => {
       console.log("SAVING", content.content, html, body);
@@ -60,7 +58,14 @@ export default defineComponent({
       }
     };
 
-    return { fileText, saveFile };
+    onBeforeMount(async () => {
+      if (props.itemDialog?.name) {
+        fileText.value = await readFile(props.itemDialog?.name);
+        isLoaded.value = true;
+      }
+    });
+
+    return { fileText, saveFile, isLoaded };
   },
 });
 </script>
