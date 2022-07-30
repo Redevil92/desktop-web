@@ -106,6 +106,22 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
 };
 
 // utilities, TODO create a new file for utilities
+export const generateUniqueName = (name: string, nameList: string[]) => {
+  console.log(666, name, nameList);
+  let myName = name;
+  let currentIndex = 0;
+  let isUnique = false;
+  while (!isUnique && currentIndex < 100) {
+    isUnique = nameList.findIndex((name) => getFileNameWithoutExtension(name) === myName) === -1;
+
+    if (!isUnique) {
+      currentIndex++;
+      myName = `${name} (${currentIndex})`;
+    }
+  }
+  return myName;
+};
+
 export const getFileNameFromPath = (filePath: string): string => {
   const filePaths = filePath.split("/");
 

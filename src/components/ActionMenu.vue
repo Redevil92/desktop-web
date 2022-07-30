@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { DESKTOP_PATH, getFileNameWithoutExtension, isDir } from "@/context/fileSystemController";
+import { DESKTOP_PATH, generateUniqueName, getFileNameWithoutExtension, isDir } from "@/context/fileSystemController";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -114,22 +114,6 @@ export default defineComponent({
       }
       store.dispatch("fileSystem/PASTE_FILES", [actionMenuParams.value.path]);
       refreshFiles();
-    };
-
-    const generateUniqueName = (name: string, nameList: string[]) => {
-      console.log(name, nameList);
-      let myName = name;
-      let currentIndex = 0;
-      let isUnique = false;
-      while (!isUnique && currentIndex < 100) {
-        isUnique = nameList.findIndex((name) => getFileNameWithoutExtension(name) === myName) === -1;
-        console.log(isUnique);
-        if (!isUnique) {
-          currentIndex++;
-          myName = `${name} (${currentIndex})`;
-        }
-      }
-      return myName;
     };
 
     const isDesktop = computed(function () {

@@ -47,7 +47,12 @@ import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
-import { createFile } from "@/context/fileSystemController";
+import {
+  createFile,
+  generateUniqueName,
+  getFileExtensionFromName,
+  getFileNameWithoutExtension,
+} from "@/context/fileSystemController";
 import ActionMenu from "@/models/ActionMenu";
 
 export default defineComponent({
@@ -119,12 +124,15 @@ export default defineComponent({
 
     const filesDroppedHandler = (files: any) => {
       files.forEach((file: any) => {
-        console.log("**MY MAN", file);
         const reader = new FileReader();
         reader.onload = async function (e) {
-          console.log("ON LOADED");
-          const newImagePath = "my PC/Desktop/" + file.name;
-          await store.dispatch("fileSystem/CREATE_FILE", { path: newImagePath, content: reader.result?.toString() });
+          const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"];
+          const uniquePath =
+            generateUniqueName(getFileNameWithoutExtension("my PC/Desktop/" + file.name), desktopPaths) +
+            "." +
+            getFileExtensionFromName(file.name);
+
+          await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
           //await createFile("my PC/Desktop/new.png", reader.result?.toString());
           await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
         };
