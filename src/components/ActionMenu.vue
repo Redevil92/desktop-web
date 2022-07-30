@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { DESKTOP_PATH, generateUniqueName, getFileNameWithoutExtension, isDir } from "@/context/fileSystemController";
+import { DESKTOP_PATH, isDir } from "@/context/fileSystemController";
+import { generateUniqueName } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -209,3 +210,7 @@ hr {
   margin: 5px 0px;
 }
 </style>
+
+function generateUniqueName(arg0: string, currentFolderFiles: string[]) { throw new Error("Function not implemented.");
+} function generateUniqueName(arg0: string, currentFolderFiles: string[]) { throw new Error("Function not
+implemented."); }

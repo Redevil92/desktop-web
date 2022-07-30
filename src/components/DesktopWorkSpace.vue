@@ -47,13 +47,8 @@ import DropZone from "@/components/shared/DropZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
-import {
-  createFile,
-  generateUniqueName,
-  getFileExtensionFromName,
-  getFileNameWithoutExtension,
-} from "@/context/fileSystemController";
 import ActionMenu from "@/models/ActionMenu";
+import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {

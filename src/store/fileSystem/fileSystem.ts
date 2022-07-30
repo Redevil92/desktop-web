@@ -4,10 +4,10 @@ import {
   createFile,
   deleteFile,
   getDesktopFiles,
-  getFileExtensionFromName,
   getFiles,
   isDir,
 } from "@/context/fileSystemController";
+import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
