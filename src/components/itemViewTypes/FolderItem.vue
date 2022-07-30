@@ -7,18 +7,23 @@
           >{{ filePathSplitted.length > index + 1 ? " > " : "" }}
         </span>
       </div>
-      <div class="folder-item-list" :style="`height:${height - 35}px`">
-        <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
-        <div
-          class="folder-item"
-          :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
-          v-for="(item, index) in folderDialog.filesPath"
-          :key="`item-${index}-${item}`"
-          @dblclick="doubleClickHandler(item)"
-          @click.stop="itemClickHandler(item)"
-          @click.right="openActionMenu($event, false, item)"
-        >
-          <!-- <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
+      <drop-zone :dropPath="folderDialog.name">
+        <div class="folder-item-list" :style="`height:${height - 35}px`">
+          <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
+            getFileNameFromPath(fileNameToChange)
+          }}</span>
+
+          <div
+            id="drop_zone"
+            class="folder-item"
+            :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
+            v-for="(item, index) in folderDialog.filesPath"
+            :key="`item-${index}-${item}`"
+            @dblclick="doubleClickHandler(item)"
+            @click.stop="itemClickHandler(item)"
+            @click.right="openActionMenu($event, false, item)"
+          >
+            <!-- <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
 
           <span
             class="mdi mdi-file-word extension-icon"
@@ -26,39 +31,40 @@
             v-else-if="getFileExtensionFromName(item)"
           ></span> -->
 
-          <div v-if="getFileExtensionFromName(item)">
-            <img
-              class="file-icon"
-              style="margin-top: 3px"
-              height="16"
-              :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
-              alt=""
-            />
-          </div>
-          <div v-else-if="isDir(item)">
-            <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
-          </div>
-          <div v-else>
-            <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
-          </div>
+            <div v-if="getFileExtensionFromName(item)">
+              <img
+                class="file-icon"
+                style="margin-top: 3px"
+                height="16"
+                :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
+                alt=""
+              />
+            </div>
+            <div v-else-if="isDir(item)">
+              <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
+            </div>
+            <div v-else>
+              <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+            </div>
 
-          <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
-          <span v-if="item === selectedItem && isEditingSelectedValue">
-            <input
-              ref="fileNameInputRef"
-              class="file-text no-outline"
-              v-model="fileNameToChange"
-              @click.stop=""
-              @keyup.enter="changeFileName"
-              @blur="changeFileName"
-              @keyup.esc="isEditingSelectedValue = false"
-              type="text"
-              :style="`width:${fileFocusedWidth}px`"
-            />
-          </span>
-          <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
+            <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
+            <span v-if="item === selectedItem && isEditingSelectedValue">
+              <input
+                ref="fileNameInputRef"
+                class="file-text no-outline"
+                v-model="fileNameToChange"
+                @click.stop=""
+                @keyup.enter="changeFileName"
+                @blur="changeFileName"
+                @keyup.esc="isEditingSelectedValue = false"
+                type="text"
+                :style="`width:${fileFocusedWidth}px`"
+              />
+            </span>
+            <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
+          </div>
         </div>
-      </div>
+      </drop-zone>
     </div>
   </div>
 </template>
@@ -73,12 +79,14 @@ import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
+import DropZone from "@/components/shared/DropZone.vue";
+
 export default defineComponent({
   props: {
     folderDialog: Object as PropType<FolderDialog>,
     height: Number,
   },
-  components: {},
+  components: { DropZone },
   emits: [],
   setup(props, _) {
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES

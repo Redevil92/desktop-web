@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import { getFiles } from "@/context/fileSystemController";
 import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
 import store from "@/store";
 import { defineComponent, ref } from "vue";
@@ -39,21 +40,33 @@ export default defineComponent({
     }
 
     const filesDroppedHandler = (files: any) => {
-      files.forEach((file: any) => {
-        const reader = new FileReader();
-        reader.onload = async function (e) {
-          const dropPathFiles = store.getters["fileSystem/GET_DESKTOP_FILES"];
-          const uniquePath =
-            generateUniqueName(getFileNameWithoutExtension(props.dropPath + file.name), dropPathFiles) +
-            "." +
-            getFileExtensionFromName(file.name);
+      console.log(props.dropPath);
+      if (props.dropPath) {
+        files.forEach((file: any) => {
+          const reader = new FileReader();
+          reader.onload = async function (e) {
+            const dropPathFiles = await getFiles(props.dropPath || "", true);
+            console.log(2, dropPathFiles);
+            const uniquePath =
+              generateUniqueName(getFileNameWithoutExtension(props.dropPath + "/" + file.name), dropPathFiles) +
+              "." +
+              getFileExtensionFromName(file.name);
 
-          await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
-          //await createFile("my PC/Desktop/new.png", reader.result?.toString());
-          await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
-        };
-        reader.readAsDataURL(file);
-      });
+            console.log("3", uniquePath);
+
+            await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
+            //await createFile("my PC/Desktop/new.png", reader.result?.toString());
+
+            refreshFiles();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    };
+
+    const refreshFiles = () => {
+      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
+      store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
 
     return { onDrop, active };

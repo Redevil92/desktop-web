@@ -1,6 +1,6 @@
 <template>
-  <drop-zone :dropPath="'my PC/Desktop/'">
-    <div @click="selectFile({})" id="drop_zone">
+  <drop-zone :dropPath="'my PC/Desktop'">
+    <div @click="selectFile({})">
       <grid-layout
         class="grid-layout-dimension"
         :layout="desktopFiles"
@@ -48,7 +48,6 @@ import DropZone from "@/components/shared/DropZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
-import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
