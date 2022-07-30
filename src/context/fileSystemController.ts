@@ -3,15 +3,8 @@ import FileStats from "@/models/FileSystem/FileStats";
 export const DESKTOP_PATH = "my PC/Desktop";
 
 export const createDirectory = (path: string, overwrite = false): Promise<any> => {
-  // mkdir: (path, overwrite = false) =>
-  // new Promise((resolve, reject) => {
-  //   fs?.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error) =>
-  //     error ? reject(error) : resolve(true)
-  //   );
-  // }),
-  console.log("CREATING DIR", path);
   const fs = (window as any).fs;
-
+  console.log("CREATING DIR", path);
   return new Promise((resolve, reject) => {
     fs.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error: any) => (error ? reject(error) : resolve(true)));
   });
@@ -19,7 +12,7 @@ export const createDirectory = (path: string, overwrite = false): Promise<any> =
 
 export const createFile = (path: string, text = "", encoding = "utf8"): Promise<any> => {
   const fs = (window as any).fs;
-  console.log("CREATING FILE", path, fs);
+  console.log("CREATING FILE", path);
   return new Promise((resolve, reject) => {
     fs.writeFile(path, text, encoding, (error: any) => {
       error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
@@ -29,7 +22,7 @@ export const createFile = (path: string, text = "", encoding = "utf8"): Promise<
 
 export const existsFile = (path: string): Promise<boolean> => {
   const fs = (window as any).fs;
-
+  console.log("EXISTS", path);
   return new Promise((resolve) => {
     fs.exists(path, resolve);
   });
@@ -37,13 +30,14 @@ export const existsFile = (path: string): Promise<boolean> => {
 
 export const renameFile = (newFilePath: string, oldFilePath: string): Promise<any> => {
   const fs = (window as any).fs;
-
+  console.log("RENAME");
   return new Promise((resolve, reject) => {
     fs.rename(oldFilePath, newFilePath, (error: any) => (error ? reject(error) : resolve(true)));
   });
 };
 
 export const deleteFile = (filePath: string): Promise<any> => {
+  console.log("DELETE");
   const fs = (window as any).fs;
   return new Promise((resolve, reject) => {
     fs.unlink(filePath, (error: any) => (error ? reject(error) : resolve(true)));
@@ -66,6 +60,7 @@ export const getFiles = async (path: string, fullPath = false): Promise<string[]
   const fs = (window as any).fs;
 
   const filesPromise: string[] = await new Promise((resolve, reject) => {
+    console.log("READDIR", path);
     fs.readdir(path, (error: any, res: string[]) => (error ? reject(error) : resolve(res)));
   });
 
@@ -76,22 +71,13 @@ export const getFiles = async (path: string, fullPath = false): Promise<string[]
   return filesPromise;
 };
 
-export const getFilesAsync = (path: string, fullPath = false): string[] => {
-  const fs = (window as any).fs;
-
-  const result: string[] = fs.readdirSync(path);
-  if (fullPath) {
-    return result.map((file) => path + "/" + file);
-  }
-  return result;
-};
-
 export const getDesktopFiles = (fullPath = false): Promise<string[]> => {
   const desktopPath = "my PC/Desktop";
   return getFiles(desktopPath, fullPath);
 };
 
 export const isDir = async (path: string): Promise<boolean> => {
+  console.log("IS DIR", path);
   const fs = (window as any).fs;
 
   const fileStat: any = await new Promise((resolve, reject) => {

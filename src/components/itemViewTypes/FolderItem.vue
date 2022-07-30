@@ -36,13 +36,7 @@
             />
           </div>
           <div v-else-if="isDir(item)">
-            <img
-              :class="isSelected ? 'file-item-selected' : 'invisible-border'"
-              height="16"
-              style="margin-top: 3px"
-              :src="require('/src/assets/fileIcons/folder.svg')"
-              alt=""
-            />
+            <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
           </div>
           <div v-else>
             <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
@@ -77,9 +71,7 @@ import {
   isDir,
   renameFile,
 } from "@/context/fileSystemController";
-import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref } from "vue";
-
-// import MenuAction from "@/components/MenuAction.vue";
+import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";

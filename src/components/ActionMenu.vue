@@ -39,7 +39,7 @@ import Coordinates from "@/models/Coordinates";
 import { FolderDialog } from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import store from "@/store";
-import { defineComponent, ref, reactive, computed, watch, PropType, onMounted, onUnmounted, onDeactivated } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, onDeactivated } from "vue";
 
 export default defineComponent({
   components: {},
@@ -52,8 +52,10 @@ export default defineComponent({
       return store.getters["fileSystem/GET_ACTION_MENU"] as ActionMenu;
     });
 
-    watch(actionMenuParams, async function (_1, _2) {
-      isFolder.value = await isDir(actionMenuParams.value.path || "");
+    watch(actionMenuParams, async function (_2, _3) {
+      if (actionMenuParams.value.path) {
+        isFolder.value = await isDir(actionMenuParams.value.path || "");
+      }
     });
 
     const canPasteFiles = computed(() => {
