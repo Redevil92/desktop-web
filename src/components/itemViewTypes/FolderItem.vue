@@ -64,19 +64,14 @@
 </template>
 
 <script lang="ts">
-import {
-  deleteFile,
-  getFileExtensionFromName,
-  getFileNameFromPath,
-  isDir,
-  renameFile,
-} from "@/context/fileSystemController";
+import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
 import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {

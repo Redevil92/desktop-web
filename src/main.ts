@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { testCreateFiles } from "./context/fileSystemController";
+import { testCreateFiles } from "./context/fileSystemUtils";
 import router from "./router";
 import store from "./store";
 

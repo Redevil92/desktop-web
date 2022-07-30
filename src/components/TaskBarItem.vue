@@ -12,7 +12,7 @@ import { computed, defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import store from "@/store";
-import { getFileNameFromPath } from "@/context/fileSystemController";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {

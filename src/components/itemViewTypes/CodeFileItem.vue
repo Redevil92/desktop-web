@@ -16,7 +16,7 @@ import { defineComponent, PropType, ref } from "vue";
 
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
-import { getFileExtensionFromName } from "@/context/fileSystemController";
+import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -69,7 +69,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.monaco-editor {
-}
-</style>
+<style scoped></style>

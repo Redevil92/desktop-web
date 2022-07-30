@@ -122,12 +122,12 @@ import Dimension from "@/models/Dimension";
 
 import VuePdfEmbed from "vue-pdf-embed";
 import { MIME_TYPE } from "@/constants";
-import { getFileExtensionFromName, getFileNameFromPath, isDir } from "@/context/fileSystemController";
 
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
 import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -164,8 +164,6 @@ export default defineComponent({
     const leftPosition = computed(function () {
       return props.itemDialog.position ? props.itemDialog.position.y : 0;
     });
-
-    const isDirectory = isDir(props.itemDialog.name);
 
     function isCodeFile(): boolean {
       const codeExtensions = ["css", "html", "ts", "js"];
@@ -311,7 +309,6 @@ export default defineComponent({
       actionTypes,
       pdfSource,
       MIME_TYPE,
-      isDirectory,
       dialogHeader,
       contentHeight,
       isCodeFile,
