@@ -74,8 +74,8 @@
     </div>
 
     <div class="flex folder-header" ref="dialogHeader" @mousedown="dragMouseDown($event, actionTypes.MOVING)">
-      <div v-if="itemDialog.icon">
-        <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
+      <div v-if="fileExtension">
+        <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
       </div>
       <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
@@ -165,24 +165,25 @@ export default defineComponent({
       return props.itemDialog.position ? props.itemDialog.position.y : 0;
     });
 
+    const fileExtension = computed(function () {
+      return getFileExtensionFromName(props.itemDialog.name);
+    });
+
     function isCodeFile(): boolean {
       const codeExtensions = ["css", "html", "ts", "js"];
-      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
 
-      return codeExtensions.includes(currentFileExtension);
+      return codeExtensions.includes(fileExtension.value);
     }
 
     function isImageFile(): boolean {
       const codeExtensions = ["png", "jpg", "jpeg"];
-      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
 
-      return codeExtensions.includes(currentFileExtension);
+      return codeExtensions.includes(fileExtension.value);
     }
 
     function isTextFile(): boolean {
       const codeExtensions = ["txt", "text"];
-      const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
-      return codeExtensions.includes(currentFileExtension);
+      return codeExtensions.includes(fileExtension.value);
     }
 
     let pos1 = 0,
@@ -305,6 +306,7 @@ export default defineComponent({
       closeFolderDialog,
       minimizeFolderDialog,
       getFileNameFromPath,
+      fileExtension,
       setItemDialogFocused,
       actionTypes,
       pdfSource,

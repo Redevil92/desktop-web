@@ -36,7 +36,6 @@ export default defineComponent({
     function onDrop(event: any) {
       setInactive();
       filesDroppedHandler([...event.dataTransfer.files]);
-      //context.emit("onFilesDropped", [...event.dataTransfer.files]);
     }
 
     const filesDroppedHandler = (files: any) => {
@@ -49,7 +48,7 @@ export default defineComponent({
             console.log(2, dropPathFiles);
 
             // Problem in dropping JPEG files, this is a momentanery fix
-            // TODO: figure it out why it complains with jpeg
+            // TODO: figure it out why it complains with jpeg (hint, the problem could be related to the icon used in the desktop and in the folder header)
             const uniquePath =
               generateUniqueName(getFileNameWithoutExtension(props.dropPath + "/" + file.name), dropPathFiles) +
               "." +
@@ -57,7 +56,6 @@ export default defineComponent({
 
             console.log("Creating file");
             await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
-            //await createFile("my PC/Desktop/new.png", reader.result?.toString());
             console.log("File created");
             refreshFiles();
           };

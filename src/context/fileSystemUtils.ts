@@ -1,7 +1,6 @@
 import { createDirectory, createFile } from "./fileSystemController";
 
 export const generateUniqueName = (name: string, nameList: string[]) => {
-  console.log(666, name, nameList);
   let myName = name;
   let currentIndex = 0;
   let isUnique = false;
