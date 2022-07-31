@@ -47,16 +47,18 @@ export default defineComponent({
           reader.onload = async function (e) {
             const dropPathFiles = await getFiles(props.dropPath || "", true);
             console.log(2, dropPathFiles);
+
+            // Problem in dropping JPEG files, this is a momentanery fix
+            // TODO: figure it out why it complains with jpeg
             const uniquePath =
               generateUniqueName(getFileNameWithoutExtension(props.dropPath + "/" + file.name), dropPathFiles) +
               "." +
-              getFileExtensionFromName(file.name);
+              getFileExtensionFromName(file.name).replace("jpeg", "jpg");
 
-            console.log("3", uniquePath);
-
+            console.log("Creating file");
             await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
             //await createFile("my PC/Desktop/new.png", reader.result?.toString());
-
+            console.log("File created");
             refreshFiles();
           };
           reader.readAsDataURL(file);
