@@ -101,14 +101,14 @@
     <div v-else-if="isTextFile()">
       <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
     </div>
+    <div v-else-if="fileExtension === 'pdf'">
+      <pdf-item :height="contentHeight" :itemDialog="itemDialog"></pdf-item>
+    </div>
     <div v-else-if="isCodeFile()">
       <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
     </div>
     <div v-else-if="isImageFile()">
       <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
-    </div>
-    <div v-if="itemDialog.mimeType === MIME_TYPE.pdf">
-      <vue-pdf-embed :source="pdfSource"></vue-pdf-embed>
     </div>
   </div>
 </template>
@@ -117,13 +117,13 @@
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
 import store from "@/store";
-import { computed, defineComponent, PropType, reactive, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import Dimension from "@/models/Dimension";
 
-import VuePdfEmbed from "vue-pdf-embed";
 import { MIME_TYPE } from "@/constants";
 
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
+import PdfItem from "@/components/itemViewTypes/PdfItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
 import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
@@ -134,7 +134,7 @@ export default defineComponent({
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { VuePdfEmbed, FolderItem, CodeFileItem, TextFileItem, ImageFileItem },
+  components: { FolderItem, CodeFileItem, TextFileItem, ImageFileItem, PdfItem },
   emits: [],
   setup(props, _) {
     const actionTypes = {
@@ -144,8 +144,6 @@ export default defineComponent({
       RESIZING_BOTTOM: "resizing_bottom",
       MOVING: "moving",
     };
-
-    const pdfSource = "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf";
 
     const minHeight = 80;
     const minWidth = 200;
@@ -309,7 +307,6 @@ export default defineComponent({
       fileExtension,
       setItemDialogFocused,
       actionTypes,
-      pdfSource,
       MIME_TYPE,
       dialogHeader,
       contentHeight,
