@@ -102,5 +102,5 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
     fs.readFile(path, (error: any, res: any) => (error ? reject(error) : resolve(res)));
   });
 
-  return fileToRead.toString(encoding).split("\n");
+  return fileToRead.toString(encoding);
 };
