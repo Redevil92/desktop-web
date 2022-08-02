@@ -1,24 +1,75 @@
 <template>
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <div class="pdf-controls">
-      <span
-        class="mdi mdi-arrow-left control-icon"
-        :class="{ 'control-icon-disabled': page === 1 }"
-        @click="changePage(page - 1)"
-      ></span
-      >{{ page }} - {{ pageCount
-      }}<span
-        class="mdi mdi-arrow-right control-icon"
-        :class="{ 'control-icon-disabled': page === pageCount }"
-        @click="changePage(page + 1)"
-      ></span>
+      <div class="view-option-button">
+        <span class="mdi mdi-view-split-vertical control-icon" @click="showViewOption = !showViewOption"
+          ><span style="margin-left: 5px">View</span> <span class="mdi mdi-chevron-down chevron-icon"></span
+        ></span>
+        <div class="view-option-container" v-if="showViewOption">
+          <div class="view-item" :class="{ 'view-item-selected': page > 0 }" @click="page = pageCount">
+            <div>Single page</div>
+            <div v-if="page > 0"><span class="mdi mdi-check"></span></div>
+          </div>
+          <div class="view-item" :class="{ 'view-item-selected': page === null }" @click="page = null">
+            <div>Scrolling</div>
+            <div>
+              <span v-if="page === 0" class="mdi mdi-check"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span
+          class="mdi mdi-arrow-left control-icon"
+          :class="{ 'control-icon-disabled': page === 1 }"
+          @click="changePage(page - 1)"
+        ></span
+        >{{ page }} - {{ pageCount
+        }}<span
+          class="mdi mdi-arrow-right control-icon"
+          :class="{ 'control-icon-disabled': page === pageCount }"
+          @click="changePage(page + 1)"
+        ></span>
+      </div>
+
+      <div>
+        <span
+          class="mdi mdi-magnify-minus control-icon"
+          @click="zoomOut"
+          :class="{ 'control-icon-disabled': false }"
+        ></span
+        ><span
+          class="mdi mdi-magnify-plus control-icon"
+          @click="zoomIn"
+          :class="{ 'control-icon-disabled': false }"
+        ></span>
+      </div>
+      <div>
+        <span class="mdi mdi-rotate-left control-icon" @click="rotateLeft"></span>
+      </div>
+
+      <div>
+        <span
+          class="mdi mdi-download control-icon"
+          @click="downloadPdf"
+          :class="{ 'control-icon-disabled': false }"
+        ></span>
+        <span class="mdi mdi-printer control-icon" @click="printPdf" :class="{ 'control-icon-disabled': false }"></span>
+      </div>
     </div>
-    <div></div>
-    <div class="pdf-container" :style="`height: ${height - 35}px; width: ${itemDialog.dimension.width - 4}px; `">
+    {{ pdfMargin }}
+    <div
+      class="pdf-container vue-pdf-embed"
+      :style="`height: ${height - 35}px; width: ${itemDialog.dimension.width - 4}px;`"
+      ref="pdfContainerRef"
+    >
       <vue-pdf-embed
+        :style="`margin-top: ${pdfMargin}px; margin-bottom:20px `"
         ref="pdfRef"
         :source="pdfData"
         :page="page"
+        :height="pdfHeight"
+        :rotation="pdfRotation"
         @password-requested="handlePasswordRequest"
         @rendered="handleDocumentRender"
       />
@@ -27,10 +78,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import VuePdfEmbed from "vue-pdf-embed";
+
+import { dowloadWithProgress } from "@/utils/downloadUtils";
+import { readFile } from "@/context/fileSystemController";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -40,41 +95,119 @@ export default defineComponent({
   components: { VuePdfEmbed },
   emits: [],
   setup(props, _) {
-    const pdfData = ref(
-      "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf"
-    );
+    const pdfData = ref(null as any);
     const pdfRef = ref(null);
     const page = ref(1);
+    const pdfRotation = ref(0);
     const isLoading = ref(false);
-    const pageCount = ref(0);
+    const pageCount = ref(1);
+    const pdfHeight = ref(800);
+    const pdfWidth = ref(0);
+    const showViewOption = ref(false);
+    const pdfContainerRef = ref(null);
+
+    const pdfMargin = computed(() => {
+      const dialogHeight = props.height || 0;
+      let calculatedMargin = 0;
+
+      const pdfDimension =
+        pdfRotation.value === 0 || Math.abs(pdfRotation.value) % 90 === 0 ? pdfHeight.value : pdfWidth.value;
+
+      if (page.value !== null) {
+        calculatedMargin = pdfDimension - dialogHeight + 100;
+      } else {
+        const marginBottom = 10;
+        calculatedMargin = (pdfDimension + marginBottom) * pageCount.value - dialogHeight + 100;
+      }
+
+      calculatedMargin = calculatedMargin > 0 ? calculatedMargin : 0;
+
+      return calculatedMargin;
+    });
 
     const handlePasswordRequest = (callback: any, retry: any) => {
       callback(prompt(retry ? "Enter password again" : "Enter password"));
     };
 
-    const handleDocumentRender = () => {
+    const handleDocumentRender = async () => {
       isLoading.value = false;
+
       pageCount.value = (pdfRef.value as any).pageCount;
+      //await nextTick();
+      if (pdfContainerRef.value && (pdfContainerRef.value as unknown as HTMLElement).children[0]) {
+        pdfWidth.value = (pdfContainerRef.value as unknown as HTMLElement).children[0].getBoundingClientRect().width;
+      }
+
+      //console.log((pdfContainerRef.value as unknown as HTMLElement).children[0].getBoundingClientRect().width);
     };
 
     const changePage = (selectedPage: number) => {
-      console.log("CHANGINF PAGE", selectedPage);
       if (selectedPage > 0 && selectedPage <= pageCount.value) {
         page.value = selectedPage;
       }
     };
 
-    return { pdfRef, page, pdfData, isLoading, pageCount, handleDocumentRender, handlePasswordRequest, changePage };
+    const downloadPdf = () => {
+      const pdfName = props.itemDialog ? getFileNameFromPath(props.itemDialog?.name) : "un-named";
+      dowloadWithProgress(pdfData.value, pdfName);
+    };
+
+    const printPdf = () => {
+      (pdfRef.value as any).print(900, "test");
+    };
+
+    const zoomIn = () => {
+      pdfHeight.value *= 1.1;
+      pdfWidth.value *= 1.1;
+    };
+    const zoomOut = () => {
+      pdfHeight.value /= 1.1;
+      pdfWidth.value /= 1.1;
+    };
+
+    const rotateLeft = () => {
+      pdfRotation.value -= 90;
+    };
+
+    onBeforeMount(async () => {
+      if (props.itemDialog?.name) {
+        const file = await readFile(props.itemDialog?.name);
+        pdfData.value = file.toString();
+      }
+    });
+
+    return {
+      pdfRef,
+      pdfHeight,
+      page,
+      pdfData,
+      isLoading,
+      pageCount,
+      handleDocumentRender,
+      handlePasswordRequest,
+      changePage,
+      zoomOut,
+      zoomIn,
+      printPdf,
+      downloadPdf,
+      pdfMargin,
+      showViewOption,
+      rotateLeft,
+      pdfRotation,
+      pdfContainerRef,
+    };
   },
 });
 </script>
 
-<style scoped>
+<style>
 .vue-pdf-embed > div {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
 }
+</style>
 
+<style scoped>
 .app-header {
   padding: 16px;
   box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
@@ -105,6 +238,8 @@ export default defineComponent({
   color: white;
   font-size: var(--large-font-size);
   padding-top: 3px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .control-icon {
@@ -122,5 +257,46 @@ export default defineComponent({
 
 .control-icon-disabled {
   opacity: 0.4;
+}
+
+.chevron-icon {
+  color: white;
+  font-size: var(--medium-font-size);
+}
+
+.view-option-button {
+  position: relative;
+}
+
+.view-option-container {
+  position: absolute;
+  background-color: #3d3b3bf5;
+  z-index: 3;
+  font-size: var(--medium-font-size);
+  left: 10px;
+  padding: 5px;
+  width: fit-content;
+  text-align: initial;
+  border-radius: 5px;
+  border: 1px solid #5c5c5c;
+}
+
+.view-item {
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 2px;
+  width: 110px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.view-item:hover {
+  background-color: #696464f5;
+}
+
+.view-item-selected {
+  background-color: #837d7df5;
+  border-radius: 5px;
+  padding: 2px;
 }
 </style>
