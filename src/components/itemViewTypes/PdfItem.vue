@@ -6,7 +6,7 @@
           ><span style="margin-left: 5px">View</span> <span class="mdi mdi-chevron-down chevron-icon"></span
         ></span>
         <div class="view-option-container" v-if="showViewOption">
-          <div class="view-item" :class="{ 'view-item-selected': page > 0 }" @click="page = pageCount">
+          <div class="view-item" :class="{ 'view-item-selected': page > 0 }" @click="page = 1">
             <div>Single page</div>
             <div v-if="page > 0"><span class="mdi mdi-check"></span></div>
           </div>
@@ -23,8 +23,8 @@
           class="mdi mdi-arrow-left control-icon"
           :class="{ 'control-icon-disabled': page === 1 }"
           @click="changePage(page - 1)"
-        ></span
-        >{{ page }} - {{ pageCount
+        ></span>
+        <input type="number" :value="page" @change="changePage(+$event.target.value)" /> /{{ pageCount
         }}<span
           class="mdi mdi-arrow-right control-icon"
           :class="{ 'control-icon-disabled': page === pageCount }"
@@ -57,7 +57,7 @@
         <span class="mdi mdi-printer control-icon" @click="printPdf" :class="{ 'control-icon-disabled': false }"></span>
       </div>
     </div>
-    {{ pdfMargin }}
+
     <div
       class="pdf-container vue-pdf-embed"
       :style="`height: ${height - 35}px; width: ${itemDialog.dimension.width - 4}px;`"
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import VuePdfEmbed from "vue-pdf-embed";
@@ -111,8 +111,16 @@ export default defineComponent({
       let calculatedMargin = 0;
 
       const pdfDimension =
-        pdfRotation.value === 0 || Math.abs(pdfRotation.value) % 90 === 0 ? pdfHeight.value : pdfWidth.value;
+        pdfRotation.value === 0 || Math.abs(pdfRotation.value) % 180 === 0 ? pdfHeight.value : pdfWidth.value;
 
+      console.log(
+        Math.abs(pdfRotation.value),
+        Math.abs(pdfRotation.value) % 180,
+        "WID",
+        pdfWidth.value,
+        "HEI",
+        pdfHeight.value
+      );
       if (page.value !== null) {
         calculatedMargin = pdfDimension - dialogHeight + 100;
       } else {
@@ -134,7 +142,11 @@ export default defineComponent({
 
       pageCount.value = (pdfRef.value as any).pageCount;
       //await nextTick();
-      if (pdfContainerRef.value && (pdfContainerRef.value as unknown as HTMLElement).children[0]) {
+      if (
+        pdfWidth.value === 0 &&
+        pdfContainerRef.value &&
+        (pdfContainerRef.value as unknown as HTMLElement).children[0]
+      ) {
         pdfWidth.value = (pdfContainerRef.value as unknown as HTMLElement).children[0].getBoundingClientRect().width;
       }
 
@@ -142,6 +154,7 @@ export default defineComponent({
     };
 
     const changePage = (selectedPage: number) => {
+      console.log(selectedPage);
       if (selectedPage > 0 && selectedPage <= pageCount.value) {
         page.value = selectedPage;
       }
@@ -298,5 +311,31 @@ export default defineComponent({
   background-color: #837d7df5;
   border-radius: 5px;
   padding: 2px;
+}
+
+input {
+  border: 1px solid white;
+  border-radius: 5px;
+  -webkit-appearance: none;
+  all: unset;
+  width: 40px;
+  text-align: center;
+}
+
+input:focus {
+  outline: 2px solid white; /* Removes the border when the input is clicked */
+  border-radius: 5px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
