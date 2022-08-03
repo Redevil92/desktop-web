@@ -5,6 +5,10 @@ const fileTypesConfiguration: any = {
       height: 380,
       width: 545,
     },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
     icon: "/System/Icons/eruda.webp",
     singleton: true,
     title: "DevTools",
@@ -13,6 +17,10 @@ const fileTypesConfiguration: any = {
     defaultSize: {
       height: 480,
       width: 760,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
     },
     icon: "txt.svg",
   },
@@ -26,11 +34,19 @@ const fileTypesConfiguration: any = {
       height: 480,
       width: 550,
     },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
   },
   js: {
     defaultSize: {
       height: 480,
       width: 544,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
     },
   },
   css: {
@@ -38,12 +54,20 @@ const fileTypesConfiguration: any = {
       height: 480,
       width: 544,
     },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
   },
-  PDF: {
+  pdf: {
     background: "rgb(82, 86, 89)",
     defaultSize: {
       height: 480,
       width: 640,
+    },
+    minSize: {
+      height: 300,
+      width: 520,
     },
     icon: "/System/Icons/pdf.webp",
     title: "PDF",
@@ -53,6 +77,10 @@ const fileTypesConfiguration: any = {
     defaultSize: {
       height: 432,
       width: 576,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
     },
     hideTitlebarIcon: true,
     icon: "/System/Icons/photos.webp",
@@ -65,6 +93,10 @@ const fileTypesConfiguration: any = {
     defaultSize: {
       height: 174,
       width: 397,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
     },
     hideMaximizeButton: true,
     hideMinimizeButton: true,
@@ -82,6 +114,10 @@ const fileTypesConfiguration: any = {
       height: 340,
       width: 553,
     },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
     icon: "/System/Icons/xterm.webp",
     lockAspectRatio: true,
     title: "Terminal",
@@ -93,6 +129,10 @@ const fileTypesConfiguration: any = {
     defaultSize: {
       height: 163,
       width: 400,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
     },
     icon: "/System/Icons/copying.webp",
     title: "Dialog",

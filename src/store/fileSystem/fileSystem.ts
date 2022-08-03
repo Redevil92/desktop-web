@@ -113,9 +113,11 @@ export default {
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
       let dimension = { height: 300, width: 500 };
+      let minDimension = { height: 100, width: 220 };
       let icon = "";
       if (fileTypeConfiguration) {
         dimension = fileTypeConfiguration.defaultSize;
+        minDimension = fileTypeConfiguration.minSize;
         icon = fileTypeConfiguration.icon;
       }
 
@@ -128,6 +130,7 @@ export default {
         zIndex: 1,
         icon,
         dimension,
+        minDimension,
       } as ItemDialog;
 
       const isFolder = await isDir(newItemDialog.name);

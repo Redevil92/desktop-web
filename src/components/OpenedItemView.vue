@@ -145,8 +145,13 @@ export default defineComponent({
       MOVING: "moving",
     };
 
-    const minHeight = 80;
-    const minWidth = 200;
+    const minHeight = computed(function () {
+      return props.itemDialog.minDimension?.height || 200;
+    });
+
+    const minWidth = computed(function () {
+      return props.itemDialog.minDimension?.width || 200;
+    });
 
     const dialogHeader = ref({} as HTMLElement);
     const draggableElement = ref({} as HTMLElement);
@@ -221,7 +226,9 @@ export default defineComponent({
       // set the four actions type
       if (actionsToPerform.includes(actionTypes.RESIZING_LEFT)) {
         newWidth =
-          props.itemDialog.dimension.width + pos1 > minWidth ? props.itemDialog.dimension.width + pos1 : minWidth;
+          props.itemDialog.dimension.width + pos1 > minWidth.value
+            ? props.itemDialog.dimension.width + pos1
+            : minWidth.value;
         const newPosition = {
           x: props.itemDialog.position.x,
           y: draggableElement.value.offsetLeft - pos1,
@@ -231,12 +238,16 @@ export default defineComponent({
       } else if (actionsToPerform.includes(actionTypes.RESIZING_RIGHT)) {
         console.log("RESIZE RIGHT");
         newWidth =
-          props.itemDialog.dimension.width - pos1 > minWidth ? props.itemDialog.dimension.width - pos1 : minWidth;
+          props.itemDialog.dimension.width - pos1 > minWidth.value
+            ? props.itemDialog.dimension.width - pos1
+            : minWidth.value;
       }
 
       if (actionsToPerform.includes(actionTypes.RESIZING_TOP)) {
         newHeight =
-          props.itemDialog.dimension.height + pos2 > minHeight ? props.itemDialog.dimension.height + pos2 : minHeight;
+          props.itemDialog.dimension.height + pos2 > minHeight.value
+            ? props.itemDialog.dimension.height + pos2
+            : minHeight.value;
         const newPosition = {
           x: draggableElement.value.offsetTop - pos2,
           y: props.itemDialog.position.y,
@@ -245,7 +256,9 @@ export default defineComponent({
         updateItemPosition(newPosition);
       } else if (actionsToPerform.includes(actionTypes.RESIZING_BOTTOM)) {
         newHeight =
-          props.itemDialog.dimension.height - pos2 > minHeight ? props.itemDialog.dimension.height - pos2 : minHeight;
+          props.itemDialog.dimension.height - pos2 > minHeight.value
+            ? props.itemDialog.dimension.height - pos2
+            : minHeight.value;
       }
 
       const newDimension = { height: newHeight, width: newWidth } as Dimension;

@@ -9,6 +9,7 @@ export default interface ItemDialog {
   isCollapsed: boolean;
   position: Coordinates;
   dimension: Dimension;
+  minDimension?: Dimension;
   icon?: string;
   mimeType: string;
   isFolder: boolean;

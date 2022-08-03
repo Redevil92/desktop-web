@@ -1,5 +1,5 @@
 <template>
-  <PrintPdfDialog :show="true" />
+  <PrintPdfDialog :show="false" />
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <div class="pdf-controls">
       <div class="view-option-button">
@@ -62,7 +62,7 @@
 
     <div
       class="pdf-container vue-pdf-embed"
-      :style="`height: ${height - 40}px; width: ${itemDialog.dimension.width - 4}px;`"
+      :style="`height: ${height - 40}px; width: ${itemDialog.dimension.width - 6}px;`"
       ref="pdfContainerRef"
     >
       <vue-pdf-embed
@@ -284,7 +284,7 @@ export default defineComponent({
   background-color: #3d3b3bf5;
   z-index: 3;
   font-size: var(--medium-font-size);
-  left: 10px;
+  left: 5px;
   padding: 5px;
   width: fit-content;
   text-align: initial;
@@ -312,12 +312,13 @@ export default defineComponent({
 }
 
 input {
-  border: 1px solid white;
   border-radius: 5px;
   -webkit-appearance: none;
   all: unset;
   width: 40px;
   text-align: center;
+  border: 1px solid white;
+  border-radius: 5px;
 }
 
 input:focus {
