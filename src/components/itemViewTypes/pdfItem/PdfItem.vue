@@ -1,9 +1,11 @@
 <template>
+  <PrintPdfDialog :show="true" />
   <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <div class="pdf-controls">
       <div class="view-option-button">
         <span class="mdi mdi-view-split-vertical control-icon" @click="showViewOption = !showViewOption"
-          ><span style="margin-left: 5px">View</span> <span class="mdi mdi-chevron-down chevron-icon"></span
+          ><span style="margin-left: 5px; font-size: var(--large-font-size)">View</span>
+          <span class="mdi mdi-chevron-down chevron-icon"></span
         ></span>
         <div class="view-option-container" v-if="showViewOption">
           <div class="view-item" :class="{ 'view-item-selected': page > 0 }" @click="page = 1">
@@ -60,7 +62,7 @@
 
     <div
       class="pdf-container vue-pdf-embed"
-      :style="`height: ${height - 35}px; width: ${itemDialog.dimension.width - 4}px;`"
+      :style="`height: ${height - 40}px; width: ${itemDialog.dimension.width - 4}px;`"
       ref="pdfContainerRef"
     >
       <vue-pdf-embed
@@ -87,12 +89,14 @@ import { dowloadWithProgress } from "@/utils/downloadUtils";
 import { readFile } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
+import PrintPdfDialog from "@/components/itemViewTypes/pdfItem/PrintPdfDialog.vue";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { VuePdfEmbed },
+  components: { VuePdfEmbed, PrintPdfDialog },
   emits: [],
   setup(props, _) {
     const pdfData = ref(null as any);
@@ -113,14 +117,6 @@ export default defineComponent({
       const pdfDimension =
         pdfRotation.value === 0 || Math.abs(pdfRotation.value) % 180 === 0 ? pdfHeight.value : pdfWidth.value;
 
-      console.log(
-        Math.abs(pdfRotation.value),
-        Math.abs(pdfRotation.value) % 180,
-        "WID",
-        pdfWidth.value,
-        "HEI",
-        pdfHeight.value
-      );
       if (page.value !== null) {
         calculatedMargin = pdfDimension - dialogHeight + 100;
       } else {
@@ -166,6 +162,7 @@ export default defineComponent({
     };
 
     const printPdf = () => {
+      const pdfName = props.itemDialog ? getFileNameFromPath(props.itemDialog?.name) : "un-named";
       (pdfRef.value as any).print(900, "test");
     };
 
@@ -246,20 +243,21 @@ export default defineComponent({
 }
 
 .pdf-controls {
-  height: 28px;
+  height: 35px;
   background-color: rgb(62, 62, 62);
   color: white;
   font-size: var(--large-font-size);
-  padding-top: 3px;
+  padding-top: 4px;
   display: flex;
   justify-content: space-evenly;
 }
 
 .control-icon {
   color: white;
-  padding: 1px 2px;
+  padding: 0px 5px;
+
   background-color: rgb(101, 101, 101);
-  font-size: var(--medium-font-size);
+  font-size: var(--x-large-font-size);
   border-radius: 5px;
   margin: 0px 8px;
 }

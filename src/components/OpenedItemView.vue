@@ -123,7 +123,7 @@ import Dimension from "@/models/Dimension";
 import { MIME_TYPE } from "@/constants";
 
 import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
-import PdfItem from "@/components/itemViewTypes/PdfItem.vue";
+import PdfItem from "@/components/itemViewTypes/pdfItem/PdfItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
 import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";

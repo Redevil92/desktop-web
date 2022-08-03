@@ -222,7 +222,6 @@ export default defineComponent({
 }
 
 .error-message {
-  padding: 20px;
   color: white;
   max-width: 400px;
   text-align: center;
