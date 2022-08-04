@@ -21,7 +21,10 @@
       <div class="input-container">
         <div class="label">Pages:</div>
         <div>
-          <BaseInput type="number" v-model="resolution"></BaseInput>
+          <BaseRadioButtons
+            :selectionList="['All the pages', 'Single page']"
+            :selected="'Single page'"
+          ></BaseRadioButtons>
         </div>
       </div>
       <div class="flex-end">
@@ -38,13 +41,14 @@ import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } fr
 import BaseButton from "@/components/shared/BaseButton.vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import BaseDialog from "@/components/shared/BaseDialog.vue";
+import BaseRadioButtons from "@/components/shared/BaseRadioButtons.vue";
 
 export default defineComponent({
   props: {
     show: Boolean,
     pdfRef: Object,
   },
-  components: { BaseButton, BaseInput, BaseDialog },
+  components: { BaseButton, BaseInput, BaseDialog, BaseRadioButtons },
   emits: ["close"],
   setup(props, context) {
     const name = ref("");
@@ -76,7 +80,7 @@ export default defineComponent({
 
 .input-container {
   display: flex;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 input {
