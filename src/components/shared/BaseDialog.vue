@@ -1,7 +1,8 @@
 <template>
-  <Teleport to="body">
+  <Teleport :to="to ? `#${to}` : 'body'">
     <div class="dialog-container">
-      <div class="dialog">
+      {{ to }}
+      <div class="dialog" :class="{ 'darker-dialog': darker, padding: !noPadding }">
         <slot></slot>
       </div>
     </div>
@@ -12,7 +13,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  props: {},
+  props: { darker: Boolean, to: String, noPadding: Boolean },
   components: {},
   setup() {
     return {};
@@ -25,9 +26,13 @@ export default defineComponent({
   height: 100%;
   z-index: 5;
   background-color: rgba(0, 0, 0, 0.04);
-  position: fixed;
+  position: absolute;
   display: flex;
   top: 0;
+}
+
+.padding {
+  padding: 20px;
 }
 
 .dialog {
@@ -38,6 +43,9 @@ export default defineComponent({
   -webkit-box-shadow: 2px 3px 10px 0px rgb(0 0 0 / 20%);
   border-radius: 10px;
   border: 1px solid #9f9f9f;
-  padding: 20px;
+}
+
+.darker-dialog {
+  background-color: var(--dialog-background-color_darker);
 }
 </style>

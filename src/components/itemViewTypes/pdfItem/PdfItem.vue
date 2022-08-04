@@ -1,6 +1,6 @@
 <template>
-  <PrintPdfDialog :show="false" />
-  <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <PrintPdfDialog :show="showPrintPdfDialog" :pdfRef="pdfRef" @close="showPrintPdfDialog = false" />
+  <div id="pdfItem" :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <div class="pdf-controls">
       <div class="view-option-button">
         <span class="mdi mdi-view-split-vertical control-icon" @click="showViewOption = !showViewOption"
@@ -56,7 +56,11 @@
           @click="downloadPdf"
           :class="{ 'control-icon-disabled': false }"
         ></span>
-        <span class="mdi mdi-printer control-icon" @click="printPdf" :class="{ 'control-icon-disabled': false }"></span>
+        <span
+          class="mdi mdi-printer control-icon"
+          @click="showPrintPdfDialog = true"
+          :class="{ 'control-icon-disabled': false }"
+        ></span>
       </div>
     </div>
 
@@ -109,6 +113,7 @@ export default defineComponent({
     const pdfWidth = ref(0);
     const showViewOption = ref(false);
     const pdfContainerRef = ref(null);
+    const showPrintPdfDialog = ref(false);
 
     const pdfMargin = computed(() => {
       const dialogHeight = props.height || 0;
@@ -161,11 +166,6 @@ export default defineComponent({
       dowloadWithProgress(pdfData.value, pdfName);
     };
 
-    const printPdf = () => {
-      const pdfName = props.itemDialog ? getFileNameFromPath(props.itemDialog?.name) : "un-named";
-      (pdfRef.value as any).print(900, "test");
-    };
-
     const zoomIn = () => {
       pdfHeight.value *= 1.1;
       pdfWidth.value *= 1.1;
@@ -198,13 +198,13 @@ export default defineComponent({
       changePage,
       zoomOut,
       zoomIn,
-      printPdf,
       downloadPdf,
       pdfMargin,
       showViewOption,
       rotateLeft,
       pdfRotation,
       pdfContainerRef,
+      showPrintPdfDialog,
     };
   },
 });
@@ -255,7 +255,7 @@ export default defineComponent({
 .control-icon {
   color: white;
   padding: 0px 5px;
-
+  cursor: pointer;
   background-color: rgb(101, 101, 101);
   font-size: var(--x-large-font-size);
   border-radius: 5px;
