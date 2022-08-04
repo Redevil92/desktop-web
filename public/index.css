@@ -6,11 +6,14 @@
   --primary-color: #4545c9;
   --primary-color_darker: #2323c6;
 
+  --neutral-color: grey;
+
   --dialog-header-color_dark: rgb(42, 42, 42);
   --dialog-sub-header-color_dark: rgb(25, 25, 25);
   --dialog-background-color_dark: rgb(74, 74, 74);
   --dialog-background-color_contrast_dark: rgb(125, 125, 125);
-  --dialog-background-color_with_opacity: #737272e3;
+  --dialog-background-color_with_opacity: #4a4a4ae3;
+  --dialog-background-color_darker: #393939;
   --dialog-border-color_dark: #626262;
   --selected-color: #3434d1;
 
