@@ -1,6 +1,6 @@
 <template>
   <div v-for="selection in selectionList" :key="`radio-button-${selection}`" class="radio-button-container">
-    <div>
+    <div @click="selectHandler(selection)">
       <div v-if="selection === selected" class="radio-button-selected">
         <div></div>
       </div>
@@ -19,12 +19,12 @@ export default defineComponent({
     selected: String,
   },
   components: {},
-  emits: ["click"],
+  emits: ["onSelect"],
   setup(_, context) {
-    const clickHandler = (event: any) => {
-      context.emit("click", event);
+    const selectHandler = (selection: string) => {
+      context.emit("onSelect", selection);
     };
-    return { clickHandler };
+    return { selectHandler };
   },
 });
 </script>

@@ -1,5 +1,10 @@
 <template>
-  <PrintPdfDialog :show="showPrintPdfDialog" :pdfRef="pdfRef" @close="showPrintPdfDialog = false" />
+  <PrintPdfDialog
+    v-if="showPrintPdfDialog"
+    :show="showPrintPdfDialog"
+    :pdfRef="pdfRef"
+    @close="showPrintPdfDialog = false"
+  />
   <div id="pdfItem" :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
     <div class="pdf-controls">
       <div class="view-option-button">
@@ -135,14 +140,20 @@ export default defineComponent({
     });
 
     const handlePasswordRequest = (callback: any, retry: any) => {
-      callback(prompt(retry ? "Enter password again" : "Enter password"));
+      console.log(callback, retry);
+      if (!callback) {
+        return;
+      }
+      callback(
+        prompt(retry ? "Something went wrong. Enter password again" : "Enter password in order to see the file")
+      );
     };
 
     const handleDocumentRender = async () => {
       isLoading.value = false;
 
       pageCount.value = (pdfRef.value as any).pageCount;
-      //await nextTick();
+
       if (
         pdfWidth.value === 0 &&
         pdfContainerRef.value &&

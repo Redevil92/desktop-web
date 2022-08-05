@@ -22,8 +22,9 @@
         <div class="label">Pages:</div>
         <div>
           <BaseRadioButtons
-            :selectionList="['All the pages', 'Single page']"
-            :selected="'Single page'"
+            @onSelect="onSelectPrintOptionHandler"
+            :selectionList="printOptions"
+            :selected="selectedPrintOption"
           ></BaseRadioButtons>
         </div>
       </div>
@@ -53,10 +54,18 @@ export default defineComponent({
   setup(props, context) {
     const name = ref("");
     const resolution = ref(900);
+    const printOptions = ref(["All the pages", "Current page"]);
+    const selectedPrintOption = ref("Current page");
 
     const printPdf = () => {
+      if (selectedPrintOption.value === "All the pages") {
+        // (props.pdfRef as any).pageNums = Array.from(Array((props.pdfRef as any).pageCount).keys());
+      }
       (props.pdfRef as any).print(resolution.value, name.value);
-      (props.pdfRef as any).pageNums;
+    };
+
+    const onSelectPrintOptionHandler = (selection: string) => {
+      selectedPrintOption.value = selection;
     };
 
     const closeDialog = () => {
@@ -64,10 +73,17 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      console.log("PDF 2", props.pdfRef);
+      if ((props.pdfRef as any).pageNums.length === (props.pdfRef as any).pageCount) {
+        printOptions.value = ["All the pages"];
+        selectedPrintOption.value = "All the pages";
+      } else {
+        printOptions.value = ["Current page"];
+        selectedPrintOption.value = "Current page";
+      }
+      console.log("PDF 2", props.pdfRef, (props.pdfRef as any).pageNums.length);
     });
 
-    return { name, resolution, closeDialog, printPdf };
+    return { name, resolution, closeDialog, printPdf, printOptions, selectedPrintOption, onSelectPrintOptionHandler };
   },
 });
 </script>
