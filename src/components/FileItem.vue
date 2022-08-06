@@ -6,7 +6,12 @@
       <BaseButton @click="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
   </base-dialog>
-  <div class="file-item" @dblclick="doubleClickHandler" @click.stop="clickHandler">
+  <div
+    class="file-item"
+    :class="{ 'cut-file-item': isCutFile }"
+    @dblclick="doubleClickHandler"
+    @click.stop="clickHandler"
+  >
     <div @click="isEditingText = false">
       <img
         :class="isSelected ? 'file-item-selected' : 'invisible-border'"
@@ -89,6 +94,14 @@ export default defineComponent({
       return getFileExtensionFromName(props.fileItem.name);
     });
 
+    const isCutFile = computed(function () {
+      const filesToCut = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"] as string[];
+      if (filesToCut.includes(props.fileItem.name)) {
+        return true;
+      }
+      return false;
+    });
+
     const setIsEditingText = async () => {
       if (props.isSelected) {
         isEditingText.value = true;
@@ -148,6 +161,7 @@ export default defineComponent({
       fileNameInputRef,
       showDialog,
       errorMessage,
+      isCutFile,
     };
   },
 });
@@ -230,5 +244,9 @@ export default defineComponent({
 .ok-button {
   margin-top: 20px;
   width: 100%;
+}
+
+.cut-file-item {
+  opacity: 0.5;
 }
 </style>

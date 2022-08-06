@@ -16,7 +16,11 @@
           <div
             id="drop_zone"
             class="folder-item"
-            :class="{ 'folder-item-odd': index % 2 === 0, 'selected-item': item === selectedItem }"
+            :class="{
+              'folder-item-odd': index % 2 === 0,
+              'selected-item': item === selectedItem,
+              'cut-item': isCutFile(item),
+            }"
             v-for="(item, index) in folderDialog.filesPath"
             :key="`item-${index}-${item}`"
             @dblclick="doubleClickHandler(item)"
@@ -124,6 +128,14 @@ export default defineComponent({
     const fileNameToChange = ref("");
     const fileNameInputRef = ref(null);
     const fileNameToChangeSpanRef = ref(null);
+
+    const isCutFile = (itemName: string) => {
+      const filesToCut = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"] as string[];
+      if (filesToCut.includes(itemName)) {
+        return true;
+      }
+      return false;
+    };
 
     const fileFocusedWidth = computed(function (): number {
       if (!fileNameToChangeSpanRef.value) {
@@ -244,6 +256,7 @@ export default defineComponent({
       fileNameToChangeSpanRef,
       fileFocusedWidth,
       openActionMenu,
+      isCutFile,
     };
   },
 });
@@ -267,6 +280,7 @@ export default defineComponent({
   align-content: center;
   cursor: pointer;
   display: flex;
+  align-items: center;
 }
 
 .input-placeholder {
@@ -315,6 +329,10 @@ export default defineComponent({
 
 .extension-icon {
   font-size: 16px;
+}
+
+.cut-item {
+  opacity: 0.5;
 }
 
 .file-text {
