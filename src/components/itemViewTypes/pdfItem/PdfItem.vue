@@ -99,6 +99,7 @@ import { readFile } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import PrintPdfDialog from "@/components/itemViewTypes/pdfItem/PrintPdfDialog.vue";
+import store from "@/store";
 
 export default defineComponent({
   props: {
@@ -139,14 +140,13 @@ export default defineComponent({
       return calculatedMargin;
     });
 
-    const handlePasswordRequest = (callback: any, retry: any) => {
-      console.log(callback, retry);
-      if (!callback) {
-        return;
+    const handlePasswordRequest = (callback: any, _: any) => {
+      const password = prompt("Enter password in order to see the file");
+      if (password) {
+        callback(password);
+      } else {
+        store.dispatch("fileSystem/CLOSE_ITEM_DIALOG", props.itemDialog?.guid);
       }
-      callback(
-        prompt(retry ? "Something went wrong. Enter password again" : "Enter password in order to see the file")
-      );
     };
 
     const handleDocumentRender = async () => {
@@ -190,11 +190,15 @@ export default defineComponent({
       pdfRotation.value -= 90;
     };
 
-    onBeforeMount(async () => {
+    const loadPdf = async () => {
       if (props.itemDialog?.name) {
         const file = await readFile(props.itemDialog?.name);
         pdfData.value = file.toString();
       }
+    };
+
+    onBeforeMount(async () => {
+      await loadPdf();
     });
 
     return {
@@ -216,6 +220,7 @@ export default defineComponent({
       pdfRotation,
       pdfContainerRef,
       showPrintPdfDialog,
+      loadPdf,
     };
   },
 });
