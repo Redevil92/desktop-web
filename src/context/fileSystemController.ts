@@ -1,4 +1,5 @@
 import FileStats from "@/models/FileSystem/FileStats";
+import { generateUniqueName, getFileNameFromPath } from "./fileSystemUtils";
 
 export const DESKTOP_PATH = "my PC/Desktop";
 
@@ -42,18 +43,6 @@ export const deleteFile = (filePath: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     fs.unlink(filePath, (error: any) => (error ? reject(error) : resolve(true)));
   });
-};
-
-export const copyFile = (filePath: string, destinationPath: string) => {
-  //const fs = require("fs");
-
-  console.log("need implementation");
-  // create  a file should have the path and the buffer if not a directory
-  // uniquePath = await createPath(
-  //   newBasePath,
-  //   directory,
-  //   await readFile(entry)
-  // );
 };
 
 export const getFiles = async (path: string, fullPath = false): Promise<string[]> => {
@@ -103,4 +92,24 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
   });
 
   return fileToRead.toString(encoding);
+};
+
+export const copyFile = async (filePath: string, destinationPath: string) => {
+  //const fs = require("fs");
+
+  console.log("need implementation");
+  const fileData = await readFile(filePath);
+  const filesName = await getFiles(destinationPath, true);
+  const uniqueFilePath = generateUniqueName(destinationPath + "/" + getFileNameFromPath(filePath), filesName);
+
+  await createFile(uniqueFilePath, fileData);
+
+  // CHECK THERE
+
+  // create  a file should have the path and the buffer if not a directory
+  // uniquePath = await createPath(
+  //   newBasePath,
+  //   directory,
+  //   await readFile(entry)
+  // );
 };
