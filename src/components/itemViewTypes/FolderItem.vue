@@ -126,7 +126,6 @@ export default defineComponent({
     const fileNameToChangeSpanRef = ref(null);
 
     const fileFocusedWidth = computed(function (): number {
-      console.log(selectedItem.value, fileNameToChange.value);
       if (!fileNameToChangeSpanRef.value) {
         return 200;
       }
@@ -193,12 +192,11 @@ export default defineComponent({
         }
         newPath += fullPathSplitted[i];
       }
-      console.log(newPath);
+
       return newPath;
     };
 
     const keyDownHandler = (event: { code: string }) => {
-      console.log(event.code, 666);
       if (props.folderDialog?.isFocused && selectedItem.value) {
         if (event.code === "Delete" && props.folderDialog?.isFocused && selectedItem.value) {
           // delete item

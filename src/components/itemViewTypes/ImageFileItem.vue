@@ -45,7 +45,6 @@ export default defineComponent({
       if (props.itemDialog?.guid) {
         const imageRef = document.getElementById("image-" + props.itemDialog.guid);
         if (originalHeight.value === 0 && imageRef?.getBoundingClientRect()) {
-          console.log(imageRef?.getBoundingClientRect().height);
           originalHeight.value = (imageRef?.getBoundingClientRect().height * 100) / zoomLevel.value;
         }
       }
@@ -57,16 +56,6 @@ export default defineComponent({
         zoomLevel.value = Math.trunc(zoomLevel.value * 0.75);
       }
     };
-
-    // const setZoomLevel = (event: any) => {
-    //   console.log(event);
-    //   if (event) {
-    //     const percentValue = event.target.value;
-    //     if (percentValue < 900 && percentValue > 10) {
-    //       zoomLevel.value = event.target.value as number;
-    //     }
-    //   }
-    // };
 
     onBeforeMount(async () => {
       if (props.itemDialog?.name) {

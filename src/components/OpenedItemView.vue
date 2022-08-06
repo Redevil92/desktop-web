@@ -236,7 +236,6 @@ export default defineComponent({
 
         updateItemPosition(newPosition);
       } else if (actionsToPerform.includes(actionTypes.RESIZING_RIGHT)) {
-        console.log("RESIZE RIGHT");
         newWidth =
           props.itemDialog.dimension.width - pos1 > minWidth.value
             ? props.itemDialog.dimension.width - pos1

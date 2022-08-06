@@ -39,13 +39,11 @@ export default defineComponent({
     }
 
     const filesDroppedHandler = (files: any) => {
-      console.log(props.dropPath);
       if (props.dropPath) {
         files.forEach((file: any) => {
           const reader = new FileReader();
           reader.onload = async function (e) {
             const dropPathFiles = await getFiles(props.dropPath || "", true);
-            console.log(2, dropPathFiles);
 
             // Problem in dropping JPEG files, this is a momentanery fix
             // TODO: figure it out why it complains with jpeg (hint, the problem could be related to the icon used in the desktop and in the folder header)
@@ -54,9 +52,8 @@ export default defineComponent({
               "." +
               getFileExtensionFromName(file.name).replace("jpeg", "jpg");
 
-            console.log("Creating file");
             await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
-            console.log("File created");
+
             refreshFiles();
           };
           reader.readAsDataURL(file);

@@ -47,10 +47,6 @@ export default defineComponent({
       } as ActionMenuModel);
     };
 
-    const createNewDirectory = () => {
-      console.log("should create a new directory");
-    };
-
     const itemsDialog = computed(function () {
       return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
     });
@@ -62,7 +58,7 @@ export default defineComponent({
     return {
       changeItemPositionHandler,
       itemsDialog,
-      createNewDirectory,
+
       rightClickHandler,
     };
   },

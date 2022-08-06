@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import VuePdfEmbed from "vue-pdf-embed";
