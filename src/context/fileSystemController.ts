@@ -1,5 +1,10 @@
 import FileStats from "@/models/FileSystem/FileStats";
-import { generateUniqueName, getFileNameFromPath } from "./fileSystemUtils";
+import {
+  generateUniqueName,
+  getFileExtensionFromName,
+  getFileNameFromPath,
+  getFileNameWithoutExtension,
+} from "./fileSystemUtils";
 
 export const DESKTOP_PATH = "my PC/Desktop";
 
@@ -97,10 +102,11 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
 export const copyFile = async (filePath: string, destinationPath: string) => {
   //const fs = require("fs");
 
-  console.log("need implementation");
   const fileData = await readFile(filePath);
   const filesName = await getFiles(destinationPath, true);
-  const uniqueFilePath = generateUniqueName(destinationPath + "/" + getFileNameFromPath(filePath), filesName);
+  const nameToCheck = getFileNameWithoutExtension(destinationPath + "/" + getFileNameFromPath(filePath));
+  const extension = getFileExtensionFromName(filePath);
+  const uniqueFilePath = generateUniqueName(nameToCheck, filesName) + `.${extension}`;
 
   await createFile(uniqueFilePath, fileData);
 

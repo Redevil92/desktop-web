@@ -80,7 +80,6 @@ export default defineComponent({
         printOptions.value = ["Current page"];
         selectedPrintOption.value = "Current page";
       }
-      console.log("PDF 2", props.pdfRef, (props.pdfRef as any).pageNums.length);
     });
 
     return { name, resolution, closeDialog, printPdf, printOptions, selectedPrintOption, onSelectPrintOptionHandler };

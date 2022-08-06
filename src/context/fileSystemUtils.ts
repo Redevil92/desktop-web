@@ -1,7 +1,7 @@
 import { createDirectory, createFile } from "./fileSystemController";
 
-export const generateUniqueName = (name: string, nameList: string[]) => {
-  let myName = name;
+export const generateUniqueName = (nameWithoutExtension: string, nameList: string[]) => {
+  let myName = nameWithoutExtension;
   let currentIndex = 0;
   let isUnique = false;
   while (!isUnique && currentIndex < 100) {
@@ -9,7 +9,7 @@ export const generateUniqueName = (name: string, nameList: string[]) => {
 
     if (!isUnique) {
       currentIndex++;
-      myName = `${name} (${currentIndex})`;
+      myName = `${nameWithoutExtension} (${currentIndex})`;
     }
   }
   return myName;

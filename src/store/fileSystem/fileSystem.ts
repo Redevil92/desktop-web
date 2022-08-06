@@ -157,6 +157,7 @@ export default {
       commit("UPDATE_ITEM_DIALOG", itemToUpdate);
     },
     REFRESH_ALL_ITEM_DIALOG_FILES: ({ commit, getters }: any) => {
+      console.log("Refreshing");
       const itemsDialog = Object.assign([], getters["GET_ITEMS_DIALOG"]) as ItemDialog[];
       itemsDialog.forEach(async (itemDialog) => {
         const isFolder = await isDir(itemDialog.name);
@@ -222,26 +223,28 @@ export default {
       commit("SET_FILE_PATHS_TO_COPY", paths);
       commit("SET_FILE_PATHS_TO_CUT", []);
     },
-    PASTE_FILES: ({ commit, getters, dispatch }: any, destinationPath: string) => {
+    PASTE_FILES: async ({ commit, getters, dispatch }: any, destinationPath: string) => {
       const filesToCopy: string[] = getters.GET_FILE_PATHS_TO_COPY;
       const filesToCut: string[] = getters.GET_FILE_PATHS_TO_CUT;
 
       if (filesToCopy.length > 0) {
         // copy files to cut to destination
-        filesToCopy.forEach((file) => {
-          if (file === destinationPath) {
-            return;
-          }
-          //(createFile(destinationPath, )
-          copyFile(file, destinationPath);
-        });
+
+        for (const file of filesToCopy) {
+          await copyFile(file, destinationPath);
+        }
       } else if (filesToCut.length > 0) {
-        // copy file to cut
-        filesToCut.forEach((file) => copyFile(file, destinationPath));
-        // delete file to cut
-        filesToCut.forEach((file) => deleteFile(file));
+        for (const file of filesToCut) {
+          await copyFile(file, destinationPath);
+        }
+
+        for (const file of filesToCut) {
+          await deleteFile(file);
+        }
         dispatch("SET_FILE_PATHS_TO_CUT", []);
       }
+      dispatch("REFRESH_ALL_ITEM_DIALOG_FILES");
+      dispatch("FETCH_DESKTOP_FILES");
     },
   },
   getters: {

@@ -113,7 +113,7 @@ export default defineComponent({
         event.stopPropagation();
         return;
       }
-      store.dispatch("fileSystem/PASTE_FILES", [actionMenuParams.value.path]);
+      store.dispatch("fileSystem/PASTE_FILES", actionMenuParams.value.path);
       refreshFiles();
     };
 
