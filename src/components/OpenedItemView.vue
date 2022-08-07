@@ -80,19 +80,7 @@
       <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
       <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
-      <div class="flex action-group">
-        <div
-          class="mdi mdi-minus-thick action-icon"
-          style="background-color: #e5d83c"
-          @click="minimizeFolderDialog"
-        ></div>
-        <div
-          class="mdi mdi-crop-square action-icon"
-          style="background-color: #36d936"
-          @click="setFolderDialogFullScreen"
-        ></div>
-        <div class="mdi mdi-close-thick action-icon" style="background-color: #d64242" @click="closeFolderDialog"></div>
-      </div>
+      <DialogControls :itemDialog="itemDialog" />
     </div>
 
     <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
@@ -127,6 +115,8 @@ import PdfItem from "@/components/itemViewTypes/pdfItem/PdfItem.vue";
 import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
 import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
 import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
+
+import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
@@ -134,7 +124,7 @@ export default defineComponent({
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
     position: Object as PropType<Coordinates>,
   },
-  components: { FolderItem, CodeFileItem, TextFileItem, ImageFileItem, PdfItem },
+  components: { FolderItem, CodeFileItem, TextFileItem, ImageFileItem, PdfItem, DialogControls },
   emits: [],
   setup(props, _) {
     const actionTypes = {
@@ -300,21 +290,11 @@ export default defineComponent({
       document.onmousemove = null;
     }
 
-    function closeFolderDialog() {
-      store.dispatch("fileSystem/CLOSE_ITEM_DIALOG", props.itemDialog.guid);
-    }
-
-    function minimizeFolderDialog() {
-      store.dispatch("fileSystem/MINIMIZE_ITEM_DIALOG", props.itemDialog.guid);
-    }
-
     return {
       draggableElement,
       topPosition,
       leftPosition,
       dragMouseDown,
-      closeFolderDialog,
-      minimizeFolderDialog,
       getFileNameFromPath,
       fileExtension,
       setItemDialogFocused,
@@ -376,34 +356,6 @@ export default defineComponent({
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.action-icon {
-  background-color: yellow;
-  border-radius: 50px;
-  width: 13px;
-  height: 13px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0px 5px;
-}
-
-.action-icon:hover {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgb(120, 120, 120);
-}
-
-.action-group {
-  font-size: 0px;
-  margin-right: 10px;
-}
-
-.action-group:hover {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgb(83, 83, 83);
 }
 
 .footer {
