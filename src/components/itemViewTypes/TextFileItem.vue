@@ -23,12 +23,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, PropType, ref, watch } from "vue";
+import { defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
 import Editor from "@tinymce/tinymce-vue";
-import { createFile, readFile } from "@/context/fileSystemController";
+import { readFile } from "@/context/fileSystemController";
 import store from "@/store";
 import PathAndContent from "@/models/PathAndContent";
 

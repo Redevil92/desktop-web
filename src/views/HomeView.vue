@@ -7,7 +7,7 @@
     </div>
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
-      <OpenedItemView v-if="!item.isCollapsed" :itemDialog="item" />
+      <OpenedFileView v-if="!item.isCollapsed" :itemDialog="item" />
     </div>
 
     <TaskBar />
@@ -19,7 +19,7 @@ import { defineComponent, ref, computed, onUnmounted, onMounted } from "vue";
 import { useStore } from "vuex";
 
 import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
-import OpenedItemView from "@/components/OpenedItemView.vue";
+import OpenedFileView from "@/components/OpenedFileView.vue";
 import TaskBar from "@/components/TaskBar.vue";
 import ActionMenu from "@/components/ActionMenu.vue";
 
@@ -30,7 +30,7 @@ import { DESKTOP_PATH } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedItemView, ActionMenu },
+  components: { DesktopWorkSpace, TaskBar, OpenedFileView, ActionMenu },
   setup() {
     const store = useStore();
 
