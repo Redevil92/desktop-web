@@ -48,6 +48,7 @@ import DropZone from "@/components/shared/DropZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
+import { DESKTOP_FILE_DIMENSION } from "@/constants";
 
 export default defineComponent({
   props: {
@@ -88,13 +89,17 @@ export default defineComponent({
     const desktopFiles = computed(function (): DesktopFile[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
 
+      // get from local storage (through the store) the desktop file positions
+      // if no position find an available one, set it and save it in the store
+
+      console.log(desktopStringFiles);
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         return desktopStringFiles.map((fileName: string, index: number) => {
           return {
-            x: index * 5,
-            y: index * 5,
-            w: 0.7,
-            h: 2.2,
+            x: index * 2,
+            y: index * 2,
+            w: DESKTOP_FILE_DIMENSION.width,
+            h: DESKTOP_FILE_DIMENSION.height,
             i: fileName,
             name: fileName,
             static: false,
@@ -106,6 +111,8 @@ export default defineComponent({
 
     const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
       console.log(itemName, newX, newY);
+      // change the file item position in the local storage (through the store)
+
       // const newCoordinates = { x: newX, y: newY } as Coordinates;
       // const fileItemToUpdate: DesktopItem | undefined = props.items?.find((item: DesktopItem) => {
       //   if (item.name === itemName) {
