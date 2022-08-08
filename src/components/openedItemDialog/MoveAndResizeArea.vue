@@ -1,6 +1,7 @@
 <template>
   <div
     class="folder-dialog"
+    :class="animateDialogWhenMoving ? 'folder-dialog-animation' : ''"
     ref="draggableElement"
     @click="setItemDialogFocused"
     :style="
@@ -108,6 +109,8 @@ export default defineComponent({
       MOVING: "moving",
     };
 
+    const animateDialogWhenMoving = ref(true);
+
     const isFullscreen = computed(function () {
       return props.itemDialog.isFullscreen;
     });
@@ -141,6 +144,7 @@ export default defineComponent({
       pos4 = 0;
 
     function dragMouseDown(e: any, eventType: string | string[]) {
+      animateDialogWhenMoving.value = false;
       // if fullscreen no moving and resizing
       if (isFullscreen.value) {
         return;
@@ -246,6 +250,7 @@ export default defineComponent({
 
     function closeDragElement() {
       /* stop moving when mouse button is released:*/
+      animateDialogWhenMoving.value = true;
       document.onmouseup = null;
       document.onmousemove = null;
     }
@@ -260,6 +265,7 @@ export default defineComponent({
       dialogHeader,
       contentHeight,
       isFullscreen,
+      animateDialogWhenMoving,
     };
   },
 });
@@ -281,6 +287,10 @@ export default defineComponent({
   background-color: var(--dialog-background-color_dark);
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
   -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
+}
+
+.folder-dialog-animation {
+  transition: all 0.2s ease-out;
 }
 
 .flex {
