@@ -3,7 +3,13 @@
     class="folder-dialog"
     ref="draggableElement"
     @click="setItemDialogFocused"
-    :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`"
+    :style="
+      !isFullscreen
+        ? `top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`
+        : `top: ${0}px; left: ${0}px; z-index: ${
+            itemDialog.zIndex
+          }; width: calc(100% - 1px); height: calc(100% - 31px) `
+    "
   >
     <div
       @mousedown="setItemDialogFocused"
@@ -102,6 +108,10 @@ export default defineComponent({
       MOVING: "moving",
     };
 
+    const isFullscreen = computed(function () {
+      return props.itemDialog.isFullscreen;
+    });
+
     const minHeight = computed(function () {
       return props.itemDialog.minDimension?.height || 200;
     });
@@ -131,6 +141,10 @@ export default defineComponent({
       pos4 = 0;
 
     function dragMouseDown(e: any, eventType: string | string[]) {
+      // if fullscreen no moving and resizing
+      if (isFullscreen.value) {
+        return;
+      }
       e = e || window.event;
       e.preventDefault();
       // get the mouse cursor position at startup:
@@ -245,6 +259,7 @@ export default defineComponent({
       actionTypes,
       dialogHeader,
       contentHeight,
+      isFullscreen,
     };
   },
 });
@@ -254,7 +269,6 @@ export default defineComponent({
 .resize-element {
   position: absolute;
   user-select: none;
-
   z-index: 3;
 }
 

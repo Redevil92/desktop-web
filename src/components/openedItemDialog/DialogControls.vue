@@ -1,12 +1,27 @@
 <template>
   <div class="flex action-group">
-    <div class="mdi mdi-minus-thick action-icon" style="background-color: #e5d83c" @click="minimizeFolderDialog"></div>
     <div
+      class="mdi mdi-minus-thick action-icon"
+      style="background-color: #e5d83c"
+      @click.stop="minimizeFolderDialog"
+    ></div>
+    <div
+      v-if="!itemDialog.isFullscreen"
       class="mdi mdi-crop-square action-icon"
       style="background-color: #36d936"
-      @click="setFolderDialogFullScreen"
+      @click.stop="setFolderDialogFullScreen(true)"
     ></div>
-    <div class="mdi mdi-close-thick action-icon" style="background-color: #d64242" @click="closeFolderDialog"></div>
+    <div
+      v-else
+      class="mdi mdi-checkbox-multiple-blank-outline action-icon action-icon-small"
+      style="background-color: #36d936"
+      @click.stop="setFolderDialogFullScreen(false)"
+    ></div>
+    <div
+      class="mdi mdi-close-thick action-icon"
+      style="background-color: #d64242"
+      @click.stop="closeFolderDialog"
+    ></div>
   </div>
 </template>
 
@@ -23,17 +38,24 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
-    function closeFolderDialog() {
+    const closeFolderDialog = () => {
       store.dispatch("fileSystem/CLOSE_ITEM_DIALOG", props.itemDialog.guid);
-    }
+      store.dispatch("fileSystem/FIND_AND_SET_NEW_FOCUSED_ITEM_DIALOG");
+    };
 
-    function minimizeFolderDialog() {
+    const minimizeFolderDialog = () => {
       store.dispatch("fileSystem/MINIMIZE_ITEM_DIALOG", props.itemDialog.guid);
-    }
+      store.dispatch("fileSystem/FIND_AND_SET_NEW_FOCUSED_ITEM_DIALOG");
+    };
+
+    const setFolderDialogFullScreen = (isFullscreen: boolean) => {
+      store.dispatch("fileSystem/SET_ITEM_DIALOG_FULL_SCREEN", { itemGuid: props.itemDialog.guid, isFullscreen });
+    };
 
     return {
       closeFolderDialog,
       minimizeFolderDialog,
+      setFolderDialogFullScreen,
     };
   },
 });
@@ -57,7 +79,7 @@ export default defineComponent({
 }
 
 .action-icon:hover {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: rgb(120, 120, 120);
 }
@@ -68,7 +90,7 @@ export default defineComponent({
 }
 
 .action-group:hover {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: rgb(83, 83, 83);
 }

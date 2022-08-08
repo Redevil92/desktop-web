@@ -7,6 +7,7 @@ export default interface ItemDialog {
   zIndex: number;
   guid: string;
   isCollapsed: boolean;
+  isFullscreen?: boolean;
   position: Coordinates;
   dimension: Dimension;
   minDimension?: Dimension;

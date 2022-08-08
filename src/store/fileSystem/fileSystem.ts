@@ -78,6 +78,14 @@ export default {
       }
       state.itemsDialog = [...state.itemsDialog];
     },
+    SET_ITEM_DIALOG_FULL_SCREEN: (state: FileSystemState, itemData: { itemGuid: string; isFullscreen: boolean }) => {
+      const index = state.itemsDialog.findIndex((item) => item.guid === itemData.itemGuid);
+
+      if (index !== -1) {
+        state.itemsDialog[index].isFullscreen = itemData.isFullscreen || undefined;
+      }
+      state.itemsDialog = [...state.itemsDialog];
+    },
     SET_FOCUSED_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
       const itemsToUpdate = [...state.itemsDialog];
       itemsToUpdate.forEach((item) => {
@@ -89,6 +97,7 @@ export default {
         itemsToUpdate[index].isFocused = true;
         itemsToUpdate[index].zIndex = itemsToUpdate.length;
       }
+
       state.itemsDialog = itemsToUpdate;
     },
     SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: string[]) => {
@@ -157,7 +166,6 @@ export default {
       commit("UPDATE_ITEM_DIALOG", itemToUpdate);
     },
     REFRESH_ALL_ITEM_DIALOG_FILES: ({ commit, getters }: any) => {
-      console.log("Refreshing");
       const itemsDialog = Object.assign([], getters["GET_ITEMS_DIALOG"]) as ItemDialog[];
       itemsDialog.forEach(async (itemDialog) => {
         const isFolder = await isDir(itemDialog.name);
@@ -184,8 +192,18 @@ export default {
     OPEN_MINIMIZED_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
       commit("OPEN_MINIMIZED_ITEM_DIALOG", itemDialogGuid);
     },
+    FIND_AND_SET_NEW_FOCUSED_ITEM_DIALOG: ({ commit, getters }: any) => {
+      const itemDialogs: ItemDialog[] = getters.GET_ITEMS_DIALOG;
+      const max_z_index = Math.max(...itemDialogs.map((item) => item.zIndex));
+      const itemDialogToFocus = itemDialogs.find((item) => item.zIndex === max_z_index);
+
+      commit("SET_FOCUSED_ITEM_DIALOG", itemDialogToFocus);
+    },
     SET_FOCUSED_ITEM_DIALOG: ({ commit }: any, itemDialog: ItemDialog) => {
       commit("SET_FOCUSED_ITEM_DIALOG", itemDialog);
+    },
+    SET_ITEM_DIALOG_FULL_SCREEN: ({ commit }: any, itemData: { itemGuid: string; isFullscreen: boolean }) => {
+      commit("SET_ITEM_DIALOG_FULL_SCREEN", itemData);
     },
     FETCH_DESKTOP_FILES: async ({ commit }: any) => {
       const desktopFiles = await getDesktopFiles(true);
