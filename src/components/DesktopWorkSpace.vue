@@ -94,18 +94,21 @@ export default defineComponent({
       // if no position put it in 0,0
 
       const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      let desktopItemsPositions = {} as any;
       if (retrievedObject) {
-        const desktopItemsPositions = JSON.parse(retrievedObject);
+        desktopItemsPositions = JSON.parse(retrievedObject);
       }
 
-      console.log(desktopStringFiles);
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         return desktopStringFiles.map((fileName: string, index: number) => {
-          let filePosition: Coordinates;
+          let coordinates = { x: 0, y: 0 } as Coordinates;
+          if (desktopItemsPositions && desktopItemsPositions[fileName]) {
+            coordinates = desktopItemsPositions[fileName];
+          }
 
           return {
-            x: 0,
-            y: index,
+            x: coordinates.x,
+            y: coordinates.y,
             w: DESKTOP_FILE_DIMENSION.width,
             h: DESKTOP_FILE_DIMENSION.height,
             i: fileName,
@@ -119,6 +122,17 @@ export default defineComponent({
 
     const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
       console.log(itemName, newX, newY);
+
+      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      let desktopItemsPositions = {} as any;
+      if (retrievedObject) {
+        desktopItemsPositions = JSON.parse(retrievedObject);
+        desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
+      } else {
+        desktopItemsPositions = {};
+        desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
+      }
+      localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
 
       // change the file item position in the local storage (through the store)
 
