@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
+import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeactivated } from "vue";
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
@@ -49,6 +49,7 @@ import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
+import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {
@@ -90,14 +91,21 @@ export default defineComponent({
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
 
       // get from local storage (through the store) the desktop file positions
-      // if no position find an available one, set it and save it in the store
+      // if no position put it in 0,0
+
+      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      if (retrievedObject) {
+        const desktopItemsPositions = JSON.parse(retrievedObject);
+      }
 
       console.log(desktopStringFiles);
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         return desktopStringFiles.map((fileName: string, index: number) => {
+          let filePosition: Coordinates;
+
           return {
-            x: index * 2,
-            y: index * 2,
+            x: 0,
+            y: index,
             w: DESKTOP_FILE_DIMENSION.width,
             h: DESKTOP_FILE_DIMENSION.height,
             i: fileName,
@@ -111,6 +119,7 @@ export default defineComponent({
 
     const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
       console.log(itemName, newX, newY);
+
       // change the file item position in the local storage (through the store)
 
       // const newCoordinates = { x: newX, y: newY } as Coordinates;
@@ -123,10 +132,20 @@ export default defineComponent({
       // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     };
 
+    const setGridColumnsAndRows = () => {
+      columnsNumber.value = window.innerWidth;
+      rowHeight.value = 5;
+    };
+
     onMounted(async () => {
-      columnsNumber.value = window.innerWidth / 85;
-      rowHeight.value = 22;
+      window.addEventListener("resize", setGridColumnsAndRows);
+
+      setGridColumnsAndRows();
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    });
+
+    onDeactivated(() => {
+      window.removeEventListener("resize", setGridColumnsAndRows);
     });
 
     return {
