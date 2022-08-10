@@ -24,6 +24,13 @@
           :i="item.i"
           @moved="fileItemMovedHandler"
         >
+          <!-- 
+        // HOOK
+        // @mousedown = startMovingFile (save path of the selected items in the store)
+        // @mouseup = endMovingFile (remove path in the store, if endmoving in
+            droppable place cut and paste item
+          ) -->
+
           <div @click.right="openActionMenu($event, item)">
             <FileItem
               :ref="item.name + 'FileRef'"
