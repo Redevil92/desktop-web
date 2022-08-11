@@ -25,6 +25,15 @@ export const getFileNameFromPath = (filePath: string): string => {
   return "";
 };
 
+export const getSourcePathFromFilePath = (filePath: string): string => {
+  const splittedFile = filePath.split("/");
+  if (splittedFile.length > 0) {
+    splittedFile.pop();
+    return splittedFile.join("/");
+  }
+  return "";
+};
+
 export const getFileExtensionFromName = (filePath: string): string => {
   const fileName = getFileNameFromPath(filePath);
   if (fileName.includes(".")) {

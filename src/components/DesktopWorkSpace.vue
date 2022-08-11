@@ -25,18 +25,22 @@
           @moved="fileItemMovedHandler"
         >
           <!-- 
-        // HOOK
+        // HOOK, moving file
         // @mousedown = startMovingFile (save path of the selected items in the store)
         // @mouseup = endMovingFile (remove path in the store, if endmoving in
             droppable place cut and paste item
           ) -->
 
-          <div @click.right="openActionMenu($event, item)">
+          <div
+            @click.right="openActionMenu($event, item)"
+            @mousedown="setFilesToMove([item.name])"
+            @mouseup="moveFilesOrResetFilesToMove"
+          >
             <FileItem
               :ref="item.name + 'FileRef'"
               :fileItem="item"
               @onClick="selectFile"
-              :isSelected="selectedFile && selectedFile.name === item.name"
+              :isSelected="isItemSelected(item.name)"
             />
           </div>
         </grid-item>
@@ -58,6 +62,8 @@ import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 
+import useMoveFiles from "@/hooks/useMoveFiles";
+
 export default defineComponent({
   props: {
     msg: String,
@@ -74,10 +80,17 @@ export default defineComponent({
     const columnsNumber = ref(0);
     const rowHeight = ref(0);
 
-    const selectedFile = ref({} as DesktopFile);
+    const selectedItemPaths = ref([] as string[]);
 
     const selectFile = (newFileSelected: DesktopFile) => {
-      selectedFile.value = newFileSelected;
+      selectedItemPaths.value = [];
+      selectedItemPaths.value.push(newFileSelected.name);
+    };
+
+    const { setFilesToMove, moveFilesOrResetFilesToMove } = useMoveFiles();
+
+    const isItemSelected = (fileItem: string) => {
+      return selectedItemPaths.value.includes(fileItem);
     };
 
     const openActionMenu = (event: any, item: DesktopFile) => {
@@ -177,8 +190,11 @@ export default defineComponent({
       columnsNumber,
       rowHeight,
       selectFile,
-      selectedFile,
+      selectedItemPaths,
       openActionMenu,
+      setFilesToMove,
+      moveFilesOrResetFilesToMove,
+      isItemSelected,
     };
   },
 });
