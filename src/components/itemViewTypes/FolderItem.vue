@@ -84,6 +84,7 @@ import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import DropZone from "@/components/shared/DropZone.vue";
+import useMoveFiles from "@/hooks/useMoveFiles";
 
 export default defineComponent({
   props: {
@@ -93,6 +94,8 @@ export default defineComponent({
   components: { DropZone },
   emits: [],
   setup(props, _) {
+    const { setFilesToMove } = useMoveFiles(props.folderDialog?.name || "");
+
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = async (fileName: string) => {
       // check if file is dir
@@ -257,6 +260,7 @@ export default defineComponent({
       fileFocusedWidth,
       openActionMenu,
       isCutFile,
+      setFilesToMove,
     };
   },
 });

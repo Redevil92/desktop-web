@@ -31,11 +31,7 @@
             droppable place cut and paste item
           ) -->
 
-          <div
-            @click.right="openActionMenu($event, item)"
-            @mousedown="setFilesToMove([item.name])"
-            @mouseup="moveFilesOrResetFilesToMove"
-          >
+          <div @click.right="openActionMenu($event, item)" @mousedown="setFilesToMove([item.name])">
             <FileItem
               :ref="item.name + 'FileRef'"
               :fileItem="item"
@@ -87,7 +83,7 @@ export default defineComponent({
       selectedItemPaths.value.push(newFileSelected.name);
     };
 
-    const { setFilesToMove, moveFilesOrResetFilesToMove } = useMoveFiles();
+    const { setFilesToMove } = useMoveFiles("my PC/Desktop");
 
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
@@ -193,7 +189,6 @@ export default defineComponent({
       selectedItemPaths,
       openActionMenu,
       setFilesToMove,
-      moveFilesOrResetFilesToMove,
       isItemSelected,
     };
   },
