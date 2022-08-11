@@ -29,6 +29,7 @@ export default {
         position: { x: 0, y: 0 },
         isOpenedFolder: false,
       },
+      filePathsToMove: [],
     };
   },
   mutations: {
@@ -114,6 +115,9 @@ export default {
     },
     SET_FILE_PATHS_TO_CUT: (state: FileSystemState, paths: string[]) => {
       state.filePathsToCut = paths;
+    },
+    SET_FILE_PATHS_TO_MOVE: (state: FileSystemState, paths: string[]) => {
+      state.filePathsToMove = paths;
     },
   },
   actions: {
@@ -241,6 +245,9 @@ export default {
       commit("SET_FILE_PATHS_TO_COPY", paths);
       commit("SET_FILE_PATHS_TO_CUT", []);
     },
+    SET_FILE_PATHS_TO_MOVE: ({ commit }: any, paths: string[]) => {
+      commit("SET_FILE_PATHS_TO_MOVE", paths);
+    },
     PASTE_FILES: async ({ commit, getters, dispatch }: any, destinationPath: string) => {
       const filesToCopy: string[] = getters.GET_FILE_PATHS_TO_COPY;
       const filesToCut: string[] = getters.GET_FILE_PATHS_TO_CUT;
@@ -272,6 +279,7 @@ export default {
     GET_ACTION_MENU: (state: FileSystemState) => state.actionMenu,
     GET_FILE_PATHS_TO_COPY: (state: FileSystemState) => state.filePathsToCopy,
     GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
+    GET_FILE_PATHS_TO_MOVE: (state: FileSystemState) => state.filePathsToMove,
   },
 };
 
@@ -281,6 +289,7 @@ interface FileSystemState {
   actionMenu: ActionMenu;
   filePathsToCopy: string[]; // in progress
   filePathsToCut: string[]; // in progress
+  filePathsToMove: string[];
 }
 
 interface Action {
