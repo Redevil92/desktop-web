@@ -1,6 +1,6 @@
 <template>
   <drop-zone :dropPath="'my PC/Desktop'">
-    <div @click="selectFile({})">
+    <div @click="selectFile({})" ref="desktopRef">
       <grid-layout
         class="grid-layout-dimension"
         :layout="desktopFiles"
@@ -76,6 +76,8 @@ export default defineComponent({
     const columnsNumber = ref(0);
     const rowHeight = ref(0);
 
+    const desktopRef = ref(null as unknown as HTMLElement);
+
     const selectedItemPaths = ref([] as string[]);
 
     const selectFile = (newFileSelected: DesktopFile) => {
@@ -83,7 +85,8 @@ export default defineComponent({
       selectedItemPaths.value.push(newFileSelected.name);
     };
 
-    const { setFilesToMove } = useMoveFiles("my PC/Desktop");
+    console.log("MY DESK REF", desktopRef.value);
+    const { setFilesToMove } = useMoveFiles("my PC/Desktop", desktopRef.value);
 
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
@@ -168,6 +171,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      console.log("MY DESK REF 222", desktopRef.value);
+
       window.addEventListener("resize", setGridColumnsAndRows);
 
       setGridColumnsAndRows();
@@ -179,6 +184,7 @@ export default defineComponent({
     });
 
     return {
+      desktopRef,
       desktopFiles,
       fileItemMovedHandler,
       itemWidth,

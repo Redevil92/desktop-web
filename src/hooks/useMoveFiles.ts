@@ -1,9 +1,15 @@
 import { copyFile, deleteFile, isDir } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import store from "@/store";
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, watchEffect } from "vue";
 
-export default function useMoveFiles(moveDestinationPath: string) {
+export default function useMoveFiles(moveDestinationPath: string, itemRef: HTMLElement) {
+  watchEffect(() => {
+    if (itemRef) {
+      itemRef.addEventListener("mouseup", moveFilesOrResetFilesToMove);
+    }
+  });
+
   const setFilesToMove = (filesToMove: string[]) => {
     console.log("down", filesToMove);
     store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", filesToMove);
@@ -37,8 +43,12 @@ export default function useMoveFiles(moveDestinationPath: string) {
 
   // a composable can also hook into its owner component's
   // lifecycle to setup and teardown side effects.
-  onMounted(() => window.addEventListener("mouseup", moveFilesOrResetFilesToMove));
-  onUnmounted(() => window.removeEventListener("mouseup", moveFilesOrResetFilesToMove));
+  //onMounted(() => itemRef.addEventListener("mouseup", moveFilesOrResetFilesToMove));
+  onUnmounted(() => {
+    if (itemRef) {
+      itemRef.removeEventListener("mouseup", moveFilesOrResetFilesToMove);
+    }
+  });
 
   return { setFilesToMove, moveFilesOrResetFilesToMove };
 }

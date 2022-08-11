@@ -8,7 +8,7 @@
         </span>
       </div>
       <drop-zone :dropPath="folderDialog.name">
-        <div class="folder-item-list" :style="`height:${height - 35}px`">
+        <div class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
             getFileNameFromPath(fileNameToChange)
           }}</span>
@@ -94,7 +94,9 @@ export default defineComponent({
   components: { DropZone },
   emits: [],
   setup(props, _) {
-    const { setFilesToMove } = useMoveFiles(props.folderDialog?.name || "");
+    const folderContentRef = ref(null as unknown as HTMLElement);
+
+    const { setFilesToMove } = useMoveFiles(props.folderDialog?.name || "", folderContentRef.value);
 
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = async (fileName: string) => {
@@ -242,6 +244,7 @@ export default defineComponent({
     });
 
     return {
+      folderContentRef,
       getFileNameFromPath,
       doubleClickHandler,
       isDir,
