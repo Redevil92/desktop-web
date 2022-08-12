@@ -41,13 +41,17 @@ export default function useMoveFiles(moveDestinationPath: string, itemRef: HTMLE
     }
   };
 
+  const moveFilesOrResetFilesToMoveWithDelay = async () => {
+    setTimeout(() => {
+      moveFilesOrResetFilesToMove();
+    }, 10);
+  };
+
   // a composable can also hook into its owner component's
   // lifecycle to setup and teardown side effects.
-  //onMounted(() => itemRef.addEventListener("mouseup", moveFilesOrResetFilesToMove));
+  onMounted(() => window.addEventListener("mouseup", moveFilesOrResetFilesToMove));
   onUnmounted(() => {
-    if (itemRef) {
-      itemRef.removeEventListener("mouseup", moveFilesOrResetFilesToMove);
-    }
+    window.removeEventListener("mouseup", moveFilesOrResetFilesToMoveWithDelay);
   });
 
   return { setFilesToMove, moveFilesOrResetFilesToMove };
