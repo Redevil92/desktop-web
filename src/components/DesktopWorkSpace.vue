@@ -6,7 +6,7 @@
         :layout="desktopFiles"
         :col-num="columnsNumber"
         :row-height="rowHeight"
-        :is-draggable="true"
+        :is-draggable="false"
         :is-resizable="false"
         :responsive="false"
         :vertical-compact="false"
@@ -31,7 +31,7 @@
             droppable place cut and paste item
           ) -->
 
-          <div @click.right="openActionMenu($event, item)" @mousedown="setFilesToMove([item.name])">
+          <div draggable @dragstart="dragStart($event)" @click.right="openActionMenu($event, item)">
             <FileItem
               :ref="item.name + 'FileRef'"
               :fileItem="item"
@@ -58,8 +58,6 @@ import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 
-import useMoveFiles from "@/hooks/useMoveFiles";
-
 export default defineComponent({
   props: {
     msg: String,
@@ -80,13 +78,14 @@ export default defineComponent({
 
     const selectedItemPaths = ref([] as string[]);
 
+    const dragStart = (event: any) => {
+      console.log("drag start");
+    };
+
     const selectFile = (newFileSelected: DesktopFile) => {
       selectedItemPaths.value = [];
       selectedItemPaths.value.push(newFileSelected.name);
     };
-
-    console.log("MY DESK REF", desktopRef.value);
-    const { setFilesToMove } = useMoveFiles("my PC/Desktop", desktopRef.value);
 
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
@@ -171,8 +170,6 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      console.log("MY DESK REF 222", desktopRef.value);
-
       window.addEventListener("resize", setGridColumnsAndRows);
 
       setGridColumnsAndRows();
@@ -194,8 +191,8 @@ export default defineComponent({
       selectFile,
       selectedItemPaths,
       openActionMenu,
-      setFilesToMove,
       isItemSelected,
+      dragStart,
     };
   },
 });

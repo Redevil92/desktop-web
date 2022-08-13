@@ -96,8 +96,6 @@ export default defineComponent({
   setup(props, _) {
     const folderContentRef = ref(null as unknown as HTMLElement);
 
-    const { setFilesToMove } = useMoveFiles(props.folderDialog?.name || "", folderContentRef.value);
-
     // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
     const doubleClickHandler = async (fileName: string) => {
       // check if file is dir
@@ -263,7 +261,6 @@ export default defineComponent({
       fileFocusedWidth,
       openActionMenu,
       isCutFile,
-      setFilesToMove,
     };
   },
 });
