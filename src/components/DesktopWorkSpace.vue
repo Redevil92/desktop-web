@@ -24,13 +24,8 @@
           :i="item.i"
           @moved="fileItemMovedHandler"
         >
-          <!-- 
-        // HOOK, moving file
-        // @mousedown = startMovingFile (save path of the selected items in the store)
-        // @mouseup = endMovingFile (remove path in the store, if endmoving in
-            droppable place cut and paste item
-          ) -->
-
+          <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
+                or do nothing -->
           <div draggable @dragstart="dragStart($event)" @click.right="openActionMenu($event, item)">
             <FileItem
               :ref="item.name + 'FileRef'"
