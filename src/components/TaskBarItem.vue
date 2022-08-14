@@ -1,6 +1,22 @@
 <template>
   <div class="task-bar-item" :class="isFocused ? 'task-bar-item-focused' : ''" @click="taskBarItemClickHandler">
-    <span class="mdi mdi-folder-open folder-icon"></span>
+    <div v-if="getFileExtensionFromName(item.name)">
+      <img
+        style="margin-top: 3px"
+        class="task-bar-icon"
+        height="16"
+        :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item.name) + '.svg')"
+        alt=""
+      />
+    </div>
+    <div v-else-if="isDir(item.name)">
+      <!-- <span class="mdi mdi-folder-open task-bar-icon" style="color: #f6d573"></span> -->
+      <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
+    </div>
+    <div v-else>
+      <img class="task-bar-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+    </div>
+
     <p class="text">
       {{ getFileNameFromPath(item.name) }}
     </p>
@@ -12,7 +28,8 @@ import { computed, defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import store from "@/store";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import { isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -39,7 +56,7 @@ export default defineComponent({
       }
     };
 
-    return { taskBarItemClickHandler, isFocused, getFileNameFromPath };
+    return { taskBarItemClickHandler, isFocused, getFileNameFromPath, getFileExtensionFromName, isDir };
   },
 });
 </script>
@@ -72,8 +89,7 @@ export default defineComponent({
   white-space: nowrap;
 }
 
-.folder-icon {
-  color: #f6d573;
+.task-bar-icon {
   font-size: 16px;
   margin-right: 5px;
 }
