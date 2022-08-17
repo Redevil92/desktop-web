@@ -1,6 +1,6 @@
 <template>
-  <drop-zone :dropPath="'my PC/Desktop'">
-    <div @click="selectFile({})" ref="desktopRef">
+  <DropExternalFileZone :dropPath="'my PC/Desktop'">
+    <div @click="selectFile({})" @dragleave="dropFilehandler" ref="desktopRef">
       <grid-layout
         class="grid-layout-dimension"
         :layout="desktopFiles"
@@ -37,7 +37,7 @@
         </grid-item>
       </grid-layout>
     </div>
-  </drop-zone>
+  </DropExternalFileZone>
 </template>
 
 <script lang="ts">
@@ -45,7 +45,7 @@ import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeacti
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
-import DropZone from "@/components/shared/DropZone.vue";
+import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
@@ -58,7 +58,7 @@ export default defineComponent({
     msg: String,
     items: Array as PropType<DesktopItem[]>,
   },
-  components: { GridLayout, GridItem, FileItem, DropZone },
+  components: { GridLayout, GridItem, FileItem, DropExternalFileZone },
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
@@ -75,6 +75,10 @@ export default defineComponent({
 
     const dragStart = (event: any) => {
       console.log("drag start");
+    };
+
+    const dropFilehandler = () => {
+      console.log("DROPPED FILE");
     };
 
     const selectFile = (newFileSelected: DesktopFile) => {
@@ -188,6 +192,7 @@ export default defineComponent({
       openActionMenu,
       isItemSelected,
       dragStart,
+      dropFilehandler,
     };
   },
 });

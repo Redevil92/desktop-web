@@ -7,7 +7,7 @@
           >{{ filePathSplitted.length > index + 1 ? " > " : "" }}
         </span>
       </div>
-      <drop-zone :dropPath="folderDialog.name">
+      <DropExternalFileZone :dropPath="folderDialog.name">
         <div class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
             getFileNameFromPath(fileNameToChange)
@@ -68,7 +68,7 @@
             <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
           </div>
         </div>
-      </drop-zone>
+      </DropExternalFileZone>
     </div>
   </div>
 </template>
@@ -83,14 +83,14 @@ import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
-import DropZone from "@/components/shared/DropZone.vue";
+import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 
 export default defineComponent({
   props: {
     folderDialog: Object as PropType<FolderDialog>,
     height: Number,
   },
-  components: { DropZone },
+  components: { DropExternalFileZone },
   emits: [],
   setup(props, _) {
     const folderContentRef = ref(null as unknown as HTMLElement);
