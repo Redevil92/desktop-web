@@ -22,15 +22,19 @@
           :w="item.w"
           :h="item.h"
           :i="item.i"
-          @moved="fileItemMovedHandler"
         >
           <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
                 or do nothing -->
-          <div draggable @dragstart="dragStart($event)" @click.right="openActionMenu($event, item)">
+          <div
+            draggable
+            @dragstart="dragStart($event)"
+            @mousedown="selectFile(item)"
+            @click.right="openActionMenu($event, item)"
+          >
             <FileItem
               :ref="item.name + 'FileRef'"
               :fileItem="item"
-              @onClick="selectFile"
+              @onClick="selectFile(item)"
               :isSelected="isItemSelected(item.name)"
             />
           </div>
@@ -77,11 +81,27 @@ export default defineComponent({
       console.log("drag start");
     };
 
-    const dropFilehandler = (event: any) => {
-      console.log("DROPPED FILE", event);
+    const dropFilehandler = async (event: any) => {
+      console.log("DROPPED FILE", event, selectedItemPaths.value);
+
+      selectedItemPaths.value.forEach((itemName) => {
+        const retrievedObject = localStorage.getItem("desktopItemsPositions");
+        let desktopItemsPositions = {} as any;
+        if (retrievedObject) {
+          desktopItemsPositions = JSON.parse(retrievedObject);
+        }
+
+        // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+        desktopItemsPositions[itemName] = { x: event.clientX - 35, y: event.clientY / 11 - 5 } as Coordinates;
+
+        localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+      });
+
+      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
 
     const selectFile = (newFileSelected: DesktopFile) => {
+      console.log("selecting", newFileSelected);
       selectedItemPaths.value = [];
       selectedItemPaths.value.push(newFileSelected.name);
     };
@@ -137,35 +157,35 @@ export default defineComponent({
       return [];
     });
 
-    const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
-      console.log(itemName, newX, newY);
+    // const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
+    //   console.log(itemName, newX, newY);
 
-      const retrievedObject = localStorage.getItem("desktopItemsPositions");
-      let desktopItemsPositions = {} as any;
-      if (retrievedObject) {
-        desktopItemsPositions = JSON.parse(retrievedObject);
-        desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
-      } else {
-        desktopItemsPositions = {};
-        desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
-      }
-      localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+    //   const retrievedObject = localStorage.getItem("desktopItemsPositions");
+    //   let desktopItemsPositions = {} as any;
+    //   if (retrievedObject) {
+    //     desktopItemsPositions = JSON.parse(retrievedObject);
+    //     desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
+    //   } else {
+    //     desktopItemsPositions = {};
+    //     desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
+    //   }
+    //   localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
 
-      // change the file item position in the local storage (through the store)
+    //   // change the file item position in the local storage (through the store)
 
-      // const newCoordinates = { x: newX, y: newY } as Coordinates;
-      // const fileItemToUpdate: DesktopItem | undefined = props.items?.find((item: DesktopItem) => {
-      //   if (item.name === itemName) {
-      //     return item;
-      //   }
-      // });
-      // console.log(fileItemToUpdate, newCoordinates);
-      // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
-    };
+    //   // const newCoordinates = { x: newX, y: newY } as Coordinates;
+    //   // const fileItemToUpdate: DesktopItem | undefined = props.items?.find((item: DesktopItem) => {
+    //   //   if (item.name === itemName) {
+    //   //     return item;
+    //   //   }
+    //   // });
+    //   // console.log(fileItemToUpdate, newCoordinates);
+    //   // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
+    // };
 
     const setGridColumnsAndRows = () => {
       columnsNumber.value = window.innerWidth;
-      rowHeight.value = 5;
+      rowHeight.value = 1;
     };
 
     onMounted(async () => {
@@ -182,7 +202,7 @@ export default defineComponent({
     return {
       desktopRef,
       desktopFiles,
-      fileItemMovedHandler,
+
       itemWidth,
       itemHeight,
       columnsNumber,
