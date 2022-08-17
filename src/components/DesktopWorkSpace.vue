@@ -30,6 +30,7 @@
             @dragstart="dragStart($event)"
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
+            @drop="dropFilehandler($event, item.name)"
           >
             <FileItem
               :ref="item.name + 'FileRef'"
@@ -56,6 +57,7 @@ import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
 import Coordinates from "@/models/Coordinates";
+import { isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -85,7 +87,17 @@ export default defineComponent({
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
 
-    const dropFilehandler = async (event: any) => {
+    const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
+      const isFolder = await isDir(dropDestinationFileName);
+      if (dropDestinationFileName && isFolder) {
+        // move file in folder
+        console.log("IN FOLDER");
+      } else {
+        moveFileItems(event);
+      }
+    };
+
+    const moveFileItems = async (event: any) => {
       selectedItemPaths.value.forEach((itemName) => {
         const retrievedObject = localStorage.getItem("desktopItemsPositions");
         let desktopItemsPositions = {} as any;
