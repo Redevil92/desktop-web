@@ -2,7 +2,6 @@
   <div class="task-bar-item" :class="isFocused ? 'task-bar-item-focused' : ''" @click="taskBarItemClickHandler">
     <div v-if="getFileExtensionFromName(item.name)">
       <img
-        style="margin-top: 3px"
         class="task-bar-icon"
         height="16"
         :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item.name) + '.svg')"
@@ -11,7 +10,13 @@
     </div>
     <div v-else-if="isDir(item.name)">
       <!-- <span class="mdi mdi-folder-open task-bar-icon" style="color: #f6d573"></span> -->
-      <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
+      <img
+        height="16"
+        style="margin-right: 7px"
+        class="task-bar-icon"
+        :src="require('/src/assets/fileIcons/folder.svg')"
+        alt=""
+      />
     </div>
     <div v-else>
       <img class="task-bar-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
@@ -71,7 +76,7 @@ export default defineComponent({
   border-bottom: 2px solid #69b0e9;
   height: 30px;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   padding: 0px 10px;
 }
 
@@ -81,16 +86,17 @@ export default defineComponent({
 }
 
 .text {
-  margin-top: 7px;
   color: rgba(255, 255, 255, 0.9);
   font-size: var(--small-font-size);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  margin-top: 2px;
 }
 
 .task-bar-icon {
   font-size: 16px;
   margin-right: 5px;
+  margin-top: 5px;
 }
 </style>
