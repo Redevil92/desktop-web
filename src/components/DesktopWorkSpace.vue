@@ -1,6 +1,6 @@
 <template>
   <DropExternalFileZone :dropPath="'my PC/Desktop'">
-    <div @click="selectFile({})" @dragleave="dropFilehandler" ref="desktopRef">
+    <div @click="selectFile({})" @drop="dropFilehandler" @dragover.prevent @dragenter.prevent ref="desktopRef">
       <grid-layout
         class="grid-layout-dimension"
         :layout="desktopFiles"
@@ -77,8 +77,8 @@ export default defineComponent({
       console.log("drag start");
     };
 
-    const dropFilehandler = () => {
-      console.log("DROPPED FILE");
+    const dropFilehandler = (event: any) => {
+      console.log("DROPPED FILE", event);
     };
 
     const selectFile = (newFileSelected: DesktopFile) => {
