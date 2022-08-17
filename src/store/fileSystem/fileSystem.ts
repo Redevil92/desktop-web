@@ -30,6 +30,7 @@ export default {
         isOpenedFolder: false,
       },
       filePathsToMove: [],
+      selectedDesktopFilePaths: [],
     };
   },
   mutations: {
@@ -118,6 +119,9 @@ export default {
     },
     SET_FILE_PATHS_TO_MOVE: (state: FileSystemState, paths: string[]) => {
       state.filePathsToMove = paths;
+    },
+    SET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState, paths: string[]) => {
+      state.selectedDesktopFilePaths = paths;
     },
   },
   actions: {
@@ -271,6 +275,9 @@ export default {
       dispatch("REFRESH_ALL_ITEM_DIALOG_FILES");
       dispatch("FETCH_DESKTOP_FILES");
     },
+    SET_SELECTED_DESKTOP_FILE_PATHS: ({ commit }: any, paths: string[]) => {
+      commit("SET_SELECTED_DESKTOP_FILE_PATHS", paths);
+    },
   },
   getters: {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
@@ -280,14 +287,16 @@ export default {
     GET_FILE_PATHS_TO_COPY: (state: FileSystemState) => state.filePathsToCopy,
     GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
     GET_FILE_PATHS_TO_MOVE: (state: FileSystemState) => state.filePathsToMove,
+    GET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState) => state.selectedDesktopFilePaths,
   },
 };
 
 interface FileSystemState {
   desktopItems: string[]; // done
-  itemsDialog: ItemDialog[]; // in progress
+  itemsDialog: ItemDialog[];
   actionMenu: ActionMenu;
-  filePathsToCopy: string[]; // in progress
+  selectedDesktopFilePaths: string[];
+  filePathsToCopy: string[];
   filePathsToCut: string[]; // in progress
   filePathsToMove: string[];
 }

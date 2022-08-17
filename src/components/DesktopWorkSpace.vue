@@ -75,15 +75,17 @@ export default defineComponent({
 
     const desktopRef = ref(null as unknown as HTMLElement);
 
-    const selectedItemPaths = ref([] as string[]);
+    // const selectedItemPaths = ref([] as string[]);
 
     const dragStart = (event: any) => {
       console.log("drag start");
     };
 
-    const dropFilehandler = async (event: any) => {
-      console.log("DROPPED FILE", event, selectedItemPaths.value);
+    const selectedItemPaths = computed((): string[] => {
+      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    });
 
+    const dropFilehandler = async (event: any) => {
       selectedItemPaths.value.forEach((itemName) => {
         const retrievedObject = localStorage.getItem("desktopItemsPositions");
         let desktopItemsPositions = {} as any;
@@ -102,8 +104,7 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopFile) => {
       console.log("selecting", newFileSelected);
-      selectedItemPaths.value = [];
-      selectedItemPaths.value.push(newFileSelected.name);
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 
     const isItemSelected = (fileItem: string) => {
