@@ -257,8 +257,6 @@ export default {
       const filesToCut: string[] = getters.GET_FILE_PATHS_TO_CUT;
 
       if (filesToCopy.length > 0) {
-        // copy files to cut to destination
-
         for (const file of filesToCopy) {
           await copyFile(file, destinationPath);
         }

@@ -33,7 +33,6 @@
                 or do nothing -->
           <div
             draggable
-            @dragstart="dragStart($event)"
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
             @drop="dropFilehandler($event, item.name)"
@@ -82,12 +81,6 @@ export default defineComponent({
     const rowHeight = ref(0);
 
     const desktopRef = ref(null as unknown as HTMLElement);
-
-    // const selectedItemPaths = ref([] as string[]);
-
-    const dragStart = (event: any) => {
-      console.log("drag start");
-    };
 
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
@@ -191,32 +184,6 @@ export default defineComponent({
       return [];
     });
 
-    // const fileItemMovedHandler = (itemName: string, newX: number, newY: number) => {
-    //   console.log(itemName, newX, newY);
-
-    //   const retrievedObject = localStorage.getItem("desktopItemsPositions");
-    //   let desktopItemsPositions = {} as any;
-    //   if (retrievedObject) {
-    //     desktopItemsPositions = JSON.parse(retrievedObject);
-    //     desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
-    //   } else {
-    //     desktopItemsPositions = {};
-    //     desktopItemsPositions[itemName] = { x: newX, y: newY } as Coordinates;
-    //   }
-    //   localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
-
-    //   // change the file item position in the local storage (through the store)
-
-    //   // const newCoordinates = { x: newX, y: newY } as Coordinates;
-    //   // const fileItemToUpdate: DesktopItem | undefined = props.items?.find((item: DesktopItem) => {
-    //   //   if (item.name === itemName) {
-    //   //     return item;
-    //   //   }
-    //   // });
-    //   // console.log(fileItemToUpdate, newCoordinates);
-    //   // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
-    // };
-
     const refreshFiles = async () => {
       await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
@@ -241,7 +208,6 @@ export default defineComponent({
     return {
       desktopRef,
       desktopFiles,
-
       itemWidth,
       itemHeight,
       columnsNumber,
@@ -250,7 +216,6 @@ export default defineComponent({
       selectedItemPaths,
       openActionMenu,
       isItemSelected,
-      dragStart,
       dropFilehandler,
     };
   },
