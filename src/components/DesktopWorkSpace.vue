@@ -1,6 +1,12 @@
 <template>
   <DropExternalFileZone :dropPath="'my PC/Desktop'">
-    <div @click="selectFile({})" @drop="dropFilehandler" @dragover.prevent @dragenter.prevent ref="desktopRef">
+    <div
+      @click="selectFile({})"
+      @drop="dropFilehandler($event, '')"
+      @dragover.prevent
+      @dragenter.prevent
+      ref="desktopRef"
+    >
       <grid-layout
         class="grid-layout-dimension"
         :layout="desktopFiles"
@@ -57,7 +63,7 @@ import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
 import Coordinates from "@/models/Coordinates";
-import { isDir } from "@/context/fileSystemController";
+import { copyFile, deleteFile, isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -88,16 +94,33 @@ export default defineComponent({
     });
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
-      const isFolder = await isDir(dropDestinationFileName);
-      if (dropDestinationFileName && isFolder) {
-        // move file in folder
-        console.log("IN FOLDER");
-      } else {
-        moveFileItems(event);
+      let isFolder = false;
+      if (dropDestinationFileName) {
+        isFolder = await isDir(dropDestinationFileName);
       }
+      if (dropDestinationFileName && isFolder) {
+        console.log("IN FOLDER");
+        await moveFilesInFolder(dropDestinationFileName);
+      } else {
+        console.log("CHANGE POS");
+        changeFileItemsPosition(event);
+      }
+
+      await refreshFiles();
     };
 
-    const moveFileItems = async (event: any) => {
+    const moveFilesInFolder = async (dropDestinationPath: string) => {
+      for (let filePath of selectedItemPaths.value) {
+        await copyFile(filePath, dropDestinationPath);
+      }
+      for (const file of selectedItemPaths.value) {
+        await deleteFile(file);
+      }
+
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
+    };
+
+    const changeFileItemsPosition = async (event: any) => {
       selectedItemPaths.value.forEach((itemName) => {
         const retrievedObject = localStorage.getItem("desktopItemsPositions");
         let desktopItemsPositions = {} as any;
@@ -110,8 +133,6 @@ export default defineComponent({
 
         localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
       });
-
-      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
 
     const selectFile = (newFileSelected: DesktopFile) => {
@@ -196,6 +217,11 @@ export default defineComponent({
     //   // context.emit("onFileItemPositionChange", fileItemToUpdate, newCoordinates);
     // };
 
+    const refreshFiles = async () => {
+      await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
+      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    };
+
     const setGridColumnsAndRows = () => {
       columnsNumber.value = window.innerWidth;
       rowHeight.value = 1;
@@ -205,7 +231,7 @@ export default defineComponent({
       window.addEventListener("resize", setGridColumnsAndRows);
 
       setGridColumnsAndRows();
-      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+      refreshFiles();
     });
 
     onDeactivated(() => {
