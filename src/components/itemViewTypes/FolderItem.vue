@@ -8,7 +8,7 @@
         </span>
       </div>
       <DropExternalFileZone :dropPath="folderDialog.name">
-        <div class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
+        <div @drop="dropFilehandler" class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
             getFileNameFromPath(fileNameToChange)
           }}</span>
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
+import { copyFile, deleteFile, isDir, renameFile } from "@/context/fileSystemController";
 import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
@@ -118,6 +118,27 @@ export default defineComponent({
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: isOpenedFolder,
       } as ActionMenu);
+    };
+
+    const dropFilehandler = async () => {
+      console.log("DROPPED");
+
+      const itemsToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+
+      for (let filePath of itemsToMove) {
+        await copyFile(filePath, props.folderDialog?.name || "å");
+      }
+      for (const file of itemsToMove) {
+        await deleteFile(file);
+      }
+
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
+      await refreshFiles();
+    };
+
+    const refreshFiles = async () => {
+      await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
+      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
 
     const updateItemDialogPath = (fileName: string) => {
@@ -260,6 +281,7 @@ export default defineComponent({
       fileFocusedWidth,
       openActionMenu,
       isCutFile,
+      dropFilehandler,
     };
   },
 });

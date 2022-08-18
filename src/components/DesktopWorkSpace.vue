@@ -92,13 +92,10 @@ export default defineComponent({
         isFolder = await isDir(dropDestinationFileName);
       }
       if (dropDestinationFileName && isFolder) {
-        console.log("IN FOLDER");
         await moveFilesInFolder(dropDestinationFileName);
       } else {
-        console.log("CHANGE POS");
         changeFileItemsPosition(event);
       }
-
       await refreshFiles();
     };
 
