@@ -1,17 +1,34 @@
 import { copyFile, deleteFile, isDir } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import store from "@/store";
-import { onMounted, onUnmounted, watchEffect } from "vue";
+import { computed, onMounted, onUnmounted, watchEffect } from "vue";
 
 export default function useMoveFiles(moveDestinationPath: string) {
+  const filePathsToMove = computed((): string[] => {
+    return store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
+  });
+
   const setFilesToMove = (filesToMove: string[]) => {
     store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", filesToMove);
   };
 
-  const moveFilesOrResetFilesToMove = async (filePathsToMove: string, destinationPath: string) => {
-    const filesToMove: string[] = [...store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"]];
+  const resetFilesToMove = () => {
+    store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
+  };
 
-    const isDestinationPathFolder = await isDir(moveDestinationPath);
+  const moveFilesInFolder = async (event: Event, destinationPath: string) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    for (let filePath of filePathsToMove.value) {
+      await copyFile(filePath, destinationPath);
+    }
+    for (const file of filePathsToMove.value) {
+      await deleteFile(file);
+    }
+
+    resetFilesToMove();
+    refreshFiles();
   };
 
   const refreshFiles = async () => {
@@ -19,5 +36,5 @@ export default function useMoveFiles(moveDestinationPath: string) {
     await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
   };
 
-  return { setFilesToMove, moveFilesOrResetFilesToMove };
+  return { setFilesToMove, moveFilesInFolder, resetFilesToMove };
 }

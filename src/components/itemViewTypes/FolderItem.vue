@@ -124,14 +124,13 @@ export default defineComponent({
       const itemsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
 
       for (let filePath of itemsToMove) {
-        await copyFile(filePath, props.folderDialog?.name || "å");
+        await copyFile(filePath, props.folderDialog?.name || "");
       }
       for (const file of itemsToMove) {
         await deleteFile(file);
       }
 
       store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
       await refreshFiles();
     };
 
