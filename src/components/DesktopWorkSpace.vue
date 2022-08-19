@@ -36,6 +36,7 @@
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
             @drop="dropFilehandler($event, item.name)"
+            @dragstart="setItemToMove"
           >
             <FileItem
               :ref="item.name + 'FileRef'"
@@ -86,6 +87,11 @@ export default defineComponent({
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
 
+    const setItemToMove = () => {
+      store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", selectedItemPaths.value);
+    };
+    // TODO: use hook for this methods, drag start, move files etc...
+
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
       let isFolder = false;
       if (dropDestinationFileName) {
@@ -100,10 +106,12 @@ export default defineComponent({
     };
 
     const moveFilesInFolder = async (dropDestinationPath: string) => {
-      for (let filePath of selectedItemPaths.value) {
+      const filePathsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
+
+      for (let filePath of filePathsToMove) {
         await copyFile(filePath, dropDestinationPath);
       }
-      for (const file of selectedItemPaths.value) {
+      for (const file of filePathsToMove) {
         await deleteFile(file);
       }
 
@@ -124,7 +132,6 @@ export default defineComponent({
         localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
       });
     };
-
     const selectFile = (newFileSelected: DesktopFile) => {
       console.log("selecting", newFileSelected);
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
@@ -214,6 +221,7 @@ export default defineComponent({
       openActionMenu,
       isItemSelected,
       dropFilehandler,
+      setItemToMove,
     };
   },
 });

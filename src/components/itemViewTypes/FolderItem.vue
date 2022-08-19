@@ -121,9 +121,7 @@ export default defineComponent({
     };
 
     const dropFilehandler = async () => {
-      console.log("DROPPED");
-
-      const itemsToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+      const itemsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
 
       for (let filePath of itemsToMove) {
         await copyFile(filePath, props.folderDialog?.name || "å");
@@ -132,6 +130,7 @@ export default defineComponent({
         await deleteFile(file);
       }
 
+      store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
       await refreshFiles();
     };
