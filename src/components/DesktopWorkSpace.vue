@@ -36,7 +36,7 @@
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
             @drop="dropFilehandler($event, item.name)"
-            @dragstart="setItemToMove"
+            @dragstart="setFilesToMove(selectedItemPaths)"
           >
             <FileItem
               :ref="item.name + 'FileRef'"
@@ -53,6 +53,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeactivated } from "vue";
+
+import useMoveFiles from "@/hooks/useMoveFiles";
 
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
@@ -74,6 +76,7 @@ export default defineComponent({
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
+    const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
     const itemWidth = 0.7;
     const itemHeight = 2.2;
@@ -87,9 +90,9 @@ export default defineComponent({
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
 
-    const setItemToMove = () => {
-      store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", selectedItemPaths.value);
-    };
+    // const setItemToMove = () => {
+    //   store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", selectedItemPaths.value);
+    // };
     // TODO: use hook for this methods, drag start, move files etc...
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
@@ -98,25 +101,25 @@ export default defineComponent({
         isFolder = await isDir(dropDestinationFileName);
       }
       if (dropDestinationFileName && isFolder) {
-        await moveFilesInFolder(dropDestinationFileName);
+        await moveFilesInFolder(event, dropDestinationFileName);
       } else {
         changeFileItemsPosition(event);
       }
       await refreshFiles();
     };
 
-    const moveFilesInFolder = async (dropDestinationPath: string) => {
-      const filePathsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
+    // const moveFilesInFolder = async (dropDestinationPath: string) => {
+    //   const filePathsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
 
-      for (let filePath of filePathsToMove) {
-        await copyFile(filePath, dropDestinationPath);
-      }
-      for (const file of filePathsToMove) {
-        await deleteFile(file);
-      }
+    //   for (let filePath of filePathsToMove) {
+    //     await copyFile(filePath, dropDestinationPath);
+    //   }
+    //   for (const file of filePathsToMove) {
+    //     await deleteFile(file);
+    //   }
 
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
-    };
+    //   store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
+    // };
 
     const changeFileItemsPosition = async (event: any) => {
       selectedItemPaths.value.forEach((itemName) => {
@@ -221,7 +224,7 @@ export default defineComponent({
       openActionMenu,
       isItemSelected,
       dropFilehandler,
-      setItemToMove,
+      setFilesToMove,
     };
   },
 });

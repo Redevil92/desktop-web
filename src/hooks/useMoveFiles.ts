@@ -3,7 +3,7 @@ import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import store from "@/store";
 import { computed, onMounted, onUnmounted, watchEffect } from "vue";
 
-export default function useMoveFiles(moveDestinationPath: string) {
+export default function useMoveFiles() {
   const filePathsToMove = computed((): string[] => {
     return store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
   });
@@ -20,7 +20,7 @@ export default function useMoveFiles(moveDestinationPath: string) {
     event.stopPropagation();
     event.preventDefault();
 
-    for (let filePath of filePathsToMove.value) {
+    for (const filePath of filePathsToMove.value) {
       await copyFile(filePath, destinationPath);
     }
     for (const file of filePathsToMove.value) {
