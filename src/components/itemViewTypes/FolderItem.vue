@@ -27,14 +27,6 @@
             @click.stop="itemClickHandler(item)"
             @click.right="openActionMenu($event, false, item)"
           >
-            <!-- <span class="mdi mdi-folder extension-icon" v-if="isDir(item)"></span>
-
-          <span
-            class="mdi mdi-file-word extension-icon"
-            style="color: #01014a"
-            v-else-if="getFileExtensionFromName(item)"
-          ></span> -->
-
             <div v-if="getFileExtensionFromName(item)">
               <img
                 class="file-icon"
@@ -84,6 +76,7 @@ import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
+import useMoveFiles from "@/hooks/useMoveFiles";
 
 export default defineComponent({
   props: {
@@ -95,9 +88,9 @@ export default defineComponent({
   setup(props, _) {
     const folderContentRef = ref(null as unknown as HTMLElement);
 
-    // *** UPDATE FOLDER DIALOG AND OPEN NEW FILES
+    const { moveFilesInFolder } = useMoveFiles();
+
     const doubleClickHandler = async (fileName: string) => {
-      // check if file is dir
       const isDirectory = await isDir(fileName);
       if (isDirectory && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
@@ -120,23 +113,8 @@ export default defineComponent({
       } as ActionMenu);
     };
 
-    const dropFilehandler = async () => {
-      const itemsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
-
-      for (let filePath of itemsToMove) {
-        await copyFile(filePath, props.folderDialog?.name || "");
-      }
-      for (const file of itemsToMove) {
-        await deleteFile(file);
-      }
-
-      store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
-      await refreshFiles();
-    };
-
-    const refreshFiles = async () => {
-      await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    const dropFilehandler = async (event: Event) => {
+      moveFilesInFolder(event, props.folderDialog?.name || "");
     };
 
     const updateItemDialogPath = (fileName: string) => {
