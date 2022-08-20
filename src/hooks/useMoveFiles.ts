@@ -1,7 +1,6 @@
-import { copyFile, deleteFile, isDir } from "@/context/fileSystemController";
-import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { copyFile, deleteFile } from "@/context/fileSystemController";
 import store from "@/store";
-import { computed, onMounted, onUnmounted, watchEffect } from "vue";
+import { computed } from "vue";
 
 export default function useMoveFiles() {
   const filePathsToMove = computed((): string[] => {

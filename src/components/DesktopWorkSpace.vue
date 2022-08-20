@@ -65,7 +65,7 @@ import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION } from "@/constants";
 import Coordinates from "@/models/Coordinates";
-import { copyFile, deleteFile, isDir } from "@/context/fileSystemController";
+import { isDir } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -90,9 +90,6 @@ export default defineComponent({
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
 
-    // const setItemToMove = () => {
-    //   store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", selectedItemPaths.value);
-    // };
     // TODO: use hook for this methods, drag start, move files etc...
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
@@ -104,22 +101,9 @@ export default defineComponent({
         await moveFilesInFolder(event, dropDestinationFileName);
       } else {
         changeFileItemsPosition(event);
+        await refreshFiles();
       }
-      await refreshFiles();
     };
-
-    // const moveFilesInFolder = async (dropDestinationPath: string) => {
-    //   const filePathsToMove = store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
-
-    //   for (let filePath of filePathsToMove) {
-    //     await copyFile(filePath, dropDestinationPath);
-    //   }
-    //   for (const file of filePathsToMove) {
-    //     await deleteFile(file);
-    //   }
-
-    //   store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
-    // };
 
     const changeFileItemsPosition = async (event: any) => {
       selectedItemPaths.value.forEach((itemName) => {
