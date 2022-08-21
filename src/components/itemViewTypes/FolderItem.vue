@@ -7,6 +7,7 @@
           >{{ filePathSplitted.length > index + 1 ? " > " : "" }}
         </span>
       </div>
+
       <DropExternalFileZone :dropPath="folderDialog.name">
         <div @drop="dropFilehandler" class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
@@ -27,7 +28,7 @@
             @mousedown.stop="itemClickHandler(item)"
             @click.right="openActionMenu($event, false, item)"
             draggable
-            @dragstart="testDragStart"
+            @dragstart="setFilesToMove([selectedItem])"
           >
             <div v-if="getFileExtensionFromName(item)">
               <img
@@ -148,10 +149,6 @@ export default defineComponent({
       );
     });
 
-    const testDragStart = () => {
-      console.log("DRAG STARTS!!!!");
-    };
-
     const itemClickHandler = async (fileName: string) => {
       if (!props.folderDialog?.isFocused) {
         store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.folderDialog);
@@ -265,7 +262,6 @@ export default defineComponent({
       isCutFile,
       dropFilehandler,
       setFilesToMove,
-      testDragStart,
     };
   },
 });

@@ -16,6 +16,9 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolder = async (event: Event, destinationPath: string) => {
+    console.log("MOVIING IN FOLDER", destinationPath);
+    // todo, if moving in desktop save also the position!!
+
     event.stopPropagation();
     event.preventDefault();
 
