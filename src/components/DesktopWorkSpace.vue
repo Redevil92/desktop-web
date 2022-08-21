@@ -2,7 +2,7 @@
   <DropExternalFileZone :dropPath="'my PC/Desktop'">
     <div
       @click="selectFile({})"
-      @drop="dropFilehandler($event, '')"
+      @drop="dropFilehandler($event, 'my PC/Desktop')"
       @dragover.prevent
       @dragenter.prevent
       ref="desktopRef"

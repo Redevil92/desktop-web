@@ -1,6 +1,6 @@
 <template>
   <div @click.right="openActionMenu($event, true)">
-    <div class="folder-item-container" @click="deselectItem" :style="`height:${height - 5}px`">
+    <div class="folder-item-container" @mousedown="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
           <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }}</span
@@ -24,8 +24,10 @@
             v-for="(item, index) in folderDialog.filesPath"
             :key="`item-${index}-${item}`"
             @dblclick="doubleClickHandler(item)"
-            @click.stop="itemClickHandler(item)"
+            @mousedown.stop="itemClickHandler(item)"
             @click.right="openActionMenu($event, false, item)"
+            draggable
+            @dragstart="testDragStart"
           >
             <div v-if="getFileExtensionFromName(item)">
               <img
@@ -49,7 +51,7 @@
                 ref="fileNameInputRef"
                 class="file-text no-outline"
                 v-model="fileNameToChange"
-                @click.stop=""
+                @mousedown.stop=""
                 @keyup.enter="changeFileName"
                 @blur="changeFileName"
                 @keyup.esc="isEditingSelectedValue = false"
@@ -57,7 +59,7 @@
                 :style="`width:${fileFocusedWidth}px`"
               />
             </span>
-            <span v-else class="file-text">{{ getFileNameFromPath(item) }}</span>
+            <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
           </div>
         </div>
       </DropExternalFileZone>
@@ -88,7 +90,7 @@ export default defineComponent({
   setup(props, _) {
     const folderContentRef = ref(null as unknown as HTMLElement);
 
-    const { moveFilesInFolder } = useMoveFiles();
+    const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
     const doubleClickHandler = async (fileName: string) => {
       const isDirectory = await isDir(fileName);
@@ -145,6 +147,10 @@ export default defineComponent({
         props.folderDialog ? props.folderDialog?.dimension.width - 30 : 200
       );
     });
+
+    const testDragStart = () => {
+      console.log("DRAG STARTS!!!!");
+    };
 
     const itemClickHandler = async (fileName: string) => {
       if (!props.folderDialog?.isFocused) {
@@ -258,6 +264,8 @@ export default defineComponent({
       openActionMenu,
       isCutFile,
       dropFilehandler,
+      setFilesToMove,
+      testDragStart,
     };
   },
 });
@@ -381,5 +389,15 @@ input {
 
 .folder-item-list {
   overflow-y: auto;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
