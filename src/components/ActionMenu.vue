@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { DESKTOP_PATH, isDir } from "@/context/fileSystemController";
+import { DESKTOP_PATH } from "@/constants";
+import { isDir } from "@/context/fileSystemController";
 import { generateUniqueName } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";

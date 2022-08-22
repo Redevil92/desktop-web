@@ -1,8 +1,8 @@
 <template>
-  <DropExternalFileZone :dropPath="'my PC/Desktop'">
+  <DropExternalFileZone :dropPath="DESKTOP_PATH">
     <div
       @click="selectFile({})"
-      @drop="dropFilehandler($event, 'my PC/Desktop')"
+      @drop="dropFilehandler($event, DESKTOP_PATH)"
       @dragover.prevent
       @dragenter.prevent
       ref="desktopRef"
@@ -63,7 +63,7 @@ import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
-import { DESKTOP_FILE_DIMENSION } from "@/constants";
+import { DESKTOP_FILE_DIMENSION, DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
 
@@ -209,6 +209,7 @@ export default defineComponent({
       isItemSelected,
       dropFilehandler,
       setFilesToMove,
+      DESKTOP_PATH,
     };
   },
 });

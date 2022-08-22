@@ -26,7 +26,7 @@ import ActionMenu from "@/components/ActionMenu.vue";
 import Coordinates from "@/models/Coordinates";
 import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
-import { DESKTOP_PATH } from "@/context/fileSystemController";
+import { DESKTOP_PATH } from "@/constants";
 
 export default defineComponent({
   props: {},

@@ -72,7 +72,8 @@ import BaseButton from "@/components/shared/BaseButton.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import store from "@/store";
-import { DESKTOP_PATH, existsFile, isDir, renameFile } from "@/context/fileSystemController";
+import { DESKTOP_PATH } from "@/constants";
+import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({

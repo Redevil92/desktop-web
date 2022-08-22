@@ -1,3 +1,4 @@
+import { DESKTOP_PATH } from "@/constants";
 import FileStats from "@/models/FileSystem/FileStats";
 import {
   generateUniqueName,
@@ -5,8 +6,6 @@ import {
   getFileNameFromPath,
   getFileNameWithoutExtension,
 } from "./fileSystemUtils";
-
-export const DESKTOP_PATH = "my PC/Desktop";
 
 export const createDirectory = (path: string, overwrite = false): Promise<any> => {
   const fs = (window as any).fs;
@@ -64,8 +63,7 @@ export const getFiles = async (path: string, fullPath = false): Promise<string[]
 };
 
 export const getDesktopFiles = (fullPath = false): Promise<string[]> => {
-  const desktopPath = "my PC/Desktop";
-  return getFiles(desktopPath, fullPath);
+  return getFiles(DESKTOP_PATH, fullPath);
 };
 
 export const isDir = async (path: string): Promise<boolean> => {
