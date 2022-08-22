@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { copyFile, deleteFile, isDir, renameFile } from "@/context/fileSystemController";
+import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
 import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
 
 import store from "@/store";
