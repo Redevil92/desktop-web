@@ -76,7 +76,7 @@ export default defineComponent({
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
-    const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
+    const { moveFilesInFolder, setFilesToMove, isChangingFilePosition } = useMoveFiles();
 
     const itemWidth = 0.7;
     const itemHeight = 2.2;
@@ -97,11 +97,13 @@ export default defineComponent({
       if (dropDestinationFileName) {
         isFolder = await isDir(dropDestinationFileName);
       }
-      if (dropDestinationFileName && isFolder) {
-        await moveFilesInFolder(event, dropDestinationFileName);
-      } else {
+
+      if (isChangingFilePosition(dropDestinationFileName)) {
+        console.log("Changing item pos");
         changeFileItemsPosition(event);
         await refreshFiles();
+      } else {
+        await moveFilesInFolder(event, dropDestinationFileName);
       }
     };
 

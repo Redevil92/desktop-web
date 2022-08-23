@@ -1,3 +1,4 @@
+import { DESKTOP_PATH } from "@/constants";
 import { copyFile, deleteFile } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import store from "@/store";
@@ -15,6 +16,18 @@ export default function useMoveFiles() {
 
   const resetFilesToMove = () => {
     store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
+  };
+
+  const isChangingFilePosition = (destinationPath: string) => {
+    console.log(getSourcePathFromFilePath(filePathsToMove.value[0]), destinationPath);
+    if (
+      filePathsToMove.value.length > 0 &&
+      getSourcePathFromFilePath(filePathsToMove.value[0]) === destinationPath &&
+      destinationPath === DESKTOP_PATH
+    ) {
+      return true;
+    }
+    return false;
   };
 
   const moveFilesInFolder = async (event: Event, destinationPath: string) => {
@@ -42,5 +55,5 @@ export default function useMoveFiles() {
     await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
   };
 
-  return { setFilesToMove, moveFilesInFolder, resetFilesToMove };
+  return { setFilesToMove, moveFilesInFolder, resetFilesToMove, isChangingFilePosition };
 }

@@ -27,40 +27,40 @@
             @dblclick="doubleClickHandler(item)"
             @mousedown.stop="itemClickHandler(item)"
             @click.right="openActionMenu($event, false, item)"
-            draggable
-            @dragstart="setFilesToMove([selectedItem])"
           >
-            <div v-if="getFileExtensionFromName(item)">
-              <img
-                class="file-icon"
-                style="margin-top: 3px"
-                height="16"
-                :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
-                alt=""
-              />
-            </div>
-            <div v-else-if="isDir(item)">
-              <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
-            </div>
-            <div v-else>
-              <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
-            </div>
+            <div class="flex-align-center" draggable @dragstart="setFilesToMove([selectedItem])">
+              <div v-if="getFileExtensionFromName(item)" @dragstart="setFilesToMove([selectedItem])">
+                <img
+                  class="file-icon"
+                  style="margin-top: 3px"
+                  height="16"
+                  :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
+                  alt=""
+                />
+              </div>
+              <div v-else-if="isDir(item)">
+                <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
+              </div>
+              <div v-else>
+                <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+              </div>
 
-            <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
-            <span v-if="item === selectedItem && isEditingSelectedValue">
-              <input
-                ref="fileNameInputRef"
-                class="file-text no-outline"
-                v-model="fileNameToChange"
-                @mousedown.stop=""
-                @keyup.enter="changeFileName"
-                @blur="changeFileName"
-                @keyup.esc="isEditingSelectedValue = false"
-                type="text"
-                :style="`width:${fileFocusedWidth}px`"
-              />
-            </span>
-            <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
+              <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
+              <span v-if="item === selectedItem && isEditingSelectedValue">
+                <input
+                  ref="fileNameInputRef"
+                  class="file-text no-outline"
+                  v-model="fileNameToChange"
+                  @mousedown.stop=""
+                  @keyup.enter="changeFileName"
+                  @blur="changeFileName"
+                  @keyup.esc="isEditingSelectedValue = false"
+                  type="text"
+                  :style="`width:${fileFocusedWidth}px`"
+                />
+              </span>
+              <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
+            </div>
           </div>
         </div>
       </DropExternalFileZone>
@@ -158,7 +158,7 @@ export default defineComponent({
         setTimeout(async () => {
           isEditingSelectedValue.value = !isEditingSelectedValue.value;
           await selectInputText();
-        }, 300);
+        }, 600);
 
         return;
       }
@@ -282,6 +282,9 @@ export default defineComponent({
   font-size: var(--medium-font-size);
   text-align: left;
   padding-left: 10px;
+}
+
+.flex-align-center {
   align-content: center;
   cursor: pointer;
   display: flex;
