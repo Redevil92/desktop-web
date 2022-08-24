@@ -34,6 +34,7 @@ export default defineComponent({
     }
 
     function onDrop(event: any) {
+      console.log("HIIIIIIIIIII man how are you");
       setInactive();
       filesDroppedHandler([...event.dataTransfer.files]);
     }
@@ -66,7 +67,7 @@ export default defineComponent({
       store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
 
-    return { onDrop, active };
+    return { onDrop, active, setActive, setInactive };
   },
 });
 </script>

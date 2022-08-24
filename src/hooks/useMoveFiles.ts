@@ -31,9 +31,6 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolder = async (event: Event, destinationPath: string) => {
-    event.stopPropagation();
-    event.preventDefault();
-
     // no drag and drop in the same folder
     if (filePathsToMove.value.length > 0 && getSourcePathFromFilePath(filePathsToMove.value[0]) === destinationPath) {
       return;
