@@ -32,7 +32,7 @@
           <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
                 or do nothing -->
           <div
-            draggable
+            draggable="true"
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
             @drop.stop="dropFilehandler($event, item.name)"

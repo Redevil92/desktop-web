@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, nextTick, onMounted, PropType, ref, watch } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
@@ -90,6 +90,15 @@ export default defineComponent({
     const showDialog = ref(false);
     const errorMessage = ref("");
     const isFolder = ref(false);
+
+    watch(
+      () => props.isSelected,
+      (currentIsSelected, _old) => {
+        if (!currentIsSelected) {
+          isEditingText.value = false;
+        }
+      }
+    );
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
