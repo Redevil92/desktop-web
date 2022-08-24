@@ -2,7 +2,7 @@
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
     <div
       @click="selectFile({})"
-      @drop="dropFilehandler($event, DESKTOP_PATH)"
+      @drop.stop="dropFilehandler($event, DESKTOP_PATH)"
       @dragover.prevent
       @dragenter.prevent
       ref="desktopRef"
@@ -35,7 +35,7 @@
             draggable
             @mousedown="selectFile(item)"
             @click.right="openActionMenu($event, item)"
-            @drop="dropFilehandler($event, item.name)"
+            @drop.stop="dropFilehandler($event, item.name)"
             @dragstart="setFilesToMove(selectedItemPaths)"
           >
             <FileItem

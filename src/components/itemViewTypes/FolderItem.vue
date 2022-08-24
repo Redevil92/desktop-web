@@ -29,7 +29,7 @@
             @click.right="openActionMenu($event, false, item)"
           >
             <div class="flex-align-center" draggable @dragstart="setFilesToMove([selectedItem])">
-              <div v-if="getFileExtensionFromName(item)" @dragstart="setFilesToMove([selectedItem])">
+              <div v-if="getFileExtensionFromName(item)">
                 <img
                   class="file-icon"
                   style="margin-top: 3px"
