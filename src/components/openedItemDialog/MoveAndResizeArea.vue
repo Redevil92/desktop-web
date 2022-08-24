@@ -1,7 +1,8 @@
 <template>
+  <!-- commented animation for folder -->
+  <!-- :class="{ 'folder-dialog-animation': animateDialogWhenMoving }" -->
   <div
     class="folder-dialog"
-    :class="{ 'folder-dialog-animation': animateDialogWhenMoving }"
     ref="draggableElement"
     @mousedown="setItemDialogFocused"
     :style="

@@ -9,6 +9,7 @@ import {
 } from "@/context/fileSystemController";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
+import Coordinates from "@/models/Coordinates";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
@@ -125,7 +126,7 @@ export default {
     },
   },
   actions: {
-    ADD_ITEM_DIALOG: async ({ commit, dispatch }: any, itemDialog: DesktopItem) => {
+    ADD_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
       const itemExtension = getFileExtensionFromName(itemDialog.name);
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
@@ -138,6 +139,13 @@ export default {
         icon = fileTypeConfiguration.icon;
       }
 
+      const padding = 40;
+      const startingPoint = 50;
+      const itemDialogCount = getters.GET_ITEMS_DIALOG.length;
+      const x = (itemDialogCount % 10) * padding + startingPoint;
+      const y = Math.floor(itemDialogCount / 10) * padding + startingPoint + ((itemDialogCount % 10) * padding) / 4;
+      const position = { x, y } as Coordinates;
+
       const newItemDialog = {
         name: itemDialog.name,
         mimeType: itemDialog.mimeType,
@@ -146,6 +154,7 @@ export default {
         isFolder: false,
         zIndex: 1,
         icon,
+        position,
         dimension,
         minDimension,
       } as ItemDialog;
