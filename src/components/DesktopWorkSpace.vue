@@ -99,7 +99,6 @@ export default defineComponent({
       }
 
       if (isChangingFilePosition(dropDestinationFileName)) {
-        console.log("Changing item pos");
         changeFileItemsPosition(event);
         await refreshFiles();
       } else {

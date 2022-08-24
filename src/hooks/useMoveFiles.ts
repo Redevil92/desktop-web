@@ -10,7 +10,6 @@ export default function useMoveFiles() {
   });
 
   const setFilesToMove = (filesToMove: string[]) => {
-    console.log("HELLO MAN");
     store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", filesToMove);
   };
 

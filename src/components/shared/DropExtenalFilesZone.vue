@@ -34,7 +34,6 @@ export default defineComponent({
     }
 
     function onDrop(event: any) {
-      console.log("HIIIIIIIIIII man how are you");
       setInactive();
       filesDroppedHandler([...event.dataTransfer.files]);
     }
