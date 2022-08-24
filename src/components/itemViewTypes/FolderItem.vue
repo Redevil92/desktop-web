@@ -28,7 +28,7 @@
             @mousedown.stop="itemClickHandler(item)"
             @click.right="openActionMenu($event, false, item)"
           >
-            <div class="flex-align-center" draggable @dragstart="setFilesToMove([selectedItem])">
+            <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
               <div v-if="getFileExtensionFromName(item)">
                 <img
                   class="file-icon"
@@ -46,20 +46,22 @@
               </div>
 
               <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
-              <span v-if="item === selectedItem && isEditingSelectedValue">
-                <input
-                  ref="fileNameInputRef"
-                  class="file-text no-outline"
-                  v-model="fileNameToChange"
-                  @mousedown.stop=""
-                  @keyup.enter="changeFileName"
-                  @blur="changeFileName"
-                  @keyup.esc="isEditingSelectedValue = false"
-                  type="text"
-                  :style="`width:${fileFocusedWidth}px`"
-                />
-              </span>
-              <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
+              <div>
+                <span v-if="item === selectedItem && isEditingSelectedValue">
+                  <input
+                    ref="fileNameInputRef"
+                    class="file-text no-outline"
+                    v-model="fileNameToChange"
+                    @mousedown.stop=""
+                    @keyup.enter="changeFileName"
+                    @blur="changeFileName"
+                    @keyup.esc="isEditingSelectedValue = false"
+                    type="text"
+                    :style="`width:${fileFocusedWidth}px`"
+                  />
+                </span>
+                <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
+              </div>
             </div>
           </div>
         </div>
