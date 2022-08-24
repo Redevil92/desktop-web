@@ -1,26 +1,17 @@
 <template>
   <div
     class="folder-dialog"
-    :class="animateDialogWhenMoving ? 'folder-dialog-animation' : ''"
+    :class="{ 'folder-dialog-animation': animateDialogWhenMoving }"
     ref="draggableElement"
-    @click="setItemDialogFocused"
+    @mousedown="setItemDialogFocused"
     :style="
       !isFullscreen
         ? `top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`
         : `top: ${0}px; left: ${0}px; z-index: ${
             itemDialog.zIndex
-          }; width: calc(100% - 1px); height: calc(100% - 31px) `
+          }; width: calc(100% - 1px); height: calc(100% - 31px);   `
     "
   >
-    <div
-      @mousedown="setItemDialogFocused"
-      class="not-focused-dialog"
-      v-if="!itemDialog.isFocused"
-      :style="`top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${
-        itemDialog.dimension.width
-      }px; z-index: ${itemDialog.zIndex + 1}`"
-    ></div>
-    <!-- RESIZABLE -->
     <div
       class="resize-element"
       style="width: 100%; height: 6px; top: -3px; left: 0px; cursor: ns-resize"
@@ -337,12 +328,6 @@ export default defineComponent({
   font-size: var(--small-font-size);
   text-align: start;
   margin-left: 5px;
-}
-
-.not-focused-dialog {
-  background-color: #3c3c3c75;
-  position: fixed;
-  border-radius: 10px;
 }
 
 .file-icon {

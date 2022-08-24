@@ -1,7 +1,7 @@
 <template>
   <MoveAndResizeArea :itemDialog="itemDialog">
     <template #header>
-      <div class="flex folder-header" ref="dialogHeader">
+      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="flex folder-header" ref="dialogHeader">
         <div v-if="fileExtension">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
         </div>
@@ -13,19 +13,21 @@
     </template>
     <template #default>
       <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
-      <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
+      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
+        <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
 
-      <div v-else-if="isTextFile()">
-        <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
-      </div>
-      <div v-else-if="fileExtension === 'pdf'">
-        <pdf-item :height="contentHeight" :itemDialog="itemDialog"></pdf-item>
-      </div>
-      <div v-else-if="isCodeFile()">
-        <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
-      </div>
-      <div v-else-if="isImageFile()">
-        <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
+        <div v-else-if="isTextFile()">
+          <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
+        </div>
+        <div v-else-if="fileExtension === 'pdf'">
+          <pdf-item :height="contentHeight" :itemDialog="itemDialog"></pdf-item>
+        </div>
+        <div v-else-if="isCodeFile()">
+          <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
+        </div>
+        <div v-else-if="isImageFile()">
+          <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
+        </div>
       </div>
     </template>
   </MoveAndResizeArea>
@@ -155,14 +157,12 @@ export default defineComponent({
   margin-left: 5px;
 }
 
-.not-focused-dialog {
-  background-color: #3c3c3c75;
-  position: fixed;
-  border-radius: 10px;
-}
-
 .file-icon {
   margin-left: 10px;
   margin-top: 3px;
+}
+
+.not-focused-dialog {
+  opacity: 0.4;
 }
 </style>
