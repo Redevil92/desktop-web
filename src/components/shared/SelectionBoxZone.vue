@@ -2,7 +2,6 @@
   <div>
     <!-- share state with the scoped slot -->
 
-    <div class="boxes"></div>
     <div class="selection-rect"></div>
 
     <slot> </slot>
@@ -36,23 +35,23 @@ export default defineComponent({
     //   return elements;
     // }
 
-    // function getSelectionRectNode() {
-    //   return document.querySelector(".selection-rect");
-    // }
+    function getSelectionRectNode() {
+      return document.querySelector(".selection-rect");
+    }
 
-    // function showSelectionRectangle(selection) {
-    //   var rect = getSelectionRectNode();
-    //   rect.style.left = `${selection.left}px`;
-    //   rect.style.top = `${selection.top + window.scrollY}px`;
-    //   rect.style.width = `${selection.right - selection.left}px`;
-    //   rect.style.height = `${selection.bottom - selection.top}px`;
-    //   rect.style.opacity = 0.5;
-    // }
+    function showSelectionRectangle(selection) {
+      var rect = getSelectionRectNode();
+      rect.style.left = `${selection.left}px`;
+      rect.style.top = `${selection.top + window.scrollY}px`;
+      rect.style.width = `${selection.right - selection.left}px`;
+      rect.style.height = `${selection.bottom - selection.top}px`;
+      rect.style.opacity = 0.5;
+    }
 
-    // function hideSelectionRectangle() {
-    //   var rect = getSelectionRectNode();
-    //   rect.style.opacity = 0;
-    // }
+    function hideSelectionRectangle() {
+      var rect = getSelectionRectNode();
+      rect.style.opacity = 0;
+    }
 
     // function selectBoxes(selection) {
     //   deselectBoxes();
@@ -80,34 +79,34 @@ export default defineComponent({
     //     bottom: 0
     //   };
 
-    //   function onMouseDown(e) {
-    //     isMouseDown = true;
-    //     deselectBoxes();
-    //     selectionRectangle.left = e.clientX;
-    //     selectionRectangle.top = e.clientY;
-    //   }
+    function onMouseDown(e) {
+      isMouseDown = true;
+      deselectBoxes();
+      selectionRectangle.left = e.clientX;
+      selectionRectangle.top = e.clientY;
+    }
 
-    //   function onMouseMove(e) {
-    //     if (!isMouseDown) {
-    //       return;
-    //     }
-    //     selectionRectangle.right = e.clientX;
-    //     selectionRectangle.bottom = e.clientY;
-    //     showSelectionRectangle(selectionRectangle);
-    //     selectBoxes(selectionRectangle);
-    //   }
+    function onMouseMove(e) {
+      if (!isMouseDown) {
+        return;
+      }
+      selectionRectangle.right = e.clientX;
+      selectionRectangle.bottom = e.clientY;
+      showSelectionRectangle(selectionRectangle);
+      selectBoxes(selectionRectangle);
+    }
 
-    //   function onMouseUp(e) {
-    //     isMouseDown = false;
-    //     selectBoxes(selectionRectangle);
-    //     hideSelectionRectangle();
-    //     selectionRectangle = {
-    //       top: 0,
-    //       left: 0,
-    //       right: 0,
-    //       bottom: 0
-    //     };
-    //   }
+    function onMouseUp(e) {
+      isMouseDown = false;
+      selectBoxes(selectionRectangle);
+      hideSelectionRectangle();
+      selectionRectangle = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      };
+    }
 
     //   document.addEventListener("mousedown", onMouseDown);
     //   document.addEventListener("mousemove", onMouseMove);
@@ -151,12 +150,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-* {
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-  -ms-user-select: none; /* IE 10+ */
-  user-select: none; /* Likely future */
-}
 .boxes {
   display: flex;
 }
