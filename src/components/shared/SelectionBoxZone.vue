@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
   props: {
@@ -18,6 +18,9 @@ export default defineComponent({
   components: {},
 
   setup(props, context) {
+    const isMouseDown = ref(false);
+    const selectionRectangle = ref(null as any);
+
     // function rectangleSelect(inputElements, selectionRectangle) {
     //   var elements = [];
     //   inputElements.forEach(function(element) {
@@ -35,23 +38,23 @@ export default defineComponent({
     //   return elements;
     // }
 
-    function getSelectionRectNode() {
+    const getSelectionRectNode = () => {
       return document.querySelector(".selection-rect");
-    }
+    };
 
-    function showSelectionRectangle(selection) {
-      var rect = getSelectionRectNode();
+    const showSelectionRectangle = (selection: any) => {
+      const rect = getSelectionRectNode() as any;
       rect.style.left = `${selection.left}px`;
       rect.style.top = `${selection.top + window.scrollY}px`;
       rect.style.width = `${selection.right - selection.left}px`;
       rect.style.height = `${selection.bottom - selection.top}px`;
       rect.style.opacity = 0.5;
-    }
+    };
 
-    function hideSelectionRectangle() {
-      var rect = getSelectionRectNode();
+    const hideSelectionRectangle = () => {
+      const rect = getSelectionRectNode() as any;
       rect.style.opacity = 0;
-    }
+    };
 
     // function selectBoxes(selection) {
     //   deselectBoxes();
@@ -79,34 +82,34 @@ export default defineComponent({
     //     bottom: 0
     //   };
 
-    function onMouseDown(e) {
-      isMouseDown = true;
-      deselectBoxes();
+    const onMouseDown = (e: any) => {
+      isMouseDown.value = true;
+      //deselectBoxes();
       selectionRectangle.left = e.clientX;
       selectionRectangle.top = e.clientY;
-    }
+    };
 
-    function onMouseMove(e) {
+    const onMouseMove = (e: any) => {
       if (!isMouseDown) {
         return;
       }
       selectionRectangle.right = e.clientX;
       selectionRectangle.bottom = e.clientY;
       showSelectionRectangle(selectionRectangle);
-      selectBoxes(selectionRectangle);
-    }
+      //selectBoxes(selectionRectangle);
+    };
 
-    function onMouseUp(e) {
-      isMouseDown = false;
-      selectBoxes(selectionRectangle);
+    const onMouseUp = (e: any) => {
+      isMouseDown.value = false;
+      //selectBoxes(selectionRectangle);
       hideSelectionRectangle();
-      selectionRectangle = {
+      selectionRectangle.value = {
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
       };
-    }
+    };
 
     //   document.addEventListener("mousedown", onMouseDown);
     //   document.addEventListener("mousemove", onMouseMove);
@@ -136,6 +139,20 @@ export default defineComponent({
 
     //   generateBoxes(document.querySelector(".boxes"), 10, 10);
     // }
+
+    const initEventHandlers = () => {
+      isMouseDown.value = false;
+      selectionRectangle.value = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      };
+    };
+
+    onMounted(() => {
+      initEventHandlers();
+    });
 
     // function init() {
     //   initEventHandlers();
