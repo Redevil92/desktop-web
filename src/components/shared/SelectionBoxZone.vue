@@ -2,14 +2,14 @@
   <div>
     <!-- share state with the scoped slot -->
 
-    <div class="selection-rect"></div>
+    <div ref="selectionRectRef" class="selection-rect"></div>
 
     <slot> </slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 
 export default defineComponent({
   props: {
@@ -19,7 +19,13 @@ export default defineComponent({
 
   setup(props, context) {
     const isMouseDown = ref(false);
-    const selectionRectangle = ref(null as any);
+    const selectionRectRef = ref(null as unknown as HTMLElement);
+    const selectionRectangle = ref({
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    } as any);
 
     // function rectangleSelect(inputElements, selectionRectangle) {
     //   var elements = [];
@@ -38,22 +44,16 @@ export default defineComponent({
     //   return elements;
     // }
 
-    const getSelectionRectNode = () => {
-      return document.querySelector(".selection-rect");
-    };
-
-    const showSelectionRectangle = (selection: any) => {
-      const rect = getSelectionRectNode() as any;
-      rect.style.left = `${selection.left}px`;
-      rect.style.top = `${selection.top + window.scrollY}px`;
-      rect.style.width = `${selection.right - selection.left}px`;
-      rect.style.height = `${selection.bottom - selection.top}px`;
-      rect.style.opacity = 0.5;
+    const showSelectionRectangle = () => {
+      selectionRectRef.value.style.left = `${selectionRectangle.value.left}px`;
+      selectionRectRef.value.style.top = `${selectionRectangle.value.top + window.scrollY}px`;
+      selectionRectRef.value.style.width = `${selectionRectangle.value.right - selectionRectangle.value.left}px`;
+      selectionRectRef.value.style.height = `${selectionRectangle.value.bottom - selectionRectangle.value.top}px`;
+      selectionRectRef.value.style.opacity = "0.5";
     };
 
     const hideSelectionRectangle = () => {
-      const rect = getSelectionRectNode() as any;
-      rect.style.opacity = 0;
+      selectionRectRef.value.style.opacity = "0";
     };
 
     // function selectBoxes(selection) {
@@ -85,17 +85,17 @@ export default defineComponent({
     const onMouseDown = (e: any) => {
       isMouseDown.value = true;
       //deselectBoxes();
-      selectionRectangle.left = e.clientX;
-      selectionRectangle.top = e.clientY;
+      selectionRectangle.value.left = e.clientX;
+      selectionRectangle.value.top = e.clientY;
     };
 
     const onMouseMove = (e: any) => {
-      if (!isMouseDown) {
+      if (!isMouseDown.value) {
         return;
       }
-      selectionRectangle.right = e.clientX;
-      selectionRectangle.bottom = e.clientY;
-      showSelectionRectangle(selectionRectangle);
+      selectionRectangle.value.right = e.clientX;
+      selectionRectangle.value.bottom = e.clientY;
+      showSelectionRectangle();
       //selectBoxes(selectionRectangle);
     };
 
@@ -141,17 +141,23 @@ export default defineComponent({
     // }
 
     const initEventHandlers = () => {
-      isMouseDown.value = false;
-      selectionRectangle.value = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      };
+      document.addEventListener("mousedown", onMouseDown);
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    };
+
+    const removeEventHandlers = () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
     };
 
     onMounted(() => {
       initEventHandlers();
+    });
+
+    onDeactivated(() => {
+      removeEventHandlers();
     });
 
     // function init() {
@@ -161,7 +167,9 @@ export default defineComponent({
 
     // init();
 
-    return {};
+    return {
+      selectionRectRef,
+    };
   },
 });
 </script>
@@ -212,5 +220,6 @@ export default defineComponent({
   background: yellow;
   opacity: 0;
   pointer-events: none;
+  z-index: 99;
 }
 </style>

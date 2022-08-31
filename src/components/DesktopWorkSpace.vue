@@ -1,53 +1,55 @@
 <template>
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
-    <div
-      @click="selectFile({})"
-      @drop="dropFilehandler($event, DESKTOP_PATH)"
-      @dragover.prevent
-      @dragenter.prevent
-      ref="desktopRef"
-    >
-      <grid-layout
-        class="grid-layout-dimension"
-        :layout="desktopFiles"
-        :col-num="columnsNumber"
-        :row-height="rowHeight"
-        :is-draggable="false"
-        :is-resizable="false"
-        :responsive="false"
-        :vertical-compact="false"
-        :prevent-collision="true"
-        :use-css-transforms="true"
+    <SelectionBoxZone>
+      <div
+        @click="selectFile({})"
+        @drop="dropFilehandler($event, DESKTOP_PATH)"
+        @dragover.prevent
+        @dragenter.prevent
+        ref="desktopRef"
       >
-        <grid-item
-          v-for="(item, index) in desktopFiles"
-          :key="`${item.i}-${index}`"
-          :static="item.static"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :h="item.h"
-          :i="item.i"
+        <grid-layout
+          class="grid-layout-dimension"
+          :layout="desktopFiles"
+          :col-num="columnsNumber"
+          :row-height="rowHeight"
+          :is-draggable="false"
+          :is-resizable="false"
+          :responsive="false"
+          :vertical-compact="false"
+          :prevent-collision="true"
+          :use-css-transforms="true"
         >
-          <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
-                or do nothing -->
-          <div
-            draggable="true"
-            @mousedown="selectFile(item)"
-            @click.right="openActionMenu($event, item)"
-            @drop.stop="dropFilehandler($event, item.name)"
-            @dragstart="setFilesToMove(selectedItemPaths)"
+          <grid-item
+            v-for="(item, index) in desktopFiles"
+            :key="`${item.i}-${index}`"
+            :static="item.static"
+            :x="item.x"
+            :y="item.y"
+            :w="item.w"
+            :h="item.h"
+            :i="item.i"
           >
-            <FileItem
-              :ref="item.name + 'FileRef'"
-              :fileItem="item"
-              @onClick="selectFile(item)"
-              :isSelected="isItemSelected(item.name)"
-            />
-          </div>
-        </grid-item>
-      </grid-layout>
-    </div>
+            <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
+                or do nothing -->
+            <div
+              draggable="true"
+              @mousedown="selectFile(item)"
+              @click.right="openActionMenu($event, item)"
+              @drop.stop="dropFilehandler($event, item.name)"
+              @dragstart="setFilesToMove(selectedItemPaths)"
+            >
+              <FileItem
+                :ref="item.name + 'FileRef'"
+                :fileItem="item"
+                @onClick="selectFile(item)"
+                :isSelected="isItemSelected(item.name)"
+              />
+            </div>
+          </grid-item>
+        </grid-layout>
+      </div>
+    </SelectionBoxZone>
   </DropExternalFileZone>
 </template>
 
@@ -59,6 +61,7 @@ import useMoveFiles from "@/hooks/useMoveFiles";
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
+import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
@@ -72,7 +75,7 @@ export default defineComponent({
     msg: String,
     items: Array as PropType<DesktopItem[]>,
   },
-  components: { GridLayout, GridItem, FileItem, DropExternalFileZone },
+  components: { GridLayout, GridItem, FileItem, DropExternalFileZone, SelectionBoxZone },
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
