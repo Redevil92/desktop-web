@@ -71,7 +71,7 @@
     >
       <!-- LB -->
     </div>
-    <div @mousedown="dragMouseDown($event, actionTypes.MOVING)">
+    <div @mousedown.stop="dragMouseDown($event, actionTypes.MOVING)">
       <slot name="header"> </slot>
     </div>
 

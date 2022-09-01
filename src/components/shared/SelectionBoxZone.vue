@@ -220,6 +220,6 @@ export default defineComponent({
   background: yellow;
   opacity: 0;
   pointer-events: none;
-  z-index: 99;
+  z-index: 1;
 }
 </style>
