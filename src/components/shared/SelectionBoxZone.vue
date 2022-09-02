@@ -1,9 +1,6 @@
 <template>
   <div>
-    <!-- share state with the scoped slot -->
-
-    <div ref="selectionRectRef" class="selection-rect"></div>
-
+    <div ref="selectionRectRef" class="selection-rect" :style="`z-index: ${zIndex}`"></div>
     <slot> </slot>
   </div>
 </template>
@@ -13,7 +10,7 @@ import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 
 export default defineComponent({
   props: {
-    dropPath: String,
+    zIndex: { type: Number, default: 1 },
   },
   components: {},
 
@@ -110,11 +107,6 @@ export default defineComponent({
         bottom: 0,
       };
     };
-
-    //   document.addEventListener("mousedown", onMouseDown);
-    //   document.addEventListener("mousemove", onMouseMove);
-    //   document.addEventListener("mouseup", onMouseUp);
-    // }
 
     // function initBoxes() {
     //   // Helpers for generating random boxes on screen
@@ -220,6 +212,5 @@ export default defineComponent({
   background: yellow;
   opacity: 0;
   pointer-events: none;
-  z-index: 1;
 }
 </style>
