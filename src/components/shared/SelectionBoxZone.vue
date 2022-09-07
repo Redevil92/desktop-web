@@ -90,6 +90,7 @@ export default defineComponent({
       if (!isMouseDown.value) {
         return;
       }
+
       selectionRectangle.value.right = e.clientX;
       selectionRectangle.value.bottom = e.clientY;
       showSelectionRectangle();
@@ -151,13 +152,6 @@ export default defineComponent({
     onDeactivated(() => {
       removeEventHandlers();
     });
-
-    // function init() {
-    //   initEventHandlers();
-    //   initBoxes();
-    // }
-
-    // init();
 
     return {
       selectionRectRef,
