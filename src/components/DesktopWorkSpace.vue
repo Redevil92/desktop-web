@@ -1,6 +1,6 @@
 <template>
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
-    <SelectionBoxZone itemsToSelectClass="desktop-item">
+    <SelectionBoxZone itemsToSelectClass="desktop-item" @onSelectingItems="selectItemsWithSelectionBox">
       <div
         @click="selectFile({})"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
@@ -129,6 +129,13 @@ export default defineComponent({
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 
+    const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
+      selectedElements.forEach((element) => {
+        //TODO get all the items path with the textContent
+        element.textContent;
+      });
+    };
+
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
     };
@@ -209,6 +216,7 @@ export default defineComponent({
       columnsNumber,
       rowHeight,
       selectFile,
+      selectItemsWithSelectionBox,
       selectedItemPaths,
       openActionMenu,
       isItemSelected,
