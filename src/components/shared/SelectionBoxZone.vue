@@ -72,7 +72,10 @@ export default defineComponent({
           elementToSelect.push(element);
         }
       }
-      context.emit("onSelectingItems", elements);
+
+      e.stopPropagation();
+
+      context.emit("onSelectingItems", elementToSelect);
     };
 
     const showSelectionRectangle = (newMousePosition: Coordinates) => {

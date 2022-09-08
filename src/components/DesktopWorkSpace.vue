@@ -2,7 +2,7 @@
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
     <SelectionBoxZone itemsToSelectClass="desktop-item" @onSelectingItems="selectItemsWithSelectionBox">
       <div
-        @click="selectFile({})"
+        @mousedown="selectFile({})"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
         @dragover.prevent
         @dragenter.prevent
@@ -40,12 +40,7 @@
               @drop.stop="dropFilehandler($event, item.name)"
               @dragstart="setFilesToMove(selectedItemPaths)"
             >
-              <FileItem
-                :ref="item.name + 'FileRef'"
-                :fileItem="item"
-                @onClick="selectFile(item)"
-                :isSelected="isItemSelected(item.name)"
-              />
+              <FileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
             </div>
           </grid-item>
         </grid-layout>
@@ -70,6 +65,7 @@ import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION, DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -100,6 +96,7 @@ export default defineComponent({
       let isFolder = false;
       if (dropDestinationFileName) {
         isFolder = await isDir(dropDestinationFileName);
+        // TODO if is folder should move all the subfiles ??
       }
 
       if (isChangingFilePosition(dropDestinationFileName)) {
@@ -130,10 +127,17 @@ export default defineComponent({
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-      selectedElements.forEach((element) => {
-        //TODO get all the items path with the textContent
-        element.textContent;
+      const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
+      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
+      console.log(elementsSelectedNames);
+      const newSelectedPaths = desktopPaths.filter((path) => {
+        console.log(elementsSelectedNames.includes(getFileNameFromPath(path)));
+        if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
+          return path;
+        }
       });
+      console.log("WWW", newSelectedPaths);
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
     };
 
     const isItemSelected = (fileItem: string) => {
