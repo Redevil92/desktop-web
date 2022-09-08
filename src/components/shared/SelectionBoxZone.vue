@@ -53,13 +53,26 @@ export default defineComponent({
 
       const elements = selectionRectArea.value.getElementsByClassName(props.itemsToSelectClass);
       let elementToSelect = [];
-      for (let i = 0; i < elements.length; i++) {
-        const elementBoudingClientRect = elements[i].getBoundingClientRect();
-        if (elementBoudingClientRect.left) {
+
+      const selRect = selectionRectRef.value.getBoundingClientRect();
+
+      for (const element of elements) {
+        const elementBoudingClientRect = element.getBoundingClientRect();
+
+        if (
+          ((elementBoudingClientRect.left > selRect.left &&
+            elementBoudingClientRect.left < selRect.left + selRect.width) ||
+            (elementBoudingClientRect.left + elementBoudingClientRect.width > selRect.left &&
+              elementBoudingClientRect.left + elementBoudingClientRect.width < selRect.left + selRect.width)) &&
+          ((elementBoudingClientRect.top > selRect.top &&
+            elementBoudingClientRect.top < selRect.top + selRect.height) ||
+            (elementBoudingClientRect.top + elementBoudingClientRect.height > selRect.top &&
+              elementBoudingClientRect.top + elementBoudingClientRect.height < selRect.top + selRect.height))
+        ) {
+          elementToSelect.push(element);
         }
       }
-      console.log("MY ELEMENTSSS", elements, selectionRectArea.value);
-      //selectBoxes(selectionRectangle);
+      console.log("MY ELEMENTSSS", elementToSelect);
     };
 
     const showSelectionRectangle = (newMousePosition: Coordinates) => {
