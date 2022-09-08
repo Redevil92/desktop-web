@@ -6,6 +6,7 @@
 </template>
 
 <script lang="ts">
+import Coordinates from "@/models/Coordinates";
 import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 
 export default defineComponent({
@@ -24,66 +25,20 @@ export default defineComponent({
       bottom: 0,
     } as any);
 
-    // function rectangleSelect(inputElements, selectionRectangle) {
-    //   var elements = [];
-    //   inputElements.forEach(function(element) {
-    //     var box = element.getBoundingClientRect();
-
-    //     if (
-    //       selectionRectangle.left <= box.left &&
-    //       selectionRectangle.top <= box.top &&
-    //       selectionRectangle.right >= box.right &&
-    //       selectionRectangle.bottom >= box.bottom
-    //     ) {
-    //       elements.push(element);
-    //     }
-    //   });
-    //   return elements;
-    // }
-
-    const showSelectionRectangle = () => {
-      selectionRectRef.value.style.left = `${selectionRectangle.value.left}px`;
-      selectionRectRef.value.style.top = `${selectionRectangle.value.top + window.scrollY}px`;
-      selectionRectRef.value.style.width = `${selectionRectangle.value.right - selectionRectangle.value.left}px`;
-      selectionRectRef.value.style.height = `${selectionRectangle.value.bottom - selectionRectangle.value.top}px`;
-      selectionRectRef.value.style.opacity = "0.5";
-    };
+    const selectionRectangleOrigin = ref({ x: 0, y: 0 } as Coordinates);
 
     const hideSelectionRectangle = () => {
       selectionRectRef.value.style.opacity = "0";
     };
-
-    // function selectBoxes(selection) {
-    //   deselectBoxes();
-    //   rectangleSelect(getBoxes(), selection).forEach(function(box) {
-    //     box.classList.add("selected");
-    //   });
-    // }
-
-    // function deselectBoxes() {
-    //   getBoxes().forEach(function(box) {
-    //     box.classList.remove("selected");
-    //   });
-    // }
-
-    // function getBoxes() {
-    //   return [...document.querySelectorAll(".box")];
-    // }
-
-    // function initEventHandlers() {
-    //   var isMouseDown = false;
-    //   var selectionRectangle = {
-    //     top: 0,
-    //     left: 0,
-    //     right: 0,
-    //     bottom: 0
-    //   };
 
     const onMouseDown = (e: any) => {
       isMouseDown.value = true;
       //deselectBoxes();
       selectionRectangle.value.left = e.clientX;
       selectionRectangle.value.top = e.clientY;
+
+      const originPosition = { x: e.clientX, y: e.clientY } as Coordinates;
+      selectionRectangleOrigin.value = originPosition;
     };
 
     const onMouseMove = (e: any) => {
@@ -91,10 +46,21 @@ export default defineComponent({
         return;
       }
 
-      selectionRectangle.value.right = e.clientX;
-      selectionRectangle.value.bottom = e.clientY;
-      showSelectionRectangle();
+      const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
+      showSelectionRectangle(newMousePosition);
+
       //selectBoxes(selectionRectangle);
+    };
+
+    const showSelectionRectangle = (newMousePosition: Coordinates) => {
+      selectionRectangle.value.right = newMousePosition.x;
+      selectionRectangle.value.bottom = newMousePosition.y;
+
+      selectionRectRef.value.style.left = `${Math.min(selectionRectangleOrigin.value.x, newMousePosition.x)}px`;
+      selectionRectRef.value.style.top = `${Math.min(selectionRectangleOrigin.value.y, newMousePosition.y)}px`;
+      selectionRectRef.value.style.width = `${Math.abs(newMousePosition.x - selectionRectangleOrigin.value.x)}px`;
+      selectionRectRef.value.style.height = `${Math.abs(newMousePosition.y - selectionRectangleOrigin.value.y)}px`;
+      selectionRectRef.value.style.opacity = "0.5";
     };
 
     const onMouseUp = (e: any) => {
@@ -108,30 +74,6 @@ export default defineComponent({
         bottom: 0,
       };
     };
-
-    // function initBoxes() {
-    //   // Helpers for generating random boxes on screen
-    //   function generateColumn(boxesPerColumn) {
-    //     var node = document.createElement("div");
-    //     node.className = "column";
-    //     while (boxesPerColumn--) {
-    //       var box = document.createElement("div");
-    //       var sizeClassName = ["tiny", "small", "normal", "big", "huge"][
-    //         Math.floor(Math.random() * 5)
-    //       ];
-    //       box.className = "box " + sizeClassName;
-    //       node.appendChild(box);
-    //     }
-    //     return node;
-    //   }
-    //   function generateBoxes(parent, cols, boxesPerColumn) {
-    //     while (cols--) {
-    //       parent.appendChild(generateColumn(boxesPerColumn));
-    //     }
-    //   }
-
-    //   generateBoxes(document.querySelector(".boxes"), 10, 10);
-    // }
 
     const initEventHandlers = () => {
       document.addEventListener("mousedown", onMouseDown);
