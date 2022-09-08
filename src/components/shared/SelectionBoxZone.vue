@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="selectionRectArea">
     <div ref="selectionRectRef" class="selection-rect" :style="`z-index: ${zIndex}`"></div>
     <slot> </slot>
   </div>
@@ -12,12 +12,14 @@ import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 export default defineComponent({
   props: {
     zIndex: { type: Number, default: 1 },
+    itemsToSelectClass: { type: String, required: true },
   },
   components: {},
 
   setup(props, context) {
     const isMouseDown = ref(false);
     const selectionRectRef = ref(null as unknown as HTMLElement);
+    const selectionRectArea = ref(null as unknown as HTMLElement);
     const selectionRectangle = ref({
       top: 0,
       left: 0,
@@ -49,6 +51,14 @@ export default defineComponent({
       const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
       showSelectionRectangle(newMousePosition);
 
+      const elements = selectionRectArea.value.getElementsByClassName(props.itemsToSelectClass);
+      let elementToSelect = [];
+      for (let i = 0; i < elements.length; i++) {
+        const elementBoudingClientRect = elements[i].getBoundingClientRect();
+        if (elementBoudingClientRect.left) {
+        }
+      }
+      console.log("MY ELEMENTSSS", elements, selectionRectArea.value);
       //selectBoxes(selectionRectangle);
     };
 
@@ -97,6 +107,7 @@ export default defineComponent({
 
     return {
       selectionRectRef,
+      selectionRectArea,
     };
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
-    <SelectionBoxZone>
+    <SelectionBoxZone itemsToSelectClass="desktop-item">
       <div
         @click="selectFile({})"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
@@ -34,6 +34,7 @@
                 or do nothing -->
             <div
               draggable="true"
+              class="desktop-item"
               @mousedown="selectFile(item)"
               @click.right="openActionMenu($event, item)"
               @drop.stop="dropFilehandler($event, item.name)"
