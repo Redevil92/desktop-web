@@ -1,4 +1,5 @@
 <template>
+  {{ isEnabled }}{{ isMouseDown }}
   <div ref="selectionRectArea">
     <div ref="selectionRectRef" class="selection-rect" :style="`z-index: ${zIndex}`"></div>
     <slot> </slot>
@@ -12,6 +13,7 @@ import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 export default defineComponent({
   props: {
     zIndex: { type: Number, default: 1 },
+    isEnabled: { type: Boolean, default: true },
     itemsToSelectClass: { type: String, required: true },
   },
   components: {},
@@ -34,6 +36,10 @@ export default defineComponent({
     };
 
     const onMouseDown = (e: any) => {
+      if (!props.isEnabled) {
+        return;
+      }
+
       isMouseDown.value = true;
       //deselectBoxes();
       selectionRectangle.value.left = e.clientX;
@@ -44,9 +50,12 @@ export default defineComponent({
     };
 
     const onMouseMove = (e: any) => {
-      if (!isMouseDown.value) {
+      if (!isMouseDown.value || !props.isEnabled) {
+        isMouseDown.value = false;
         return;
       }
+
+      console.log("IS DOODODODOODOD", isMouseDown.value);
 
       const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
       showSelectionRectangle(newMousePosition);
@@ -124,6 +133,7 @@ export default defineComponent({
     return {
       selectionRectRef,
       selectionRectArea,
+      isMouseDown,
     };
   },
 });

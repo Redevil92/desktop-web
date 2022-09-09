@@ -1,6 +1,10 @@
 <template>
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
-    <SelectionBoxZone itemsToSelectClass="desktop-item" @onSelectingItems="selectItemsWithSelectionBox">
+    <SelectionBoxZone
+      :isEnabled="isSelectionBoxEnabled"
+      itemsToSelectClass="desktop-item"
+      @onSelectingItems="selectItemsWithSelectionBox"
+    >
       <div
         @mousedown="selectFile({})"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
@@ -38,7 +42,13 @@
               @mousedown="selectFile(item)"
               @click.right="openActionMenu($event, item)"
               @drop.stop="dropFilehandler($event, item.name)"
-              @dragstart="setFilesToMove(selectedItemPaths)"
+              @dragstart="
+                {
+                  setFilesToMove(selectedItemPaths);
+                  isSelectionBoxEnabled = false;
+                }
+              "
+              @dragend="isSelectionBoxEnabled = true"
             >
               <FileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
             </div>
@@ -86,6 +96,8 @@ export default defineComponent({
 
     const desktopRef = ref(null as unknown as HTMLElement);
 
+    const isSelectionBoxEnabled = ref(true);
+
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
@@ -129,14 +141,13 @@ export default defineComponent({
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
       const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
-      console.log(elementsSelectedNames);
+
       const newSelectedPaths = desktopPaths.filter((path) => {
-        console.log(elementsSelectedNames.includes(getFileNameFromPath(path)));
         if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
           return path;
         }
       });
-      console.log("WWW", newSelectedPaths);
+
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
     };
 
@@ -227,6 +238,7 @@ export default defineComponent({
       dropFilehandler,
       setFilesToMove,
       DESKTOP_PATH,
+      isSelectionBoxEnabled,
     };
   },
 });
