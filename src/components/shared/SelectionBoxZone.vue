@@ -172,7 +172,8 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  background: yellow;
+  background: rgba(255, 255, 255, 0.416);
+  border: 2px solid white;
   opacity: 0;
   pointer-events: none;
 }
