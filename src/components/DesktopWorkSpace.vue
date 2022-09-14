@@ -6,7 +6,7 @@
       @onSelectingItems="selectItemsWithSelectionBox"
     >
       <div
-        @click="selectFile({})"
+        @mousedown="selectFile({})"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
         @dragover.prevent
         @dragenter.prevent
@@ -39,7 +39,7 @@
             <div
               draggable="true"
               class="desktop-item"
-              @mousedown="selectFile(item)"
+              @mousedown.stop="selectFile(item)"
               @click.right="openActionMenu($event, item)"
               @drop.stop="dropFilehandler($event, item.name)"
               @dragstart="
@@ -128,6 +128,7 @@ export default defineComponent({
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
+      console.log("ELEMENT SELECTED", selectedElements);
       const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
 

@@ -99,8 +99,6 @@ export default defineComponent({
         }
       }
 
-      e.stopPropagation();
-
       if (
         selectionRectangle.value.right - selectionRectangle.value.left > minimumRectangleDimension.value &&
         selectionRectangle.value.bottom - selectionRectangle.value.top > minimumRectangleDimension.value
