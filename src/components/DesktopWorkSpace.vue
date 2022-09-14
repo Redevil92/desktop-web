@@ -1,74 +1,88 @@
 <template>
   <DropExternalFileZone :dropPath="DESKTOP_PATH">
-    <div
-      @click="selectFile({})"
-      @drop="dropFilehandler($event, DESKTOP_PATH)"
-      @dragover.prevent
-      @dragenter.prevent
-      ref="desktopRef"
+    <SelectionBoxZone
+      :isEnabled="isSelectionBoxEnabled"
+      itemsToSelectClass="desktop-item"
+      @onSelectingItems="selectItemsWithSelectionBox"
     >
-      <grid-layout
-        class="grid-layout-dimension"
-        :layout="desktopFiles"
-        :col-num="columnsNumber"
-        :row-height="rowHeight"
-        :is-draggable="false"
-        :is-resizable="false"
-        :responsive="false"
-        :vertical-compact="false"
-        :prevent-collision="true"
-        :use-css-transforms="true"
+      <div
+        @click="selectFile({})"
+        @drop="dropFilehandler($event, DESKTOP_PATH)"
+        @dragover.prevent
+        @dragenter.prevent
+        ref="desktopRef"
       >
-        <grid-item
-          v-for="(item, index) in desktopFiles"
-          :key="`${item.i}-${index}`"
-          :static="item.static"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :h="item.h"
-          :i="item.i"
+        <grid-layout
+          class="grid-layout-dimension"
+          :layout="desktopFiles"
+          :col-num="columnsNumber"
+          :row-height="rowHeight"
+          :is-draggable="false"
+          :is-resizable="false"
+          :responsive="false"
+          :vertical-compact="false"
+          :prevent-collision="true"
+          :use-css-transforms="true"
         >
-          <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
-                or do nothing -->
-          <div
-            draggable="true"
-            @mousedown="selectFile(item)"
-            @click.right="openActionMenu($event, item)"
-            @drop.stop="dropFilehandler($event, item.name)"
-            @dragstart="setFilesToMove(selectedItemPaths)"
+          <grid-item
+            v-for="(item, index) in desktopFiles"
+            :key="`${item.i}-${index}`"
+            :static="item.static"
+            :x="item.x"
+            :y="item.y"
+            :w="item.w"
+            :h="item.h"
+            :i="item.i"
           >
-            <FileItem
-              :ref="item.name + 'FileRef'"
-              :fileItem="item"
-              @onClick="selectFile(item)"
-              :isSelected="isItemSelected(item.name)"
-            />
-          </div>
-        </grid-item>
-      </grid-layout>
-    </div>
+            <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
+                or do nothing -->
+            <div
+              draggable="true"
+              class="desktop-item"
+              @mousedown="selectFile(item)"
+              @click.right="openActionMenu($event, item)"
+              @drop.stop="dropFilehandler($event, item.name)"
+              @dragstart="
+                {
+                  setFilesToMove(selectedItemPaths);
+                  isSelectionBoxEnabled = false;
+                  selectFile(item);
+                }
+              "
+              @dragend="isSelectionBoxEnabled = true"
+            >
+              <FileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
+            </div>
+          </grid-item>
+        </grid-layout>
+      </div>
+    </SelectionBoxZone>
   </DropExternalFileZone>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeactivated } from "vue";
 import useMoveFiles from "@/hooks/useMoveFiles";
+
 import { GridItem, GridLayout } from "vue3-grid-layout";
 import FileItem from "@/components/FileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
+import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
+
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
 import { DESKTOP_FILE_DIMENSION, DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
+
 export default defineComponent({
   props: {
     msg: String,
     items: Array as PropType<DesktopItem[]>,
   },
-  components: { GridLayout, GridItem, FileItem, DropExternalFileZone },
+  components: { GridLayout, GridItem, FileItem, DropExternalFileZone, SelectionBoxZone },
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
@@ -78,6 +92,8 @@ export default defineComponent({
     const columnsNumber = ref(0);
     const rowHeight = ref(0);
     const desktopRef = ref(null as unknown as HTMLElement);
+    const isSelectionBoxEnabled = ref(true);
+
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
@@ -110,6 +126,20 @@ export default defineComponent({
       console.log("selecting", newFileSelected);
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
+
+    const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
+      const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
+      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
+
+      const newSelectedPaths = desktopPaths.filter((path) => {
+        if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
+          return path;
+        }
+      });
+
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
+    };
+
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
     };
@@ -183,6 +213,8 @@ export default defineComponent({
       dropFilehandler,
       setFilesToMove,
       DESKTOP_PATH,
+      selectItemsWithSelectionBox,
+      isSelectionBoxEnabled,
     };
   },
 });

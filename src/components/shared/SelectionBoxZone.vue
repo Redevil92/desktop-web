@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import Coordinates from "@/models/Coordinates";
-import { defineComponent, onDeactivated, onMounted, ref } from "vue";
+import { defineComponent, onDeactivated, onMounted, ref, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -19,6 +19,8 @@ export default defineComponent({
   components: {},
 
   setup(props, context) {
+    const minimumRectangleDimension = ref(5);
+
     const isMouseDown = ref(false);
     const selectionRectRef = ref(null as unknown as HTMLElement);
     const selectionRectArea = ref(null as unknown as HTMLElement);
@@ -33,6 +35,23 @@ export default defineComponent({
 
     const hideSelectionRectangle = () => {
       selectionRectRef.value.style.opacity = "0";
+    };
+
+    watch(
+      () => props.isEnabled,
+      function () {
+        resetSelectionBox();
+      }
+    );
+
+    const resetSelectionBox = () => {
+      selectionRectangle.value = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      };
+      isMouseDown.value = false;
     };
 
     const onMouseDown = (e: any) => {
@@ -54,8 +73,6 @@ export default defineComponent({
         isMouseDown.value = false;
         return;
       }
-
-      console.log("IS DOODODODOODOD", isMouseDown.value);
 
       const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
       showSelectionRectangle(newMousePosition);
@@ -84,7 +101,12 @@ export default defineComponent({
 
       e.stopPropagation();
 
-      context.emit("onSelectingItems", elementToSelect);
+      if (
+        selectionRectangle.value.right - selectionRectangle.value.left > minimumRectangleDimension.value &&
+        selectionRectangle.value.bottom - selectionRectangle.value.top > minimumRectangleDimension.value
+      ) {
+        context.emit("onSelectingItems", elementToSelect);
+      }
     };
 
     const showSelectionRectangle = (newMousePosition: Coordinates) => {
