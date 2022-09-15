@@ -46,7 +46,6 @@
                 {
                   setFilesToMove(selectedItemPaths);
                   isSelectionBoxEnabled = false;
-                  selectFile(item);
                 }
               "
               @dragend="isSelectionBoxEnabled = true"
@@ -124,6 +123,9 @@ export default defineComponent({
     };
     const selectFile = (newFileSelected: DesktopFile) => {
       console.log("selecting", newFileSelected);
+
+      //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
+      //TODO, maybe create a hook for all these actions (selection, drag, etc)
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 

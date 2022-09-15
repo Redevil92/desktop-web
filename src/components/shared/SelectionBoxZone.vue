@@ -1,5 +1,4 @@
 <template>
-  {{ isEnabled }}{{ isMouseDown }}
   <div ref="selectionRectArea">
     <div ref="selectionRectRef" class="selection-rect" :style="`z-index: ${zIndex}`"></div>
     <slot> </slot>
