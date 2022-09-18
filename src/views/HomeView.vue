@@ -18,7 +18,7 @@
 import { defineComponent, ref, computed, onUnmounted, onMounted } from "vue";
 import { useStore } from "vuex";
 
-import DesktopWorkSpace from "@/components/DesktopWorkSpace.vue";
+import DesktopWorkSpace from "@/components/desktop/DesktopWorkSpace.vue";
 import OpenedFileView from "@/components/OpenedFileView.vue";
 import TaskBar from "@/components/TaskBar.vue";
 import ActionMenu from "@/components/ActionMenu.vue";

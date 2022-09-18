@@ -81,7 +81,7 @@ import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
-import useMoveFiles from "@/hooks/useMoveFiles";
+import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 
 export default defineComponent({
   props: {

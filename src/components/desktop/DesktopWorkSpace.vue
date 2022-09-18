@@ -1,0 +1,336 @@
+<template>
+  <DropExternalFileZone :dropPath="DESKTOP_PATH">
+    <SelectionBoxZone
+      :isEnabled="isSelectionBoxEnabled"
+      itemsToSelectClass="desktop-item"
+      @onSelectingItems="selectItemsWithSelectionBox"
+    >
+      <div
+        @mousedown="selectFile($event, {})"
+        @drop="dropFilehandler($event, DESKTOP_PATH)"
+        @dragover.prevent
+        @dragenter.prevent
+        ref="desktopRef"
+        class="desktop-container"
+      >
+        <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
+                or do nothing -->
+
+        <div
+          v-for="(item, index) in desktopFiles"
+          :key="`${item.i}-${index}`"
+          draggable="true"
+          class="desktop-item"
+          :style="`top: ${item.x}px; left: ${item.y}px`"
+          @mousedown.stop="
+            {
+              selectFile(item);
+              startMoveItem($event);
+            }
+          "
+          @click.right="openActionMenu($event, item)"
+          @drop.stop="dropFilehandler($event, item.name)"
+          @dragstart="
+            {
+              setFilesToMove(selectedItemPaths);
+              isSelectionBoxEnabled = false;
+            }
+          "
+          @dragend="isSelectionBoxEnabled = true"
+        >
+          <DesktopFileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
+        </div>
+      </div>
+    </SelectionBoxZone>
+  </DropExternalFileZone>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeactivated } from "vue";
+import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
+
+import { GridItem, GridLayout } from "vue3-grid-layout";
+import DesktopFileItem from "@/components/desktop/DesktopFileItem.vue";
+import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
+import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
+
+import DesktopItem from "@/models/DesktopItem";
+import { useStore } from "vuex";
+import ActionMenu from "@/models/ActionMenu";
+import { DESKTOP_FILE_DIMENSION, DESKTOP_PATH } from "@/constants";
+import Coordinates from "@/models/Coordinates";
+import { isDir } from "@/context/fileSystemController";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
+
+export default defineComponent({
+  props: {
+    msg: String,
+    items: Array as PropType<DesktopItem[]>,
+  },
+  components: { GridLayout, GridItem, DesktopFileItem, DropExternalFileZone, SelectionBoxZone },
+  emits: ["onFileItemPositionChange"],
+  setup() {
+    const store = useStore();
+    const { moveFilesInFolder, setFilesToMove, isChangingFilePosition } = useMoveFiles();
+    const itemWidth = 0.7;
+    const itemHeight = 2.2;
+    const columnsNumber = ref(0);
+    const rowHeight = ref(0);
+    const desktopRef = ref(null as unknown as HTMLElement);
+    const isSelectionBoxEnabled = ref(true);
+
+    const selectedItemPaths = computed((): string[] => {
+      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    });
+    // TODO: use hook for this methods, drag start, move files etc...
+    const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
+      let isFolder = false;
+      if (dropDestinationFileName) {
+        isFolder = await isDir(dropDestinationFileName);
+      }
+      await moveFilesInFolder(event, dropDestinationFileName);
+
+      // if (isChangingFilePosition(dropDestinationFileName)) {
+      //   //changeFileItemsPosition(event);
+      //   await refreshFiles();
+      // } else {
+
+      // }
+    };
+
+    // const changeFileItemsPosition = async (event: any) => {
+    //   selectedItemPaths.value.forEach((itemName) => {
+    //     const retrievedObject = localStorage.getItem("desktopItemsPositions");
+    //     let desktopItemsPositions = {} as any;
+    //     if (retrievedObject) {
+    //       desktopItemsPositions = JSON.parse(retrievedObject);
+    //     }
+    //     // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+    //     desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+    //     localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+    //   });
+    // };
+
+    const changeFileItemsPosition = async (newPosition: Coordinates) => {
+      selectedItemPaths.value.forEach((itemName) => {
+        const retrievedObject = localStorage.getItem("desktopItemsPositions");
+        let desktopItemsPositions = {} as any;
+        if (retrievedObject) {
+          desktopItemsPositions = JSON.parse(retrievedObject);
+        }
+        // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+        desktopItemsPositions[itemName] = newPosition;
+        localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+      });
+
+      await refreshFiles();
+    };
+
+    const selectFile = (newFileSelected: DesktopFile) => {
+      console.log("selecting", newFileSelected);
+
+      //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
+      //TODO, maybe create a hook for all these actions (selection, drag, etc)
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
+    };
+
+    // ********* THIS SHOULD GO IN A DIFFERENT HOOK
+    // *********
+    // *********
+    // *********
+    // *********
+    // *********
+
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
+
+    const startMoveItem = (e: any) => {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+
+      document.onmousemove = elementDrag;
+    };
+
+    function closeDragElement() {
+      /* stop moving when mouse button is released:*/
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+
+    function elementDrag(e: any) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+
+      // set the element's new position:
+
+      // const newX = draggableElement.value.offsetTop - pos2;
+      // const newY = draggableElement.value.offsetLeft - pos1;
+
+      const newX = e.clientY;
+      const newY = e.clientX;
+
+      const newPosition = { x: newX, y: newY } as Coordinates;
+
+      changeFileItemsPosition(newPosition);
+    }
+
+    // *********
+    // *********
+    // *********
+    // *********
+    // *********
+    // ********* ENDDDDD THIS SHOULD GO IN A DIFFERENT HOOK
+
+    const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
+      console.log("ELEMENT SELECTED", selectedElements);
+      const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
+      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
+
+      const newSelectedPaths = desktopPaths.filter((path) => {
+        if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
+          return path;
+        }
+      });
+
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
+    };
+
+    const isItemSelected = (fileItem: string) => {
+      return selectedItemPaths.value.includes(fileItem);
+    };
+    const openActionMenu = (event: any, item: DesktopFile) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerEvent = event as PointerEvent;
+      selectFile(item);
+      store.dispatch("fileSystem/SET_ACTION_MENU", {
+        show: true,
+        path: item.name,
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: false,
+      } as ActionMenu);
+    };
+    const desktopFiles = computed(function (): DesktopFile[] {
+      const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
+      // get from local storage (through the store) the desktop file positions
+      // if no position put it in 0,0
+      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      let desktopItemsPositions = {} as any;
+      if (retrievedObject) {
+        desktopItemsPositions = JSON.parse(retrievedObject);
+      }
+      if (desktopStringFiles && desktopStringFiles.length > 0) {
+        return desktopStringFiles.map((fileName: string, index: number) => {
+          let coordinates = { x: 0, y: 0 } as Coordinates;
+          if (desktopItemsPositions && desktopItemsPositions[fileName]) {
+            coordinates = desktopItemsPositions[fileName];
+          }
+          return {
+            x: coordinates.x,
+            y: coordinates.y,
+            w: DESKTOP_FILE_DIMENSION.width,
+            h: DESKTOP_FILE_DIMENSION.height,
+            i: fileName,
+            name: fileName,
+            static: false,
+          };
+        });
+      }
+      return [];
+    });
+    const refreshFiles = async () => {
+      await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
+      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    };
+    const setGridColumnsAndRows = () => {
+      columnsNumber.value = window.innerWidth;
+      rowHeight.value = 1;
+    };
+    onMounted(async () => {
+      window.addEventListener("resize", setGridColumnsAndRows);
+      setGridColumnsAndRows();
+      refreshFiles();
+    });
+    onDeactivated(() => {
+      window.removeEventListener("resize", setGridColumnsAndRows);
+    });
+    return {
+      desktopRef,
+      desktopFiles,
+      itemWidth,
+      itemHeight,
+      columnsNumber,
+      rowHeight,
+      selectFile,
+      selectedItemPaths,
+      openActionMenu,
+      isItemSelected,
+      dropFilehandler,
+      setFilesToMove,
+      DESKTOP_PATH,
+      selectItemsWithSelectionBox,
+      isSelectionBoxEnabled,
+      startMoveItem,
+    };
+  },
+});
+interface DesktopFile {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  i: string;
+  name: string;
+  static: boolean;
+}
+</script>
+
+<style scoped>
+.vue-grid-layout {
+  background-image: url("/src/assets/desktopImages/mountain.png");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100vh !important;
+}
+.vue-grid-item.vue-grid-placeholder {
+  background: green !important;
+}
+.actions-dialog {
+  border: 1px solid red;
+  position: absolute;
+  top: 160px;
+  left: 600px;
+  z-index: 1;
+}
+.action-button {
+  cursor: pointer;
+}
+
+.desktop-container {
+  height: 100vh;
+  width: 100vw;
+  background-image: url("/src/assets/desktopImages/mountain.png");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.desktop-item {
+  position: absolute;
+}
+</style>
