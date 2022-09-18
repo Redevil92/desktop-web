@@ -72,10 +72,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { moveFilesInFolder, setFilesToMove, isChangingFilePosition } = useMoveFiles();
-    const itemWidth = 0.7;
-    const itemHeight = 2.2;
-    const columnsNumber = ref(0);
-    const rowHeight = ref(0);
+
     const desktopRef = ref(null as unknown as HTMLElement);
     const isSelectionBoxEnabled = ref(true);
 
@@ -89,27 +86,7 @@ export default defineComponent({
         isFolder = await isDir(dropDestinationFileName);
       }
       await moveFilesInFolder(event, dropDestinationFileName);
-
-      // if (isChangingFilePosition(dropDestinationFileName)) {
-      //   //changeFileItemsPosition(event);
-      //   await refreshFiles();
-      // } else {
-
-      // }
     };
-
-    // const changeFileItemsPosition = async (event: any) => {
-    //   selectedItemPaths.value.forEach((itemName) => {
-    //     const retrievedObject = localStorage.getItem("desktopItemsPositions");
-    //     let desktopItemsPositions = {} as any;
-    //     if (retrievedObject) {
-    //       desktopItemsPositions = JSON.parse(retrievedObject);
-    //     }
-    //     // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
-    //     desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
-    //     localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
-    //   });
-    // };
 
     const changeFileItemsPosition = async (newPosition: Coordinates) => {
       selectedItemPaths.value.forEach((itemName) => {
@@ -134,24 +111,11 @@ export default defineComponent({
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 
-    // ********* THIS SHOULD GO IN A DIFFERENT HOOK
-    // *********
-    // *********
-    // *********
-    // *********
-    // *********
-
-    let pos1 = 0,
-      pos2 = 0,
-      pos3 = 0,
-      pos4 = 0;
-
     const startMoveItem = (e: any) => {
       e = e || window.event;
       e.preventDefault();
       // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
+
       document.onmouseup = closeDragElement;
       // call a function whenever the cursor moves:
 
@@ -167,16 +131,6 @@ export default defineComponent({
     function elementDrag(e: any) {
       e = e || window.event;
       e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      // set the element's new position:
-
-      // const newX = draggableElement.value.offsetTop - pos2;
-      // const newY = draggableElement.value.offsetLeft - pos1;
 
       const newX = e.clientY;
       const newY = e.clientX;
@@ -185,13 +139,6 @@ export default defineComponent({
 
       changeFileItemsPosition(newPosition);
     }
-
-    // *********
-    // *********
-    // *********
-    // *********
-    // *********
-    // ********* ENDDDDD THIS SHOULD GO IN A DIFFERENT HOOK
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
       console.log("ELEMENT SELECTED", selectedElements);
@@ -210,6 +157,7 @@ export default defineComponent({
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
     };
+
     const openActionMenu = (event: any, item: DesktopFile) => {
       event.preventDefault();
       event.stopPropagation();
@@ -222,6 +170,8 @@ export default defineComponent({
         isOpenedFolder: false,
       } as ActionMenu);
     };
+
+    // TODO, look at this one
     const desktopFiles = computed(function (): DesktopFile[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
       // get from local storage (through the store) the desktop file positions
@@ -250,29 +200,19 @@ export default defineComponent({
       }
       return [];
     });
+
     const refreshFiles = async () => {
       await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
-    const setGridColumnsAndRows = () => {
-      columnsNumber.value = window.innerWidth;
-      rowHeight.value = 1;
-    };
+
     onMounted(async () => {
-      window.addEventListener("resize", setGridColumnsAndRows);
-      setGridColumnsAndRows();
       refreshFiles();
     });
-    onDeactivated(() => {
-      window.removeEventListener("resize", setGridColumnsAndRows);
-    });
+
     return {
       desktopRef,
       desktopFiles,
-      itemWidth,
-      itemHeight,
-      columnsNumber,
-      rowHeight,
       selectFile,
       selectedItemPaths,
       openActionMenu,
@@ -286,6 +226,8 @@ export default defineComponent({
     };
   },
 });
+
+// TODO, This could be removed
 interface DesktopFile {
   x: number;
   y: number;
@@ -298,17 +240,6 @@ interface DesktopFile {
 </script>
 
 <style scoped>
-.vue-grid-layout {
-  background-image: url("/src/assets/desktopImages/mountain.png");
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 100vh !important;
-}
-.vue-grid-item.vue-grid-placeholder {
-  background: green !important;
-}
 .actions-dialog {
   border: 1px solid red;
   position: absolute;
