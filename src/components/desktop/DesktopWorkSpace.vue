@@ -190,11 +190,7 @@ export default defineComponent({
           return {
             x: coordinates.x,
             y: coordinates.y,
-            w: DESKTOP_FILE_DIMENSION.width,
-            h: DESKTOP_FILE_DIMENSION.height,
-            i: fileName,
             name: fileName,
-            static: false,
           };
         });
       }
@@ -231,11 +227,7 @@ export default defineComponent({
 interface DesktopFile {
   x: number;
   y: number;
-  w: number;
-  h: number;
-  i: string;
   name: string;
-  static: boolean;
 }
 </script>
 
