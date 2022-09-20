@@ -16,12 +16,13 @@
         <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
                 or do nothing -->
 
+        <div>{{ desktopFiles.length }}</div>
         <div
-          v-for="(item, index) in desktopFiles"
+          v-for="(item, index) in desktopFilesWithPosition"
           :key="`${item.i}-${index}`"
           draggable="true"
           class="desktop-item"
-          :style="`top: ${item.x}px; left: ${item.y}px`"
+          :style="`top: ${item.coordinates.y}px; left: ${item.coordinates.x}px`"
           @mousedown.stop="
             {
               selectFile(item);
@@ -57,7 +58,7 @@ import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import ActionMenu from "@/models/ActionMenu";
-import { DESKTOP_FILE_DIMENSION, DESKTOP_PATH } from "@/constants";
+import { DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
@@ -76,6 +77,8 @@ export default defineComponent({
     const desktopRef = ref(null as unknown as HTMLElement);
     const isSelectionBoxEnabled = ref(true);
 
+    const desktopFilesWithPosition = ref([] as unknown as DesktopItem[]);
+
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
@@ -88,22 +91,18 @@ export default defineComponent({
       await moveFilesInFolder(event, dropDestinationFileName);
     };
 
-    const changeFileItemsPosition = async (newPosition: Coordinates) => {
-      selectedItemPaths.value.forEach((itemName) => {
-        const retrievedObject = localStorage.getItem("desktopItemsPositions");
-        let desktopItemsPositions = {} as any;
-        if (retrievedObject) {
-          desktopItemsPositions = JSON.parse(retrievedObject);
-        }
-        // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
-        desktopItemsPositions[itemName] = newPosition;
-        localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
-      });
-
-      await refreshFiles();
+    const saveNewFileItemPosition = async (file: DesktopItem) => {
+      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      let desktopItemsPositions = {} as any;
+      if (retrievedObject) {
+        desktopItemsPositions = JSON.parse(retrievedObject);
+      }
+      // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+      desktopItemsPositions[file.name] = file.coordinates;
+      localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
     };
 
-    const selectFile = (newFileSelected: DesktopFile) => {
+    const selectFile = (newFileSelected: DesktopItem) => {
       console.log("selecting", newFileSelected);
 
       //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
@@ -122,7 +121,16 @@ export default defineComponent({
       document.onmousemove = elementDrag;
     };
 
-    function closeDragElement() {
+    async function closeDragElement() {
+      for (const fileName of selectedItemPaths.value) {
+        //TODO get desktopfile from fileName and save the coordinates
+        const fileToUpdatePosition = desktopFilesWithPosition.value.find((file) => file.name === fileName);
+        if (fileToUpdatePosition) {
+          saveNewFileItemPosition(fileToUpdatePosition);
+        }
+      }
+      await refreshFiles();
+
       /* stop moving when mouse button is released:*/
       document.onmouseup = null;
       document.onmousemove = null;
@@ -132,16 +140,23 @@ export default defineComponent({
       e = e || window.event;
       e.preventDefault();
 
-      const newX = e.clientY;
-      const newY = e.clientX;
+      const newX = e.clientX;
+      const newY = e.clientY;
 
       const newPosition = { x: newX, y: newY } as Coordinates;
 
-      changeFileItemsPosition(newPosition);
+      //TODO selectedItemPaths.value -> chnage the position of these elements, we should take the dekstopItems from desktopFilesWithPosition
+      selectedItemPaths.value.forEach((itemPath: string) => {
+        const fileToUpdateCoordinate = desktopFilesWithPosition.value.find((item) => item.name === itemPath);
+        if (fileToUpdateCoordinate) {
+          fileToUpdateCoordinate.coordinates = newPosition;
+        }
+      });
+
+      //saveNewFileItemPosition(newPosition);
     }
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-      console.log("ELEMENT SELECTED", selectedElements);
       const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
 
@@ -158,7 +173,7 @@ export default defineComponent({
       return selectedItemPaths.value.includes(fileItem);
     };
 
-    const openActionMenu = (event: any, item: DesktopFile) => {
+    const openActionMenu = (event: any, item: DesktopItem) => {
       event.preventDefault();
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
@@ -172,8 +187,11 @@ export default defineComponent({
     };
 
     // TODO, look at this one
-    const desktopFiles = computed(function (): DesktopFile[] {
+    const desktopFiles = computed(function (): DesktopItem[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
+
+      let desktopFileItems = [];
+
       // get from local storage (through the store) the desktop file positions
       // if no position put it in 0,0
       const retrievedObject = localStorage.getItem("desktopItemsPositions");
@@ -182,19 +200,22 @@ export default defineComponent({
         desktopItemsPositions = JSON.parse(retrievedObject);
       }
       if (desktopStringFiles && desktopStringFiles.length > 0) {
-        return desktopStringFiles.map((fileName: string, index: number) => {
+        desktopFileItems = desktopStringFiles.map((fileName: string, index: number) => {
           let coordinates = { x: 0, y: 0 } as Coordinates;
           if (desktopItemsPositions && desktopItemsPositions[fileName]) {
             coordinates = desktopItemsPositions[fileName];
           }
           return {
-            x: coordinates.x,
-            y: coordinates.y,
+            coordinates,
             name: fileName,
-          };
+          } as DesktopItem;
         });
       }
-      return [];
+
+      console.log("OO", desktopFileItems, desktopFileItems);
+
+      desktopFilesWithPosition.value = desktopFileItems;
+      return desktopFileItems;
     });
 
     const refreshFiles = async () => {
@@ -219,16 +240,10 @@ export default defineComponent({
       selectItemsWithSelectionBox,
       isSelectionBoxEnabled,
       startMoveItem,
+      desktopFilesWithPosition,
     };
   },
 });
-
-// TODO, This could be removed
-interface DesktopFile {
-  x: number;
-  y: number;
-  name: string;
-}
 </script>
 
 <style scoped>
