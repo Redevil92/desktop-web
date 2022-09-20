@@ -212,8 +212,6 @@ export default defineComponent({
         });
       }
 
-      console.log("OO", desktopFileItems, desktopFileItems);
-
       desktopFilesWithPosition.value = desktopFileItems;
       return desktopFileItems;
     });
