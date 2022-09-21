@@ -110,9 +110,18 @@ export default defineComponent({
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
+
     const startMoveItem = (e: any) => {
       e = e || window.event;
       e.preventDefault();
+
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+
       // get the mouse cursor position at startup:
 
       document.onmouseup = closeDragElement;
@@ -121,9 +130,9 @@ export default defineComponent({
       document.onmousemove = elementDrag;
     };
 
-    async function closeDragElement() {
+    async function closeDragElement(event: Event) {
+      // TODO if the event is in a folder element
       for (const fileName of selectedItemPaths.value) {
-        //TODO get desktopfile from fileName and save the coordinates
         const fileToUpdatePosition = desktopFilesWithPosition.value.find((file) => file.name === fileName);
         if (fileToUpdatePosition) {
           saveNewFileItemPosition(fileToUpdatePosition);
@@ -140,15 +149,16 @@ export default defineComponent({
       e = e || window.event;
       e.preventDefault();
 
-      const newX = e.clientX;
-      const newY = e.clientY;
-
-      const newPosition = { x: newX, y: newY } as Coordinates;
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
 
       //TODO selectedItemPaths.value -> chnage the position of these elements, we should take the dekstopItems from desktopFilesWithPosition
       selectedItemPaths.value.forEach((itemPath: string) => {
         const fileToUpdateCoordinate = desktopFilesWithPosition.value.find((item) => item.name === itemPath);
         if (fileToUpdateCoordinate) {
+          const newPosition = { x: newX - pos2, y: newY - pos1 } as Coordinates;
           fileToUpdateCoordinate.coordinates = newPosition;
         }
       });
