@@ -10,7 +10,7 @@
     class="file-item"
     :class="{ 'cut-file-item': isCutFile }"
     @dblclick="doubleClickHandler"
-    @click.stop="clickHandler"
+    @click="selectFile(fileItem)"
   >
     <div @click="isEditingText = false">
       <img
@@ -115,6 +115,13 @@ export default defineComponent({
       }
     };
 
+    const selectFile = (newFileSelected: DesktopItem) => {
+      console.log("selecting", newFileSelected);
+      //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
+      //TODO, maybe create a hook for all these actions (selection, drag, etc)
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
+    };
+
     const clickHandler = () => {
       context.emit("onClick", props.fileItem);
     };
@@ -167,6 +174,7 @@ export default defineComponent({
       showDialog,
       errorMessage,
       isCutFile,
+      selectFile,
     };
   },
 });
