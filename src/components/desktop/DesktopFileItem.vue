@@ -8,6 +8,7 @@
   </base-dialog>
   <div
     class="file-item"
+    ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile }"
     :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px`"
     @dblclick="doubleClickHandler"
@@ -96,6 +97,7 @@ export default defineComponent({
     const showDialog = ref(false);
     const errorMessage = ref("");
     const isFolder = ref(false);
+    const fileItemRef = ref(null as unknown as HTMLElement);
 
     watch(
       () => props.isSelected,
@@ -180,33 +182,35 @@ export default defineComponent({
       }
     };
 
-    // move item
+    let shiftX = 0,
+      shiftY = 0;
+
     const startMoveItem = (e: any) => {
       e = e || window.event;
       e.preventDefault();
-      // get the mouse cursor position at startup:
+
+      shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
+      shiftY = e.clientY - fileItemRef.value.getBoundingClientRect().top;
+
       document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
       document.onmousemove = elementDrag;
     };
 
     function elementDrag(e: any) {
       e = e || window.event;
       e.preventDefault();
-      const newX = e.clientX;
-      const newY = e.clientY;
+
+      const newX = e.clientX - shiftX;
+      const newY = e.clientY - shiftY;
+
       const newPosition = { x: newX, y: newY } as Coordinates;
-      //TODO selectedItemPaths.value -> chnage the position of these elements, we should take the dekstopItems from desktopFilesWithPosition
 
       fileCoordinates.value = newPosition;
-
-      //saveNewFileItemPosition(newPosition);
     }
 
     async function closeDragElement() {
       saveNewFileItemPosition();
 
-      /* stop moving when mouse button is released:*/
       document.onmouseup = null;
       document.onmousemove = null;
     }
@@ -217,14 +221,13 @@ export default defineComponent({
       if (retrievedObject) {
         desktopItemsPositions = JSON.parse(retrievedObject);
       }
-      // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+
       desktopItemsPositions[props.fileItem.name] = fileCoordinates.value;
       localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
     };
 
     onMounted(async () => {
       isFolder.value = await isDir(props.fileItem.name);
-      console.log("SET UP COOR", props.fileItem);
       fileCoordinates.value = props.fileItem.coordinates;
     });
 
@@ -246,6 +249,7 @@ export default defineComponent({
       openActionMenu,
       fileCoordinates,
       startMoveItem,
+      fileItemRef,
     };
   },
 });
