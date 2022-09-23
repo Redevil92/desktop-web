@@ -10,7 +10,8 @@
     class="file-item"
     :class="{ 'cut-file-item': isCutFile }"
     @dblclick="doubleClickHandler"
-    @click="selectFile(fileItem)"
+    @mousedown="selectFile(fileItem)"
+    @click.right="openActionMenu($event, fileItem)"
   >
     <div @click="isEditingText = false">
       <img
@@ -70,6 +71,7 @@ import store from "@/store";
 import { DESKTOP_PATH } from "@/constants";
 import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import ActionMenu from "@/models/ActionMenu";
 
 export default defineComponent({
   props: {
@@ -120,6 +122,19 @@ export default defineComponent({
       //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
       //TODO, maybe create a hook for all these actions (selection, drag, etc)
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
+    };
+
+    const openActionMenu = (event: any, item: DesktopItem) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerEvent = event as PointerEvent;
+      selectFile(item);
+      store.dispatch("fileSystem/SET_ACTION_MENU", {
+        show: true,
+        path: item.name,
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: false,
+      } as ActionMenu);
     };
 
     const clickHandler = () => {
@@ -175,6 +190,7 @@ export default defineComponent({
       errorMessage,
       isCutFile,
       selectFile,
+      openActionMenu,
     };
   },
 });

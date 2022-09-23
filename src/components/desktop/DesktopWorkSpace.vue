@@ -146,18 +146,7 @@ export default defineComponent({
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
     };
-    const openActionMenu = (event: any, item: DesktopItem) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerEvent = event as PointerEvent;
-      selectFile(item);
-      store.dispatch("fileSystem/SET_ACTION_MENU", {
-        show: true,
-        path: item.name,
-        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        isOpenedFolder: false,
-      } as ActionMenu);
-    };
+
     // TODO, look at this one
     const desktopFiles = computed(function (): DesktopItem[] {
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
@@ -197,7 +186,7 @@ export default defineComponent({
       desktopFiles,
       selectFile,
       selectedItemPaths,
-      openActionMenu,
+
       isItemSelected,
       dropFilehandler,
       setFilesToMove,
