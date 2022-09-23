@@ -9,8 +9,14 @@
   <div
     class="file-item"
     :class="{ 'cut-file-item': isCutFile }"
+    :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px`"
     @dblclick="doubleClickHandler"
-    @mousedown="selectFile(fileItem)"
+    @mousedown.stop="
+      {
+        selectFile(fileItem);
+        startMoveItem($event);
+      }
+    "
     @click.right="openActionMenu($event, fileItem)"
   >
     <div @click="isEditingText = false">
@@ -40,7 +46,6 @@
         </div>
       </div>
     </div>
-
     <div :class="isSelected ? 'file-text-selected' : ''" class="file-text">
       <div v-show="!isEditingText" class="file-text" @click="setIsEditingText">
         {{ fileName }}
@@ -72,6 +77,7 @@ import { DESKTOP_PATH } from "@/constants";
 import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
+import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {
@@ -82,6 +88,9 @@ export default defineComponent({
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
     const fileName = ref(getFileNameFromPath(props.fileItem.name));
+
+    const fileCoordinates = ref({ x: 0, y: 0 } as Coordinates);
+
     const isEditingText = ref(false);
     const fileNameInputRef = ref(null);
     const showDialog = ref(false);
@@ -171,8 +180,52 @@ export default defineComponent({
       }
     };
 
+    // move item
+    const startMoveItem = (e: any) => {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    };
+
+    function elementDrag(e: any) {
+      e = e || window.event;
+      e.preventDefault();
+      const newX = e.clientX;
+      const newY = e.clientY;
+      const newPosition = { x: newX, y: newY } as Coordinates;
+      //TODO selectedItemPaths.value -> chnage the position of these elements, we should take the dekstopItems from desktopFilesWithPosition
+
+      fileCoordinates.value = newPosition;
+
+      //saveNewFileItemPosition(newPosition);
+    }
+
+    async function closeDragElement() {
+      saveNewFileItemPosition();
+
+      /* stop moving when mouse button is released:*/
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+
+    const saveNewFileItemPosition = async () => {
+      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      let desktopItemsPositions = {} as any;
+      if (retrievedObject) {
+        desktopItemsPositions = JSON.parse(retrievedObject);
+      }
+      // desktopItemsPositions[itemName] = { x: event.clientX, y: event.clientY } as Coordinates;
+      desktopItemsPositions[props.fileItem.name] = fileCoordinates.value;
+      localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+    };
+
     onMounted(async () => {
       isFolder.value = await isDir(props.fileItem.name);
+      console.log("SET UP COOR", props.fileItem);
+      fileCoordinates.value = props.fileItem.coordinates;
     });
 
     return {
@@ -191,6 +244,8 @@ export default defineComponent({
       isCutFile,
       selectFile,
       openActionMenu,
+      fileCoordinates,
+      startMoveItem,
     };
   },
 });
@@ -220,6 +275,7 @@ export default defineComponent({
 }
 
 .file-item {
+  position: absolute;
   height: 120px;
   width: 100px;
   text-align: -webkit-center;
