@@ -13,17 +13,12 @@
         ref="desktopRef"
         class="desktop-container"
       >
-        <!-- Implement draggable files, move in desktop just when drag end! Otherwise move in another folder 
-                or do nothing -->
-
         <div
           v-for="(item, index) in desktopFiles"
           :key="`${item.i}-${index}`"
           draggable="true"
-          @drop.stop="dropFilehandler($event, item.name)"
           @dragstart="
             {
-              setFilesToMove(selectedItemPaths);
               isSelectionBoxEnabled = false;
             }
           "
@@ -36,9 +31,8 @@
   </DropExternalFileZone>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, onMounted, ref, reactive, computed, onDeactivated } from "vue";
+import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
-import { GridItem, GridLayout } from "vue3-grid-layout";
 import DesktopFileItem from "@/components/desktop/DesktopFileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
@@ -53,18 +47,17 @@ export default defineComponent({
     msg: String,
     items: Array as PropType<DesktopItem[]>,
   },
-  components: { GridLayout, GridItem, DesktopFileItem, DropExternalFileZone, SelectionBoxZone },
+  components: { DesktopFileItem, DropExternalFileZone, SelectionBoxZone },
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
-    const { moveFilesInFolder, setFilesToMove, isChangingFilePosition } = useMoveFiles();
+    const { moveFilesInFolder } = useMoveFiles();
     const desktopRef = ref(null as unknown as HTMLElement);
     const isSelectionBoxEnabled = ref(true);
-    const desktopFilesWithPosition = ref([] as unknown as DesktopItem[]);
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
-    // TODO: use hook for this methods, drag start, move files etc...
+
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
       let isFolder = false;
       if (dropDestinationFileName) {
@@ -75,9 +68,6 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopItem) => {
       console.log("selecting", newFileSelected);
-      //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
-      //TODO, maybe create a hook for all these actions (selection, drag, etc)
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
@@ -136,7 +126,6 @@ export default defineComponent({
       selectedItemPaths,
       isItemSelected,
       dropFilehandler,
-      setFilesToMove,
       DESKTOP_PATH,
       selectItemsWithSelectionBox,
       isSelectionBoxEnabled,
