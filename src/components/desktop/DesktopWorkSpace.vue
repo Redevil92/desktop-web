@@ -103,8 +103,6 @@ export default defineComponent({
       // if no position put it in 0,0
       const retrievedObject = localStorage.getItem("desktopItemsPositions");
 
-      console.log("HHHH", retrievedObject);
-
       let desktopItemsPositions = {} as any;
       if (retrievedObject) {
         desktopItemsPositions = JSON.parse(retrievedObject);
@@ -112,7 +110,6 @@ export default defineComponent({
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         desktopFileItems = desktopStringFiles.map((fileName: string, index: number) => {
           let coordinates = { x: 0, y: 0 } as Coordinates;
-          console.log("HIHI", desktopItemsPositions, fileName);
           if (desktopItemsPositions && desktopItemsPositions[fileName]) {
             coordinates = desktopItemsPositions[fileName];
           }

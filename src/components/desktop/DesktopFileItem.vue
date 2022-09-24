@@ -9,7 +9,8 @@
   <div
     class="file-item"
     ref="fileItemRef"
-    :class="{ 'cut-file-item': isCutFile }"
+    :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
+    :id="fileItem.name"
     :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px; z-index: ${zIndex}`"
     @dblclick="doubleClickHandler"
     @mousedown.stop="
@@ -79,6 +80,7 @@ import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
+import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 
 export default defineComponent({
   props: {
@@ -99,6 +101,8 @@ export default defineComponent({
     const isFolder = ref(false);
     const fileItemRef = ref(null as unknown as HTMLElement);
     const zIndex = ref(null as null | number);
+
+    const { moveFilesInFolderFromDesktop } = useMoveFiles();
 
     watch(
       () => props.isSelected,
@@ -141,6 +145,7 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopItem) => {
       console.log("selecting", newFileSelected);
+
       //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
       //TODO, maybe create a hook for all these actions (selection, drag, etc)
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
@@ -219,8 +224,25 @@ export default defineComponent({
       fileCoordinates.value = newPosition;
     }
 
-    async function closeDragElement() {
-      saveNewFileItemPosition();
+    async function closeDragElement(e: any) {
+      // we should check if some droppable element are under the element we are dragging
+
+      //let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      fileItemRef.value.hidden = true;
+
+      const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+      const currentDroppable = elementBelow?.closest(".droppable");
+
+      if (elementBelow && currentDroppable) {
+        // get current droppable id (the id is the path where to drop the files selected)
+
+        console.log("MY ID", currentDroppable.id);
+        await moveFilesInFolderFromDesktop(e, currentDroppable.id);
+      } else {
+        saveNewFileItemPosition();
+      }
+
+      fileItemRef.value.hidden = false;
 
       document.onmouseup = null;
       document.onmousemove = null;

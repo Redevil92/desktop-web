@@ -29,6 +29,22 @@ export default function useMoveFiles() {
     return false;
   };
 
+  const moveFilesInFolderFromDesktop = async (event: Event, destinationPath: string) => {
+    const filesPathsToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    if (filesPathsToMove.length > 0 && getSourcePathFromFilePath(filesPathsToMove[0]) === destinationPath) {
+      return;
+    }
+
+    for (const filePath of filesPathsToMove) {
+      await copyFile(filePath, destinationPath);
+    }
+    for (const file of filesPathsToMove) {
+      await deleteFile(file);
+    }
+
+    refreshFiles();
+  };
+
   const moveFilesInFolder = async (event: Event, destinationPath: string) => {
     // no drag and drop in the same folder
     if (filePathsToMove.value.length > 0 && getSourcePathFromFilePath(filePathsToMove.value[0]) === destinationPath) {
@@ -51,5 +67,11 @@ export default function useMoveFiles() {
     await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
   };
 
-  return { setFilesToMove, moveFilesInFolder, resetFilesToMove, isChangingFilePosition };
+  return {
+    setFilesToMove,
+    moveFilesInFolderFromDesktop,
+    moveFilesInFolder,
+    resetFilesToMove,
+    isChangingFilePosition,
+  };
 }
