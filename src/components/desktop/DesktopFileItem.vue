@@ -10,7 +10,7 @@
     class="file-item"
     ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile }"
-    :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px`"
+    :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px; z-index: ${zIndex}`"
     @dblclick="doubleClickHandler"
     @mousedown.stop="
       {
@@ -98,6 +98,7 @@ export default defineComponent({
     const errorMessage = ref("");
     const isFolder = ref(false);
     const fileItemRef = ref(null as unknown as HTMLElement);
+    const zIndex = ref(null as null | number);
 
     watch(
       () => props.isSelected,
@@ -105,8 +106,18 @@ export default defineComponent({
         if (!currentIsSelected) {
           isEditingText.value = false;
         }
+
+        setFileItemZIndex();
       }
     );
+
+    const setFileItemZIndex = () => {
+      if (!props.isSelected) {
+        zIndex.value = null;
+      } else {
+        zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
+      }
+    };
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
@@ -250,6 +261,7 @@ export default defineComponent({
       fileCoordinates,
       startMoveItem,
       fileItemRef,
+      zIndex,
     };
   },
 });

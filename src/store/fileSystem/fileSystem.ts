@@ -148,7 +148,6 @@ export default {
 
       const newItemDialog = {
         name: itemDialog.name,
-        mimeType: itemDialog.mimeType,
         guid: uuidv4(),
         isCollapsed: false,
         isFolder: false,
@@ -295,6 +294,16 @@ export default {
     GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
     GET_FILE_PATHS_TO_MOVE: (state: FileSystemState) => state.filePathsToMove,
     GET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState) => state.selectedDesktopFilePaths,
+    GET_BIGGER_Z_INDEX: (state: FileSystemState) => {
+      let max_z_index = 0;
+      state.itemsDialog.forEach((item) => {
+        if (item.zIndex > max_z_index) {
+          max_z_index = item.zIndex;
+        }
+      });
+
+      return max_z_index;
+    },
   },
 };
 
