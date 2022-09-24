@@ -205,6 +205,8 @@ export default defineComponent({
       e = e || window.event;
       e.preventDefault();
 
+      zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
+
       shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
       shiftY = e.clientY - fileItemRef.value.getBoundingClientRect().top;
 
@@ -225,7 +227,7 @@ export default defineComponent({
     }
 
     async function closeDragElement(e: any) {
-      // we should check if some droppable element are under the element we are dragging
+      zIndex.value = null;
 
       //let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
       fileItemRef.value.hidden = true;
