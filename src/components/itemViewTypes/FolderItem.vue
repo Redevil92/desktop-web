@@ -1,5 +1,5 @@
 <template>
-  <div @click.right="openActionMenu($event, true)">
+  <div @click.right="openActionMenu($event, true)" class="droppable" :id="folderDialog.name">
     <div class="folder-item-container" @mousedown="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">

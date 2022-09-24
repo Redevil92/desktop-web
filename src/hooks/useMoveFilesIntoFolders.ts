@@ -59,6 +59,7 @@ export default function useMoveFiles() {
     }
 
     resetFilesToMove();
+    console.log("HERE");
     refreshFiles();
   };
 
