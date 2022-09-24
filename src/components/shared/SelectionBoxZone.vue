@@ -77,6 +77,7 @@ export default defineComponent({
       showSelectionRectangle(newMousePosition);
 
       const elements = selectionRectArea.value.getElementsByClassName(props.itemsToSelectClass);
+
       let elementToSelect = [];
 
       const selRect = selectionRectRef.value.getBoundingClientRect();

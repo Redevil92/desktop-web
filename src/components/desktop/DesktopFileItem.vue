@@ -7,7 +7,7 @@
     </div>
   </base-dialog>
   <div
-    class="file-item"
+    class="file-item desktop-item"
     ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
     :id="fileItem.name"

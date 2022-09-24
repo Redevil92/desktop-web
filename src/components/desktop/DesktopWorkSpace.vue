@@ -30,6 +30,7 @@
     </SelectionBoxZone>
   </DropExternalFileZone>
 </template>
+
 <script lang="ts">
 import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
@@ -42,6 +43,7 @@ import { DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
+
 export default defineComponent({
   props: {
     msg: String,
@@ -52,8 +54,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { moveFilesInFolder } = useMoveFiles();
+
     const desktopRef = ref(null as unknown as HTMLElement);
     const isSelectionBoxEnabled = ref(true);
+
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
     });
@@ -74,6 +78,7 @@ export default defineComponent({
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
       const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
+      console.log(selectedElements);
       const newSelectedPaths = desktopPaths.filter((path) => {
         if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
           return path;
@@ -81,6 +86,7 @@ export default defineComponent({
       });
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
     };
+
     const isItemSelected = (fileItem: string) => {
       return selectedItemPaths.value.includes(fileItem);
     };
@@ -113,13 +119,16 @@ export default defineComponent({
 
       return desktopFileItems;
     });
+
     const refreshFiles = async () => {
       await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
       await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
     };
+
     onMounted(async () => {
       refreshFiles();
     });
+
     return {
       desktopRef,
       desktopFiles,
@@ -134,6 +143,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 .actions-dialog {
   border: 1px solid red;
@@ -142,9 +152,11 @@ export default defineComponent({
   left: 600px;
   z-index: 1;
 }
+
 .action-button {
   cursor: pointer;
 }
+
 .desktop-container {
   height: 100vh;
   width: 100vw;
