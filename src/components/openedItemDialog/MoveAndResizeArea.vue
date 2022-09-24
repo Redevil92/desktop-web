@@ -137,6 +137,8 @@ export default defineComponent({
 
     function dragMouseDown(e: any, eventType: string | string[]) {
       animateDialogWhenMoving.value = false;
+      setItemDialogFocused();
+
       // if fullscreen no moving and resizing
       if (isFullscreen.value) {
         return;
