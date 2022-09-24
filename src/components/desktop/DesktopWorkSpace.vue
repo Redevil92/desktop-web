@@ -68,6 +68,7 @@ export default defineComponent({
 
     const selectFile = (newFileSelected: DesktopItem) => {
       console.log("selecting", newFileSelected);
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
