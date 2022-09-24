@@ -224,6 +224,10 @@ export default defineComponent({
       const newPosition = { x: newX, y: newY } as Coordinates;
 
       fileCoordinates.value = newPosition;
+
+      // check if an element with class "droppable" is below and modify its style
+      // add in store a variable droppabelElementAreaHovered for example, and check for
+      // desktopItem or openedItemView
     }
 
     async function closeDragElement(e: any) {
@@ -237,8 +241,6 @@ export default defineComponent({
 
       if (elementBelow && currentDroppable) {
         // get current droppable id (the id is the path where to drop the files selected)
-
-        console.log("MY ID", currentDroppable.id);
         await moveFilesInFolderFromDesktop(e, currentDroppable.id);
       } else {
         saveNewFileItemPosition();
