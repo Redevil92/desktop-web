@@ -9,7 +9,13 @@
       </div>
 
       <DropExternalFileZone :dropPath="folderDialog.name">
-        <div @drop="dropFilehandler" class="folder-item-list" :style="`height:${height - 35}px`" ref="folderContentRef">
+        <div
+          @drop="dropFilehandler"
+          class="folder-item-list"
+          :class="{ 'folder-item-list-drag-over': true }"
+          :style="`height:${height - 35}px`"
+          ref="folderContentRef"
+        >
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
             getFileNameFromPath(fileNameToChange)
           }}</span>
@@ -390,6 +396,12 @@ input {
 
 .folder-item-list {
   overflow-y: auto;
+  border: 2px solid rgba(255, 255, 255, 0);
+}
+
+.folder-item-list-drag-over {
+  border-radius: var(--border-radius);
+  border: 2px solid var(--selected-color);
 }
 
 .noselect {
