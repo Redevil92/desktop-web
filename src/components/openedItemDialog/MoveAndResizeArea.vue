@@ -16,28 +16,28 @@
     <div
       class="resize-element"
       style="width: 100%; height: 6px; top: -3px; left: 0px; cursor: ns-resize"
-      @mousedown="dragMouseDown($event, actionTypes.RESIZING_TOP)"
+      @mousedown.stop="dragMouseDown($event, actionTypes.RESIZING_TOP)"
     >
       <!-- Top -->
     </div>
     <div
       class="resize-element"
       style="width: 6px; height: 100%; top: 0px; right: -3px; cursor: ew-resize"
-      @mousedown="dragMouseDown($event, actionTypes.RESIZING_LEFT)"
+      @mousedown.stop="dragMouseDown($event, actionTypes.RESIZING_LEFT)"
     >
       <!-- Left -->
     </div>
     <div
       class="resize-element"
       style="width: 100%; height: 6px; bottom: -3px; left: 0px; cursor: ns-resize"
-      @mousedown="dragMouseDown($event, actionTypes.RESIZING_BOTTOM)"
+      @mousedown.stop="dragMouseDown($event, actionTypes.RESIZING_BOTTOM)"
     >
       <!-- Bottom -->
     </div>
     <div
       class="resize-element"
       style="width: 6px; height: 100%; top: 0px; right: -3px; cursor: ew-resize"
-      @mousedown="dragMouseDown($event, [actionTypes.RESIZING_RIGHT])"
+      @mousedown.stop="dragMouseDown($event, [actionTypes.RESIZING_RIGHT])"
     >
       <!-- Right -->
     </div>
@@ -45,7 +45,7 @@
     <div
       class="resize-element"
       style="width: 6px; height: 100%; top: 0px; left: -3px; cursor: ew-resize"
-      @mousedown="dragMouseDown($event, actionTypes.RESIZING_LEFT, actionTypes.RESIZING_TOP)"
+      @mousedown.stop="dragMouseDown($event, actionTypes.RESIZING_LEFT, actionTypes.RESIZING_TOP)"
     >
       <!-- TL -->
     </div>
@@ -53,21 +53,21 @@
     <div
       class="resize-element"
       style="width: 12px; height: 12px; right: -3px; top: -3px; cursor: nesw-resize"
-      @mousedown="dragMouseDown($event, [actionTypes.RESIZING_RIGHT, actionTypes.RESIZING_TOP])"
+      @mousedown.stop="dragMouseDown($event, [actionTypes.RESIZING_RIGHT, actionTypes.RESIZING_TOP])"
     >
       <!-- RT -->
     </div>
     <div
       class="resize-element"
       style="width: 12px; height: 12px; right: -3px; bottom: -3px; cursor: nwse-resize"
-      @mousedown="dragMouseDown($event, [actionTypes.RESIZING_RIGHT, actionTypes.RESIZING_BOTTOM])"
+      @mousedown.stop="dragMouseDown($event, [actionTypes.RESIZING_RIGHT, actionTypes.RESIZING_BOTTOM])"
     >
       <!-- RB -->
     </div>
     <div
       class="resize-element"
       style="width: 12px; height: 12px; left: -3px; bottom: -3px; cursor: nesw-resize"
-      @mousedown="dragMouseDown($event, [actionTypes.RESIZING_LEFT, actionTypes.RESIZING_BOTTOM])"
+      @mousedown.stop="dragMouseDown($event, [actionTypes.RESIZING_LEFT, actionTypes.RESIZING_BOTTOM])"
     >
       <!-- LB -->
     </div>
@@ -162,6 +162,7 @@ export default defineComponent({
 
       e = e || window.event;
       e.preventDefault();
+
       // calculate the new cursor position:
       pos1 = pos3 - e.clientX;
       pos2 = pos4 - e.clientY;
