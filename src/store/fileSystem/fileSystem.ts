@@ -32,6 +32,7 @@ export default {
       },
       filePathsToMove: [],
       selectedDesktopFilePaths: [],
+      dragginPath: "",
     };
   },
   mutations: {
@@ -123,6 +124,9 @@ export default {
     },
     SET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState, paths: string[]) => {
       state.selectedDesktopFilePaths = paths;
+    },
+    SET_DRAGGIN_PATH: (state: FileSystemState, dragginPath: string) => {
+      state.dragginPath = dragginPath;
     },
   },
   actions: {
@@ -284,6 +288,9 @@ export default {
     SET_SELECTED_DESKTOP_FILE_PATHS: ({ commit }: any, paths: string[]) => {
       commit("SET_SELECTED_DESKTOP_FILE_PATHS", paths);
     },
+    SET_DRAGGIN_PATH: ({ commit }: any, dragginPath: string) => {
+      commit("SET_DRAGGIN_PATH", dragginPath);
+    },
   },
   getters: {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
@@ -304,6 +311,7 @@ export default {
 
       return max_z_index;
     },
+    GET_DRAGGIN_PATH: (state: FileSystemState) => state.dragginPath,
   },
 };
 
@@ -315,6 +323,7 @@ interface FileSystemState {
   filePathsToCopy: string[];
   filePathsToCut: string[]; // in progress
   filePathsToMove: string[];
+  dragginPath: string;
 }
 
 interface Action {

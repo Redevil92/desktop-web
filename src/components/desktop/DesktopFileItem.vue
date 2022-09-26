@@ -111,17 +111,18 @@ export default defineComponent({
           isEditingText.value = false;
         }
 
-        setFileItemZIndex();
+        // setFileItemZIndex();
       }
     );
 
-    const setFileItemZIndex = () => {
-      if (!props.isSelected) {
-        zIndex.value = null;
-      } else {
-        zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
-      }
-    };
+    // const setFileItemZIndex = () => {
+    //   console.log("SETTING IS SELECTED", props.isSelected);
+    //   if (!props.isSelected) {
+    //     zIndex.value = null;
+    //   } else {
+    //     zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
+    //   }
+    // };
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
@@ -210,6 +211,8 @@ export default defineComponent({
       shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
       shiftY = e.clientY - fileItemRef.value.getBoundingClientRect().top;
 
+      store.dispatch("fileSystem/SET_DRAGGIN_PATH", props.fileItem.name);
+
       document.onmouseup = closeDragElement;
       document.onmousemove = elementDrag;
     };
@@ -224,10 +227,6 @@ export default defineComponent({
       const newPosition = { x: newX, y: newY } as Coordinates;
 
       fileCoordinates.value = newPosition;
-
-      // check if an element with class "droppable" is below and modify its style
-      // add in store a variable droppabelElementAreaHovered for example, and check for
-      // desktopItem or openedItemView
     }
 
     async function closeDragElement(e: any) {
@@ -246,8 +245,10 @@ export default defineComponent({
         saveNewFileItemPosition();
       }
 
-      fileItemRef.value.hidden = false;
+      zIndex.value = null;
 
+      fileItemRef.value.hidden = false;
+      store.dispatch("fileSystem/SET_DRAGGIN_PATH", "");
       document.onmouseup = null;
       document.onmousemove = null;
     }

@@ -9,10 +9,13 @@
       </div>
 
       <DropExternalFileZone :dropPath="folderDialog.name">
+        {{ isDraggingItem }} {{ isMouseOver }}
         <div
+          @mouseover="isMouseOver = true"
+          @mouseleave="isMouseOver = false"
           @drop="dropFilehandler"
           class="folder-item-list"
-          :class="{ 'folder-item-list-drag-over': true }"
+          :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
           :style="`height:${height - 35}px`"
           ref="folderContentRef"
         >
@@ -97,9 +100,14 @@ export default defineComponent({
   components: { DropExternalFileZone },
   emits: [],
   setup(props, _) {
-    const folderContentRef = ref(null as unknown as HTMLElement);
+    const folderContentRef = ref<HTMLElement | null>(null);
+    const isMouseOver = ref(false as boolean);
 
     const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
+
+    const isDraggingItem = computed(function () {
+      return store.getters["fileSystem/GET_DRAGGIN_PATH"] !== "";
+    });
 
     const doubleClickHandler = async (fileName: string) => {
       const isDirectory = await isDir(fileName);
@@ -270,6 +278,8 @@ export default defineComponent({
       isCutFile,
       dropFilehandler,
       setFilesToMove,
+      isDraggingItem,
+      isMouseOver,
     };
   },
 });

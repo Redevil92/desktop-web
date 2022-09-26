@@ -54,6 +54,8 @@ export default defineComponent({
     };
 
     const onMouseDown = (e: any) => {
+      e.preventDefault();
+
       if (!props.isEnabled) {
         return;
       }
