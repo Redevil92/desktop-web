@@ -19,11 +19,13 @@
         startMoveItem($event);
       }
     "
+    @mouseover="isMouseOver = true"
+    @mouseleave="isMouseOver = false"
     @click.right="openActionMenu($event, fileItem)"
   >
     <div @click="isEditingText = false">
       <img
-        :class="isSelected ? 'file-item-selected' : 'invisible-border'"
+        :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
         v-if="isFolder"
         height="60"
         :src="require('/src/assets/fileIcons/folder.svg')"
@@ -32,7 +34,7 @@
       <div v-else>
         <div v-if="fileExtension">
           <img
-            :class="isSelected ? 'file-item-selected' : 'invisible-border'"
+            :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
             height="60"
             :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')"
             alt=""
@@ -40,7 +42,7 @@
         </div>
         <div v-else>
           <img
-            :class="isSelected ? 'file-item-selected' : 'invisible-border'"
+            :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
             height="60"
             :src="require('/src/assets/fileIcons/unknow.svg')"
             alt=""
@@ -48,7 +50,7 @@
         </div>
       </div>
     </div>
-    <div :class="isSelected ? 'file-text-selected' : ''" class="file-text">
+    <div :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-text-selected' : ''" class="file-text">
       <div v-show="!isEditingText" class="file-text" @click="setIsEditingText">
         {{ fileName }}
       </div>
@@ -68,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, PropType, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
@@ -101,6 +103,11 @@ export default defineComponent({
     const isFolder = ref(false);
     const fileItemRef = ref(null as unknown as HTMLElement);
     const zIndex = ref(null as null | number);
+
+    const isMouseOver = ref(false as boolean);
+    const isDraggingItem = computed(function () {
+      return store.getters["fileSystem/GET_DRAGGIN_PATH"] !== "";
+    });
 
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
 
@@ -264,9 +271,32 @@ export default defineComponent({
       localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
     };
 
+    const checkMouseOver = (event: any) => {
+      if (isDraggingItem.value) {
+        const boundingRect = fileItemRef.value?.getBoundingClientRect();
+        if (
+          boundingRect &&
+          event.clientX < boundingRect.x + boundingRect.width &&
+          event.clientX > boundingRect.x &&
+          event.clientY < boundingRect.y + boundingRect.height &&
+          event.clientY > boundingRect.y
+        ) {
+          isMouseOver.value = true;
+        } else {
+          isMouseOver.value = false;
+        }
+      }
+    };
+
     onMounted(async () => {
       isFolder.value = await isDir(props.fileItem.name);
       fileCoordinates.value = props.fileItem.coordinates;
+
+      window.addEventListener("mousemove", checkMouseOver);
+    });
+
+    onDeactivated(() => {
+      window.removeEventListener("mousemove", checkMouseOver);
     });
 
     return {
@@ -289,6 +319,8 @@ export default defineComponent({
       startMoveItem,
       fileItemRef,
       zIndex,
+      isDraggingItem,
+      isMouseOver,
     };
   },
 });

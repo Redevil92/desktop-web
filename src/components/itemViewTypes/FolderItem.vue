@@ -9,7 +9,6 @@
       </div>
 
       <DropExternalFileZone :dropPath="folderDialog.name">
-        {{ isDraggingItem }} {{ isMouseOver }}
         <div
           @mouseover="isMouseOver = true"
           @mouseleave="isMouseOver = false"
@@ -81,7 +80,7 @@
 
 <script lang="ts">
 import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
-import { computed, defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watchEffect } from "vue";
 
 import store from "@/store";
 import { FolderDialog } from "@/models/ItemDialog";
@@ -248,12 +247,33 @@ export default defineComponent({
       }
     };
 
+    const checkMouseOver = (event: any) => {
+      if (isDraggingItem.value) {
+        const boundingRect = folderContentRef.value?.getBoundingClientRect();
+        if (
+          boundingRect &&
+          event.clientX < boundingRect.x + boundingRect.width &&
+          event.clientX > boundingRect.x &&
+          event.clientY < boundingRect.y + boundingRect.height &&
+          event.clientY > boundingRect.y
+        ) {
+          isMouseOver.value = true;
+        } else {
+          isMouseOver.value = false;
+        }
+      }
+    };
+
     onMounted(() => {
+      window.addEventListener("mousemove", checkMouseOver);
+
       window.addEventListener("keydown", keyDownHandler);
     });
 
     onDeactivated(() => {
       window.removeEventListener("keydown", keyDownHandler);
+
+      window.removeEventListener("mousemove", checkMouseOver);
     });
 
     return {
