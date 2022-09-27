@@ -78,7 +78,7 @@ export default defineComponent({
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
       const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
-      console.log(selectedElements);
+
       const newSelectedPaths = desktopPaths.filter((path) => {
         if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
           return path;

@@ -87,23 +87,23 @@ export default defineComponent({
       for (const element of elements) {
         const elementBoudingClientRect = element.getBoundingClientRect();
 
+        console.log(1, selRect);
+
         if (
-          ((elementBoudingClientRect.left > selRect.left &&
-            elementBoudingClientRect.left < selRect.left + selRect.width) ||
-            (elementBoudingClientRect.left + elementBoudingClientRect.width > selRect.left &&
-              elementBoudingClientRect.left + elementBoudingClientRect.width < selRect.left + selRect.width)) &&
-          ((elementBoudingClientRect.top > selRect.top &&
-            elementBoudingClientRect.top < selRect.top + selRect.height) ||
-            (elementBoudingClientRect.top + elementBoudingClientRect.height > selRect.top &&
-              elementBoudingClientRect.top + elementBoudingClientRect.height < selRect.top + selRect.height))
+          ((elementBoudingClientRect.x > selRect.x && elementBoudingClientRect.x < selRect.x + selRect.width) ||
+            (elementBoudingClientRect.x + elementBoudingClientRect.width > selRect.x &&
+              elementBoudingClientRect.x + elementBoudingClientRect.width < selRect.x + selRect.width)) &&
+          ((elementBoudingClientRect.y > selRect.y && elementBoudingClientRect.y < selRect.y + selRect.height) ||
+            (elementBoudingClientRect.y + elementBoudingClientRect.height > selRect.y &&
+              elementBoudingClientRect.y + elementBoudingClientRect.height < selRect.y + selRect.height))
         ) {
           elementToSelect.push(element);
         }
       }
 
       if (
-        selectionRectangle.value.right - selectionRectangle.value.left > minimumRectangleDimension.value &&
-        selectionRectangle.value.bottom - selectionRectangle.value.top > minimumRectangleDimension.value
+        Math.abs(selectionRectangle.value.right - selectionRectangle.value.left) > minimumRectangleDimension.value &&
+        Math.abs(selectionRectangle.value.bottom - selectionRectangle.value.top) > minimumRectangleDimension.value
       ) {
         context.emit("onSelectingItems", elementToSelect);
       }
