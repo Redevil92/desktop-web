@@ -25,7 +25,7 @@
   >
     <div @click="isEditingText = false">
       <img
-        :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
+        :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'"
         v-if="isFolder"
         height="60"
         :src="require('/src/assets/fileIcons/folder.svg')"
@@ -34,7 +34,9 @@
       <div v-else>
         <div v-if="fileExtension">
           <img
-            :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
+            :class="
+              isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'
+            "
             height="60"
             :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')"
             alt=""
@@ -42,7 +44,9 @@
         </div>
         <div v-else>
           <img
-            :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-item-selected' : 'invisible-border'"
+            :class="
+              isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'
+            "
             height="60"
             :src="require('/src/assets/fileIcons/unknow.svg')"
             alt=""
@@ -50,7 +54,10 @@
         </div>
       </div>
     </div>
-    <div :class="isSelected || (isDraggingItem && isMouseOver) ? 'file-text-selected' : ''" class="file-text">
+    <div
+      :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-text-selected' : ''"
+      class="file-text"
+    >
       <div v-show="!isEditingText" class="file-text" @click="setIsEditingText">
         {{ fileName }}
       </div>
