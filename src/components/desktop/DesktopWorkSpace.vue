@@ -13,17 +13,7 @@
         ref="desktopRef"
         class="desktop-container"
       >
-        <div
-          v-for="(item, index) in desktopFiles"
-          :key="`${item.i}-${index}`"
-          draggable="true"
-          @dragstart="
-            {
-              isSelectionBoxEnabled = false;
-            }
-          "
-          @dragend="isSelectionBoxEnabled = true"
-        >
+        <div v-for="(item, index) in desktopFiles" :key="`${item.i}-${index}`">
           <DesktopFileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
         </div>
       </div>
@@ -58,10 +48,13 @@ export default defineComponent({
     const { getDesktopFilesPositionFromLocalStorage } = useLocalStorage();
 
     const desktopRef = ref(null as unknown as HTMLElement);
-    const isSelectionBoxEnabled = ref(true);
 
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    });
+
+    const isSelectionBoxEnabled = computed((): boolean => {
+      return store.getters["fileSystem/GET_IS_SELECTION_BOX_ENABLED"];
     });
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
@@ -70,6 +63,10 @@ export default defineComponent({
         isFolder = await isDir(dropDestinationFileName);
       }
       await moveFilesInFolder(event, dropDestinationFileName);
+    };
+
+    const setIsSelectionBoxEnabled = (isSelectionBoxEnabled: boolean) => {
+      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", isSelectionBoxEnabled);
     };
 
     const selectFile = (newFileSelected: DesktopItem) => {
@@ -135,6 +132,7 @@ export default defineComponent({
       DESKTOP_PATH,
       selectItemsWithSelectionBox,
       isSelectionBoxEnabled,
+      setIsSelectionBoxEnabled,
     };
   },
 });

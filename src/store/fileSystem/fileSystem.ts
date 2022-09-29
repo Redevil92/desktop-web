@@ -32,6 +32,7 @@ export default {
       },
       filePathsToMove: [],
       selectedDesktopFilePaths: [],
+      isSelectionBoxEnabled: true,
       dragginPath: "",
     };
   },
@@ -127,6 +128,9 @@ export default {
     },
     SET_DRAGGIN_PATH: (state: FileSystemState, dragginPath: string) => {
       state.dragginPath = dragginPath;
+    },
+    SET_IS_SELECTION_BOX_ENABLED: (state: FileSystemState, isSelectionBoxEnabled: boolean) => {
+      state.isSelectionBoxEnabled = isSelectionBoxEnabled;
     },
   },
   actions: {
@@ -291,6 +295,9 @@ export default {
     SET_DRAGGIN_PATH: ({ commit }: any, dragginPath: string) => {
       commit("SET_DRAGGIN_PATH", dragginPath);
     },
+    SET_IS_SELECTION_BOX_ENABLED: ({ commit }: any, isSelectionBoxEnabled: boolean) => {
+      commit("SET_IS_SELECTION_BOX_ENABLED", isSelectionBoxEnabled);
+    },
   },
   getters: {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
@@ -311,6 +318,7 @@ export default {
 
       return max_z_index;
     },
+    GET_IS_SELECTION_BOX_ENABLED: (state: FileSystemState) => state.isSelectionBoxEnabled,
     GET_DRAGGIN_PATH: (state: FileSystemState) => state.dragginPath,
   },
 };
@@ -323,6 +331,7 @@ interface FileSystemState {
   filePathsToCopy: string[];
   filePathsToCut: string[]; // in progress
   filePathsToMove: string[];
+  isSelectionBoxEnabled: boolean;
   dragginPath: string;
 }
 

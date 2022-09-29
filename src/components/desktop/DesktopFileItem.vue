@@ -223,6 +223,8 @@ export default defineComponent({
       e = e || window.event;
       e.preventDefault();
 
+      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", false);
+
       zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
 
       shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
@@ -266,6 +268,7 @@ export default defineComponent({
       zIndex.value = null;
 
       fileItemRef.value.hidden = false;
+      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", true);
       store.dispatch("fileSystem/SET_DRAGGIN_PATH", "");
       document.onmouseup = null;
       document.onmousemove = null;
