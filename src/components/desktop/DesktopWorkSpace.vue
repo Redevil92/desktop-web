@@ -43,6 +43,7 @@ import { DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export default defineComponent({
   props: {
@@ -54,6 +55,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { moveFilesInFolder } = useMoveFiles();
+    const { getDesktopFilesPositionFromLocalStorage } = useLocalStorage();
 
     const desktopRef = ref(null as unknown as HTMLElement);
     const isSelectionBoxEnabled = ref(true);
@@ -96,14 +98,8 @@ export default defineComponent({
       const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
       let desktopFileItems = [];
 
-      // get from local storage (through the store) the desktop file positions
-      // if no position put it in 0,0
-      const retrievedObject = localStorage.getItem("desktopItemsPositions");
+      const desktopItemsPositions = getDesktopFilesPositionFromLocalStorage();
 
-      let desktopItemsPositions = {} as any;
-      if (retrievedObject) {
-        desktopItemsPositions = JSON.parse(retrievedObject);
-      }
       if (desktopStringFiles && desktopStringFiles.length > 0) {
         desktopFileItems = desktopStringFiles.map((fileName: string, index: number) => {
           let coordinates = { x: 0, y: 0 } as Coordinates;

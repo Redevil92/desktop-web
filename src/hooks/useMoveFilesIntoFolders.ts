@@ -59,9 +59,10 @@ export default function useMoveFiles() {
     }
 
     resetFilesToMove();
-    console.log("HERE");
     refreshFiles();
   };
+
+  const saveDesktopFilePosition = async () => {};
 
   const refreshFiles = async () => {
     await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");

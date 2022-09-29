@@ -89,7 +89,9 @@ import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
+
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export default defineComponent({
   props: {
@@ -117,6 +119,7 @@ export default defineComponent({
     });
 
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
+    const { saveDesktopFilePosition } = useLocalStorage();
 
     watch(
       () => props.isSelected,
@@ -256,7 +259,8 @@ export default defineComponent({
         // get current droppable id (the id is the path where to drop the files selected)
         await moveFilesInFolderFromDesktop(e, currentDroppable.id);
       } else {
-        saveNewFileItemPosition();
+        saveDesktopFilePosition(props.fileItem.name, fileCoordinates.value);
+        //saveNewFileItemPosition();
       }
 
       zIndex.value = null;
@@ -266,17 +270,6 @@ export default defineComponent({
       document.onmouseup = null;
       document.onmousemove = null;
     }
-
-    const saveNewFileItemPosition = async () => {
-      const retrievedObject = localStorage.getItem("desktopItemsPositions");
-      let desktopItemsPositions = {} as any;
-      if (retrievedObject) {
-        desktopItemsPositions = JSON.parse(retrievedObject);
-      }
-
-      desktopItemsPositions[props.fileItem.name] = fileCoordinates.value;
-      localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
-    };
 
     const checkMouseOver = (event: any) => {
       if (isDraggingItem.value) {
