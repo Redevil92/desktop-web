@@ -7,7 +7,7 @@
         </div>
         <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
-        <div class="directory-name">{{ getFileNameFromPath(itemDialog.name) }}</div>
+        <div class="directory-name">{{ getFileNameFromPath(itemDialog.path) }}</div>
         <DialogControls :itemDialog="itemDialog" />
       </div>
     </template>
@@ -64,7 +64,7 @@ export default defineComponent({
     });
 
     const fileExtension = computed(function () {
-      return getFileExtensionFromName(props.itemDialog.name);
+      return getFileExtensionFromName(props.itemDialog.path);
     });
 
     function isCodeFile(): boolean {

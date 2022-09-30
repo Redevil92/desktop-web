@@ -6,7 +6,7 @@
       @onSelectingItems="selectItemsWithSelectionBox"
     >
       <div
-        @mousedown="selectFile($event, {})"
+        @mousedown="selectFile([])"
         @drop="dropFilehandler($event, DESKTOP_PATH)"
         @dragover.prevent
         @dragenter.prevent
@@ -14,7 +14,7 @@
         class="desktop-container"
       >
         <div v-for="(item, index) in desktopFiles" :key="`${item.i}-${index}`">
-          <DesktopFileItem :ref="item.name + 'FileRef'" :fileItem="item" />
+          <DesktopFileItem :ref="item.path + 'FileRef'" :fileItem="item" />
         </div>
       </div>
     </SelectionBoxZone>
@@ -50,7 +50,7 @@ export default defineComponent({
     const desktopRef = ref(null as unknown as HTMLElement);
 
     const selectedItemPaths = computed((): string[] => {
-      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+      return store.getters["fileSystem/"];
     });
 
     const isSelectionBoxEnabled = computed((): boolean => {
@@ -69,25 +69,29 @@ export default defineComponent({
       store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", isSelectionBoxEnabled);
     };
 
-    const selectFile = (newFileSelected: DesktopItem) => {
-      console.log("selecting", newFileSelected);
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", []);
+    const selectFile = (filesSelected: DesktopItem[]) => {
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", filesSelected);
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-      const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
-      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => element.textContent);
+      //const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
 
-      const newSelectedPaths = desktopPaths.filter((path) => {
-        if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
-          return path;
-        }
+      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
+        console.log(element);
+        const clientRect = element.getBoundingClientRect();
+        return {
+          path: DESKTOP_PATH + "/" + element.textContent,
+          coordinates: { x: clientRect.x, y: clientRect.y },
+        } as DesktopItem;
       });
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", newSelectedPaths);
-    };
 
-    const isItemSelected = (fileItem: string) => {
-      return selectedItemPaths.value.includes(fileItem);
+      // const newSelectedDesktopItems = desktopPaths.filter((path) => {
+      //   if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
+      //     return ;
+      //   }
+      // });
+      // x y
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", elementsSelectedNames);
     };
 
     // TODO, look at this one
@@ -105,7 +109,7 @@ export default defineComponent({
           }
           return {
             coordinates,
-            name: fileName,
+            path: fileName,
           } as DesktopItem;
         });
       }
@@ -127,7 +131,7 @@ export default defineComponent({
       desktopFiles,
       selectFile,
       selectedItemPaths,
-      isItemSelected,
+
       dropFilehandler,
       DESKTOP_PATH,
       selectItemsWithSelectionBox,

@@ -10,7 +10,7 @@
     class="file-item desktop-item"
     ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
-    :id="fileItem.name"
+    :id="fileItem.path"
     :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px; z-index: ${zIndex}`"
     @dblclick="doubleClickHandler"
     @mousedown.stop="
@@ -71,7 +71,7 @@
         v-model="fileName"
       />
 
-      <!-- {{ getFileNameFromPath(fileItem.name) }} -->
+      <!-- {{ getFileNameFromPath(fileItem.path) }} -->
     </div>
   </div>
 </template>
@@ -101,7 +101,7 @@ export default defineComponent({
   components: { BaseDialog, BaseButton },
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
-    const fileName = ref(getFileNameFromPath(props.fileItem.name));
+    const fileName = ref(getFileNameFromPath(props.fileItem.path));
 
     const fileCoordinates = ref({ x: 0, y: 0 } as Coordinates);
 
@@ -122,7 +122,11 @@ export default defineComponent({
     const { saveDesktopFilePosition } = useLocalStorage();
 
     const isSelected = computed(function () {
-      return selectedItemPaths.value.includes(props.fileItem.name);
+      const index = selectedItemPaths.value.findIndex(
+        (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path
+      );
+      console.log(1, index, selectedItemPaths.value, props.fileItem.path);
+      return index !== -1;
     });
 
     watch(
@@ -134,17 +138,17 @@ export default defineComponent({
       }
     );
 
-    const selectedItemPaths = computed((): string[] => {
-      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    const selectedItemPaths = computed((): DesktopItem[] => {
+      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"];
     });
 
     const fileExtension = computed(function () {
-      return getFileExtensionFromName(props.fileItem.name);
+      return getFileExtensionFromName(props.fileItem.path);
     });
 
     const isCutFile = computed(function () {
       const filesToCut = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"] as string[];
-      if (filesToCut.includes(props.fileItem.name)) {
+      if (filesToCut.includes(props.fileItem.path)) {
         return true;
       }
       return false;
@@ -163,7 +167,11 @@ export default defineComponent({
 
       //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
       //TODO, maybe create a hook for all these actions (selection, drag, etc)
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.name]);
+
+      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", [
+        { path: newFileSelected.path, coordinates: newFileSelected.coordinates },
+      ] as DesktopItem[]);
+      //store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.path]);
     };
 
     const openActionMenu = (event: any, item: DesktopItem) => {
@@ -173,7 +181,7 @@ export default defineComponent({
       selectFile(item);
       store.dispatch("fileSystem/SET_ACTION_MENU", {
         show: true,
-        path: item.name,
+        path: item.path,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
       } as ActionMenu);
@@ -196,17 +204,17 @@ export default defineComponent({
       fileName.value = fileName.value.replace(/[\n\r]/g, "");
       const newName = DESKTOP_PATH + "/" + fileName.value;
 
-      if (isEditingText.value && newName !== props.fileItem.name) {
+      if (isEditingText.value && newName !== props.fileItem.path) {
         if (await existsFile(newName)) {
           showDialog.value = true;
           errorMessage.value = `The name "${fileName.value}" is already taken. Please find a new one.`;
           isEditingText.value = false;
-          fileName.value = getFileNameFromPath(props.fileItem.name);
+          fileName.value = getFileNameFromPath(props.fileItem.path);
           return;
         }
 
-        if (newName !== props.fileItem.name && isEditingText.value) {
-          renameFile(newName, props.fileItem.name);
+        if (newName !== props.fileItem.path && isEditingText.value) {
+          renameFile(newName, props.fileItem.path);
           refreshFileSystemFiles();
         }
         isEditingText.value = false;
@@ -227,7 +235,7 @@ export default defineComponent({
       shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
       shiftY = e.clientY - fileItemRef.value.getBoundingClientRect().top;
 
-      store.dispatch("fileSystem/SET_DRAGGIN_PATH", props.fileItem.name);
+      store.dispatch("fileSystem/SET_DRAGGIN_PATH", props.fileItem.path);
 
       document.onmouseup = closeDragElement;
       document.onmousemove = elementDrag;
@@ -258,7 +266,7 @@ export default defineComponent({
         // get current droppable id (the id is the path where to drop the files selected)
         await moveFilesInFolderFromDesktop(e, currentDroppable.id);
       } else {
-        saveDesktopFilePosition(props.fileItem.name, fileCoordinates.value);
+        saveDesktopFilePosition(props.fileItem.path, fileCoordinates.value);
         //saveNewFileItemPosition();
       }
 
@@ -289,7 +297,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      isFolder.value = await isDir(props.fileItem.name);
+      isFolder.value = await isDir(props.fileItem.path);
       fileCoordinates.value = props.fileItem.coordinates;
 
       window.addEventListener("mousemove", checkMouseOver);

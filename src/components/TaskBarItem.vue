@@ -1,14 +1,14 @@
 <template>
   <div class="task-bar-item" :class="isFocused ? 'task-bar-item-focused' : ''" @click="taskBarItemClickHandler">
-    <div v-if="getFileExtensionFromName(item.name)">
+    <div v-if="getFileExtensionFromName(item.path)">
       <img
         class="task-bar-icon"
         height="16"
-        :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item.name) + '.svg')"
+        :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item.path) + '.svg')"
         alt=""
       />
     </div>
-    <div v-else-if="isDir(item.name)">
+    <div v-else-if="isDir(item.path)">
       <!-- <span class="mdi mdi-folder-open task-bar-icon" style="color: #f6d573"></span> -->
       <img
         height="16"
@@ -23,7 +23,7 @@
     </div>
 
     <p class="text">
-      {{ getFileNameFromPath(item.name) }}
+      {{ getFileNameFromPath(item.path) }}
     </p>
   </div>
 </template>

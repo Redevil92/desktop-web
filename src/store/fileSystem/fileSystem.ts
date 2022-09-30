@@ -31,7 +31,7 @@ export default {
         isOpenedFolder: false,
       },
       filePathsToMove: [],
-      selectedDesktopFilePaths: [],
+      selectedDesktopFiles: [],
       isSelectionBoxEnabled: true,
       dragginPath: "",
     };
@@ -123,9 +123,10 @@ export default {
     SET_FILE_PATHS_TO_MOVE: (state: FileSystemState, paths: string[]) => {
       state.filePathsToMove = paths;
     },
-    SET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState, paths: string[]) => {
-      state.selectedDesktopFilePaths = paths;
+    SET_SELECTED_DESKTOP_FILES: (state: FileSystemState, desktopElements: DesktopItem[]) => {
+      state.selectedDesktopFiles = desktopElements;
     },
+
     SET_DRAGGIN_PATH: (state: FileSystemState, dragginPath: string) => {
       state.dragginPath = dragginPath;
     },
@@ -135,7 +136,7 @@ export default {
   },
   actions: {
     ADD_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
-      const itemExtension = getFileExtensionFromName(itemDialog.name);
+      const itemExtension = getFileExtensionFromName(itemDialog.path);
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
       let dimension = { height: 300, width: 500 };
@@ -155,7 +156,7 @@ export default {
       const position = { x, y } as Coordinates;
 
       const newItemDialog = {
-        name: itemDialog.name,
+        path: itemDialog.path,
         guid: uuidv4(),
         isCollapsed: false,
         isFolder: false,
@@ -166,10 +167,10 @@ export default {
         minDimension,
       } as ItemDialog;
 
-      const isFolder = await isDir(newItemDialog.name);
+      const isFolder = await isDir(newItemDialog.path);
 
       if (isFolder) {
-        const filesPath = await getFiles(newItemDialog.name, true);
+        const filesPath = await getFiles(newItemDialog.path, true);
         newItemDialog.isFolder = true;
         (newItemDialog as FolderDialog).filesPath = filesPath;
       }
@@ -182,9 +183,9 @@ export default {
       pathAndItemToUpdate: { newPath: string; itemDialog: FolderDialog }
     ) => {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);
-      itemToUpdate.name = pathAndItemToUpdate.newPath;
+      itemToUpdate.path = pathAndItemToUpdate.newPath;
 
-      const filesPath = await getFiles(itemToUpdate.name, true);
+      const filesPath = await getFiles(itemToUpdate.path, true);
       itemToUpdate.filesPath = filesPath;
 
       commit("UPDATE_ITEM_DIALOG", itemToUpdate);
@@ -192,9 +193,9 @@ export default {
     REFRESH_ALL_ITEM_DIALOG_FILES: ({ commit, getters }: any) => {
       const itemsDialog = Object.assign([], getters["GET_ITEMS_DIALOG"]) as ItemDialog[];
       itemsDialog.forEach(async (itemDialog) => {
-        const isFolder = await isDir(itemDialog.name);
+        const isFolder = await isDir(itemDialog.path);
         if (isFolder) {
-          const newFilespath = await getFiles(itemDialog.name, true);
+          const newFilespath = await getFiles(itemDialog.path, true);
           (itemDialog as FolderDialog).filesPath = newFilespath;
         }
       });
@@ -289,9 +290,10 @@ export default {
       dispatch("REFRESH_ALL_ITEM_DIALOG_FILES");
       dispatch("FETCH_DESKTOP_FILES");
     },
-    SET_SELECTED_DESKTOP_FILE_PATHS: ({ commit }: any, paths: string[]) => {
-      commit("SET_SELECTED_DESKTOP_FILE_PATHS", paths);
+    SET_SELECTED_DESKTOP_FILES: ({ commit }: any, desktopElement: DesktopItem[]) => {
+      commit("SET_SELECTED_DESKTOP_FILES", desktopElement);
     },
+
     SET_DRAGGIN_PATH: ({ commit }: any, dragginPath: string) => {
       commit("SET_DRAGGIN_PATH", dragginPath);
     },
@@ -307,7 +309,7 @@ export default {
     GET_FILE_PATHS_TO_COPY: (state: FileSystemState) => state.filePathsToCopy,
     GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
     GET_FILE_PATHS_TO_MOVE: (state: FileSystemState) => state.filePathsToMove,
-    GET_SELECTED_DESKTOP_FILE_PATHS: (state: FileSystemState) => state.selectedDesktopFilePaths,
+    GET_SELECTED_DESKTOP_FILES: (state: FileSystemState) => state.selectedDesktopFiles,
     GET_BIGGER_Z_INDEX: (state: FileSystemState) => {
       let max_z_index = 0;
       state.itemsDialog.forEach((item) => {
@@ -327,7 +329,7 @@ interface FileSystemState {
   desktopItems: string[]; // done
   itemsDialog: ItemDialog[];
   actionMenu: ActionMenu;
-  selectedDesktopFilePaths: string[];
+  selectedDesktopFiles: DesktopItem[];
   filePathsToCopy: string[];
   filePathsToCut: string[]; // in progress
   filePathsToMove: string[];

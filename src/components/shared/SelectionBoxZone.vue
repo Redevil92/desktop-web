@@ -87,8 +87,6 @@ export default defineComponent({
       for (const element of elements) {
         const elementBoudingClientRect = element.getBoundingClientRect();
 
-        console.log(1, selRect);
-
         if (
           ((elementBoudingClientRect.x > selRect.x && elementBoudingClientRect.x < selRect.x + selRect.width) ||
             (elementBoudingClientRect.x + elementBoudingClientRect.width > selRect.x &&

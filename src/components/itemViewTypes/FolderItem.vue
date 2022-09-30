@@ -1,5 +1,5 @@
 <template>
-  <div @click.right="openActionMenu($event, true)" class="droppable" :id="folderDialog.name">
+  <div @click.right="openActionMenu($event, true)" class="droppable" :id="folderDialog.path">
     <div class="folder-item-container" @mousedown="deselectItem" :style="`height:${height - 5}px`">
       <div class="folder-actions">
         <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
@@ -8,7 +8,7 @@
         </span>
       </div>
 
-      <DropExternalFileZone :dropPath="folderDialog.name">
+      <DropExternalFileZone :dropPath="folderDialog.path">
         <div
           @mouseover="isMouseOver = true"
           @mouseleave="isMouseOver = false"
@@ -113,7 +113,7 @@ export default defineComponent({
       if (isDirectory && !isEditingSelectedValue.value) {
         updateItemDialogPath(fileName);
       } else {
-        const newItemDialog = { name: fileName, coordinates: { x: 0, y: 0 }, mimeType: "" } as DesktopItem;
+        const newItemDialog = { path: fileName, coordinates: { x: 0, y: 0 }, mimeType: "" } as DesktopItem;
         store.dispatch("fileSystem/ADD_ITEM_DIALOG", newItemDialog);
       }
     };
@@ -125,14 +125,14 @@ export default defineComponent({
 
       store.dispatch("fileSystem/SET_ACTION_MENU", {
         show: true,
-        path: customPath ? customPath : props.folderDialog?.name,
+        path: customPath ? customPath : props.folderDialog?.path,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: isOpenedFolder,
       } as ActionMenu);
     };
 
     const dropFilehandler = async (event: Event) => {
-      moveFilesInFolder(event, props.folderDialog?.name || "");
+      moveFilesInFolder(event, props.folderDialog?.path || "");
     };
 
     const updateItemDialogPath = (fileName: string) => {
@@ -196,7 +196,7 @@ export default defineComponent({
     };
 
     const changeFileName = () => {
-      const newName = props.folderDialog?.name + "/" + fileNameToChange.value;
+      const newName = props.folderDialog?.path + "/" + fileNameToChange.value;
       if (newName !== selectedItem.value) {
         renameFile(newName, selectedItem.value);
         refreshFileSystemFiles();
@@ -210,7 +210,7 @@ export default defineComponent({
 
     // *** UTILITIES METHODS
     const filePathSplitted = computed(function () {
-      return props.folderDialog?.name.split("/");
+      return props.folderDialog?.path.split("/");
     });
 
     const buildPath = (fullPathSplitted: string[], index: number) => {

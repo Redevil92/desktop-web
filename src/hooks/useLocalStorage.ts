@@ -15,7 +15,7 @@ export default function useLocalStorage() {
   const getDesktopFilesPositionFromLocalStorage = () => {
     const retrievedObject = localStorage.getItem("desktopItemsPositions");
 
-    let desktopItemsPositions = {} as { [name: string]: Coordinates };
+    let desktopItemsPositions = {} as { [path: string]: Coordinates };
     if (retrievedObject) {
       desktopItemsPositions = JSON.parse(retrievedObject);
     }

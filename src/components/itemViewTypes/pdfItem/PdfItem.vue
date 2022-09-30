@@ -173,7 +173,7 @@ export default defineComponent({
     };
 
     const downloadPdf = () => {
-      const pdfName = props.itemDialog ? getFileNameFromPath(props.itemDialog?.name) : "un-named";
+      const pdfName = props.itemDialog ? getFileNameFromPath(props.itemDialog?.path) : "un-named";
       dowloadWithProgress(pdfData.value, pdfName);
     };
 
@@ -191,8 +191,8 @@ export default defineComponent({
     };
 
     const loadPdf = async () => {
-      if (props.itemDialog?.name) {
-        const file = await readFile(props.itemDialog?.name);
+      if (props.itemDialog?.path) {
+        const file = await readFile(props.itemDialog?.path);
         pdfData.value = file.toString();
       }
     };

@@ -31,7 +31,7 @@ export default defineComponent({
     function getFileTypeFromExtension(): string {
       let fileType = "";
       if (props.itemDialog) {
-        const currentFileExtension = getFileExtensionFromName(props.itemDialog.name);
+        const currentFileExtension = getFileExtensionFromName(props.itemDialog.path);
         switch (currentFileExtension) {
           case "css":
             fileType = "css";

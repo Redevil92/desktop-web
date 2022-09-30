@@ -49,18 +49,18 @@ export default defineComponent({
     const saveFile = (content: any, html: any, body: any) => {
       console.log("SAVING", content.content, html, body);
 
-      if (props.itemDialog?.name) {
+      if (props.itemDialog?.path) {
         store.dispatch("fileSystem/UPDATE_FILE", {
-          path: props.itemDialog?.name,
+          path: props.itemDialog?.path,
           content: content.content,
         } as PathAndContent);
-        //createFile(props.itemDialog?.name, content.content);
+        //createFile(props.itemDialog?.path, content.content);
       }
     };
 
     onBeforeMount(async () => {
-      if (props.itemDialog?.name) {
-        fileText.value = await readFile(props.itemDialog?.name);
+      if (props.itemDialog?.path) {
+        fileText.value = await readFile(props.itemDialog?.path);
         isLoaded.value = true;
       }
     });

@@ -2,7 +2,7 @@ import Coordinates from "./Coordinates";
 import Dimension from "./Dimension";
 
 export default interface ItemDialog {
-  name: string;
+  path: string;
   isFocused: boolean;
   zIndex: number;
   guid: string;

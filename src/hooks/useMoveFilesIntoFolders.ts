@@ -1,6 +1,7 @@
 import { DESKTOP_PATH } from "@/constants";
 import { copyFile, deleteFile } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import DesktopItem from "@/models/DesktopItem";
 import store from "@/store";
 import { computed } from "vue";
 
@@ -30,15 +31,17 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolderFromDesktop = async (event: Event, destinationPath: string) => {
-    const filesPathsToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
-    if (filesPathsToMove.length > 0 && getSourcePathFromFilePath(filesPathsToMove[0]) === destinationPath) {
+    const filesToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"].map(
+      (desktopItem: DesktopItem) => desktopItem.path
+    ) as string[];
+    if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
       return;
     }
 
-    for (const filePath of filesPathsToMove) {
+    for (const filePath of filesToMove) {
       await copyFile(filePath, destinationPath);
     }
-    for (const file of filesPathsToMove) {
+    for (const file of filesToMove) {
       await deleteFile(file);
     }
 

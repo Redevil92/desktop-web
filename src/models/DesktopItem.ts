@@ -1,6 +1,6 @@
 import Coordinates from "./Coordinates";
 
 export default interface DesktopItem {
-  name: string;
+  path: string;
   coordinates: Coordinates;
 }
