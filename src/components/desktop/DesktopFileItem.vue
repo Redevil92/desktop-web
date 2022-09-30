@@ -96,7 +96,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 export default defineComponent({
   props: {
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
-    isSelected: { type: Boolean, default: false },
+    //isSelected: { type: Boolean, default: false },
   },
   components: { BaseDialog, BaseButton },
   emits: ["onClick", "onRightClick"],
@@ -121,25 +121,22 @@ export default defineComponent({
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
     const { saveDesktopFilePosition } = useLocalStorage();
 
+    const isSelected = computed(function () {
+      return selectedItemPaths.value.includes(props.fileItem.name);
+    });
+
     watch(
-      () => props.isSelected,
+      () => isSelected,
       (currentIsSelected, _old) => {
         if (!currentIsSelected) {
           isEditingText.value = false;
         }
-
-        // setFileItemZIndex();
       }
     );
 
-    // const setFileItemZIndex = () => {
-    //   console.log("SETTING IS SELECTED", props.isSelected);
-    //   if (!props.isSelected) {
-    //     zIndex.value = null;
-    //   } else {
-    //     zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
-    //   }
-    // };
+    const selectedItemPaths = computed((): string[] => {
+      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILE_PATHS"];
+    });
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.name);
@@ -154,7 +151,7 @@ export default defineComponent({
     });
 
     const setIsEditingText = async () => {
-      if (props.isSelected) {
+      if (isSelected) {
         isEditingText.value = true;
         await nextTick();
         (fileNameInputRef.value as unknown as HTMLElement).focus();
@@ -324,6 +321,7 @@ export default defineComponent({
       zIndex,
       isDraggingItem,
       isMouseOver,
+      isSelected,
     };
   },
 });

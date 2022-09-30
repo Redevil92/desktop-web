@@ -14,7 +14,7 @@
         class="desktop-container"
       >
         <div v-for="(item, index) in desktopFiles" :key="`${item.i}-${index}`">
-          <DesktopFileItem :ref="item.name + 'FileRef'" :fileItem="item" :isSelected="isItemSelected(item.name)" />
+          <DesktopFileItem :ref="item.name + 'FileRef'" :fileItem="item" />
         </div>
       </div>
     </SelectionBoxZone>
