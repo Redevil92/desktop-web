@@ -8,6 +8,7 @@ import {
   isDir,
 } from "@/context/fileSystemController";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
+import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 import DesktopItem from "@/models/DesktopItem";
@@ -31,7 +32,7 @@ export default {
         isOpenedFolder: false,
       },
       filePathsToMove: [],
-      selectedDesktopFiles: [],
+
       isSelectionBoxEnabled: true,
       dragginPath: "",
     };
@@ -105,7 +106,7 @@ export default {
 
       state.itemsDialog = itemsToUpdate;
     },
-    SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: string[]) => {
+    SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: DesktopItem[]) => {
       state.desktopItems = desktopItems;
     },
     SET_ITEMS_DIALOG: (state: FileSystemState, itemsDialog: ItemDialog[]) => {
@@ -123,10 +124,6 @@ export default {
     SET_FILE_PATHS_TO_MOVE: (state: FileSystemState, paths: string[]) => {
       state.filePathsToMove = paths;
     },
-    SET_SELECTED_DESKTOP_FILES: (state: FileSystemState, desktopElements: DesktopItem[]) => {
-      state.selectedDesktopFiles = desktopElements;
-    },
-
     SET_DRAGGIN_PATH: (state: FileSystemState, dragginPath: string) => {
       state.dragginPath = dragginPath;
     },
@@ -230,9 +227,17 @@ export default {
     SET_ITEM_DIALOG_FULL_SCREEN: ({ commit }: any, itemData: { itemGuid: string; isFullscreen: boolean }) => {
       commit("SET_ITEM_DIALOG_FULL_SCREEN", itemData);
     },
-    FETCH_DESKTOP_FILES: async ({ commit }: any) => {
+    FETCH_DESKTOP_ITEMS: async ({ commit }: any) => {
       const desktopFiles = await getDesktopFiles(true);
-      commit("SET_DESKTOP_ITEMS", desktopFiles);
+      const localStoragePathAndCoordinates = getDesktopFilesPositionFromLocalStorage();
+      // get coordinates
+      let desktopItem = [] as DesktopItem[];
+      desktopFiles.forEach((desktopPath: string) => {
+        const coordinates = localStoragePathAndCoordinates[desktopPath] || { x: 0, y: 0 };
+        desktopItem.push({ path: desktopPath, coordinates, isSelected: false });
+      });
+
+      commit("SET_DESKTOP_ITEMS", desktopItem);
     },
     UPDATE_FILE: async ({ commit }: any, pathAndContent: PathAndContent) => {
       await createFile(pathAndContent.path, pathAndContent.content);
@@ -288,10 +293,14 @@ export default {
         dispatch("SET_FILE_PATHS_TO_CUT", []);
       }
       dispatch("REFRESH_ALL_ITEM_DIALOG_FILES");
-      dispatch("FETCH_DESKTOP_FILES");
+      dispatch("FETCH_DESKTOP_ITEMS");
     },
-    SET_SELECTED_DESKTOP_FILES: ({ commit }: any, desktopElement: DesktopItem[]) => {
-      commit("SET_SELECTED_DESKTOP_FILES", desktopElement);
+    SET_SELECTED_DESKTOP_FILES: ({ commit, getters }: any, desktopElement: DesktopItem[]) => {
+      const desktopItems = [...(getters.GET_DESKTOP_FILES as DesktopItem[])];
+      const selectedPath = desktopElement.map((element) => element.path);
+      desktopItems.forEach((item) => (item.isSelected = selectedPath.includes(item.path)));
+
+      commit("SET_SELECTED_DESKTOP_FILES", desktopItems);
     },
 
     SET_DRAGGIN_PATH: ({ commit }: any, dragginPath: string) => {
@@ -305,11 +314,12 @@ export default {
     GET_ITEMS_DIALOG: (state: FileSystemState) => state.itemsDialog,
     GET_FOCUSED_ITEM_DIALOG: (state: FileSystemState) => state.itemsDialog.find((item: ItemDialog) => item.isFocused),
     GET_DESKTOP_FILES: (state: FileSystemState) => state.desktopItems,
+    GET_DESKTOP_FILES_PATH: (state: FileSystemState) => state.desktopItems.map((item) => item.path),
     GET_ACTION_MENU: (state: FileSystemState) => state.actionMenu,
     GET_FILE_PATHS_TO_COPY: (state: FileSystemState) => state.filePathsToCopy,
     GET_FILE_PATHS_TO_CUT: (state: FileSystemState) => state.filePathsToCut,
     GET_FILE_PATHS_TO_MOVE: (state: FileSystemState) => state.filePathsToMove,
-    GET_SELECTED_DESKTOP_FILES: (state: FileSystemState) => state.selectedDesktopFiles,
+    GET_SELECTED_DESKTOP_FILES: (state: FileSystemState) => state.desktopItems.filter((item) => item.isSelected),
     GET_BIGGER_Z_INDEX: (state: FileSystemState) => {
       let max_z_index = 0;
       state.itemsDialog.forEach((item) => {
@@ -326,10 +336,9 @@ export default {
 };
 
 interface FileSystemState {
-  desktopItems: string[];
+  desktopItems: DesktopItem[];
   itemsDialog: ItemDialog[];
   actionMenu: ActionMenu;
-  selectedDesktopFiles: DesktopItem[];
   filePathsToCopy: string[];
   filePathsToCut: string[];
   filePathsToMove: string[];

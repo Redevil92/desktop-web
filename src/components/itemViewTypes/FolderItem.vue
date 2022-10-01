@@ -205,7 +205,7 @@ export default defineComponent({
 
     const refreshFileSystemFiles = () => {
       store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
     };
 
     // *** UTILITIES METHODS
