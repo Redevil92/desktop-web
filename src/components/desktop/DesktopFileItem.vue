@@ -122,10 +122,10 @@ export default defineComponent({
     const { saveDesktopFilePosition } = useLocalStorage();
 
     const isSelected = computed(function () {
-      const index = selectedItemPaths.value.findIndex(
+      const index = selectedDesktopItem.value.findIndex(
         (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path
       );
-      console.log(1, index, selectedItemPaths.value, props.fileItem.path);
+      console.log(1, index, selectedDesktopItem.value, props.fileItem.path);
       return index !== -1;
     });
 
@@ -138,7 +138,7 @@ export default defineComponent({
       }
     );
 
-    const selectedItemPaths = computed((): DesktopItem[] => {
+    const selectedDesktopItem = computed((): DesktopItem[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"];
     });
 
@@ -165,13 +165,13 @@ export default defineComponent({
     const selectFile = (newFileSelected: DesktopItem) => {
       console.log("selecting", newFileSelected);
 
-      //TODO, if the file is already selected maybe we shoudl start to drag it with the other selected
-      //TODO, maybe create a hook for all these actions (selection, drag, etc)
+      const index = selectedDesktopItem.value.findIndex((item) => item.path === newFileSelected.path);
 
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", [
-        { path: newFileSelected.path, coordinates: newFileSelected.coordinates },
-      ] as DesktopItem[]);
-      //store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILE_PATHS", [newFileSelected.path]);
+      if (index === -1) {
+        store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", [
+          { path: newFileSelected.path, coordinates: newFileSelected.coordinates },
+        ] as DesktopItem[]);
+      }
     };
 
     const openActionMenu = (event: any, item: DesktopItem) => {

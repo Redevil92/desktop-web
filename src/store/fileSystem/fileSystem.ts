@@ -326,12 +326,12 @@ export default {
 };
 
 interface FileSystemState {
-  desktopItems: string[]; // done
+  desktopItems: string[];
   itemsDialog: ItemDialog[];
   actionMenu: ActionMenu;
   selectedDesktopFiles: DesktopItem[];
   filePathsToCopy: string[];
-  filePathsToCut: string[]; // in progress
+  filePathsToCut: string[];
   filePathsToMove: string[];
   isSelectionBoxEnabled: boolean;
   dragginPath: string;
