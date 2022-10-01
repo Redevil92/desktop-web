@@ -69,7 +69,7 @@ export default function useMoveFiles() {
 
   const refreshFiles = async () => {
     await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-    await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+    await store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
   };
 
   return {

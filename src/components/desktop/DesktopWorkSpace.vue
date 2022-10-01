@@ -90,35 +90,18 @@ export default defineComponent({
       //   }
       // });
       // x y
+
       store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", elementsSelectedNames);
     };
 
     // TODO, look at this one
     const desktopFiles = computed(function (): DesktopItem[] {
-      const desktopStringFiles = reactive(store.getters["fileSystem/GET_DESKTOP_FILES"]);
-      let desktopFileItems = [];
-
-      const desktopItemsPositions = getDesktopFilesPositionFromLocalStorage();
-
-      if (desktopStringFiles && desktopStringFiles.length > 0) {
-        desktopFileItems = desktopStringFiles.map((fileName: string, index: number) => {
-          let coordinates = { x: 0, y: 0 } as Coordinates;
-          if (desktopItemsPositions && desktopItemsPositions[fileName]) {
-            coordinates = desktopItemsPositions[fileName];
-          }
-          return {
-            coordinates,
-            path: fileName,
-          } as DesktopItem;
-        });
-      }
-
-      return desktopFileItems;
+      return store.getters["fileSystem/GET_DESKTOP_FILES"] as DesktopItem[];
     });
 
     const refreshFiles = async () => {
       await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      await store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+      await store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
     };
 
     onMounted(async () => {

@@ -139,6 +139,7 @@ export default defineComponent({
     );
 
     const selectedDesktopItem = computed((): DesktopItem[] => {
+      console.log(11, store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"]);
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"];
     });
 
@@ -197,7 +198,7 @@ export default defineComponent({
 
     const refreshFileSystemFiles = () => {
       store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
     };
 
     const changeFileName = async () => {
