@@ -231,7 +231,7 @@ export default {
       const desktopFiles = await getDesktopFiles(true);
       const localStoragePathAndCoordinates = getDesktopFilesPositionFromLocalStorage();
       // get coordinates
-      let desktopItem = [] as DesktopItem[];
+      const desktopItem = [] as DesktopItem[];
       desktopFiles.forEach((desktopPath: string) => {
         const coordinates = localStoragePathAndCoordinates[desktopPath] || { x: 0, y: 0 };
         desktopItem.push({ path: desktopPath, coordinates, isSelected: false });
