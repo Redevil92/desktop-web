@@ -155,7 +155,7 @@ export default defineComponent({
     });
 
     const setIsEditingText = async () => {
-      if (isSelected) {
+      if (isSelected.value) {
         isEditingText.value = true;
         await nextTick();
         (fileNameInputRef.value as unknown as HTMLElement).focus();

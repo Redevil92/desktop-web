@@ -32,7 +32,6 @@ import { useStore } from "vuex";
 import { DESKTOP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
 export default defineComponent({
