@@ -28,3 +28,16 @@ export default function useLocalStorage() {
     getDesktopFilesPositionFromLocalStorage,
   };
 }
+
+// remove hook and use normal export
+
+export const getDesktopFilesPositionFromLocalStorage = (): { [path: string]: Coordinates } => {
+  const retrievedObject = localStorage.getItem("desktopItemsPositions");
+
+  let desktopItemsPositions = {} as { [path: string]: Coordinates };
+  if (retrievedObject) {
+    desktopItemsPositions = JSON.parse(retrievedObject);
+  }
+
+  return desktopItemsPositions;
+};

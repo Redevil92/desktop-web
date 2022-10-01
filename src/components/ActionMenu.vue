@@ -72,7 +72,7 @@ export default defineComponent({
 
     const createFile = async (_1: Event, createFolder: false) => {
       const currentFolderFiles: string[] = isDesktop.value
-        ? store.getters["fileSystem/GET_DESKTOP_FILES"]
+        ? store.getters["fileSystem/GET_DESKTOP_FILES_PATH"]
         : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as FolderDialog).filesPath;
 
       if (!createFolder) {
@@ -91,7 +91,7 @@ export default defineComponent({
 
     const refreshFiles = () => {
       store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
     };
 
     const deleteFile = async () => {

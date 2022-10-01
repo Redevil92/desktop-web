@@ -63,7 +63,7 @@ export default defineComponent({
 
     const refreshFiles = () => {
       store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      store.dispatch("fileSystem/FETCH_DESKTOP_FILES");
+      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
     };
 
     return { onDrop, active, setActive, setInactive };
