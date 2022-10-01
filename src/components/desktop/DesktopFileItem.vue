@@ -91,7 +91,7 @@ import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { renameDesktopFileInLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
 
 export default defineComponent({
   props: {
@@ -119,7 +119,6 @@ export default defineComponent({
     });
 
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
-    const { saveDesktopFilePosition } = useLocalStorage();
 
     const isSelected = computed(function () {
       const index = selectedDesktopItem.value.findIndex(
@@ -215,8 +214,10 @@ export default defineComponent({
         }
 
         if (newName !== props.fileItem.path && isEditingText.value) {
-          renameFile(newName, props.fileItem.path);
+          const oldName = props.fileItem.path;
+          renameFile(newName, oldName);
           refreshFileSystemFiles();
+          renameDesktopFileInLocalStorage(oldName, newName);
         }
         isEditingText.value = false;
       }

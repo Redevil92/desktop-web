@@ -30,9 +30,7 @@ import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { useStore } from "vuex";
 import { DESKTOP_PATH } from "@/constants";
-import Coordinates from "@/models/Coordinates";
 import { isDir } from "@/context/fileSystemController";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
 export default defineComponent({
   props: {
@@ -44,7 +42,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { moveFilesInFolder } = useMoveFiles();
-    const { getDesktopFilesPositionFromLocalStorage } = useLocalStorage();
 
     const desktopRef = ref(null as unknown as HTMLElement);
 
