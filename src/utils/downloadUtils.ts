@@ -1,5 +1,3 @@
-import { request } from "http";
-
 export const dowloadWithProgress = (myUrl: string, fileName: string) => {
   const startTime = new Date().getTime();
 

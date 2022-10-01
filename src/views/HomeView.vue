@@ -3,7 +3,7 @@
     <ActionMenu />
 
     <div @click.right="rightClickHandler">
-      <DesktopWorkSpace @onFileItemPositionChange="changeItemPositionHandler" />
+      <DesktopWorkSpace />
     </div>
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onUnmounted, onMounted } from "vue";
+import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 
 import DesktopWorkSpace from "@/components/desktop/DesktopWorkSpace.vue";
@@ -23,7 +23,6 @@ import OpenedFileView from "@/components/OpenedFileView.vue";
 import TaskBar from "@/components/TaskBar.vue";
 import ActionMenu from "@/components/ActionMenu.vue";
 
-import Coordinates from "@/models/Coordinates";
 import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/constants";
@@ -34,7 +33,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const rightClickHandler = (event: any) => {
+    const rightClickHandler = (event: Event) => {
       event.preventDefault();
 
       const pointerEvent = event as PointerEvent;
@@ -51,12 +50,7 @@ export default defineComponent({
       return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
     });
 
-    const changeItemPositionHandler = (fileItemToUpdate: any, newCoordinates: Coordinates) => {
-      // TODO change item position in the store
-    };
-
     return {
-      changeItemPositionHandler,
       itemsDialog,
 
       rightClickHandler,
