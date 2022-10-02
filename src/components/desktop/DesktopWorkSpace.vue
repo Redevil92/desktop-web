@@ -73,7 +73,6 @@ export default defineComponent({
       //const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
 
       const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
-        console.log(element);
         const clientRect = element.getBoundingClientRect();
         return {
           path: DESKTOP_PATH + "/" + element.textContent,

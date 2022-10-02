@@ -19,7 +19,6 @@ export default function useMoveFiles() {
   };
 
   const isChangingFilePosition = (destinationPath: string) => {
-    console.log(getSourcePathFromFilePath(filePathsToMove.value[0]), destinationPath);
     if (
       filePathsToMove.value.length > 0 &&
       getSourcePathFromFilePath(filePathsToMove.value[0]) === destinationPath &&
