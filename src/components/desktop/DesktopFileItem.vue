@@ -91,7 +91,11 @@ import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
-import { renameDesktopFileInLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
+import {
+  renameDesktopFileInLocalStorage,
+  saveDesktopFilePosition,
+  saveSelectedDesktopItemsPositionInLocalStorage,
+} from "@/hooks/useLocalStorage";
 
 export default defineComponent({
   props: {
@@ -256,7 +260,7 @@ export default defineComponent({
 
       // fileItemToUpdate.coordinates = newPosition;
 
-      //**** NO STORE */
+      //**** NO STORE */ we are not using the store for performance reason
       var startTime = performance.now();
       const fileItemToUpdate = props.fileItem;
       const oldCoordinates = Object.assign({}, props.fileItem.coordinates) as Coordinates;
@@ -264,8 +268,8 @@ export default defineComponent({
       if (selectedDesktopItems.value.length > 1) {
         console.log("Moving the others files");
         for (let i = 0; i < selectedDesktopItems.value.length; i++) {
-          const offsetX = oldCoordinates.x - selectedDesktopItems.value[i].coordinates.x;
-          const offsetY = oldCoordinates.y - selectedDesktopItems.value[i].coordinates.x;
+          const offsetX = selectedDesktopItems.value[i].coordinates.x - oldCoordinates.x;
+          const offsetY = selectedDesktopItems.value[i].coordinates.y - oldCoordinates.y;
           const positionWithOffset = { x: newPosition.x + offsetX, y: newPosition.y + offsetY };
           selectedDesktopItems.value[i].coordinates = positionWithOffset;
         }
@@ -297,7 +301,7 @@ export default defineComponent({
         // get current droppable id (the id is the path where to drop the files selected)
         await moveFilesInFolderFromDesktop(e, currentDroppable.id);
       } else {
-        saveDesktopFilePosition(props.fileItem.path, props.fileItem.coordinates);
+        saveSelectedDesktopItemsPositionInLocalStorage(selectedDesktopItems.value);
       }
 
       zIndex.value = null;

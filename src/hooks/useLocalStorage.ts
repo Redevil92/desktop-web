@@ -1,4 +1,5 @@
 import Coordinates from "@/models/Coordinates";
+import DesktopItem from "@/models/DesktopItem";
 
 export const getDesktopFilesPositionFromLocalStorage = (): { [path: string]: Coordinates } => {
   const retrievedObject = localStorage.getItem("desktopItemsPositions");
@@ -33,6 +34,20 @@ export const renameDesktopFileInLocalStorage = async (oldName: string, newName: 
     delete desktopItemsPositions[oldName];
     desktopItemsPositions[newName] = itemCoordinates;
   }
+
+  localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
+};
+
+export const saveSelectedDesktopItemsPositionInLocalStorage = (desktopItems: DesktopItem[]) => {
+  const retrievedObject = localStorage.getItem("desktopItemsPositions");
+  let desktopItemsPositions = {} as any;
+  if (retrievedObject) {
+    desktopItemsPositions = JSON.parse(retrievedObject);
+  }
+
+  desktopItems.forEach((item) => {
+    desktopItemsPositions[item.path] = item.coordinates;
+  });
 
   localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
 };
