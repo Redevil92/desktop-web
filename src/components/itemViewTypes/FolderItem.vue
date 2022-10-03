@@ -116,7 +116,7 @@ export default defineComponent({
         const newItemDialog = {
           path: fileName,
           coordinates: { x: 0, y: 0 },
-          mimeType: "",
+
           isSelected: true,
         } as DesktopItem;
         store.dispatch("fileSystem/ADD_ITEM_DIALOG", newItemDialog);

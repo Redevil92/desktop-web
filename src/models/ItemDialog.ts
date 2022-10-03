@@ -12,7 +12,6 @@ export default interface ItemDialog {
   dimension: Dimension;
   minDimension?: Dimension;
   icon?: string;
-  mimeType: string;
   isFolder: boolean;
 }
 

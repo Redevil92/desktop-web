@@ -48,6 +48,7 @@ import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {

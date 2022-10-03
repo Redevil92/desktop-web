@@ -171,7 +171,7 @@ export default defineComponent({
   border: 1px solid #aaaaaab3;
   outline: 1px solid #575757;
   color: white;
-  border-radius: 7px;
+  border-radius: var(--border-radius);
   position: absolute;
   background-color: #616161d6;
   top: 160px;
@@ -183,11 +183,11 @@ export default defineComponent({
 }
 
 .padding {
-  padding: 3px 10px;
+  padding: 3px 5px;
 }
 
 .action-button {
-  padding: 0px 7px;
+  padding: 0px 5px;
   border-radius: 5px;
   width: 100% !important;
   cursor: pointer;
@@ -211,7 +211,3 @@ hr {
   margin: 5px 0px;
 }
 </style>
-
-function generateUniqueName(arg0: string, currentFolderFiles: string[]) { throw new Error("Function not implemented.");
-} function generateUniqueName(arg0: string, currentFolderFiles: string[]) { throw new Error("Function not
-implemented."); }
