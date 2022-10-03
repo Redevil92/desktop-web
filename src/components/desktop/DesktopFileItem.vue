@@ -23,7 +23,6 @@
     @mouseleave="isMouseOver = false"
     @click.right="openActionMenu($event, fileItem)"
   >
-    {{ isSelected }}
     <div @click="isEditingText = false">
       <img
         :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'"
