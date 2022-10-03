@@ -135,7 +135,6 @@ export default defineComponent({
     watch(
       () => isSelected.value,
       function () {
-        console.log("CHANGING SELECTED");
         isEditingText.value = false;
       }
     );
