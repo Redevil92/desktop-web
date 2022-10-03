@@ -13,6 +13,17 @@ const fileTypesConfiguration: any = {
     singleton: true,
     title: "DevTools",
   },
+  settings: {
+    defaultSize: {
+      height: 480,
+      width: 760,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
+    icon: "settings.svg",
+  },
   txt: {
     defaultSize: {
       height: 480,

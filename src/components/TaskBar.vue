@@ -1,7 +1,12 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
     <div class="flex">
-      <span class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
+      <span
+        @click="isStartMenuOpened = !isStartMenuOpened"
+        class="mdi mdi-microsoft-windows window-icon"
+        ref="windowIconRef"
+      ></span>
+      <StartMenu v-if="false" />
       <div class="flex">
         <div
           v-for="(taskBarItem, index) in taskBarItems"
@@ -9,7 +14,7 @@
           class="task-bar-item"
           :style="`margin-left: ${itemMargin}px`"
         >
-          <task-bar-item :style="`width: ${itemWidth}px`" :item="taskBarItem"></task-bar-item>
+          <TaskBarItem :style="`width: ${itemWidth}px`" :item="taskBarItem"></TaskBarItem>
         </div>
       </div>
     </div>
@@ -26,17 +31,20 @@ import store from "@/store";
 
 import ItemDialog from "@/models/ItemDialog";
 
-import taskBarItem from "@/components/TaskBarItem.vue";
+import TaskBarItem from "@/components/TaskBarItem.vue";
+import StartMenu from "@/components/StartMenu.vue";
 
 export default defineComponent({
   props: {
     msg: String,
   },
-  components: { taskBarItem },
+  components: { TaskBarItem, StartMenu },
   setup() {
     const itemsContainerRef = ref(null);
     const currentDateRef = ref(null);
     const windowIconRef = ref(null);
+    const isStartMenuOpened = ref(false);
+
     const maxItemWidth = 160;
     const itemMargin = 4;
 
@@ -66,7 +74,16 @@ export default defineComponent({
       setInterval(updateDate, 1000);
     });
 
-    return { taskBarItems, itemsContainerRef, itemWidth, currentDateRef, windowIconRef, itemMargin, currentDate };
+    return {
+      taskBarItems,
+      itemsContainerRef,
+      itemWidth,
+      currentDateRef,
+      windowIconRef,
+      itemMargin,
+      currentDate,
+      isStartMenuOpened,
+    };
   },
 });
 </script>
