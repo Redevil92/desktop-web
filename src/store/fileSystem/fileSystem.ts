@@ -109,6 +109,13 @@ export default {
     SET_DESKTOP_ITEMS: (state: FileSystemState, desktopItems: DesktopItem[]) => {
       state.desktopItems = desktopItems;
     },
+    CHANGE_DESKTOP_ITEM_POSITION: (state: FileSystemState, desktopItem: DesktopItem) => {
+      const index = state.desktopItems.findIndex((item) => item.path === desktopItem.path);
+
+      if (index !== -1) {
+        state.desktopItems[index] = desktopItem;
+      }
+    },
     SET_ITEMS_DIALOG: (state: FileSystemState, itemsDialog: ItemDialog[]) => {
       state.itemsDialog = itemsDialog;
     },
@@ -239,6 +246,11 @@ export default {
 
       commit("SET_DESKTOP_ITEMS", desktopItem);
     },
+
+    CHANGE_DESKTOP_ITEM_POSITION: async ({ commit }: any, desktopItem: DesktopItem) => {
+      commit("CHANGE_DESKTOP_ITEM_POSITION", desktopItem);
+    },
+
     UPDATE_FILE: async ({ commit }: any, pathAndContent: PathAndContent) => {
       await createFile(pathAndContent.path, pathAndContent.content);
     },
@@ -300,7 +312,7 @@ export default {
       const selectedPath = desktopElement.map((element) => element.path);
       desktopItems.forEach((item) => (item.isSelected = selectedPath.includes(item.path)));
 
-      commit("SET_SELECTED_DESKTOP_FILES", desktopItems);
+      commit("SET_DESKTOP_ITEMS", desktopItems);
     },
 
     SET_DRAGGIN_PATH: ({ commit }: any, dragginPath: string) => {

@@ -11,7 +11,7 @@
     ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
     :id="fileItem.path"
-    :style="`top: ${fileCoordinates.y}px; left: ${fileCoordinates.x}px; z-index: ${zIndex}`"
+    :style="`top: ${fileItem.coordinates.y}px; left: ${fileItem.coordinates.x}px; z-index: ${zIndex}`"
     @dblclick="doubleClickHandler"
     @mousedown.stop="
       {
@@ -23,6 +23,7 @@
     @mouseleave="isMouseOver = false"
     @click.right="openActionMenu($event, fileItem)"
   >
+    {{ isSelected }}
     <div @click="isEditingText = false">
       <img
         :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'"
@@ -103,8 +104,6 @@ export default defineComponent({
   setup(props, context) {
     const fileName = ref(getFileNameFromPath(props.fileItem.path));
 
-    const fileCoordinates = ref({ x: 0, y: 0 } as Coordinates);
-
     const isEditingText = ref(false);
     const fileNameInputRef = ref(null);
     const showDialog = ref(false);
@@ -121,26 +120,23 @@ export default defineComponent({
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
 
     const isSelected = computed(function () {
-      const index = selectedDesktopItem.value.findIndex(
+      const index = selectedDesktopItems.value.findIndex(
         (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path
       );
-      console.log(1, index, selectedDesktopItem.value, props.fileItem.path);
       return index !== -1;
     });
 
-    watch(
-      () => isSelected,
-      (currentIsSelected, _old) => {
-        if (!currentIsSelected) {
-          isEditingText.value = false;
-        }
-      }
-    );
-
-    const selectedDesktopItem = computed((): DesktopItem[] => {
-      console.log(11, store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"]);
+    const selectedDesktopItems = computed((): DesktopItem[] => {
       return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"];
     });
+
+    watch(
+      () => isSelected.value,
+      function () {
+        console.log("CHANGING SELECTED");
+        isEditingText.value = false;
+      }
+    );
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.path);
@@ -163,9 +159,7 @@ export default defineComponent({
     };
 
     const selectFile = (newFileSelected: DesktopItem) => {
-      console.log("selecting", newFileSelected);
-
-      const index = selectedDesktopItem.value.findIndex((item) => item.path === newFileSelected.path);
+      const index = selectedDesktopItems.value.findIndex((item) => item.path === newFileSelected.path);
 
       if (index === -1) {
         store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", [
@@ -252,7 +246,36 @@ export default defineComponent({
 
       const newPosition = { x: newX, y: newY } as Coordinates;
 
-      fileCoordinates.value = newPosition;
+      //**** STORE */
+      // var startTime = performance.now();
+      // const fileItemToUpdate = Object.assign({}, props.fileItem);
+      // fileItemToUpdate.coordinates = newPosition;
+
+      // store.dispatch("fileSystem/CHANGE_DESKTOP_ITEM_POSITION", fileItemToUpdate);
+      // var endTime = performance.now();
+      // console.log(`METHOD :=> ${endTime - startTime} milliseconds`);
+
+      // fileItemToUpdate.coordinates = newPosition;
+
+      //**** NO STORE */
+      var startTime = performance.now();
+      const fileItemToUpdate = props.fileItem;
+      const oldCoordinates = Object.assign({}, props.fileItem.coordinates) as Coordinates;
+
+      if (selectedDesktopItems.value.length > 1) {
+        console.log("Moving the others files");
+        for (let i = 0; i < selectedDesktopItems.value.length; i++) {
+          const offsetX = oldCoordinates.x - selectedDesktopItems.value[i].coordinates.x;
+          const offsetY = oldCoordinates.y - selectedDesktopItems.value[i].coordinates.x;
+          const positionWithOffset = { x: newPosition.x + offsetX, y: newPosition.y + offsetY };
+          selectedDesktopItems.value[i].coordinates = positionWithOffset;
+        }
+      }
+
+      fileItemToUpdate.coordinates = newPosition;
+
+      var endTime = performance.now();
+      console.log(`METHOD :=> ${endTime - startTime} milliseconds`);
     }
 
     async function closeDragElement(e: any) {
@@ -264,12 +287,18 @@ export default defineComponent({
       const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
       const currentDroppable = elementBelow?.closest(".droppable");
 
-      if (elementBelow && currentDroppable) {
+      const elementBelowPath = currentDroppable?.id;
+      let isElementBelowSelected = false;
+      if (elementBelowPath) {
+        isElementBelowSelected = selectedDesktopItems.value.findIndex((item) => item.path === elementBelowPath) !== -1;
+      }
+
+      // check if element below is not selected, if yes dont drop
+      if (elementBelow && currentDroppable && !isElementBelowSelected) {
         // get current droppable id (the id is the path where to drop the files selected)
         await moveFilesInFolderFromDesktop(e, currentDroppable.id);
       } else {
-        saveDesktopFilePosition(props.fileItem.path, fileCoordinates.value);
-        //saveNewFileItemPosition();
+        saveDesktopFilePosition(props.fileItem.path, props.fileItem.coordinates);
       }
 
       zIndex.value = null;
@@ -300,7 +329,6 @@ export default defineComponent({
 
     onMounted(async () => {
       isFolder.value = await isDir(props.fileItem.path);
-      fileCoordinates.value = props.fileItem.coordinates;
 
       window.addEventListener("mousemove", checkMouseOver);
     });
@@ -325,7 +353,6 @@ export default defineComponent({
       isCutFile,
       selectFile,
       openActionMenu,
-      fileCoordinates,
       startMoveItem,
       fileItemRef,
       zIndex,
