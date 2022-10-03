@@ -93,7 +93,6 @@ import Coordinates from "@/models/Coordinates";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import {
   renameDesktopFileInLocalStorage,
-  saveDesktopFilePosition,
   saveSelectedDesktopItemsPositionInLocalStorage,
 } from "@/hooks/useLocalStorage";
 
