@@ -38,7 +38,7 @@ export default {
     };
   },
   mutations: {
-    ADD_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
+    CREATE_FILE_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
       state.itemsDialog.push(itemDialog);
       state.itemsDialog = [...state.itemsDialog];
     },
@@ -139,7 +139,7 @@ export default {
     },
   },
   actions: {
-    ADD_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
+    CREATE_FILE_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
       const itemExtension = getFileExtensionFromName(itemDialog.path);
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
@@ -179,7 +179,7 @@ export default {
         (newItemDialog as FolderDialog).filesPath = filesPath;
       }
 
-      commit("ADD_ITEM_DIALOG", newItemDialog);
+      commit("CREATE_FILE_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
     UPDATE_ITEM_DIALOG_NAME: async (

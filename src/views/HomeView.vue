@@ -52,7 +52,6 @@ export default defineComponent({
 
     return {
       itemsDialog,
-
       rightClickHandler,
     };
   },

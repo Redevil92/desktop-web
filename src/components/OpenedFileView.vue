@@ -2,6 +2,9 @@
   <MoveAndResizeArea :itemDialog="itemDialog">
     <template #header>
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="flex folder-header" ref="dialogHeader">
+        <div v-if="itemDialog.icon">
+          <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
+        </div>
         <div v-if="fileExtension">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
         </div>
@@ -48,7 +51,6 @@ import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
-import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {
