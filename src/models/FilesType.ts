@@ -1,5 +1,8 @@
+// Add application to open
+// Have just one action in the store to open
+
 const fileTypesConfiguration: any = {
-  DevTools: {
+  devTools: {
     background: "rgb(36, 36, 36)",
     defaultSize: {
       height: 380,
@@ -83,7 +86,7 @@ const fileTypesConfiguration: any = {
     icon: "/System/Icons/pdf.webp",
     title: "PDF",
   },
-  Photos: {
+  photos: {
     background: "#222",
     defaultSize: {
       height: 432,
@@ -99,7 +102,7 @@ const fileTypesConfiguration: any = {
     title: "Photos",
   },
 
-  Run: {
+  run: {
     allowResizing: false,
     defaultSize: {
       height: 174,
@@ -119,7 +122,7 @@ const fileTypesConfiguration: any = {
     singleton: true,
     title: "Run",
   },
-  Terminal: {
+  terminal: {
     background: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
       height: 340,
@@ -134,7 +137,7 @@ const fileTypesConfiguration: any = {
     title: "Terminal",
   },
 
-  TransferDialog: {
+  transferDialog: {
     allowResizing: false,
     background: "#FFF",
     defaultSize: {

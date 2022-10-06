@@ -38,7 +38,7 @@ export default {
     };
   },
   mutations: {
-    CREATE_FILE_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
+    CREATE_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
       state.itemsDialog.push(itemDialog);
       state.itemsDialog = [...state.itemsDialog];
     },
@@ -139,13 +139,22 @@ export default {
     },
   },
   actions: {
-    CREATE_FILE_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
+    CREATE_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
+      //******** REVISIT THIS METHOD TO TAKE EVRYTHINF FROM FilesType.ts !!!
+      // take application to open
+
+      // Take item name from file path, if it has an extension (something.txt) is a file otherwise it could be an application (desktop/system) or a folder
+      // Pay attention to that, the folder has a file in the filesystem the other one no! Check that
+      // From that we should take and set  the "applicationToOpen" to ItemDialog from FilesType.ts (in the model folder)
+      // Should the applications go in the file system ????? (maybe just in some cases, especially when shortcut)
+
       const itemExtension = getFileExtensionFromName(itemDialog.path);
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = "";
+
       if (fileTypeConfiguration) {
         dimension = fileTypeConfiguration.defaultSize;
         minDimension = fileTypeConfiguration.minSize;
@@ -179,7 +188,7 @@ export default {
         (newItemDialog as FolderDialog).filesPath = filesPath;
       }
 
-      commit("CREATE_FILE_ITEM_DIALOG", newItemDialog);
+      commit("CREATE_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
     UPDATE_ITEM_DIALOG_NAME: async (

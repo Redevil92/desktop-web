@@ -119,7 +119,7 @@ export default defineComponent({
 
           isSelected: true,
         } as DesktopItem;
-        store.dispatch("fileSystem/CREATE_FILE_ITEM_DIALOG", newItemDialog);
+        store.dispatch("fileSystem/CREATE_ITEM_DIALOG", newItemDialog);
       }
     };
 
