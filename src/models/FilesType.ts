@@ -1,6 +1,49 @@
 // Add application to open
 // Have just one action in the store to open
 
+const imageType = {
+  background: "#222",
+  defaultSize: {
+    height: 432,
+    width: 576,
+  },
+  minSize: {
+    height: 100,
+    width: 220,
+  },
+  hideTitlebarIcon: true,
+  icon: "/System/Icons/photos.webp",
+  prependTaskbarTitle: true,
+  title: "Photos",
+  application: "ImageFileItem",
+};
+
+const textType = {
+  defaultSize: {
+    height: 480,
+    width: 760,
+  },
+  minSize: {
+    height: 100,
+    width: 220,
+  },
+  application: "TextFileItem",
+  icon: "txt.svg",
+};
+
+const codeType = {
+  defaultSize: {
+    height: 480,
+    width: 550,
+  },
+  minSize: {
+    height: 100,
+    width: 220,
+  },
+  icon: "/System/Icons/photos.webp",
+  application: "CodeFileItem",
+};
+
 const fileTypesConfiguration: any = {
   devTools: {
     background: "rgb(36, 36, 36)",
@@ -16,6 +59,20 @@ const fileTypesConfiguration: any = {
     singleton: true,
     title: "DevTools",
   },
+  dir: {
+    background: "rgb(82, 86, 89)",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    minSize: {
+      height: 300,
+      width: 520,
+    },
+    icon: "folder.svg",
+    title: "Directory",
+    application: "FolderItem",
+  },
   settings: {
     defaultSize: {
       height: 480,
@@ -27,52 +84,16 @@ const fileTypesConfiguration: any = {
     },
     icon: "settings.svg",
   },
-  txt: {
-    defaultSize: {
-      height: 480,
-      width: 760,
-    },
-    minSize: {
-      height: 100,
-      width: 220,
-    },
-    icon: "txt.svg",
-  },
+  txt: textType,
+  text: textType,
   FileExplorer: {
     background: "#202020",
     icon: "FOLDER_ICON",
     title: "File Explorer",
   },
-  html: {
-    defaultSize: {
-      height: 480,
-      width: 550,
-    },
-    minSize: {
-      height: 100,
-      width: 220,
-    },
-  },
-  js: {
-    defaultSize: {
-      height: 480,
-      width: 544,
-    },
-    minSize: {
-      height: 100,
-      width: 220,
-    },
-  },
-  css: {
-    defaultSize: {
-      height: 480,
-      width: 544,
-    },
-    minSize: {
-      height: 100,
-      width: 220,
-    },
-  },
+  html: codeType,
+  js: codeType,
+  css: codeType,
   pdf: {
     background: "rgb(82, 86, 89)",
     defaultSize: {
@@ -85,23 +106,11 @@ const fileTypesConfiguration: any = {
     },
     icon: "/System/Icons/pdf.webp",
     title: "PDF",
+    application: "PdfItem",
   },
-  photos: {
-    background: "#222",
-    defaultSize: {
-      height: 432,
-      width: 576,
-    },
-    minSize: {
-      height: 100,
-      width: 220,
-    },
-    hideTitlebarIcon: true,
-    icon: "/System/Icons/photos.webp",
-    prependTaskbarTitle: true,
-    title: "Photos",
-  },
-
+  png: imageType,
+  jpg: imageType,
+  jpeg: imageType,
   run: {
     allowResizing: false,
     defaultSize: {

@@ -5,9 +5,9 @@
         <div v-if="itemDialog.icon">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
         </div>
-        <div v-if="fileExtension">
+        <!-- <div v-if="fileExtension">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
-        </div>
+        </div> -->
         <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
         <div class="directory-name">{{ getFileNameFromPath(itemDialog.path) }}</div>
@@ -17,7 +17,9 @@
     <template #default>
       <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
-        <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
+        <component :is="itemDialog.applicationToOpen" :height="contentHeight" :itemDialog="itemDialog"></component>
+
+        <!-- <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
 
         <div v-else-if="isTextFile()">
           <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
@@ -30,7 +32,7 @@
         </div>
         <div v-else-if="isImageFile()">
           <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
-        </div>
+        </div> -->
       </div>
     </template>
   </MoveAndResizeArea>
@@ -43,11 +45,11 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import { MIME_TYPE } from "@/constants";
 
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
-import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
-import PdfItem from "@/components/itemViewTypes/pdfItem/PdfItem.vue";
-import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
-import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
-import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
+import FolderItem from "@/components/apps/FolderItem.vue";
+import PdfItem from "@/components/apps/pdfItem/PdfItem.vue";
+import CodeFileItem from "@/components/apps/CodeFileItem.vue";
+import TextFileItem from "@/components/apps/TextFileItem.vue";
+import ImageFileItem from "@/components/apps/ImageFileItem.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";

@@ -98,7 +98,7 @@ import { dowloadWithProgress } from "@/utils/downloadUtils";
 import { readFile } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
-import PrintPdfDialog from "@/components/itemViewTypes/pdfItem/PrintPdfDialog.vue";
+import PrintPdfDialog from "@/components/apps/pdfItem/PrintPdfDialog.vue";
 import store from "@/store";
 
 export default defineComponent({

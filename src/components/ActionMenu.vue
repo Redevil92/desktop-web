@@ -38,7 +38,7 @@ import { isDir } from "@/context/fileSystemController";
 import { generateUniqueName } from "@/context/fileSystemUtils";
 import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
-import { FolderDialog } from "@/models/ItemDialog";
+import ItemDialog from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import store from "@/store";
 import { defineComponent, ref, computed, watch, onMounted, onDeactivated } from "vue";
@@ -73,7 +73,7 @@ export default defineComponent({
     const createFile = async (_1: Event, createFolder: false) => {
       const currentFolderFiles: string[] = isDesktop.value
         ? store.getters["fileSystem/GET_DESKTOP_FILES_PATH"]
-        : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as FolderDialog).filesPath;
+        : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as ItemDialog).filesPath;
 
       if (!createFolder) {
         const newUniquePath = generateUniqueName(actionMenuParams.value.path + "/" + "new file", currentFolderFiles);
