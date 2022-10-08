@@ -13,7 +13,7 @@ import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
-import ItemDialog, { FolderDialog } from "@/models/ItemDialog";
+import ItemDialog from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,7 +38,7 @@ export default {
     };
   },
   mutations: {
-    ADD_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
+    CREATE_ITEM_DIALOG: (state: FileSystemState, itemDialog: ItemDialog) => {
       state.itemsDialog.push(itemDialog);
       state.itemsDialog = [...state.itemsDialog];
     },
@@ -139,17 +139,36 @@ export default {
     },
   },
   actions: {
-    ADD_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
-      const itemExtension = getFileExtensionFromName(itemDialog.path);
+    CREATE_ITEM_DIALOG: async ({ commit, dispatch, getters }: any, itemDialog: DesktopItem) => {
+      //******** REVISIT THIS METHOD TO TAKE EVRYTHINF FROM FilesType.ts !!!
 
-      const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+      // take application to open
+
+      // NEW IDEA -> maybe the ItemDialog should have a new attribute "application" and this would indentify the app that should be opened
+      //              with the item dialog. The path should be optional and if the app require the path it should be used otherwise not
+
+      let itemExtension = getFileExtensionFromName(itemDialog.path);
+
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = "";
+      let applicationToOpen = "";
+      let filesPath = [] as string[];
+
+      console.log("EXT", itemExtension);
+
+      const isFolder = await isDir(itemDialog.path);
+      if (isFolder) {
+        filesPath = await getFiles(itemDialog.path, true);
+        itemExtension = "dir";
+      }
+      const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+
       if (fileTypeConfiguration) {
         dimension = fileTypeConfiguration.defaultSize;
         minDimension = fileTypeConfiguration.minSize;
         icon = fileTypeConfiguration.icon;
+        applicationToOpen = fileTypeConfiguration.application;
       }
 
       const padding = 40;
@@ -163,28 +182,22 @@ export default {
         path: itemDialog.path,
         guid: uuidv4(),
         isCollapsed: false,
-        isFolder: false,
+        isFolder,
         zIndex: 1,
         icon,
         position,
         dimension,
         minDimension,
+        applicationToOpen,
+        filesPath,
       } as ItemDialog;
 
-      const isFolder = await isDir(newItemDialog.path);
-
-      if (isFolder) {
-        const filesPath = await getFiles(newItemDialog.path, true);
-        newItemDialog.isFolder = true;
-        (newItemDialog as FolderDialog).filesPath = filesPath;
-      }
-
-      commit("ADD_ITEM_DIALOG", newItemDialog);
+      commit("CREATE_ITEM_DIALOG", newItemDialog);
       dispatch("SET_FOCUSED_ITEM_DIALOG", newItemDialog);
     },
     UPDATE_ITEM_DIALOG_NAME: async (
       { commit, dispatch }: any,
-      pathAndItemToUpdate: { newPath: string; itemDialog: FolderDialog }
+      pathAndItemToUpdate: { newPath: string; itemDialog: ItemDialog }
     ) => {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);
       itemToUpdate.path = pathAndItemToUpdate.newPath;
@@ -200,7 +213,7 @@ export default {
         const isFolder = await isDir(itemDialog.path);
         if (isFolder) {
           const newFilespath = await getFiles(itemDialog.path, true);
-          (itemDialog as FolderDialog).filesPath = newFilespath;
+          (itemDialog as ItemDialog).filesPath = newFilespath;
         }
       });
 

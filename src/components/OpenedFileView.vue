@@ -2,9 +2,12 @@
   <MoveAndResizeArea :itemDialog="itemDialog">
     <template #header>
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="flex folder-header" ref="dialogHeader">
-        <div v-if="fileExtension">
-          <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
+        <div v-if="itemDialog.icon">
+          <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
         </div>
+        <!-- <div v-if="fileExtension">
+          <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
+        </div> -->
         <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
         <div class="directory-name">{{ getFileNameFromPath(itemDialog.path) }}</div>
@@ -14,20 +17,7 @@
     <template #default>
       <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
-        <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
-
-        <div v-else-if="isTextFile()">
-          <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
-        </div>
-        <div v-else-if="fileExtension === 'pdf'">
-          <pdf-item :height="contentHeight" :itemDialog="itemDialog"></pdf-item>
-        </div>
-        <div v-else-if="isCodeFile()">
-          <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
-        </div>
-        <div v-else-if="isImageFile()">
-          <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
-        </div>
+        <component :is="itemDialog.applicationToOpen" :height="contentHeight" :itemDialog="itemDialog"></component>
       </div>
     </template>
   </MoveAndResizeArea>
@@ -40,15 +30,14 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import { MIME_TYPE } from "@/constants";
 
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
-import FolderItem from "@/components/itemViewTypes/FolderItem.vue";
-import PdfItem from "@/components/itemViewTypes/pdfItem/PdfItem.vue";
-import CodeFileItem from "@/components/itemViewTypes/CodeFileItem.vue";
-import TextFileItem from "@/components/itemViewTypes/TextFileItem.vue";
-import ImageFileItem from "@/components/itemViewTypes/ImageFileItem.vue";
+import FolderItem from "@/components/apps/FolderItem.vue";
+import PdfItem from "@/components/apps/pdfItem/PdfItem.vue";
+import CodeFileItem from "@/components/apps/CodeFileItem.vue";
+import TextFileItem from "@/components/apps/TextFileItem.vue";
+import ImageFileItem from "@/components/apps/ImageFileItem.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
-import Coordinates from "@/models/Coordinates";
 
 export default defineComponent({
   props: {

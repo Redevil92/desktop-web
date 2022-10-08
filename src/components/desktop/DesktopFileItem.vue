@@ -187,7 +187,7 @@ export default defineComponent({
     };
 
     const doubleClickHandler = () => {
-      store.dispatch("fileSystem/ADD_ITEM_DIALOG", props.fileItem);
+      store.dispatch("fileSystem/CREATE_ITEM_DIALOG", props.fileItem);
     };
 
     const refreshFileSystemFiles = () => {
