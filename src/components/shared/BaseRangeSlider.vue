@@ -32,7 +32,12 @@ export default defineComponent({
     max: { type: Number, required: true },
     startingMin: { type: Number },
     startingMax: { type: Number },
-    formatValuesFunction: { type: Function, default: () => {} },
+    formatValuesFunction: {
+      type: Function,
+      default: (x: any) => {
+        return x;
+      },
+    },
   },
   setup(props, context) {
     const sliderWidth = 15;

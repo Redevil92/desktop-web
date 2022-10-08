@@ -17,7 +17,12 @@
     <template #default>
       <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
-        <component :is="itemDialog.applicationToOpen" :height="contentHeight" :itemDialog="itemDialog"></component>
+        <component
+          v-if="applicationComponent"
+          :is="applicationComponent"
+          :height="contentHeight"
+          :itemDialog="itemDialog"
+        ></component>
       </div>
     </template>
   </MoveAndResizeArea>
@@ -25,10 +30,12 @@
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
+import { computed, defineAsyncComponent, defineComponent, PropType, ref, shallowRef } from "vue";
 
 import { MIME_TYPE } from "@/constants";
 
+import LoadingComponent from "@/components/shared/LoadingComponent.vue";
+import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
@@ -40,16 +47,29 @@ export default defineComponent({
   },
 
   components: {
-    FolderItem: defineAsyncComponent(() => import("@/components/apps/FolderItem.vue")),
-    CodeFileItem: defineAsyncComponent(() => import("@/components/apps/CodeFileItem.vue")),
-    TextFileItem: defineAsyncComponent(() => import("@/components/apps/TextFileItem.vue")),
-    ImageFileItem: defineAsyncComponent(() => import("@/components/apps/ImageFileItem.vue")),
-    PdfItem: defineAsyncComponent(() => import("@/components/apps/PdfItem.vue")),
     DialogControls,
     MoveAndResizeArea,
   },
   emits: [],
   setup(props, _) {
+    const comp = shallowRef();
+
+    const applicationComponent = defineAsyncComponent({
+      // the loader function
+      loader: () => import(`@/components/apps/${props.itemDialog.applicationToOpen}.vue`),
+
+      // A component to use while the async component is loading
+      loadingComponent: LoadingComponent,
+      // Delay before showing the loading component. Default: 200ms.
+      delay: 200,
+
+      // A component to use if the load fails
+      errorComponent: ErrorComponent,
+      // The error component will be displayed if a timeout is
+      // provided and exceeded. Default: Infinity.
+      timeout: 3000,
+    });
+
     const dialogHeader = ref({} as HTMLElement);
     const draggableElement = ref({} as HTMLElement);
 
@@ -88,6 +108,7 @@ export default defineComponent({
       isCodeFile,
       isTextFile,
       isImageFile,
+      applicationComponent,
     };
   },
 });
