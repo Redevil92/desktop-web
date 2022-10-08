@@ -47,8 +47,6 @@ export default defineComponent({
     const isLoaded = ref(false);
 
     const saveFile = (content: any, html: any, body: any) => {
-      console.log("SAVING", content.content, html, body);
-
       if (props.itemDialog?.path) {
         store.dispatch("fileSystem/UPDATE_FILE", {
           path: props.itemDialog?.path,

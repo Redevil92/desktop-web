@@ -11,7 +11,6 @@ export default {
   emits: ["update:modelValue"],
   methods: {
     change(event) {
-      console.log(event.target.value);
       this.$emit("update:modelValue", event.target.value); // previously was `this.$emit('input', title)`
     },
   },
