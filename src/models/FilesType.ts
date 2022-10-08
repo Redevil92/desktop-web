@@ -104,7 +104,7 @@ const fileTypesConfiguration: any = {
       height: 300,
       width: 520,
     },
-    icon: "/System/Icons/pdf.webp",
+    icon: "pdf.svg",
     title: "PDF",
     application: "PdfItem",
   },

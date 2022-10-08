@@ -31,7 +31,7 @@ import { MIME_TYPE } from "@/constants";
 
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
 import FolderItem from "@/components/apps/FolderItem.vue";
-import PdfItem from "@/components/apps/pdfItem/PdfItem.vue";
+import PdfItem from "@/components/apps/PdfItem.vue";
 import CodeFileItem from "@/components/apps/CodeFileItem.vue";
 import TextFileItem from "@/components/apps/TextFileItem.vue";
 import ImageFileItem from "@/components/apps/ImageFileItem.vue";
