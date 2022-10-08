@@ -25,16 +25,11 @@
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
 
 import { MIME_TYPE } from "@/constants";
 
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
-import FolderItem from "@/components/apps/FolderItem.vue";
-import PdfItem from "@/components/apps/PdfItem.vue";
-import CodeFileItem from "@/components/apps/CodeFileItem.vue";
-import TextFileItem from "@/components/apps/TextFileItem.vue";
-import ImageFileItem from "@/components/apps/ImageFileItem.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
@@ -43,7 +38,16 @@ export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
   },
-  components: { FolderItem, CodeFileItem, TextFileItem, ImageFileItem, PdfItem, DialogControls, MoveAndResizeArea },
+
+  components: {
+    FolderItem: defineAsyncComponent(() => import("@/components/apps/FolderItem.vue")),
+    CodeFileItem: defineAsyncComponent(() => import("@/components/apps/CodeFileItem.vue")),
+    TextFileItem: defineAsyncComponent(() => import("@/components/apps/TextFileItem.vue")),
+    ImageFileItem: defineAsyncComponent(() => import("@/components/apps/ImageFileItem.vue")),
+    PdfItem: defineAsyncComponent(() => import("@/components/apps/PdfItem.vue")),
+    DialogControls,
+    MoveAndResizeArea,
+  },
   emits: [],
   setup(props, _) {
     const dialogHeader = ref({} as HTMLElement);
