@@ -65,8 +65,6 @@ export default defineComponent({
 
       // A component to use if the load fails
       errorComponent: ErrorComponent,
-      // The error component will be displayed if a timeout is
-      // provided and exceeded. Default: Infinity.
       timeout: 3000,
     });
 

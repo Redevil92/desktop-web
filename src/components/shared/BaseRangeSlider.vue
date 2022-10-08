@@ -34,9 +34,7 @@ export default defineComponent({
     startingMax: { type: Number },
     formatValuesFunction: {
       type: Function,
-      default: (x: any) => {
-        return x;
-      },
+      default: (x: string) => x,
     },
   },
   setup(props, context) {
@@ -66,7 +64,7 @@ export default defineComponent({
       setSlidersPositionByValue();
     };
 
-    const clickSliderHandler = (slider: string = "max", event: any) => {
+    const clickSliderHandler = (slider = "max", event: any) => {
       event.preventDefault();
       sliderMoving.value = slider;
       startX.value = event.clientX;
