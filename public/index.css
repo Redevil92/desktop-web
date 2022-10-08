@@ -15,7 +15,9 @@
   --dialog-background-color_with_opacity: #4a4a4ae3;
   --dialog-background-color_darker: #393939;
   --dialog-border-color_dark: #626262;
-  --selected-color: #3434d1;
+  --selected-color: #4141bb;
+
+  --background-color: rgb(43 45 51 / 95%);
 
   --x-small-font-size: 8px;
   --small-font-size: 12px;

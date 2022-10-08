@@ -1,15 +1,23 @@
 <template>
-  <div class="start-menu-container"></div>
+  <div class="start-menu-container">
+    <BaseSearchBar />
+
+    <!-- SEARCH BAR -->
+    <!-- PINNED APPLICATION -->
+    <!-- RECCOMANDED APPLICATION -->
+    <!-- YOUR CUSTOMIZATION / POWER OFF -->
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import BaseInput from "@/components/shared/BaseSearchBar.vue";
 
 export default defineComponent({
   props: {
     msg: String,
   },
-  components: {},
+  components: { BaseInput },
   setup() {
     return {};
   },
@@ -18,10 +26,13 @@ export default defineComponent({
 
 <style scoped>
 .start-menu-container {
-  height: 300px;
-  width: 200px;
+  height: 600px;
+  width: 500px;
   background-color: red;
   position: absolute;
-  bottom: var(--task-bar-height);
+  left: var(--margin);
+  bottom: calc(var(--task-bar-height) + var(--margin));
+  border-radius: var(--border-radius);
+  background-color: var(--background-color);
 }
 </style>

@@ -6,7 +6,7 @@
         class="mdi mdi-microsoft-windows window-icon"
         ref="windowIconRef"
       ></span>
-      <StartMenu v-if="true" />
+      <StartMenu v-if="isStartMenuOpened" />
       <div class="flex">
         <div
           v-for="(taskBarItem, index) in taskBarItems"
@@ -43,7 +43,7 @@ export default defineComponent({
     const itemsContainerRef = ref(null);
     const currentDateRef = ref(null);
     const windowIconRef = ref(null);
-    const isStartMenuOpened = ref(false);
+    const isStartMenuOpened = ref(true);
 
     const maxItemWidth = 160;
     const itemMargin = 4;
@@ -103,7 +103,7 @@ export default defineComponent({
 
 .task-bar {
   backdrop-filter: blur(5px);
-  background-color: rgba(26, 26, 26, 0.7);
+  background-color: var(--background-color);
   bottom: 0px;
   contain: size layout;
   height: var(--task-bar-height);
