@@ -1,12 +1,12 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
-    <div class="flex">
+    <div class="flex position-relative">
       <span
         @click="isStartMenuOpened = !isStartMenuOpened"
         class="mdi mdi-microsoft-windows window-icon"
         ref="windowIconRef"
       ></span>
-      <StartMenu v-if="false" />
+      <StartMenu v-if="true" />
       <div class="flex">
         <div
           v-for="(taskBarItem, index) in taskBarItems"
@@ -106,7 +106,7 @@ export default defineComponent({
   background-color: rgba(26, 26, 26, 0.7);
   bottom: 0px;
   contain: size layout;
-  height: 30px;
+  height: var(--task-bar-height);
   left: 0px;
   position: absolute;
   right: 0px;
@@ -130,5 +130,9 @@ export default defineComponent({
 .flex-grow {
   display: flex;
   flex-grow: 1;
+}
+
+.position-relative {
+  position: relative;
 }
 </style>

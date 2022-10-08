@@ -21,5 +21,7 @@ export default defineComponent({
   height: 300px;
   width: 200px;
   background-color: red;
+  position: absolute;
+  bottom: var(--task-bar-height);
 }
 </style>

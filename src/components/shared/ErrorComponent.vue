@@ -1,5 +1,5 @@
 <template>
-  <div>ERROR COMPONENT TO IMPLEMENT</div>
+  <div class="error-container">ERROR COMPONENT TO IMPLEMENT</div>
 </template>
 
 <script lang="ts">
@@ -11,4 +11,9 @@ export default defineComponent({
   emits: [],
 });
 </script>
-<style scoped></style>
+<style scoped>
+.error-container {
+  color: white;
+  font-size: 30px;
+}
+</style>
