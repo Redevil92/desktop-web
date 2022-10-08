@@ -52,8 +52,6 @@
               <div v-else>
                 <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
               </div>
-
-              <!-- <span class="mdi mdi-file-quesion extension-icon" style="color: #01014a" v-else></span> -->
               <div>
                 <span v-if="item === selectedItem && isEditingSelectedValue">
                   <input

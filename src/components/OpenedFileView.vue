@@ -18,21 +18,6 @@
       <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
         <component :is="itemDialog.applicationToOpen" :height="contentHeight" :itemDialog="itemDialog"></component>
-
-        <!-- <folder-item v-if="itemDialog.isFolder" :height="contentHeight" :folderDialog="itemDialog"> </folder-item>
-
-        <div v-else-if="isTextFile()">
-          <text-file-item :height="contentHeight" :itemDialog="itemDialog"></text-file-item>
-        </div>
-        <div v-else-if="fileExtension === 'pdf'">
-          <pdf-item :height="contentHeight" :itemDialog="itemDialog"></pdf-item>
-        </div>
-        <div v-else-if="isCodeFile()">
-          <code-file-item :height="contentHeight" :itemDialog="itemDialog"></code-file-item>
-        </div>
-        <div v-else-if="isImageFile()">
-          <image-file-item :height="contentHeight" :itemDialog="itemDialog"></image-file-item>
-        </div> -->
       </div>
     </template>
   </MoveAndResizeArea>
