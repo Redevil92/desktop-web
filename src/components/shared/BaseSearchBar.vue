@@ -1,8 +1,7 @@
 <template>
   <div class="search-bar-container">
-    <span class="mdi mdi-magnify mdi-40 search-icon"></span>
+    <span class="mdi mdi-magnify mdi-28 search-icon"></span>
     <input id="search-bar" placeholder="Type here to search" :type="type" v-model="search" />
-    <textarea name="" id="" cols="30" rows="10"></textarea>
   </div>
 </template>
 
@@ -33,22 +32,43 @@ input {
   border: none;
   padding: 10px;
   padding-left: 35px;
+
   /* border-bottom: 1px solid white; */
   background-color: rgba(255, 255, 255, 0.21);
   color: white;
   width: 100%;
 }
 
-input:focus {
-  outline: 4px solid var(--primary-color);
-  border: 1px solid var(--primary-color);
+input::placeholder {
+  color: white;
+}
+
+/* input:focus {
+  border-bottom: 2px solid var(--primary-color);
+  outline: none;
+} */
+
+input:focus,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.21);
 }
 
 .search-icon {
   color: white;
   position: absolute;
-  font-size: var(--icon-font-size);
-  left: 5px;
-  top: 3px;
+  font-size: var(--small-icon-size);
+  left: 7px;
+  top: 7px;
 }
 </style>

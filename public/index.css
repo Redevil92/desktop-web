@@ -3,6 +3,8 @@
   --font-color_dark: #292929;
   --font-color_light: #7c7c7c;
 
+  --font-color: white;
+
   --primary-color: #4545c9;
   --primary-color_darker: #2323c6;
 
@@ -18,6 +20,7 @@
   --selected-color: #4141bb;
 
   --background-color: rgb(43 45 51 / 95%);
+  --background-color_light: rgb(43 45 51 / 98%);
 
   --x-small-font-size: 8px;
   --small-font-size: 12px;
@@ -25,7 +28,8 @@
   --large-font-size: 16px;
   --x-large-font-size: 20px;
 
-  --icon-font-size: 22px;
+  --small-icon-size: 22px;
+  --icon-size: 22px;
 
   --border-radius: 10px;
 

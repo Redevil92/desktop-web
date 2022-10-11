@@ -2,10 +2,17 @@
   <div class="start-menu-container">
     <BaseSearchBar v-model="search" class="search-bar" />
 
-    <!-- SEARCH BAR -->
-    <!-- PINNED APPLICATION -->
-    <!-- RECCOMANDED APPLICATION -->
-    <!-- YOUR CUSTOMIZATION / POWER OFF -->
+    <div class="start-menu-content">
+      <!-- PINNED APPLICATION -->
+      <div class="pinned-application">
+        <div class="flex">
+          <div class="pinned-text">Pinned</div>
+          <div class="all-apps-button">All apps</div>
+        </div>
+      </div>
+      <!-- RECCOMANDED APPLICATION -->
+      <!-- YOUR CUSTOMIZATION / POWER OFF -->
+    </div>
   </div>
 </template>
 
@@ -30,7 +37,6 @@ export default defineComponent({
 .start-menu-container {
   height: 600px;
   width: 500px;
-  background-color: red;
   position: absolute;
   left: var(--margin);
   bottom: calc(var(--task-bar-height) + var(--margin));
@@ -41,5 +47,27 @@ export default defineComponent({
 .search-bar {
   margin: var(--margin);
   width: calc(500px - var(--margin) * 2);
+}
+
+.pinned-text {
+  color: var(--font-color);
+  font-size: var(--medium-font-size);
+  font-weight: 600;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.start-menu-content {
+  padding: 10px 30px;
+}
+
+.all-apps-button {
+  color: var(--font-color);
+  font-size: var(--small-font-size);
+  background-color: var(--background-color_light);
+  padding: 5px;
 }
 </style>
