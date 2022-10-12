@@ -12,7 +12,7 @@ const imageType = {
     width: 220,
   },
   hideTitlebarIcon: true,
-  icon: "/System/Icons/photos.webp",
+  icon: "png.svg",
   prependTaskbarTitle: true,
   title: "Photos",
   application: "ImageFileItem",

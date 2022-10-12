@@ -10,6 +10,13 @@
           <div class="all-apps-button">All apps</div>
         </div>
       </div>
+      <div>
+        <!-- these application should come from the store/local storage -->
+        <div class="application-button" @click="createItemDialog">
+          <img height="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
+          <div class="application-name">Settings</div>
+        </div>
+      </div>
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
     </div>
@@ -19,6 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
+import DesktopItem from "@/models/DesktopItem";
 
 export default defineComponent({
   props: {
@@ -28,7 +36,11 @@ export default defineComponent({
   setup() {
     const search = ref("Type here to search");
 
-    return { search };
+    const createItemDialog = () => {
+      const settingsApp = {} as DesktopItem;
+    };
+
+    return { search, createItemDialog };
   },
 });
 </script>
@@ -51,7 +63,7 @@ export default defineComponent({
 
 .pinned-text {
   color: var(--font-color);
-  font-size: var(--medium-font-size);
+  font-size: var(--small-font-size);
   font-weight: 600;
 }
 
@@ -69,5 +81,21 @@ export default defineComponent({
   font-size: var(--small-font-size);
   background-color: var(--background-color_light);
   padding: 5px;
+}
+
+.application-name {
+  font-size: var(--small-font-size);
+  color: white;
+}
+
+.application-button {
+  padding: 10px;
+  width: fit-content;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.application-button:hover {
+  background-color: var(--background-color_light);
 }
 </style>

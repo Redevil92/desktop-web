@@ -32,7 +32,7 @@ input {
   border: none;
   padding: 10px;
   padding-left: 35px;
-
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
   /* border-bottom: 1px solid white; */
   background-color: rgba(255, 255, 255, 0.21);
   color: white;
@@ -69,6 +69,6 @@ select:-webkit-autofill:focus {
   position: absolute;
   font-size: var(--small-icon-size);
   left: 7px;
-  top: 7px;
+  top: 4px;
 }
 </style>
