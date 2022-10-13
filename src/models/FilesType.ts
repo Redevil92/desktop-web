@@ -84,6 +84,7 @@ const fileTypesConfiguration: any = {
     },
     title: "Settings",
     icon: "settings.svg",
+    application: "SystemSettings",
   },
   txt: textType,
   text: textType,
