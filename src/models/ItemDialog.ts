@@ -15,6 +15,7 @@ export default interface ItemDialog {
   isFullscreen?: boolean;
   minDimension?: Dimension;
   filesPath: string[];
+  name: string;
 }
 
 // export interface FolderDialog extends ItemDialog {

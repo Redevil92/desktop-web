@@ -5,4 +5,5 @@ export default interface DesktopItem {
   coordinates: Coordinates;
   isSelected: boolean;
   icon?: string;
+  applicationExtension?: string;
 }

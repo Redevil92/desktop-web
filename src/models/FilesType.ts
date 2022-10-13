@@ -82,6 +82,7 @@ const fileTypesConfiguration: any = {
       height: 100,
       width: 220,
     },
+    title: "Settings",
     icon: "settings.svg",
   },
   txt: textType,

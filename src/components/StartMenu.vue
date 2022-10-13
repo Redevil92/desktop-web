@@ -27,6 +27,7 @@
 import { defineComponent, ref } from "vue";
 import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
 import DesktopItem from "@/models/DesktopItem";
+import store from "@/store";
 
 export default defineComponent({
   props: {
@@ -37,7 +38,14 @@ export default defineComponent({
     const search = ref("Type here to search");
 
     const createItemDialog = () => {
-      const settingsApp = {} as DesktopItem;
+      const settingsApp: DesktopItem = {
+        path: "",
+        coordinates: { x: 0, y: 0 },
+        applicationExtension: "settings",
+        isSelected: true,
+      };
+
+      store.dispatch("fileSystem/CREATE_ITEM_DIALOG", settingsApp);
     };
 
     return { search, createItemDialog };

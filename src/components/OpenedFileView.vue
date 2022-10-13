@@ -5,17 +5,14 @@
         <div v-if="itemDialog.icon">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
         </div>
-        <!-- <div v-if="fileExtension">
-          <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')" alt="" />
-        </div> -->
+
         <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
-        <div class="directory-name">{{ getFileNameFromPath(itemDialog.path) }}</div>
+        <div class="directory-name">{{ itemDialog.name }}</div>
         <DialogControls :itemDialog="itemDialog" />
       </div>
     </template>
     <template #default>
-      <!-- DIALOG CASE: our prop itemDialog is a FolderDIalog and fetch the items -->
       <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
         <component
           v-if="applicationComponent"
@@ -32,14 +29,11 @@
 import ItemDialog from "@/models/ItemDialog";
 import { computed, defineAsyncComponent, defineComponent, PropType, ref, shallowRef } from "vue";
 
-import { MIME_TYPE } from "@/constants";
-
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
 
 import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -75,37 +69,10 @@ export default defineComponent({
       return props.itemDialog.dimension.height - dialogHeader.value.clientHeight;
     });
 
-    const fileExtension = computed(function () {
-      return getFileExtensionFromName(props.itemDialog.path);
-    });
-
-    function isCodeFile(): boolean {
-      const codeExtensions = ["css", "html", "ts", "js"];
-
-      return codeExtensions.includes(fileExtension.value);
-    }
-
-    function isImageFile(): boolean {
-      const codeExtensions = ["png", "jpg", "jpeg"];
-
-      return codeExtensions.includes(fileExtension.value);
-    }
-
-    function isTextFile(): boolean {
-      const codeExtensions = ["txt", "text"];
-      return codeExtensions.includes(fileExtension.value);
-    }
-
     return {
       draggableElement,
-      getFileNameFromPath,
-      fileExtension,
-      MIME_TYPE,
       dialogHeader,
       contentHeight,
-      isCodeFile,
-      isTextFile,
-      isImageFile,
       applicationComponent,
     };
   },
