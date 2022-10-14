@@ -17,6 +17,9 @@
           </div>
         </div>
         <div v-else>
+          <div class="back-button" @click="showSelectedSettingComponent = false">
+            <span class="mdi mdi-chevron-left"></span> Back
+          </div>
           <component :is="settingAsyncComponent"></component>
         </div>
       </div>
@@ -105,5 +108,18 @@ export default defineComponent({
 
 .settings-button:hover {
   background-color: var(--background-color_light);
+}
+
+.back-button {
+  color: var(--font-color);
+  border-radius: var(--border-radius);
+  background-color: var(--neutral-color);
+  font-size: var(--small-font-size);
+  width: 60px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: var(--neutral-color_dark);
 }
 </style>

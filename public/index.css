@@ -9,6 +9,7 @@
   --primary-color_darker: #2323c6;
 
   --neutral-color: grey;
+  --neutral-color_dark: rgb(101, 101, 101);
 
   --dialog-header-color_dark: rgb(42, 42, 42);
   --dialog-sub-header-color_dark: rgb(25, 25, 25);

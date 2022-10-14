@@ -12,6 +12,7 @@
         @dragenter.prevent
         ref="desktopRef"
         class="desktop-container"
+        :style="{ 'background-image': 'url(' + require('/src/assets/desktopImages/' + desktopImage) + ')' }"
       >
         <div v-for="(item, index) in desktopFiles" :key="`${item.i}-${index}`">
           <DesktopFileItem :ref="item.path + 'FileRef'" :fileItem="item" />
@@ -32,6 +33,8 @@ import { useStore } from "vuex";
 import { DESKTOP_PATH } from "@/constants";
 import { isDir } from "@/context/fileSystemController";
 
+import { useSettingsStore } from "@/stores/settingsStore";
+
 export default defineComponent({
   props: {
     msg: String,
@@ -41,9 +44,16 @@ export default defineComponent({
   emits: ["onFileItemPositionChange"],
   setup() {
     const store = useStore();
+
+    const settingsStore = useSettingsStore();
+
     const { moveFilesInFolder } = useMoveFiles();
 
     const desktopRef = ref(null as unknown as HTMLElement);
+
+    const desktopImage = computed((): string => {
+      return settingsStore.desktopImage;
+    });
 
     const selectedItemPaths = computed((): string[] => {
       return store.getters["fileSystem/"];
@@ -109,7 +119,7 @@ export default defineComponent({
       desktopFiles,
       selectFile,
       selectedItemPaths,
-
+      desktopImage,
       dropFilehandler,
       DESKTOP_PATH,
       selectItemsWithSelectionBox,
@@ -136,7 +146,7 @@ export default defineComponent({
 .desktop-container {
   height: 100vh;
   width: 100vw;
-  background-image: url("/src/assets/desktopImages/mountain.png");
+
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
