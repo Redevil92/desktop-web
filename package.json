@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "monaco-editor-vue3": "^0.1.5",
+    "pinia": "^2.0.23",
     "uuid": "^8.3.2",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",

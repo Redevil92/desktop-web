@@ -3,9 +3,11 @@ import App from "./App.vue";
 import { testCreateFiles } from "./context/fileSystemUtils";
 import router from "./router";
 import store from "./store";
+import { createPinia } from "pinia";
 
 // eslint-disable-next-line
 const BrowserFS = require("browserfs");
+const pinia = createPinia();
 
 export async function initializeAppAndFileSystem() {
   BrowserFS.install(window);
@@ -30,7 +32,7 @@ export async function initializeAppAndFileSystem() {
 
       (window as any).fs = window.require("fs");
       testCreateFiles();
-      createApp(App).use(store).use(router).mount("#app");
+      createApp(App).use(pinia).use(store).use(router).mount("#app");
     }
   );
 }
