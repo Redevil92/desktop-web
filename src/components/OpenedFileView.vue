@@ -1,7 +1,7 @@
 <template>
   <MoveAndResizeArea :itemDialog="itemDialog">
     <template #header>
-      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="flex folder-header" ref="dialogHeader">
+      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="flex header" ref="headerRef">
         <div v-if="itemDialog.icon">
           <img height="17" class="file-icon" :src="require('/src/assets/fileIcons/' + itemDialog.icon)" alt="" />
         </div>
@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineAsyncComponent, defineComponent, PropType, ref, shallowRef } from "vue";
+import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
@@ -46,32 +46,24 @@ export default defineComponent({
   },
   emits: [],
   setup(props, _) {
-    const comp = shallowRef();
-
     const applicationComponent = defineAsyncComponent({
-      // the loader function
       loader: () => import(`@/components/apps/${props.itemDialog.applicationToOpen}.vue`),
-
-      // A component to use while the async component is loading
       loadingComponent: LoadingComponent,
-      // Delay before showing the loading component. Default: 200ms.
       delay: 200,
-
-      // A component to use if the load fails
       errorComponent: ErrorComponent,
       timeout: 3000,
     });
 
-    const dialogHeader = ref({} as HTMLElement);
+    const headerRef = ref({} as HTMLElement);
     const draggableElement = ref({} as HTMLElement);
 
     const contentHeight = computed(function () {
-      return props.itemDialog.dimension.height - dialogHeader.value.clientHeight;
+      return props.itemDialog.dimension.height - headerRef.value.clientHeight;
     });
 
     return {
       draggableElement,
-      dialogHeader,
+      headerRef,
       contentHeight,
       applicationComponent,
     };
@@ -80,17 +72,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.folder-dialog {
-  position: absolute;
-  top: 50px;
-  left: 200px;
-  border: 2px solid var(--dialog-border-color_dark);
-  border-radius: 10px;
-  background-color: var(--dialog-background-color_dark);
-  box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
-  -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
-}
-
 .flex {
   display: flex;
   align-items: center;
@@ -102,7 +83,7 @@ export default defineComponent({
   margin-left: 5px;
 }
 
-.folder-header {
+.header {
   background-color: var(--dialog-header-color_dark);
   height: 30px;
   border-top-left-radius: 10px;

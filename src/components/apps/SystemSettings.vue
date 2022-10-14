@@ -10,9 +10,14 @@
       </div>
       <hr />
       <div class="settings-section">
-        <div class="settings-button">
-          <img height="40" :src="require('/src/assets/icons/change-desktop.svg')" alt="" />
-          <div class="settings-name">Desktop</div>
+        <div v-if="!showSelectedSettingComponent">
+          <div class="settings-button" @click="loadAndSetSettingComponent('ChangeDesktopImage.vue')">
+            <img height="40" :src="require('/src/assets/icons/change-desktop.svg')" alt="" />
+            <div class="settings-name">Desktop</div>
+          </div>
+        </div>
+        <div v-else>
+          <component :is="settingAsyncComponent"></component>
         </div>
       </div>
     </div>
@@ -20,18 +25,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineAsyncComponent, defineComponent, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
+import LoadingComponent from "@/components/shared/LoadingComponent.vue";
+import ErrorComponent from "@/components/shared/ErrorComponent.vue";
+import testComponent from "@/components/apps/systemSettings/ChangeDesktopImage.vue";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
   },
-  components: {},
+  components: { testComponent },
   emits: [],
   setup(props, _) {
-    return {};
+    const showSelectedSettingComponent = ref(false);
+
+    const settingAsyncComponent = ref({} as any);
+
+    const loadAndSetSettingComponent = (componentName: string) => {
+      showSelectedSettingComponent.value = true;
+
+      settingAsyncComponent.value = defineAsyncComponent({
+        loader: () => import("@/components/apps/systemSettings/" + componentName),
+        loadingComponent: LoadingComponent,
+        delay: 200,
+        errorComponent: ErrorComponent,
+        timeout: 3000,
+      });
+    };
+
+    return { showSelectedSettingComponent, settingAsyncComponent, loadAndSetSettingComponent };
   },
 });
 </script>

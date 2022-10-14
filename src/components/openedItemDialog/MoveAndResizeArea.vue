@@ -1,8 +1,6 @@
 <template>
-  <!-- commented animation for folder -->
-  <!-- :class="{ 'folder-dialog-animation': animateDialogWhenMoving }" -->
   <div
-    class="folder-dialog"
+    class="dialog"
     ref="draggableElement"
     @mousedown="setItemDialogFocused"
     :style="
@@ -273,18 +271,18 @@ export default defineComponent({
   z-index: 3;
 }
 
-.folder-dialog {
+.dialog {
   position: absolute;
   top: 50px;
   left: 200px;
   border: 2px solid var(--dialog-border-color_dark);
   border-radius: 10px;
-  background-color: var(--dialog-background-color_dark);
+  background-color: var(--background-color);
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
   -webkit-box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
 }
 
-.folder-dialog-animation {
+.dialog-animation {
   transition: all 0.2s ease-out;
 }
 
