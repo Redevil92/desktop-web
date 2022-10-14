@@ -1,12 +1,8 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
     <div class="flex position-relative">
-      <span
-        @click="isStartMenuOpened = !isStartMenuOpened"
-        class="mdi mdi-microsoft-windows window-icon"
-        ref="windowIconRef"
-      ></span>
-      <StartMenu v-if="isStartMenuOpened" />
+      <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
+      <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
       <div class="flex">
         <div
           v-for="(taskBarItem, index) in taskBarItems"
@@ -27,23 +23,26 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-import store from "@/store";
-
 import ItemDialog from "@/models/ItemDialog";
-
 import TaskBarItem from "@/components/TaskBarItem.vue";
 import StartMenu from "@/components/StartMenu.vue";
 
+import store from "@/store";
+import { useLayoutStore } from "@/stores/layoutStore";
+
 export default defineComponent({
-  props: {
-    msg: String,
-  },
+  props: {},
   components: { TaskBarItem, StartMenu },
   setup() {
+    const layoutStore = useLayoutStore();
+
+    const isStartMenuOpened = computed(() => {
+      return layoutStore.startMenuOpened;
+    });
+
     const itemsContainerRef = ref(null);
     const currentDateRef = ref(null);
     const windowIconRef = ref(null);
-    const isStartMenuOpened = ref(true);
 
     const maxItemWidth = 160;
     const itemMargin = 4;
@@ -66,6 +65,10 @@ export default defineComponent({
       return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
     });
 
+    const setStartMenuOpened = () => {
+      layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
+    };
+
     const updateDate = () => {
       currentDate.value = new Date().toLocaleString().replace(",", " ");
     };
@@ -83,6 +86,7 @@ export default defineComponent({
       itemMargin,
       currentDate,
       isStartMenuOpened,
+      setStartMenuOpened,
     };
   },
 });

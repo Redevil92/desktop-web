@@ -1,5 +1,5 @@
 <template>
-  <div class="start-menu-container">
+  <div class="start-menu-container" ref="startMenuRef">
     <BaseSearchBar v-model="search" class="search-bar" />
 
     <div class="start-menu-content">
@@ -24,20 +24,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onDeactivated, onMounted, ref } from "vue";
 import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
 import DesktopItem from "@/models/DesktopItem";
+
+import { useLayoutStore } from "@/stores/layoutStore";
 import store from "@/store";
 
 export default defineComponent({
   props: {
-    msg: String,
+    openStartMenuButtonRef: HTMLElement,
   },
   components: { BaseSearchBar },
-  setup() {
+  setup(props) {
+    const layoutStore = useLayoutStore();
+
     const search = ref("Type here to search");
+    const startMenuRef = ref<HTMLElement | undefined>();
 
     const createItemDialog = () => {
+      setStartMenuOpened(false);
+
       const settingsApp: DesktopItem = {
         path: "",
         coordinates: { x: 0, y: 0 },
@@ -48,7 +55,30 @@ export default defineComponent({
       store.dispatch("fileSystem/CREATE_ITEM_DIALOG", settingsApp);
     };
 
-    return { search, createItemDialog };
+    const setStartMenuOpened = (isOpened: boolean) => {
+      layoutStore.setStartMenuOpened(isOpened);
+    };
+
+    const closeStartMenu = (event: any) => {
+      if (
+        startMenuRef.value &&
+        !startMenuRef.value.contains(event.target) &&
+        props.openStartMenuButtonRef &&
+        !props.openStartMenuButtonRef.contains(event.target)
+      ) {
+        setStartMenuOpened(false);
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener("click", closeStartMenu);
+    });
+
+    onDeactivated(() => {
+      window.removeEventListener("click", closeStartMenu);
+    });
+
+    return { search, createItemDialog, setStartMenuOpened, startMenuRef };
   },
 });
 </script>
