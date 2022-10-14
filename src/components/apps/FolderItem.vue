@@ -26,7 +26,7 @@
             id="drop_zone"
             class="folder-item"
             :class="{
-              'folder-item-odd': index % 2 === 0,
+              'folder-item-even': index % 2 === 1,
               'selected-item': item === selectedItem,
               'cut-item': isCutFile(item),
             }"
@@ -315,7 +315,6 @@ export default defineComponent({
 }
 
 .folder-item {
-  background-color: #86848463;
   height: 22px;
   margin: 0px 10px;
   border-radius: 7px;
@@ -338,8 +337,8 @@ export default defineComponent({
   position: absolute;
 }
 
-.folder-item-odd {
-  background-color: var(--dialog-background-color_dark) !important;
+.folder-item-even {
+  background-color: #86848463;
 }
 
 .folder-item-container {
