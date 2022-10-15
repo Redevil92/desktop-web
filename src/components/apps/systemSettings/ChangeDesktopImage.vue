@@ -55,7 +55,7 @@ export default defineComponent({
 
 .grid {
   display: grid;
-  grid-template-columns: 100px 100px;
+  grid-template-columns: 120px 120px;
   grid-gap: 10px;
 }
 
@@ -70,12 +70,13 @@ export default defineComponent({
   width: 270px;
   overflow-y: auto;
   flex: none;
+  padding-top: var(--margin);
 }
 
 .desktop-image-item {
   height: 70px;
-  width: 100px;
-  margin: 10px;
+  width: 110px;
+  margin-left: var(--margin);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

@@ -79,8 +79,8 @@ const fileTypesConfiguration: any = {
       width: 760,
     },
     minSize: {
-      height: 100,
-      width: 220,
+      height: 400,
+      width: 650,
     },
     title: "Settings",
     icon: "settings.svg",
