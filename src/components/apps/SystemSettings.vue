@@ -20,7 +20,7 @@
           <div class="back-button" @click="showSelectedSettingComponent = false">
             <span class="mdi mdi-chevron-left"></span> Back
           </div>
-          <component :is="settingAsyncComponent"></component>
+          <component :is="settingAsyncComponent" :height="settingsComponentHeight"></component>
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, PropType, ref } from "vue";
+import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
@@ -46,6 +46,10 @@ export default defineComponent({
 
     const settingAsyncComponent = ref({} as any);
 
+    const settingsComponentHeight = computed(() => {
+      return (props.itemDialog?.dimension.height || 200) - 180;
+    });
+
     const loadAndSetSettingComponent = (componentName: string) => {
       showSelectedSettingComponent.value = true;
 
@@ -58,7 +62,7 @@ export default defineComponent({
       });
     };
 
-    return { showSelectedSettingComponent, settingAsyncComponent, loadAndSetSettingComponent };
+    return { showSelectedSettingComponent, settingAsyncComponent, loadAndSetSettingComponent, settingsComponentHeight };
   },
 });
 </script>

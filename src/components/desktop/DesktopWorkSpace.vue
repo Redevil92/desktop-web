@@ -146,7 +146,6 @@ export default defineComponent({
 .desktop-container {
   height: 100vh;
   width: 100vw;
-
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
