@@ -83,6 +83,7 @@ export default defineComponent({
   background-size: cover;
   border-radius: var(--border-radius);
   border: 3px solid grey;
+  cursor: pointer;
 }
 
 .selected-desktop-image-item {

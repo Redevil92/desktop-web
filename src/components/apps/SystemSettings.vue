@@ -10,10 +10,14 @@
       </div>
       <hr />
       <div class="settings-section">
-        <div v-if="!showSelectedSettingComponent">
+        <div v-if="!showSelectedSettingComponent" class="settings-buttons-list">
           <div class="settings-button" @click="loadAndSetSettingComponent('ChangeDesktopImage.vue')">
             <img height="40" :src="require('/src/assets/icons/change-desktop.svg')" alt="" />
-            <div class="settings-name">Desktop</div>
+            <div class="settings-name">Desktop image</div>
+          </div>
+          <div class="settings-button margin-left" @click="loadAndSetSettingComponent('TaskBarCustomization.vue')">
+            <img height="40" :src="require('/src/assets/icons/task-bar.svg')" alt="" />
+            <div class="settings-name">Task bar</div>
           </div>
         </div>
         <div v-else>
@@ -68,6 +72,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.settings-buttons-list {
+  display: flex;
+}
+
 .settings-section {
   margin-top: calc(var(--margin) * 1);
 }
@@ -125,5 +133,9 @@ export default defineComponent({
 
 .back-button:hover {
   background-color: var(--neutral-color_dark);
+}
+
+.margin-left {
+  margin-left: var(--margin);
 }
 </style>
