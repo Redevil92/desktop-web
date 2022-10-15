@@ -28,6 +28,7 @@ const textType = {
     width: 220,
   },
   application: "TextFileItem",
+  title: "Untitled",
   icon: "txt.svg",
 };
 

@@ -1,4 +1,6 @@
 <template>
+  <SaveAsDialog></SaveAsDialog>
+
   <div :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
       v-if="isLoaded"
@@ -26,6 +28,7 @@
 import { defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
+import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";
 
 import Editor from "@tinymce/tinymce-vue";
 import { readFile } from "@/context/fileSystemController";
@@ -40,7 +43,7 @@ export default defineComponent({
       default: 100,
     },
   },
-  components: { Editor },
+  components: { Editor, SaveAsDialog },
   emits: [],
   setup(props, _) {
     const fileText = ref("");
@@ -53,12 +56,20 @@ export default defineComponent({
           content: content.content,
         } as PathAndContent);
         //createFile(props.itemDialog?.path, content.content);
+      } else {
+        alert("This functionalitz should be implemented, TextFileItem.vue");
+        // new file, to save in some places
+        // open a dialog to save the file
+        // update the item dialog with the path
       }
     };
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         fileText.value = await readFile(props.itemDialog?.path);
+        isLoaded.value = true;
+      } else {
+        fileText.value = "";
         isLoaded.value = true;
       }
     });

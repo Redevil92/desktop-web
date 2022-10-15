@@ -12,9 +12,13 @@
       </div>
       <div>
         <!-- these application should come from the store/local storage -->
-        <div class="application-button" @click="createItemDialog">
+        <div class="application-button" @click="createItemDialog('settings')">
           <img height="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
           <div class="application-name">Settings</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('text')">
+          <img height="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
+          <div class="application-name">Rich text</div>
         </div>
       </div>
       <!-- RECCOMANDED APPLICATION -->
@@ -42,13 +46,13 @@ export default defineComponent({
     const search = ref("Type here to search");
     const startMenuRef = ref<HTMLElement | undefined>();
 
-    const createItemDialog = () => {
+    const createItemDialog = (applicationToOpen: string) => {
       setStartMenuOpened(false);
 
       const settingsApp: DesktopItem = {
         path: "",
         coordinates: { x: 0, y: 0 },
-        applicationExtension: "settings",
+        applicationExtension: applicationToOpen,
         isSelected: true,
       };
 
