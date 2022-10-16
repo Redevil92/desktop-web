@@ -1,7 +1,7 @@
 <template>
-  <SaveAsDialog></SaveAsDialog>
+  <SaveAsDialog v-if="showSaveAsDialog" to="textFileItem"></SaveAsDialog>
 
-  <div :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div id="textFileItem" :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
       v-if="isLoaded"
       class="mce-editor"
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, PropType, ref } from "vue";
+import { defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";
@@ -48,6 +48,7 @@ export default defineComponent({
   setup(props, _) {
     const fileText = ref("");
     const isLoaded = ref(false);
+    const showSaveAsDialog = ref(false);
 
     const saveFile = (content: any, html: any, body: any) => {
       if (props.itemDialog?.path) {
@@ -74,7 +75,11 @@ export default defineComponent({
       }
     });
 
-    return { fileText, saveFile, isLoaded };
+    onMounted(() => {
+      showSaveAsDialog.value = true;
+    });
+
+    return { fileText, saveFile, isLoaded, showSaveAsDialog };
   },
 });
 </script>

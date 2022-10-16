@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <BaseDialog>
+  <div style="color: white">
+    <BaseDialog :to="to">
+      {{ to }}
+      HELLO
       <BaseInput v-model="saveAs"> </BaseInput>
     </BaseDialog>
   </div>
@@ -8,10 +10,12 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import BaseInput from "@/components/shared/BaseInput.vue";
+import BaseDialog from "@/components/shared/BaseDialog.vue";
 
 export default defineComponent({
-  props: {},
-  components: {},
+  props: { to: String },
+  components: { BaseInput, BaseDialog },
   emits: [],
   setup() {
     const saveAs = ref("");
