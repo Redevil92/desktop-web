@@ -1,7 +1,6 @@
 <template>
   <Teleport :to="to ? `#${to}` : 'body'">
     <div class="dialog-container">
-      {{ to }}
       <div class="dialog" :class="{ 'darker-dialog': darker, padding: !noPadding }">
         <slot></slot>
       </div>
@@ -22,6 +21,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .dialog-container {
+  color: var(--font-color);
   width: 100%;
   height: 100%;
   z-index: 5;

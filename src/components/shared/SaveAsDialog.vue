@@ -1,9 +1,8 @@
 <template>
   <div style="color: white">
     <BaseDialog :to="to">
-      {{ to }}
-      HELLO
-      <BaseInput v-model="saveAs"> </BaseInput>
+      <!-- <div class="label">Save as:</div> -->
+      <BaseInput label="Save as:" placeholder="Destination folder" v-model="saveAs"> </BaseInput>
     </BaseDialog>
   </div>
 </template>
@@ -26,4 +25,10 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped></style>
+<style scoped>
+.label {
+  width: 110px;
+  text-align: right;
+  margin-right: 10px;
+}
+</style>

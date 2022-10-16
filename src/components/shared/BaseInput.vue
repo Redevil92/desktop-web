@@ -1,10 +1,13 @@
 <template>
-  <input @change="change" :type="type" :value="modelValue" />
+  <div class="label" v-if="label">{{ label }}</div>
+  <input @change="change" :placeholder="placeholder" :type="type" :value="modelValue" />
 </template>
 
 <script>
 export default {
   props: {
+    label: String,
+    placeholder: String,
     modelValue: String, // previously was `value: String`
     type: { type: String, default: "text" }, // previously was `value: String`
   },
@@ -30,5 +33,11 @@ input {
 input:focus {
   outline: 4px solid var(--primary-color);
   border: 1px solid var(--primary-color);
+}
+
+.label {
+  text-align: left;
+  font-size: var(--medium-font-size);
+  margin-right: 10px;
 }
 </style>
