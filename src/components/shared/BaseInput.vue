@@ -1,6 +1,6 @@
 <template>
-  <div class="label" v-if="label">{{ label }}</div>
-  <input @change="change" :placeholder="placeholder" :type="type" :value="modelValue" />
+  <label class="label" v-if="label">{{ label }}</label>
+  <input :readonly="disabled" @change="change" :placeholder="placeholder" :type="type" :value="modelValue" />
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
     placeholder: String,
     modelValue: String, // previously was `value: String`
     type: { type: String, default: "text" }, // previously was `value: String`
+    disabled: { type: Boolean, default: false }, // previously was `value: String`
   },
   emits: ["update:modelValue"],
   methods: {
@@ -27,11 +28,12 @@ input {
   padding: 3px 8px;
   font-size: var(--medium-font-size);
   border-radius: 9px;
+  width: 100%;
   color: white;
 }
 
 input:focus {
-  outline: 4px solid var(--primary-color);
+  outline: 3px solid var(--primary-color);
   border: 1px solid var(--primary-color);
 }
 

@@ -10,3 +10,4 @@ export const DESKTOP_FILE_DIMENSION = {
 };
 
 export const DESKTOP_PATH = "my PC/Desktop";
+export const MY_PC_PATH = "my PC";

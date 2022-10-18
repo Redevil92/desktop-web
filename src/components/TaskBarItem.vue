@@ -55,7 +55,6 @@ export default defineComponent({
 <style scoped>
 .task-bar-item {
   letter-spacing: -0.1px;
-
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

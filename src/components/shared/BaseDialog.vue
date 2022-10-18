@@ -25,7 +25,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   z-index: 5;
-  background-color: rgba(0, 0, 0, 0.04);
+  /* background-color: rgba(0, 0, 0, 0.04); */
   position: absolute;
   display: flex;
   top: 0;
@@ -36,7 +36,7 @@ export default defineComponent({
 }
 
 .dialog {
-  background-color: var(--dialog-background-color_with_opacity);
+  background-color: var(--background-color_light);
   margin: auto;
   margin-top: 130px;
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 /20%);
@@ -46,6 +46,6 @@ export default defineComponent({
 }
 
 .darker-dialog {
-  background-color: var(--dialog-background-color_darker);
+  background-color: var(--background-color_dark);
 }
 </style>
