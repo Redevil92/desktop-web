@@ -3,7 +3,26 @@
     <BaseDialog :to="to" :noPadding="true">
       <div class="flex">
         <div class="left-panel">
-          <div class="favourites-text">Favourites</div>
+          <div class="title-text">Favourites</div>
+          <div
+            v-for="favourite in favouritesPathList"
+            class="favourite-item"
+            :class="
+              pathAndFilesList.length > 0 && pathAndFilesList[0].path === favourite.path
+                ? 'favourite-item-selected'
+                : ''
+            "
+            :key="'favourite-' + favourite"
+            @click="clickItemFolderHandler(favourite.path, -1)"
+          >
+            <span :class="`mdi ${favourite.mdiIcon} mdi-18 favourite-icon`"></span>
+            {{ getFileNameFromPath(favourite.path) }}
+          </div>
+          <div class="title-text">Cloud</div>
+          <div class="favourite-item">
+            <span :class="`mdi mdi-cloud mdi-18 favourite-icon`"></span>
+            Share folder
+          </div>
         </div>
         <div class="right-panel">
           <div>
@@ -46,7 +65,8 @@
             </div>
           </div>
           <div class="buttons-container">
-            <BaseButton neutralColor>Cancel</BaseButton><BaseButton class="save-button">Save</BaseButton>
+            <BaseButton neutralColor @click="closeDialog">Cancel</BaseButton
+            ><BaseButton class="save-button" @click="saveItem">Save</BaseButton>
           </div>
         </div>
       </div>
@@ -62,20 +82,26 @@ import BaseButton from "@/components/shared/BaseButton.vue";
 
 import { DESKTOP_PATH } from "@/constants";
 import { getFiles, isDir } from "@/context/fileSystemController";
-import PathAndContent from "@/models/PathAndContent";
 import { getFileNameFromPath, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
+import { useSettingsStore } from "@/stores/settingsStore";
+import PathAndIcon from "@/models/PathAndIcon";
 
 export default defineComponent({
   props: { to: String },
   components: { BaseInput, BaseDialog, BaseButton },
-  emits: [],
-  setup() {
+  emits: ["closeDialog", "saveItem"],
+  setup(_, context) {
     const saveAs = ref("");
     const pathAndFilesList = ref<PathAndFiles[]>([]);
     const selectedFolder = ref(DESKTOP_PATH);
+    const settingsStore = useSettingsStore();
 
     const selectedFolderNameToShow = computed(() => {
       return getFileNameFromPath(selectedFolder.value);
+    });
+
+    const favouritesPathList = computed(() => {
+      return settingsStore.favouritesPathListAndIcon as PathAndIcon[];
     });
 
     const clickItemHandler = (filePath: string, index: number) => {
@@ -89,6 +115,9 @@ export default defineComponent({
     };
 
     const closePathFileItem = (index: number): PathAndFiles[] => {
+      if (index === -1) {
+        return [];
+      }
       const pathAndFilesListTemp = [...pathAndFilesList.value];
       if (pathAndFilesList.value.length > index) {
         pathAndFilesListTemp.splice(index + 1);
@@ -108,10 +137,22 @@ export default defineComponent({
         pathsAndIsolder.push({ path, isFolder: getIsFolder } as PathAndIsFolder);
       }
 
-      const pathAndFIle = { path: DESKTOP_PATH, files: pathsAndIsolder };
+      const pathAndFIle = { path, files: pathsAndIsolder };
       pathAndFilesListToUpdate.push(pathAndFIle);
 
       pathAndFilesList.value = pathAndFilesListToUpdate;
+    };
+
+    const closeDialog = () => {
+      context.emit("closeDialog");
+    };
+
+    const saveItem = () => {
+      if (saveAs && selectedFolder) {
+        context.emit("saveItem", { name: saveAs.value, destinationPath: selectedFolder.value });
+      } else {
+        console.log("SHOW ERRO");
+      }
     };
 
     onMounted(async () => {
@@ -123,9 +164,12 @@ export default defineComponent({
       pathAndFilesList,
       selectedFolder,
       selectedFolderNameToShow,
+      favouritesPathList,
       clickItemHandler,
       clickItemFolderHandler,
       getFileNameFromPath,
+      closeDialog,
+      saveItem,
     };
   },
 });
@@ -155,8 +199,8 @@ interface PathAndIsFolder {
 .left-panel {
   width: 150px;
   border-right: 1px solid rgb(67, 67, 67);
-
-  height: 600px;
+  text-align: left;
+  height: 570px;
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
   background-color: var(--background-color_contrast);
@@ -165,7 +209,7 @@ interface PathAndIsFolder {
 .right-panel {
   text-align: left;
   width: 600px;
-  height: 600px;
+  height: 570px;
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
@@ -234,11 +278,11 @@ interface PathAndIsFolder {
 .buttons-container {
   display: flex;
   justify-content: right;
-  padding: calc(var(--margin) * 2);
+  padding: calc(var(--margin) * 1);
 }
 
 .save-button {
-  margin-left: calc(var(--margin) * 2);
+  margin-left: calc(var(--margin) * 1);
 }
 
 .selected-folder-item {
@@ -250,12 +294,28 @@ interface PathAndIsFolder {
   opacity: 0.6;
 }
 
-.favourites-text {
+.title-text {
   font-size: var(--medium-font-size);
   font-weight: 600;
   margin-top: calc(var(--margin) * 2);
   margin-left: calc(var(--margin) * 2);
   opacity: 0.6;
   text-align: left;
+}
+
+.favourite-item {
+  font-size: var(--medium-font-size);
+  margin: 5px var(--margin);
+  padding: 3px var(--margin);
+}
+
+.favourite-item:hover,
+.favourite-item-selected {
+  background-color: var(--neutral-color_background);
+  border-radius: calc(var(--border-radius) / 2);
+}
+
+.favourite-icon {
+  color: var(--selected-color_light);
 }
 </style>

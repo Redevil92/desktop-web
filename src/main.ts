@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { testCreateFiles } from "./context/fileSystemUtils";
+import { createFilesStructure } from "./context/fileSystemUtils";
 import router from "./router";
 import store from "./store";
 import { createPinia } from "pinia";
@@ -31,7 +31,7 @@ export async function initializeAppAndFileSystem() {
       }
 
       (window as any).fs = window.require("fs");
-      testCreateFiles();
+      createFilesStructure();
       createApp(App).use(pinia).use(store).use(router).mount("#app");
     }
   );

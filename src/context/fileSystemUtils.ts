@@ -51,33 +51,22 @@ export const getFileNameWithoutExtension = (path: string): string => {
   return path.replace(/\.[^/.]+$/, "");
 };
 
-export const testCreateFiles = async () => {
+export const createFilesStructure = async () => {
   //window.localStorage.clear();
 
   await createFile("newFile.txt");
-
   await createDirectory("my PC");
-
   await createFile("secondFile.txt", "my beautiful text");
-
   await createFile("my PC/mysecondFile.txt", "my beautiful text");
-
   await createDirectory("my PC/Desktop");
-
+  await createDirectory("my PC/Documents");
+  await createDirectory("my PC/Start Menu");
+  await createDirectory("my PC/Pictures");
+  await createDirectory("my PC/Music");
+  await createDirectory("my PC/Videos");
   await createFile("my PC/Desktop/file_desktop3.txt", "MY start text to test.");
   await createDirectory("my PC/Desktop/FOLDER");
-
-  // base64 string
-  // const img =
-  //   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0" +
-  //   "NAAAAKElEQVQ4jWNgYGD4Twzu6FhFFGYYNXDUwGFpIAk2E4dHDRw1cDgaCAASFOffhEIO" +
-  //   "3gAAAABJRU5ErkJggg==";
-
-  // await createFile("my PC/Desktop/image.png", img);
-
-  //createFile("my PC/Desktop/FOLDER/new_file1.txt", "This is my text file.");
   await createFile("my PC/Desktop/FOLDER/mountain", "");
-
   await createDirectory("my PC/Desktop/FOLDER/sub directory");
   await createDirectory("my PC/Desktop/FOLDER/another sub directory");
   await createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This is my text file 2.");

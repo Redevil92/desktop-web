@@ -11,6 +11,7 @@
   --neutral-color_light: rgb(163, 163, 163);
   --neutral-color: grey;
   --neutral-color_dark: rgb(101, 101, 101);
+  --neutral-color_background: rgba(101, 101, 101, 0.422);
 
   --dialog-header-color_dark: rgb(42, 42, 42);
   --dialog-sub-header-color_dark: rgb(25, 25, 25);
@@ -20,6 +21,7 @@
   --dialog-background-color_darker: #393939;
   --dialog-border-color_dark: #626262;
   --selected-color: #4141bb;
+  --selected-color_light: #5151ff;
 
   --background-color_contrast: #404043fc;
   --background-color: rgb(43 45 51 / 97%);

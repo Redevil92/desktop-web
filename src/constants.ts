@@ -11,3 +11,8 @@ export const DESKTOP_FILE_DIMENSION = {
 
 export const DESKTOP_PATH = "my PC/Desktop";
 export const MY_PC_PATH = "my PC";
+export const DOCUMENT_PATH = "my PC/Documents";
+export const MUSIC_PATH = "my PC/Music";
+export const VIDEOS_PATH = "my PC/Videos";
+export const PICTURES_PATH = "my PC/Pictures";
+export const START_MENU_PATH = "my PC/Start Menu";
