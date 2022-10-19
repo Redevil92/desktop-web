@@ -226,6 +226,9 @@ export default {
     MINIMIZE_ITEM_DIALOG: ({ commit }: any, itemDialogGuid: string) => {
       commit("MINIMIZE_ITEM_DIALOG", itemDialogGuid);
     },
+    UPDATE_ITEM_DIALOG: ({ commit }: any, itemDialogToUpdate: ItemDialog) => {
+      commit("UPDATE_ITEM_DIALOG", itemDialogToUpdate);
+    },
     UPDATE_ITEM_DIALOG_POSITION: ({ commit }: any, itemDialogToUpdate: ItemDialog) => {
       commit("UPDATE_ITEM_DIALOG_POSITION", itemDialogToUpdate);
     },

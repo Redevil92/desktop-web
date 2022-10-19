@@ -1,19 +1,44 @@
 <template>
-  <Teleport to="body">
-    <div class="snack-bar-container">
-      <div class="snack-bar">This is a test</div>
-    </div>
-  </Teleport>
+  <div v-if="snackBar.show">
+    <Teleport to="body">
+      <div class="snack-bar-container">
+        <div class="snack-bar">This is a test</div>
+      </div>
+    </Teleport>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import SnackBar from "@/models/SnackBar";
+import { useLayoutStore } from "@/stores/layoutStore";
+import { computed, defineComponent, watch } from "vue";
 
 export default defineComponent({
   props: {},
   components: {},
   setup() {
-    return {};
+    const layoutStore = useLayoutStore();
+
+    const snackBar = computed(function () {
+      return layoutStore.snackBar as SnackBar;
+    });
+
+    const durationTime = computed(function () {
+      return layoutStore.snackBarDurationTime;
+    });
+
+    watch(
+      () => snackBar,
+      function () {
+        if (snackBar.value.show) {
+          setTimeout(() => {
+            layoutStore.resetSnackBar();
+          }, durationTime.value);
+        }
+      }
+    );
+
+    return { snackBar };
   },
 });
 </script>

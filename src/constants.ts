@@ -16,3 +16,10 @@ export const MUSIC_PATH = "my PC/Music";
 export const VIDEOS_PATH = "my PC/Videos";
 export const PICTURES_PATH = "my PC/Pictures";
 export const START_MENU_PATH = "my PC/Start Menu";
+
+export const SEVERITY = {
+  success: "success",
+  warning: "warning",
+  information: "information",
+  error: "error",
+};

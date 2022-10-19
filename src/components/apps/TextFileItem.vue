@@ -40,6 +40,9 @@ import { readFile } from "@/context/fileSystemController";
 import store from "@/store";
 import PathAndContent from "@/models/PathAndContent";
 import NameAndDestinationPath from "@/models/NameAndDestinationPath";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { useLayoutStore } from "@/stores/layoutStore";
+import { SEVERITY } from "@/constants";
 
 export default defineComponent({
   props: {
@@ -52,6 +55,8 @@ export default defineComponent({
   components: { Editor, SaveAsDialog },
   emits: [],
   setup(props, _) {
+    const layoutStore = useLayoutStore();
+
     const fileText = ref("");
     const isLoaded = ref(false);
     const showSaveAsDialog = ref(false);
@@ -70,9 +75,17 @@ export default defineComponent({
     };
 
     const saveTextFileHandler = async (destinationPath: string) => {
-      await store.dispatch("fileSystem/CREATE_FILE", { path: destinationPath + ".txt", content: fileContent.value });
+      const destinationPathToSave = destinationPath + ".txt";
+
+      await store.dispatch("fileSystem/CREATE_FILE", { path: destinationPathToSave, content: fileContent.value });
       showSaveAsDialog.value = false;
+      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
+      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      const itemDialogToUpdate = Object.assign({}, props.itemDialog);
+      itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
+      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG", itemDialogToUpdate);
       // TODO, show snackbar
+      layoutStore.setSnackBar({ show: true, text: "", severity: SEVERITY.information });
     };
 
     onBeforeMount(async () => {
