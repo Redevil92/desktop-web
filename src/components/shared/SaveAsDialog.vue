@@ -85,6 +85,7 @@ import { getFiles, isDir } from "@/context/fileSystemController";
 import { getFileNameFromPath, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
 import { useSettingsStore } from "@/stores/settingsStore";
 import PathAndIcon from "@/models/PathAndIcon";
+import NameAndDestinationPath from "@/models/NameAndDestinationPath";
 
 export default defineComponent({
   props: { to: String },
@@ -148,8 +149,8 @@ export default defineComponent({
     };
 
     const saveItem = () => {
-      if (saveAs && selectedFolder) {
-        context.emit("saveItem", { name: saveAs.value, destinationPath: selectedFolder.value });
+      if (saveAs.value && selectedFolder.value) {
+        context.emit("saveItem", selectedFolder.value + "/" + saveAs.value);
       } else {
         console.log("SHOW ERRO");
       }

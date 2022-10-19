@@ -1,5 +1,10 @@
 <template>
-  <SaveAsDialog v-if="showSaveAsDialog" to="textFileItem"></SaveAsDialog>
+  <SaveAsDialog
+    v-if="showSaveAsDialog"
+    @saveItem="saveTextFileHandler"
+    @closeDialog="showSaveAsDialog = false"
+    to="textFileItem"
+  ></SaveAsDialog>
 
   <div id="textFileItem" :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
     <editor
@@ -34,6 +39,7 @@ import Editor from "@tinymce/tinymce-vue";
 import { readFile } from "@/context/fileSystemController";
 import store from "@/store";
 import PathAndContent from "@/models/PathAndContent";
+import NameAndDestinationPath from "@/models/NameAndDestinationPath";
 
 export default defineComponent({
   props: {
@@ -49,6 +55,7 @@ export default defineComponent({
     const fileText = ref("");
     const isLoaded = ref(false);
     const showSaveAsDialog = ref(false);
+    const fileContent = ref("");
 
     const saveFile = (content: any, html: any, body: any) => {
       if (props.itemDialog?.path) {
@@ -56,13 +63,16 @@ export default defineComponent({
           path: props.itemDialog?.path,
           content: content.content,
         } as PathAndContent);
-        //createFile(props.itemDialog?.path, content.content);
       } else {
-        alert("This functionalitz should be implemented, TextFileItem.vue");
-        // new file, to save in some places
-        // open a dialog to save the file
-        // update the item dialog with the path
+        fileContent.value = content.content;
+        showSaveAsDialog.value = true;
       }
+    };
+
+    const saveTextFileHandler = async (destinationPath: string) => {
+      await store.dispatch("fileSystem/CREATE_FILE", { path: destinationPath + ".txt", content: fileContent.value });
+      showSaveAsDialog.value = false;
+      // TODO, show snackbar
     };
 
     onBeforeMount(async () => {
@@ -75,11 +85,7 @@ export default defineComponent({
       }
     });
 
-    onMounted(() => {
-      showSaveAsDialog.value = true;
-    });
-
-    return { fileText, saveFile, isLoaded, showSaveAsDialog };
+    return { fileText, saveFile, isLoaded, showSaveAsDialog, saveTextFileHandler };
   },
 });
 </script>
