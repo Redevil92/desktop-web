@@ -2,12 +2,9 @@
   <div v-if="snackbar.show">
     <Teleport to="body">
       <div class="snack-bar-container flex">
-        <div class="snack-bar flex" :class="snackbarClass">
+        <div class="snack-bar flex" :style="`background-color: ${snackbar.severity.color}`">
           <div>{{ snackbar.text }}</div>
-          <div class="close-button flex" @click="resetSnackbar">
-            CLOSE
-            <!-- <div class="mdi mdi-close close-icon"></div> -->
-          </div>
+          <div class="close-button flex" @click="resetSnackbar">CLOSE</div>
         </div>
       </div>
     </Teleport>
@@ -33,10 +30,6 @@ export default defineComponent({
       return layoutStore.snackbarDurationTime;
     });
 
-    const snackbarClass = computed(function () {
-      return `${snackbar.value.severity}-snackbar`;
-    });
-
     const resetSnackbar = () => {
       layoutStore.resetSnackBar();
     };
@@ -52,7 +45,7 @@ export default defineComponent({
       }
     );
 
-    return { snackbar, snackbarClass, resetSnackbar };
+    return { snackbar, resetSnackbar };
   },
 });
 </script>
@@ -61,6 +54,7 @@ export default defineComponent({
   border-radius: var(--border-radius);
   padding: calc(var(--margin) / 2) var(--margin);
   font-size: var(--medium-font-size);
+  color: white;
 }
 
 .success-snackbar {

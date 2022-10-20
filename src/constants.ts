@@ -18,8 +18,8 @@ export const PICTURES_PATH = "my PC/Pictures";
 export const START_MENU_PATH = "my PC/Start Menu";
 
 export const SEVERITY = {
-  success: "success",
-  warning: "warning",
-  information: "information",
-  error: "error",
+  success: { type: "success", color: "#4fa357" },
+  warning: { type: "warning", color: "#bb871f" },
+  information: { type: "information", color: "#b7b7b75f" },
+  error: { type: "error", color: "#ba1616" },
 };

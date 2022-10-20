@@ -1,5 +1,5 @@
 export default interface SnackBar {
   show: boolean;
   text: string;
-  severity: string;
+  severity: { type: string; color: string };
 }
