@@ -31,10 +31,8 @@ export default function useMoveFiles() {
     return false;
   };
 
-  const moveFilesInFolderFromDesktop = async (event: Event, destinationPath: string) => {
-    const filesToMove = fileSystemStore.getSelectedDesktopFiles.map(
-      (desktopItem: DesktopItem) => desktopItem.path
-    ) as string[];
+  const moveFilesInFolderFromDesktop = async (_: Event, destinationPath: string) => {
+    const filesToMove = fileSystemStore.getSelectedDesktopFiles.map((desktopItem) => desktopItem.path);
     if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
       return;
     }
@@ -65,8 +63,6 @@ export default function useMoveFiles() {
     resetFilesToMove();
     refreshFiles();
   };
-
-  // const saveDesktopFilePosition = () => {};
 
   const refreshFiles = async () => {
     await fileSystemStore.refreshAllItemDialogFiles();
