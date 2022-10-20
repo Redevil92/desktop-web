@@ -45,6 +45,15 @@ export const useLayoutStore = defineStore("layout", {
 
       return max_z_index;
     },
+    getFocusedItemDialog(): ItemDialog | undefined {
+      return this.itemsDialog.find((item: ItemDialog) => item.isFocused);
+    },
+    getDesktopFilesPath(): string[] {
+      return this.desktopItems.map((item) => item.path);
+    },
+    getSelectedDesktopFiles(): DesktopItem[] {
+      return this.desktopItems.filter((item) => item.isSelected);
+    },
   },
   actions: {
     async createItemDialog(itemDialog: DesktopItem) {
