@@ -3,7 +3,7 @@
     <Teleport to="body">
       <div class="snack-bar-container flex">
         <div class="snack-bar flex" :class="snackbarClass">
-          <div>{{ snackbar.text || "This is a text" }}</div>
+          <div>{{ snackbar.text }}</div>
           <div class="close-button flex" @click="resetSnackbar">
             CLOSE
             <!-- <div class="mdi mdi-close close-icon"></div> -->

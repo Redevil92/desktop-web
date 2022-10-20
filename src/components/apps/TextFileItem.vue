@@ -85,7 +85,11 @@ export default defineComponent({
       itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
       store.dispatch("fileSystem/UPDATE_ITEM_DIALOG", itemDialogToUpdate);
       // TODO, show snackbar
-      layoutStore.setSnackBar({ show: true, text: "", severity: SEVERITY.information });
+      layoutStore.setSnackBar({
+        show: true,
+        text: `${getFileNameFromPath(destinationPathToSave)} created.`,
+        severity: SEVERITY.information,
+      });
     };
 
     onBeforeMount(async () => {
