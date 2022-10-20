@@ -1,8 +1,14 @@
 <template>
-  <div v-if="snackBar.show">
+  <div v-if="snackbar.show">
     <Teleport to="body">
-      <div class="snack-bar-container">
-        <div class="snack-bar">This is a test</div>
+      <div class="snack-bar-container flex">
+        <div class="snack-bar flex" :class="snackbarClass">
+          <div>{{ snackbar.text || "This is a text" }}</div>
+          <div class="close-button flex" @click="resetSnackbar">
+            CLOSE
+            <!-- <div class="mdi mdi-close close-icon"></div> -->
+          </div>
+        </div>
       </div>
     </Teleport>
   </div>
@@ -13,39 +19,69 @@ import SnackBar from "@/models/SnackBar";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { computed, defineComponent, watch } from "vue";
 
+import { SEVERITY } from "@/constants";
+
 export default defineComponent({
   props: {},
   components: {},
   setup() {
     const layoutStore = useLayoutStore();
 
-    const snackBar = computed(function () {
-      return layoutStore.snackBar as SnackBar;
+    const snackbar = computed(function () {
+      return layoutStore.snackbar as SnackBar;
     });
 
     const durationTime = computed(function () {
-      return layoutStore.snackBarDurationTime;
+      return layoutStore.snackbarDurationTime;
     });
 
+    const snackbarClass = computed(function () {
+      return `${snackbar.value.severity}-snackbar`;
+    });
+
+    const resetSnackbar = () => {
+      layoutStore.resetSnackBar();
+    };
+
     watch(
-      () => snackBar,
+      () => snackbar.value,
       function () {
-        if (snackBar.value.show) {
+        if (snackbar.value.show) {
           setTimeout(() => {
-            layoutStore.resetSnackBar();
+            //layoutStore.resetSnackBar();
           }, durationTime.value);
         }
       }
     );
 
-    return { snackBar };
+    return { snackbar, snackbarClass, resetSnackbar };
   },
 });
 </script>
 <style scoped>
 .snack-bar {
-  border-radius: 8px;
-  background-color: green;
+  border-radius: var(--border-radius);
+  padding: calc(var(--margin) / 2) var(--margin);
+  font-size: var(--medium-font-size);
+}
+
+.success-snackbar {
+  background-color: #4fa357;
+  color: white;
+}
+
+.information-snackbar {
+  background-color: #b7b7b75f;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.warning-snackbar {
+  background-color: var(--warning-color);
   color: white;
 }
 
@@ -53,7 +89,25 @@ export default defineComponent({
   width: 100%;
   position: absolute;
   bottom: 50px;
+  padding: 0px var;
+}
+
+.flex {
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.close-button {
+  margin-left: 10px;
+  padding: calc(var(--margin) / 3) calc(var(--margin));
+  border-radius: var(--border-radius);
+  background-color: rgba(224, 223, 223, 0.368);
+  cursor: pointer;
+}
+
+.close-icon {
+  margin-left: var(--unit-size);
+  color: var(--font-color);
 }
 </style>

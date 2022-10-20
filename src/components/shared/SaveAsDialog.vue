@@ -85,7 +85,6 @@ import { getFiles, isDir } from "@/context/fileSystemController";
 import { getFileNameFromPath, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
 import { useSettingsStore } from "@/stores/settingsStore";
 import PathAndIcon from "@/models/PathAndIcon";
-import NameAndDestinationPath from "@/models/NameAndDestinationPath";
 
 export default defineComponent({
   props: { to: String },
