@@ -29,11 +29,11 @@ import DesktopFileItem from "@/components/desktop/DesktopFileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 import DesktopItem from "@/models/DesktopItem";
-import { useStore } from "vuex";
 import { DESKTOP_PATH } from "@/constants";
 import { isDir } from "@/context/fileSystemController";
 
 import { useSettingsStore } from "@/stores/settingsStore";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -43,8 +43,7 @@ export default defineComponent({
   components: { DesktopFileItem, DropExternalFileZone, SelectionBoxZone },
   emits: ["onFileItemPositionChange"],
   setup() {
-    const store = useStore();
-
+    const fileSystemStore = useFileSystemStore();
     const settingsStore = useSettingsStore();
 
     const { moveFilesInFolder } = useMoveFiles();
@@ -55,12 +54,8 @@ export default defineComponent({
       return settingsStore.desktopImage;
     });
 
-    const selectedItemPaths = computed((): string[] => {
-      return store.getters["fileSystem/"];
-    });
-
     const isSelectionBoxEnabled = computed((): boolean => {
-      return store.getters["fileSystem/GET_IS_SELECTION_BOX_ENABLED"];
+      return fileSystemStore.isSelectionBoxEnabled;
     });
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
@@ -72,11 +67,11 @@ export default defineComponent({
     };
 
     const setIsSelectionBoxEnabled = (isSelectionBoxEnabled: boolean) => {
-      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", isSelectionBoxEnabled);
+      fileSystemStore.setIsSelectionBoxEnabled(isSelectionBoxEnabled);
     };
 
     const selectFile = (filesSelected: DesktopItem[]) => {
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", filesSelected);
+      fileSystemStore.setSelectedDesktopFiles(filesSelected);
     };
 
     const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
@@ -89,25 +84,17 @@ export default defineComponent({
           coordinates: { x: clientRect.x, y: clientRect.y },
         } as DesktopItem;
       });
-
-      // const newSelectedDesktopItems = desktopPaths.filter((path) => {
-      //   if (elementsSelectedNames.includes(getFileNameFromPath(path))) {
-      //     return ;
-      //   }
-      // });
-      // x y
-
-      store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", elementsSelectedNames);
+      fileSystemStore.setSelectedDesktopFiles(elementsSelectedNames);
     };
 
     // TODO, look at this one
     const desktopFiles = computed(function (): DesktopItem[] {
-      return store.getters["fileSystem/GET_DESKTOP_FILES"] as DesktopItem[];
+      return fileSystemStore.desktopItems;
     });
 
     const refreshFiles = async () => {
-      await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      await store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      await fileSystemStore.refreshAllItemDialogFiles();
+      await fileSystemStore.fetchDesktopItems();
     };
 
     onMounted(async () => {
@@ -118,7 +105,6 @@ export default defineComponent({
       desktopRef,
       desktopFiles,
       selectFile,
-      selectedItemPaths,
       desktopImage,
       dropFilehandler,
       DESKTOP_PATH,

@@ -17,7 +17,7 @@ import ItemDialog from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
 
-export const useLayoutStore = defineStore("layout", {
+export const useFileSystemStore = defineStore("fileSystem", {
   state: () => ({
     desktopItems: [] as DesktopItem[],
     itemsDialog: [] as ItemDialog[],

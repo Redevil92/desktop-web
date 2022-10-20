@@ -14,7 +14,8 @@
 <script lang="ts">
 import { getFiles } from "@/context/fileSystemController";
 import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
-import store from "@/store";
+import PathAndContent from "@/models/PathAndContent";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
@@ -24,6 +25,8 @@ export default defineComponent({
   components: {},
 
   setup(props, context) {
+    const fileSystemStore = useFileSystemStore();
+
     let active = ref(false);
 
     function setActive() {
@@ -52,7 +55,10 @@ export default defineComponent({
               "." +
               getFileExtensionFromName(file.name).replace("jpeg", "jpg");
 
-            await store.dispatch("fileSystem/CREATE_FILE", { path: uniquePath, content: reader.result?.toString() });
+            await fileSystemStore.createFile({
+              path: uniquePath,
+              content: reader.result?.toString(),
+            } as PathAndContent);
 
             refreshFiles();
           };
@@ -62,8 +68,8 @@ export default defineComponent({
     };
 
     const refreshFiles = () => {
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
     };
 
     return { onDrop, active, setActive, setInactive };

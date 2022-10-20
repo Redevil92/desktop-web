@@ -80,9 +80,9 @@
 <script lang="ts">
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
-import store from "@/store";
 import { computed, defineComponent, PropType, ref } from "vue";
 import Dimension from "@/models/Dimension";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -91,6 +91,8 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
+
     const actionTypes = {
       RESIZING_LEFT: "resizing_left",
       RESIZING_RIGHT: "resizing_right",
@@ -208,10 +210,11 @@ export default defineComponent({
       }
 
       const newDimension = { height: newHeight, width: newWidth } as Dimension;
-      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_DIMENSION", {
+
+      fileSystemStore.updateItemDialogDimension({
         guid: props.itemDialog.guid,
         dimension: newDimension,
-      });
+      } as ItemDialog);
     }
 
     function elementDrag(e: any) {
@@ -234,11 +237,11 @@ export default defineComponent({
 
     function updateItemPosition(newPosition: Coordinates) {
       // TODO if out of screen dont update!!!!
-      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_POSITION", { guid: props.itemDialog.guid, position: newPosition });
+      fileSystemStore.updateItemDialogPosition({ guid: props.itemDialog.guid, position: newPosition } as ItemDialog);
     }
 
     function setItemDialogFocused() {
-      store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.itemDialog);
+      fileSystemStore.setFocusedItemDialog(props.itemDialog);
     }
 
     function closeDragElement() {

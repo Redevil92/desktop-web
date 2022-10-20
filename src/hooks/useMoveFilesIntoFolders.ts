@@ -2,20 +2,22 @@ import { DESKTOP_PATH } from "@/constants";
 import { copyFile, deleteFile } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import DesktopItem from "@/models/DesktopItem";
-import store from "@/store";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { computed } from "vue";
 
 export default function useMoveFiles() {
+  const fileSystemStore = useFileSystemStore();
+
   const filePathsToMove = computed((): string[] => {
-    return store.getters["fileSystem/GET_FILE_PATHS_TO_MOVE"];
+    return fileSystemStore.filePathsToMove;
   });
 
   const setFilesToMove = (filesToMove: string[]) => {
-    store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", filesToMove);
+    fileSystemStore.setFilePathsToMove(filesToMove);
   };
 
   const resetFilesToMove = () => {
-    store.dispatch("fileSystem/SET_FILE_PATHS_TO_MOVE", []);
+    fileSystemStore.setFilePathsToMove([]);
   };
 
   const isChangingFilePosition = (destinationPath: string) => {
@@ -30,7 +32,9 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolderFromDesktop = async (event: Event, destinationPath: string) => {
-    const filesToMove = store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"].map(
+    console.log("HHHHHAHAJ");
+
+    const filesToMove = fileSystemStore.getSelectedDesktopFiles.map(
       (desktopItem: DesktopItem) => desktopItem.path
     ) as string[];
     if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
@@ -67,8 +71,8 @@ export default function useMoveFiles() {
   // const saveDesktopFilePosition = () => {};
 
   const refreshFiles = async () => {
-    await store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-    await store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+    await fileSystemStore.refreshAllItemDialogFiles();
+    await fileSystemStore.fetchDesktopItems();
   };
 
   return {

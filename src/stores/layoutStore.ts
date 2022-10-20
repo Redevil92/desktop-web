@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-
 import { SEVERITY } from "@/constants";
 import SnackBar from "@/models/SnackBar";
 

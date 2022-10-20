@@ -1,5 +1,5 @@
 <template>
-  <div v-if="snackbar.show">
+  <div v-if="snackbar && snackbar.show">
     <Teleport to="body">
       <div class="snack-bar-container flex">
         <div class="snack-bar flex" :style="`background-color: ${snackbar.severity.color}`">

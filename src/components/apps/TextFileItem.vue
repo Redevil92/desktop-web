@@ -37,12 +37,11 @@ import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";
 
 import Editor from "@tinymce/tinymce-vue";
 import { readFile } from "@/context/fileSystemController";
-import store from "@/store";
 import PathAndContent from "@/models/PathAndContent";
-import NameAndDestinationPath from "@/models/NameAndDestinationPath";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { SEVERITY } from "@/constants";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -56,6 +55,7 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const layoutStore = useLayoutStore();
+    const fileSystemStore = useFileSystemStore();
 
     const fileText = ref("");
     const isLoaded = ref(false);
@@ -64,7 +64,7 @@ export default defineComponent({
 
     const saveFile = (content: any, html: any, body: any) => {
       if (props.itemDialog?.path) {
-        store.dispatch("fileSystem/UPDATE_FILE", {
+        fileSystemStore.updateFile({
           path: props.itemDialog?.path,
           content: content.content,
         } as PathAndContent);
@@ -77,14 +77,15 @@ export default defineComponent({
     const saveTextFileHandler = async (destinationPath: string) => {
       const destinationPathToSave = destinationPath + ".txt";
 
-      await store.dispatch("fileSystem/CREATE_FILE", { path: destinationPathToSave, content: fileContent.value });
+      fileSystemStore.createFile({ path: destinationPathToSave, content: fileContent.value });
       showSaveAsDialog.value = false;
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
+
       const itemDialogToUpdate = Object.assign({}, props.itemDialog);
       itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
-      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG", itemDialogToUpdate);
-      // TODO, show snackbar
+      fileSystemStore.updateItemDialog(itemDialogToUpdate);
+
       layoutStore.setSnackBar({
         show: true,
         text: `"${getFileNameFromPath(destinationPathToSave)}" created.`,

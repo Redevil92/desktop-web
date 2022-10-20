@@ -27,14 +27,15 @@ import ItemDialog from "@/models/ItemDialog";
 import TaskBarItem from "@/components/TaskBarItem.vue";
 import StartMenu from "@/components/StartMenu.vue";
 
-import store from "@/store";
 import { useLayoutStore } from "@/stores/layoutStore";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {},
   components: { TaskBarItem, StartMenu },
   setup() {
     const layoutStore = useLayoutStore();
+    const fileSystemStore = useFileSystemStore();
 
     const isStartMenuOpened = computed(() => {
       return layoutStore.startMenuOpened;
@@ -50,7 +51,7 @@ export default defineComponent({
     const currentDate = ref(new Date().toLocaleString().replace(",", " "));
 
     const taskBarItems = computed(function () {
-      return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
+      return fileSystemStore.itemsDialog as ItemDialog[];
     });
 
     const itemWidth = computed(function () {
@@ -66,6 +67,7 @@ export default defineComponent({
     });
 
     const setStartMenuOpened = () => {
+      console.log("OH BOY", layoutStore);
       layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
     };
 

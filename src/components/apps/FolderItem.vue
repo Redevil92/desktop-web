@@ -80,7 +80,6 @@
 import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
 import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watchEffect } from "vue";
 
-import store from "@/store";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
@@ -88,6 +87,7 @@ import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSys
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import ItemDialog from "@/models/ItemDialog";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -97,13 +97,15 @@ export default defineComponent({
   components: { DropExternalFileZone },
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
+
     const folderContentRef = ref<HTMLElement | null>(null);
     const isMouseOver = ref(false as boolean);
 
     const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
     const isDraggingItem = computed(function () {
-      return store.getters["fileSystem/GET_DRAGGIN_PATH"] !== "";
+      return fileSystemStore.dragginPath !== "";
     });
 
     const doubleClickHandler = async (fileName: string) => {
@@ -117,7 +119,7 @@ export default defineComponent({
 
           isSelected: true,
         } as DesktopItem;
-        store.dispatch("fileSystem/CREATE_ITEM_DIALOG", newItemDialog);
+        fileSystemStore.createItemDialog(newItemDialog);
       }
     };
 
@@ -126,7 +128,7 @@ export default defineComponent({
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
 
-      store.dispatch("fileSystem/SET_ACTION_MENU", {
+      fileSystemStore.setActionMenu({
         show: true,
         path: customPath ? customPath : props.itemDialog?.path,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
@@ -139,7 +141,7 @@ export default defineComponent({
     };
 
     const updateItemDialogPath = (fileName: string) => {
-      store.dispatch("fileSystem/UPDATE_ITEM_DIALOG_NAME", { newPath: fileName, itemDialog: props.itemDialog });
+      fileSystemStore.updateItemDialogName({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
     };
 
     // *** ITEM SELECTION AND CHANGE NAME
@@ -150,7 +152,7 @@ export default defineComponent({
     const fileNameToChangeSpanRef = ref(null);
 
     const isCutFile = (itemName: string) => {
-      const filesToCut = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"] as string[];
+      const filesToCut = fileSystemStore.filePathsToCut;
       if (filesToCut.includes(itemName)) {
         return true;
       }
@@ -169,7 +171,7 @@ export default defineComponent({
 
     const itemClickHandler = async (fileName: string) => {
       if (!props.itemDialog?.isFocused) {
-        store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.itemDialog);
+        fileSystemStore.setFocusedItemDialog(props.itemDialog as ItemDialog);
       }
       if (fileName === selectedItem.value) {
         fileNameToChange.value = getFileNameFromPath(fileName);
@@ -207,8 +209,8 @@ export default defineComponent({
     };
 
     const refreshFileSystemFiles = () => {
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
     };
 
     // *** UTILITIES METHODS

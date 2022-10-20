@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { useStore } from "vuex";
 
 import DesktopWorkSpace from "@/components/desktop/DesktopWorkSpace.vue";
 import OpenedFileView from "@/components/OpenedFileView.vue";
@@ -27,19 +26,20 @@ import SnackBar from "@/components/shared/SnackBar.vue";
 import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/constants";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {},
   components: { DesktopWorkSpace, TaskBar, OpenedFileView, ActionMenu, SnackBar },
   setup() {
-    const store = useStore();
+    const fileSystemStore = useFileSystemStore();
 
     const rightClickHandler = (event: Event) => {
       event.preventDefault();
 
       const pointerEvent = event as PointerEvent;
 
-      store.dispatch("fileSystem/SET_ACTION_MENU", {
+      fileSystemStore.setActionMenu({
         show: true,
         path: DESKTOP_PATH,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
@@ -48,7 +48,7 @@ export default defineComponent({
     };
 
     const itemsDialog = computed(function () {
-      return store.getters["fileSystem/GET_ITEMS_DIALOG"] as ItemDialog[];
+      return fileSystemStore.itemsDialog as ItemDialog[];
     });
 
     return {

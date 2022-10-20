@@ -83,7 +83,6 @@ import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
 import DesktopItem from "@/models/DesktopItem";
 
-import store from "@/store";
 import { DESKTOP_PATH } from "@/constants";
 import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
@@ -96,6 +95,8 @@ import {
   saveSelectedDesktopItemsPositionInLocalStorage,
 } from "@/hooks/useLocalStorage";
 
+import { useFileSystemStore } from "@/stores/fileSystemStore";
+
 export default defineComponent({
   props: {
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
@@ -104,6 +105,8 @@ export default defineComponent({
   components: { BaseDialog, BaseButton },
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
+    const fileSystemStore = useFileSystemStore();
+
     const fileName = ref(getFileNameFromPath(props.fileItem.path));
 
     const isEditingText = ref(false);
@@ -116,7 +119,7 @@ export default defineComponent({
 
     const isMouseOver = ref(false as boolean);
     const isDraggingItem = computed(function () {
-      return store.getters["fileSystem/GET_DRAGGIN_PATH"] !== "";
+      return fileSystemStore.dragginPath !== "";
     });
 
     const { moveFilesInFolderFromDesktop } = useMoveFiles();
@@ -129,7 +132,7 @@ export default defineComponent({
     });
 
     const selectedDesktopItems = computed((): DesktopItem[] => {
-      return store.getters["fileSystem/GET_SELECTED_DESKTOP_FILES"];
+      return fileSystemStore.getSelectedDesktopFiles;
     });
 
     watch(
@@ -144,7 +147,7 @@ export default defineComponent({
     });
 
     const isCutFile = computed(function () {
-      const filesToCut = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"] as string[];
+      const filesToCut = fileSystemStore.filePathsToCut;
       if (filesToCut.includes(props.fileItem.path)) {
         return true;
       }
@@ -163,7 +166,7 @@ export default defineComponent({
       const index = selectedDesktopItems.value.findIndex((item) => item.path === newFileSelected.path);
 
       if (index === -1) {
-        store.dispatch("fileSystem/SET_SELECTED_DESKTOP_FILES", [
+        fileSystemStore.setSelectedDesktopFiles([
           { path: newFileSelected.path, coordinates: newFileSelected.coordinates },
         ] as DesktopItem[]);
       }
@@ -174,12 +177,12 @@ export default defineComponent({
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
       selectFile(item);
-      store.dispatch("fileSystem/SET_ACTION_MENU", {
+      fileSystemStore.setActionMenu({
         show: true,
         path: item.path,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
-      } as ActionMenu);
+      });
     };
 
     const clickHandler = () => {
@@ -187,12 +190,12 @@ export default defineComponent({
     };
 
     const doubleClickHandler = () => {
-      store.dispatch("fileSystem/CREATE_ITEM_DIALOG", props.fileItem);
+      fileSystemStore.createItemDialog(props.fileItem);
     };
 
     const refreshFileSystemFiles = () => {
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES", {});
-      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
     };
 
     const changeFileName = async () => {
@@ -225,14 +228,14 @@ export default defineComponent({
       e = e || window.event;
       e.preventDefault();
 
-      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", false);
+      fileSystemStore.setIsSelectionBoxEnabled(false);
 
-      zIndex.value = (store.getters["fileSystem/GET_BIGGER_Z_INDEX"] as number) + 1;
+      zIndex.value = fileSystemStore.getBigger_z_index + 1;
 
       shiftX = e.clientX - fileItemRef.value.getBoundingClientRect().left;
       shiftY = e.clientY - fileItemRef.value.getBoundingClientRect().top;
 
-      store.dispatch("fileSystem/SET_DRAGGIN_PATH", props.fileItem.path);
+      fileSystemStore.setDragginPath(props.fileItem.path);
 
       document.onmouseup = closeDragElement;
       document.onmousemove = elementDrag;
@@ -305,8 +308,9 @@ export default defineComponent({
       zIndex.value = null;
 
       fileItemRef.value.hidden = false;
-      store.dispatch("fileSystem/SET_IS_SELECTION_BOX_ENABLED", true);
-      store.dispatch("fileSystem/SET_DRAGGIN_PATH", "");
+
+      fileSystemStore.setIsSelectionBoxEnabled(true);
+      fileSystemStore.setDragginPath("");
       document.onmouseup = null;
       document.onmousemove = null;
     }

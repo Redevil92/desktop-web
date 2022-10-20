@@ -18,9 +18,9 @@
 import { computed, defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import store from "@/store";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import { isDir } from "@/context/fileSystemController";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -29,8 +29,10 @@ export default defineComponent({
   },
   components: {},
   setup(props) {
+    const fileSystemStore = useFileSystemStore();
+
     const isFocused = computed(function () {
-      const focusedItemDialog = store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as ItemDialog;
+      const focusedItemDialog = fileSystemStore.getFocusedItemDialog as ItemDialog;
       if (focusedItemDialog && focusedItemDialog.guid === props.item.guid) {
         return true;
       }
@@ -39,11 +41,11 @@ export default defineComponent({
 
     const taskBarItemClickHandler = () => {
       if (props.item.isCollapsed) {
-        store.dispatch("fileSystem/OPEN_MINIMIZED_ITEM_DIALOG", props.item.guid);
-        store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", props.item);
+        fileSystemStore.openMinimizedItemDialog(props.item.guid);
+        fileSystemStore.setFocusedItemDialog(props.item);
       } else {
-        store.dispatch("fileSystem/MINIMIZE_ITEM_DIALOG", props.item.guid);
-        store.dispatch("fileSystem/SET_FOCUSED_ITEM_DIALOG", {});
+        fileSystemStore.minimizeItemDialog(props.item.guid);
+        fileSystemStore.setFocusedItemDialog({} as ItemDialog);
       }
     };
 

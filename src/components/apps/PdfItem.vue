@@ -99,7 +99,7 @@ import { readFile } from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import PrintPdfDialog from "@/components/apps/pdfItem/PrintPdfDialog.vue";
-import store from "@/store";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -109,6 +109,8 @@ export default defineComponent({
   components: { VuePdfEmbed, PrintPdfDialog },
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
+
     const pdfData = ref(null as any);
     const pdfRef = ref(null);
     const page = ref(1);
@@ -145,7 +147,7 @@ export default defineComponent({
       if (password) {
         callback(password);
       } else {
-        store.dispatch("fileSystem/CLOSE_ITEM_DIALOG", props.itemDialog?.guid);
+        fileSystemStore.closeItemDialog(props.itemDialog?.guid || "");
       }
     };
 

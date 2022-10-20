@@ -33,7 +33,7 @@ import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import { useLayoutStore } from "@/stores/layoutStore";
-import store from "@/store";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -42,6 +42,7 @@ export default defineComponent({
   components: { BaseSearchBar },
   setup(props) {
     const layoutStore = useLayoutStore();
+    const fileSystemStore = useFileSystemStore();
 
     const search = ref("Type here to search");
     const startMenuRef = ref<HTMLElement | undefined>();
@@ -55,8 +56,7 @@ export default defineComponent({
         applicationExtension: applicationToOpen,
         isSelected: true,
       };
-
-      store.dispatch("fileSystem/CREATE_ITEM_DIALOG", settingsApp);
+      fileSystemStore.createItemDialog(settingsApp);
     };
 
     const setStartMenuOpened = (isOpened: boolean) => {

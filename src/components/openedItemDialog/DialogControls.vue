@@ -29,7 +29,7 @@
 import { defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import store from "@/store";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -38,18 +38,20 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
+
     const closeFolderDialog = () => {
-      store.dispatch("fileSystem/CLOSE_ITEM_DIALOG", props.itemDialog.guid);
-      store.dispatch("fileSystem/FIND_AND_SET_NEW_FOCUSED_ITEM_DIALOG");
+      fileSystemStore.closeItemDialog(props.itemDialog.guid);
+      fileSystemStore.findAndSetNewFocusedItemDialog();
     };
 
     const minimizeFolderDialog = () => {
-      store.dispatch("fileSystem/MINIMIZE_ITEM_DIALOG", props.itemDialog.guid);
-      store.dispatch("fileSystem/FIND_AND_SET_NEW_FOCUSED_ITEM_DIALOG");
+      fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
+      fileSystemStore.findAndSetNewFocusedItemDialog();
     };
 
     const setFolderDialogFullScreen = (isFullscreen: boolean) => {
-      store.dispatch("fileSystem/SET_ITEM_DIALOG_FULL_SCREEN", { itemGuid: props.itemDialog.guid, isFullscreen });
+      fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
     };
 
     return {

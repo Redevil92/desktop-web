@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="actionMenuParams.show && actionMenuParams.position"
+    v-if="actionMenuParams && actionMenuParams.show && actionMenuParams.position"
     :style="`top: ${actionMenuParams.position.y}px; left: ${actionMenuParams.position.x}px;`"
     class="actions-dialog padding"
   >
@@ -36,22 +36,21 @@
 import { DESKTOP_PATH } from "@/constants";
 import { isDir } from "@/context/fileSystemController";
 import { generateUniqueName } from "@/context/fileSystemUtils";
-import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
-import ItemDialog from "@/models/ItemDialog";
-import PathAndContent from "@/models/PathAndContent";
-import store from "@/store";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { defineComponent, ref, computed, watch, onMounted, onDeactivated } from "vue";
 
 export default defineComponent({
   components: {},
   emits: ["onAddNewFile", "onAddNewFolder"],
   setup(_, context) {
+    const fileSystemStore = useFileSystemStore();
+
     const isFolder = ref(false);
 
     // props -> path
     const actionMenuParams = computed(function () {
-      return store.getters["fileSystem/GET_ACTION_MENU"] as ActionMenu;
+      return fileSystemStore.actionMenu;
     });
 
     watch(actionMenuParams, async function (_2, _3) {
@@ -61,8 +60,8 @@ export default defineComponent({
     });
 
     const canPasteFiles = computed(() => {
-      const filePathsToCopy: string[] = store.getters["fileSystem/GET_FILE_PATHS_TO_COPY"];
-      const filePathsToCut: string[] = store.getters["fileSystem/GET_FILE_PATHS_TO_CUT"];
+      const filePathsToCopy: string[] = fileSystemStore.filePathsToCopy;
+      const filePathsToCut: string[] = fileSystemStore.filePathsToCut;
 
       if (filePathsToCut.length > 0 || filePathsToCopy.length > 0) {
         return true;
@@ -72,42 +71,42 @@ export default defineComponent({
 
     const createFile = async (_1: Event, createFolder: false) => {
       const currentFolderFiles: string[] = isDesktop.value
-        ? store.getters["fileSystem/GET_DESKTOP_FILES_PATH"]
-        : (store.getters["fileSystem/GET_FOCUSED_ITEM_DIALOG"] as ItemDialog).filesPath;
+        ? fileSystemStore.getDesktopFilesPath
+        : fileSystemStore.getFocusedItemDialog?.filesPath || [];
 
       if (!createFolder) {
         const newUniquePath = generateUniqueName(actionMenuParams.value.path + "/" + "new file", currentFolderFiles);
-        await store.dispatch("fileSystem/CREATE_FILE", {
+        await fileSystemStore.createFile({
           path: newUniquePath + ".txt",
           content: "",
-        } as PathAndContent);
+        });
       } else {
         const newUniquePath = generateUniqueName(actionMenuParams.value.path + "/" + "new folder", currentFolderFiles);
-        await store.dispatch("fileSystem/CREATE_FOLDER", newUniquePath);
+        await fileSystemStore.createFolder(newUniquePath);
       }
 
       refreshFiles();
     };
 
     const refreshFiles = () => {
-      store.dispatch("fileSystem/REFRESH_ALL_ITEM_DIALOG_FILES");
-      store.dispatch("fileSystem/FETCH_DESKTOP_ITEMS");
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
     };
 
     const deleteFile = async () => {
       // TODO delete selected files
-      await store.dispatch("fileSystem/DELETE_FILE", actionMenuParams.value.path);
+      await fileSystemStore.deleteFile(actionMenuParams.value.path);
       refreshFiles();
     };
 
     const copyFiles = () => {
       // TODO copy selected files
-      store.dispatch("fileSystem/SET_FILE_PATHS_TO_COPY", [actionMenuParams.value.path]);
+      fileSystemStore.setFilePathsToCopy([actionMenuParams.value.path]);
     };
 
     const cutFiles = () => {
       // TODO cut selected files
-      store.dispatch("fileSystem/SET_FILE_PATHS_TO_CUT", [actionMenuParams.value.path]);
+      fileSystemStore.setFilePathsToCut([actionMenuParams.value.path]);
       refreshFiles();
     };
 
@@ -117,7 +116,7 @@ export default defineComponent({
         event.stopPropagation();
         return;
       }
-      store.dispatch("fileSystem/PASTE_FILES", actionMenuParams.value.path);
+      fileSystemStore.pasteFiles(actionMenuParams.value.path);
       refreshFiles();
     };
 
@@ -139,7 +138,7 @@ export default defineComponent({
     };
 
     const closeActionDialog = () => {
-      store.dispatch("fileSystem/CLOSE_ACTION_MENU");
+      fileSystemStore.closeActionMenu();
     };
 
     onMounted(() => {
