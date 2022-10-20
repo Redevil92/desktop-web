@@ -32,8 +32,6 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolderFromDesktop = async (event: Event, destinationPath: string) => {
-    console.log("HHHHHAHAJ");
-
     const filesToMove = fileSystemStore.getSelectedDesktopFiles.map(
       (desktopItem: DesktopItem) => desktopItem.path
     ) as string[];
