@@ -1,3 +1,4 @@
+import Coordinates from "@/models/Coordinates";
 import { createDirectory, createFile } from "./fileSystemController";
 
 export const generateUniqueName = (nameWithoutExtension: string, nameList: string[]) => {
@@ -70,4 +71,13 @@ export const createFilesStructure = async () => {
   await createDirectory("my PC/Desktop/FOLDER/sub directory");
   await createDirectory("my PC/Desktop/FOLDER/another sub directory");
   await createFile("my PC/Desktop/FOLDER/another sub directory/another file.txt", "This is my text file 2.");
+};
+
+export const getNewItemDialogPosition = (itemDialogCount: number) => {
+  const padding = 40;
+  const startingPoint = 50;
+  const x = (itemDialogCount % 10) * padding + startingPoint;
+  const y = Math.floor(itemDialogCount / 10) * padding + startingPoint + ((itemDialogCount % 10) * padding) / 4;
+  const position = { x, y } as Coordinates;
+  return position;
 };
