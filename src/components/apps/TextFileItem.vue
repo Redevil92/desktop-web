@@ -87,7 +87,7 @@ export default defineComponent({
       // TODO, show snackbar
       layoutStore.setSnackBar({
         show: true,
-        text: `${getFileNameFromPath(destinationPathToSave)} created.`,
+        text: `"${getFileNameFromPath(destinationPathToSave)}" created.`,
         severity: SEVERITY.information,
       });
     };

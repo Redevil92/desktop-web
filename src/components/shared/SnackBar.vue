@@ -19,8 +19,6 @@ import SnackBar from "@/models/SnackBar";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { computed, defineComponent, watch } from "vue";
 
-import { SEVERITY } from "@/constants";
-
 export default defineComponent({
   props: {},
   components: {},
@@ -48,7 +46,7 @@ export default defineComponent({
       function () {
         if (snackbar.value.show) {
           setTimeout(() => {
-            //layoutStore.resetSnackBar();
+            layoutStore.resetSnackBar();
           }, durationTime.value);
         }
       }
