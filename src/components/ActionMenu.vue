@@ -95,15 +95,18 @@ export default defineComponent({
     };
 
     const deleteFile = async () => {
+      // TODO delete selected files
       await store.dispatch("fileSystem/DELETE_FILE", actionMenuParams.value.path);
       refreshFiles();
     };
 
     const copyFiles = () => {
+      // TODO copy selected files
       store.dispatch("fileSystem/SET_FILE_PATHS_TO_COPY", [actionMenuParams.value.path]);
     };
 
     const cutFiles = () => {
+      // TODO cut selected files
       store.dispatch("fileSystem/SET_FILE_PATHS_TO_CUT", [actionMenuParams.value.path]);
       refreshFiles();
     };
