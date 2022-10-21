@@ -130,7 +130,7 @@ export default defineComponent({
 
       fileSystemStore.setActionMenu({
         show: true,
-        path: customPath ? customPath : props.itemDialog?.path,
+        paths: customPath ? [customPath] : [props.itemDialog?.path],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: isOpenedFolder,
       } as ActionMenu);

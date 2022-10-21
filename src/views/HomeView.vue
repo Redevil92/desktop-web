@@ -41,7 +41,7 @@ export default defineComponent({
 
       fileSystemStore.setActionMenu({
         show: true,
-        path: DESKTOP_PATH,
+        paths: [DESKTOP_PATH],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
       } as ActionMenuModel);

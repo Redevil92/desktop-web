@@ -25,7 +25,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
     filePathsToCut: [] as string[],
     actionMenu: {
       show: false,
-      path: "",
+      paths: [],
       position: { x: 0, y: 0 },
       isOpenedFolder: false,
     } as ActionMenu,
@@ -248,7 +248,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
     closeActionMenu() {
       const emptyActionMenu: ActionMenu = {
         show: false,
-        path: "",
+        paths: [],
         position: { x: 0, y: 0 },
         isOpenedFolder: false,
       };

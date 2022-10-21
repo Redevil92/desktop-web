@@ -179,7 +179,7 @@ export default defineComponent({
       selectFile(item);
       fileSystemStore.setActionMenu({
         show: true,
-        path: item.path,
+        paths: [item.path],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
       });

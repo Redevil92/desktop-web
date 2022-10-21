@@ -54,8 +54,12 @@ export default defineComponent({
     });
 
     watch(actionMenuParams, async function (_2, _3) {
-      if (actionMenuParams.value.path) {
-        isFolder.value = await isDir(actionMenuParams.value.path || "");
+      if (actionMenuParams.value.paths) {
+        if (actionMenuParams.value.paths.length === 1) {
+          isFolder.value = await isDir(actionMenuParams.value.paths[0] || "");
+        } else {
+          isFolder.value = false;
+        }
       }
     });
 
@@ -75,13 +79,19 @@ export default defineComponent({
         : fileSystemStore.getFocusedItemDialog?.filesPath || [];
 
       if (!createFolder) {
-        const newUniquePath = generateUniqueName(actionMenuParams.value.path + "/" + "new file", currentFolderFiles);
+        const newUniquePath = generateUniqueName(
+          actionMenuParams.value.paths[0] + "/" + "new file",
+          currentFolderFiles
+        );
         await fileSystemStore.createFile({
           path: newUniquePath + ".txt",
           content: "",
         });
       } else {
-        const newUniquePath = generateUniqueName(actionMenuParams.value.path + "/" + "new folder", currentFolderFiles);
+        const newUniquePath = generateUniqueName(
+          actionMenuParams.value.paths[0] + "/" + "new folder",
+          currentFolderFiles
+        );
         await fileSystemStore.createFolder(newUniquePath);
       }
 
@@ -95,18 +105,20 @@ export default defineComponent({
 
     const deleteFile = async () => {
       // TODO delete selected files
-      await fileSystemStore.deleteFile(actionMenuParams.value.path);
+      for (const path of actionMenuParams.value.paths) {
+        await fileSystemStore.deleteFile(path);
+      }
       refreshFiles();
     };
 
     const copyFiles = () => {
       // TODO copy selected files
-      fileSystemStore.setFilePathsToCopy([actionMenuParams.value.path]);
+      fileSystemStore.setFilePathsToCopy(actionMenuParams.value.paths);
     };
 
     const cutFiles = () => {
       // TODO cut selected files
-      fileSystemStore.setFilePathsToCut([actionMenuParams.value.path]);
+      fileSystemStore.setFilePathsToCut(actionMenuParams.value.paths);
       refreshFiles();
     };
 
@@ -116,12 +128,14 @@ export default defineComponent({
         event.stopPropagation();
         return;
       }
-      fileSystemStore.pasteFiles(actionMenuParams.value.path);
+      for (const path of actionMenuParams.value.paths) {
+        await fileSystemStore.pasteFiles(path);
+      }
       refreshFiles();
     };
 
     const isDesktop = computed(function () {
-      return actionMenuParams.value.path === DESKTOP_PATH;
+      return actionMenuParams.value.paths.length === 1 && actionMenuParams.value.paths[0] === DESKTOP_PATH;
     });
 
     const showActionsDialog = ref(false);
