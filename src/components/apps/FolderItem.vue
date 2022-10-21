@@ -58,7 +58,6 @@
                     ref="fileNameInputRef"
                     class="file-text no-outline"
                     v-model="fileNameToChange"
-                    @mousedown.stop=""
                     @keyup.enter="changeFileName"
                     @blur="changeFileName"
                     @keyup.esc="isEditingSelectedValue = false"
@@ -78,7 +77,7 @@
 
 <script lang="ts">
 import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
-import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watchEffect } from "vue";
+import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch, watchEffect } from "vue";
 
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
@@ -151,6 +150,8 @@ export default defineComponent({
     const fileNameInputRef = ref(null);
     const fileNameToChangeSpanRef = ref(null);
 
+    const fileFocusedWidth = ref(200);
+
     const isCutFile = (itemName: string) => {
       const filesToCut = fileSystemStore.filePathsToCut;
       if (filesToCut.includes(itemName)) {
@@ -159,12 +160,13 @@ export default defineComponent({
       return false;
     };
 
-    const fileFocusedWidth = computed(function (): number {
+    watch(fileNameToChange, async function (_2: any, _3: any) {
+      await nextTick();
       if (!fileNameToChangeSpanRef.value) {
-        return 200;
+        fileFocusedWidth.value = 300;
       }
-      return Math.min(
-        (fileNameToChangeSpanRef.value as HTMLElement).getBoundingClientRect().width,
+      fileFocusedWidth.value = Math.min(
+        (fileNameToChangeSpanRef.value as unknown as HTMLElement).getBoundingClientRect().width,
         props.itemDialog ? props.itemDialog?.dimension.width - 30 : 200
       );
     });
@@ -174,15 +176,16 @@ export default defineComponent({
         fileSystemStore.setFocusedItemDialog(props.itemDialog as ItemDialog);
       }
       if (fileName === selectedItem.value) {
-        fileNameToChange.value = getFileNameFromPath(fileName);
-        setTimeout(async () => {
-          isEditingSelectedValue.value = !isEditingSelectedValue.value;
-          await selectInputText();
-        }, 600);
-
+        if (!isEditingSelectedValue.value) {
+          console.log(":(", fileName, selectedItem.value, isEditingSelectedValue.value);
+          fileNameToChange.value = getFileNameFromPath(fileName);
+          setTimeout(async () => {
+            isEditingSelectedValue.value = !isEditingSelectedValue.value;
+            await selectInputText();
+          }, 600);
+        }
         return;
       }
-
       selectedItem.value = fileName;
       isEditingSelectedValue.value = false;
     };
