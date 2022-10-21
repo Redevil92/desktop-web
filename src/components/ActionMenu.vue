@@ -17,17 +17,17 @@
     </div>
 
     <div v-if="!isFolder">
-      <div class="action-button">Open</div>
-      <div class="action-button">Open with</div>
+      <div class="action-button" @click="openFile">Open</div>
+      <!-- <div class="action-button">Open with</div> -->
       <hr class="" />
       <div class="action-button" @click="cutFiles">Cut</div>
       <div class="action-button" @click="copyFiles">Copy</div>
     </div>
 
-    <div v-if="!actionMenuParams.isOpenedFolder">
+    <div v-if="!actionMenuParams.isOpenedFolder && !isDesktop">
       <div class="action-button" @click="deleteFile">Delete</div>
       <div class="action-button" @click="addNewFolder">Rename</div>
-      <div class="action-button" @click="addNewFolder">Create shortcut</div>
+      <!-- <div class="action-button" @click="addNewFolder">Create shortcut</div> -->
     </div>
   </div>
 </template>
@@ -105,7 +105,6 @@ export default defineComponent({
     };
 
     const deleteFile = async () => {
-      // TODO delete selected files
       for (const path of actionMenuParams.value.paths) {
         await fileSystemStore.deleteFile(path);
       }
@@ -113,12 +112,10 @@ export default defineComponent({
     };
 
     const copyFiles = () => {
-      // TODO copy selected files
       fileSystemStore.setFilePathsToCopy(actionMenuParams.value.paths);
     };
 
     const cutFiles = () => {
-      // TODO cut selected files
       fileSystemStore.setFilePathsToCut(actionMenuParams.value.paths);
       refreshFiles();
     };
@@ -141,6 +138,17 @@ export default defineComponent({
 
     const showActionsDialog = ref(false);
     const actionsDialogRef = ref(null);
+
+    const openFile = () => {
+      for (const path of actionMenuParams.value.paths) {
+        const appToOpen: DesktopItem = {
+          path: path,
+          coordinates: { x: 0, y: 0 },
+          isSelected: true,
+        };
+        fileSystemStore.createItemDialog(appToOpen);
+      }
+    };
 
     const addNewFile = (event: PointerEvent) => {
       const coordinates = { x: event.x, y: event.y } as Coordinates;
@@ -185,6 +193,7 @@ export default defineComponent({
       actionMenuParams,
       deleteFile,
       canPasteFiles,
+      openFile,
       pasteFiles,
       copyFiles,
       cutFiles,
