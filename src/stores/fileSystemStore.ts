@@ -51,10 +51,10 @@ export const useFileSystemStore = defineStore("fileSystem", {
     getDesktopFilesPath(): string[] {
       return this.desktopItems.map((item) => item.path);
     },
-    getSelectedDesktopFiles(): DesktopItem[] {
+    getSelectedDesktopItems(): DesktopItem[] {
       return this.desktopItems.filter((item) => item.isSelected);
     },
-    getSelectedDesktopFilesPath(): string[] {
+    getSelectedDesktopItemsPath(): string[] {
       return this.desktopItems.filter((item) => item.isSelected).map((item) => item.path);
     },
   },

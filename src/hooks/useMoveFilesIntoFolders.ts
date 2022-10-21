@@ -33,7 +33,7 @@ export default function useMoveFiles() {
   };
 
   const moveFilesInFolderFromDesktop = async (_: Event, destinationPath: string) => {
-    const filesToMove = fileSystemStore.getSelectedDesktopFiles.map((desktopItem) => desktopItem.path);
+    const filesToMove = fileSystemStore.getSelectedDesktopItemsPath;
     if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
       return;
     }

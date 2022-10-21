@@ -132,7 +132,7 @@ export default defineComponent({
     });
 
     const selectedDesktopItems = computed((): DesktopItem[] => {
-      return fileSystemStore.getSelectedDesktopFiles;
+      return fileSystemStore.getSelectedDesktopItems;
     });
 
     watch(
@@ -180,7 +180,7 @@ export default defineComponent({
 
       fileSystemStore.setActionMenu({
         show: true,
-        paths: fileSystemStore.getSelectedDesktopFilesPath,
+        paths: fileSystemStore.getSelectedDesktopItemsPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
       });
@@ -191,7 +191,9 @@ export default defineComponent({
     };
 
     const doubleClickHandler = () => {
-      fileSystemStore.createItemDialog(props.fileItem);
+      for (const desktopItem of fileSystemStore.getSelectedDesktopItems) {
+        fileSystemStore.createItemDialog(desktopItem);
+      }
     };
 
     const refreshFileSystemFiles = () => {
