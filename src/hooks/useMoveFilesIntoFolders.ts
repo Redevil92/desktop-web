@@ -13,6 +13,7 @@ export default function useMoveFiles() {
   });
 
   const setFilesToMove = (filesToMove: string[]) => {
+    console.log("SET FILES TO MOVE", filesToMove);
     fileSystemStore.setFilePathsToMove(filesToMove);
   };
 
