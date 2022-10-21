@@ -177,7 +177,6 @@ export default defineComponent({
       }
       if (fileName === selectedItem.value) {
         if (!isEditingSelectedValue.value) {
-          console.log(":(", fileName, selectedItem.value, isEditingSelectedValue.value);
           fileNameToChange.value = getFileNameFromPath(fileName);
           setTimeout(async () => {
             isEditingSelectedValue.value = !isEditingSelectedValue.value;
@@ -249,9 +248,10 @@ export default defineComponent({
           if (index > 0) {
             selectedItem.value = props.itemDialog.filesPath[index - 1];
           }
-        } else if (event.code === "ArrowRight") {
-          doubleClickHandler(selectedItem.value);
         }
+        //  else if (event.code === "ArrowRight") {
+        //   doubleClickHandler(selectedItem.value);
+        // }
       }
     };
 
