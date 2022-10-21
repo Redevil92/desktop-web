@@ -177,9 +177,10 @@ export default defineComponent({
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
       selectFile(item);
+
       fileSystemStore.setActionMenu({
         show: true,
-        paths: [item.path],
+        paths: fileSystemStore.getSelectedDesktopFilesPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
       });

@@ -12,7 +12,7 @@
       </div>
       <div v-if="isDesktop">
         <hr class="" />
-        <div class="action-button" @click="addNewFolder">Change desktop image</div>
+        <div class="action-button" @click="openDesktopSettingPage">Change desktop image</div>
       </div>
     </div>
 
@@ -37,6 +37,7 @@ import { DESKTOP_PATH } from "@/constants";
 import { isDir } from "@/context/fileSystemController";
 import { generateUniqueName } from "@/context/fileSystemUtils";
 import Coordinates from "@/models/Coordinates";
+import DesktopItem from "@/models/DesktopItem";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { defineComponent, ref, computed, watch, onMounted, onDeactivated } from "vue";
 
@@ -151,6 +152,16 @@ export default defineComponent({
       context.emit("onAddNewFolder", coordinates);
     };
 
+    const openDesktopSettingPage = () => {
+      const settingsApp: DesktopItem = {
+        path: "",
+        coordinates: { x: 0, y: 0 },
+        applicationExtension: "settings",
+        isSelected: true,
+      };
+      fileSystemStore.createItemDialog(settingsApp);
+    };
+
     const closeActionDialog = () => {
       fileSystemStore.closeActionMenu();
     };
@@ -177,6 +188,7 @@ export default defineComponent({
       pasteFiles,
       copyFiles,
       cutFiles,
+      openDesktopSettingPage,
     };
   },
 });

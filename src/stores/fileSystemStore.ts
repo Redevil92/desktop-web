@@ -54,6 +54,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
     getSelectedDesktopFiles(): DesktopItem[] {
       return this.desktopItems.filter((item) => item.isSelected);
     },
+    getSelectedDesktopFilesPath(): string[] {
+      return this.desktopItems.filter((item) => item.isSelected).map((item) => item.path);
+    },
   },
   actions: {
     async createItemDialog(itemDialog: DesktopItem) {

@@ -2,7 +2,7 @@ import Coordinates from "./Coordinates";
 
 export default interface ActionMenu {
   show: boolean;
-  paths: string[]; // TODO, SWITCH TO PATHS
+  paths: string[];
   position: Coordinates;
   isOpenedFolder: boolean;
 }
