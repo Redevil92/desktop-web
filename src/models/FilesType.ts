@@ -74,6 +74,19 @@ const fileTypesConfiguration: any = {
     title: "Directory",
     application: "FolderItem",
   },
+  browser: {
+    defaultSize: {
+      height: 500,
+      width: 860,
+    },
+    minSize: {
+      height: 400,
+      width: 650,
+    },
+    title: "Browser",
+    icon: "browser.svg",
+    application: "BrowserItem",
+  },
   settings: {
     defaultSize: {
       height: 480,

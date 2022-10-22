@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
+import { defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";

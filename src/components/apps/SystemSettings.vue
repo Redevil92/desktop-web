@@ -37,13 +37,12 @@ import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
-import testComponent from "@/components/apps/systemSettings/ChangeDesktopImage.vue";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
   },
-  components: { testComponent },
+  components: {},
   emits: [],
   setup(props, _) {
     const showSelectedSettingComponent = ref(false);

@@ -20,6 +20,10 @@
           <img height="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
           <div class="application-name">Rich text</div>
         </div>
+        <div class="application-button" @click="createItemDialog('browser')">
+          <img height="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
+          <div class="application-name">Browser</div>
+        </div>
       </div>
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
