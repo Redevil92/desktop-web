@@ -14,6 +14,8 @@
 import ItemDialog from "@/models/ItemDialog";
 import { defineComponent, PropType, ref } from "vue";
 
+import useHistory from "@/hooks/useHistory";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
@@ -21,6 +23,10 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const navigationBarHeight = ref(30);
+    const initialHistory = ref("https://www.google.com/webhp?igu=1");
+
+    const { canGoBack, canGoForward, history, moveHistory, position } = useHistory(initialHistory.value, "");
+
     // const setUrl = useCallback(
     //   async (addressInput: string): Promise<void> => {
     //     const { contentWindow } = iframeRef.current || {};
