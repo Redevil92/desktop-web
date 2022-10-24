@@ -8,7 +8,7 @@ export interface History {
   moveHistory: (step: number) => void;
   position: number;
 }
-,
+
 export default function useHistory(url: string, id: string): History {
   const currentUrl = ref(url);
   const history = ref([url]);

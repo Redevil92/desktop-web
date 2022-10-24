@@ -1,12 +1,15 @@
 <template>
-  <div :style="`height: ${navigationBarHeight}px`"></div>
-
+  <div class="browser-controls" :style="`height: ${navigationBarHeight}px`">
+    <div class="browser-input">
+      <BaseInput v-model="inputUrl" @onKeyDown="keyDownHandler" @onBlur="blurHandler" rounded></BaseInput>
+    </div>
+  </div>
+  <div style="color: white">{{ browserUrl }}</div>
   <iframe
-    :src="'https://www.google.com/webhp?igu=1'"
+    :src="browserUrl"
+    ref="iframeRef"
     title="{ id }"
-    :style="`height: ${itemDialog.dimension.height - 14 - navigationBarHeight - 20}px; width: ${
-      itemDialog.dimension.width - 4
-    }px; `"
+    :style="`height: ${height - navigationBarHeight - 20}px; width: ${itemDialog.dimension.width - 4}px; `"
   />
 </template>
 
@@ -14,18 +17,41 @@
 import ItemDialog from "@/models/ItemDialog";
 import { defineComponent, PropType, ref } from "vue";
 
+import BaseInput from "@/components/shared/BaseInput.vue";
+
 import useHistory from "@/hooks/useHistory";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
+    height: Number,
   },
   emits: [],
+  components: { BaseInput },
   setup(props, _) {
-    const navigationBarHeight = ref(30);
-    const initialHistory = ref("https://www.google.com/webhp?igu=1");
+    const navigationBarHeight = ref(35);
+    const browserUrl = ref("https://www.google.com/webhp?igu=1");
+    const inputUrl = ref(browserUrl.value);
+    const iFrameRef = ref<HTMLElement>();
 
-    const { canGoBack, canGoForward, history, moveHistory, position } = useHistory(initialHistory.value, "");
+    const favicon = ref<HTMLImageElement>();
+
+    const { canGoBack, canGoForward, history, moveHistory, position } = useHistory(browserUrl.value, "");
+
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        browserUrl.value = (event.target as any).value;
+        //findAndLoadFavicon();
+      }
+    };
+
+    // const findAndLoadFavicon = (url: string) => {
+    //   const faviconUrl = `${new URL(url).origin}/favicon.ico`;
+    // };
+
+    const blurHandler = () => {
+      inputUrl.value = browserUrl.value;
+    };
 
     // const setUrl = useCallback(
     //   async (addressInput: string): Promise<void> => {
@@ -72,7 +98,7 @@ export default defineComponent({
     //   [exists, id, prependFileToTitle, readFile, setIcon]
     // );
 
-    return { navigationBarHeight };
+    return { navigationBarHeight, iFrameRef, browserUrl, inputUrl, keyDownHandler, blurHandler };
   },
 });
 </script>
@@ -83,5 +109,15 @@ iframe {
   border: 0px;
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
+}
+
+.browser-controls {
+  display: flex;
+  align-items: center;
+}
+
+.browser-input {
+  width: 300px;
+  margin-left: var(--margin);
 }
 </style>
