@@ -30,13 +30,16 @@ export default defineComponent({
     let active = ref(false);
 
     function setActive() {
+      console.log("HELLO mNA");
       active.value = true;
     }
     function setInactive() {
+      console.log("HELLO mNA");
       active.value = false;
     }
 
     function onDrop(event: any) {
+      console.log("HELLO");
       setInactive();
       filesDroppedHandler([...event.dataTransfer.files]);
     }

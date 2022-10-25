@@ -58,6 +58,11 @@ export default defineComponent({
     const draggableElement = ref({} as HTMLElement);
 
     const contentHeight = computed(function () {
+      if (props.itemDialog.isFullscreen) {
+        const style = getComputedStyle(document.body);
+        const taskBarHeight = Number(style.getPropertyValue("--task-bar-height").trim().replace("px", ""));
+        return window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4;
+      }
       return props.itemDialog.dimension.height - headerRef.value.clientHeight;
     });
 

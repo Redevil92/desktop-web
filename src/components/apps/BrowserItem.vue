@@ -20,23 +20,26 @@
     <div class="browser-input">
       <BaseInput v-model="inputUrl" @onKeyDown="keyDownHandler" @onBlur="blurHandler" rounded></BaseInput>
     </div>
+    <div v-for="shortcut in shortCuts" :key="shortcut.url + '-icon'">
+      <div class="control-icon shortcut-icon" @click="setNewUrl(shortcut.url)">
+        <span :class="`mdi ${shortcut.icon}`"></span>
+      </div>
+    </div>
   </div>
 
   <iframe
     :src="browserUrl"
-    ref="iframeRef"
+    ref="iFrameRef"
     title="{ id }"
-    :style="`height: ${height - navigationBarHeight}px; width: ${itemDialog.dimension.width - 4}px; `"
+    :style="`height: ${height - navigationBarHeight}px; width: 100%; `"
   />
 </template>
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, IframeHTMLAttributes, PropType, ref } from "vue";
 
 import BaseInput from "@/components/shared/BaseInput.vue";
-
-import useHistory from "@/hooks/useHistory";
 
 export default defineComponent({
   props: {
@@ -49,9 +52,14 @@ export default defineComponent({
     const navigationBarHeight = ref(35);
     const browserUrl = ref("https://www.google.com/webhp?igu=1");
     const inputUrl = ref(browserUrl.value);
-    const iFrameRef = ref<HTMLElement>();
+    const iFrameRef = ref<IframeHTMLAttributes>();
     const position = ref(0);
     const history = ref([browserUrl.value]);
+    const shortCuts = [
+      { url: "https://www.google.com/webhp?igu=1", icon: "mdi-google" },
+      { url: "https://en.wikipedia.org/wiki/Main_Page", icon: "mdi-wikipedia" },
+      { url: "https://www.google.com/intl/it/gmail/about/", icon: "mdi-gmail" },
+    ];
 
     const canGoBack = computed(() => {
       return position.value > 0;
@@ -74,8 +82,9 @@ export default defineComponent({
     };
 
     const refreshPage = () => {
-      inputUrl.value = "";
-      inputUrl.value = browserUrl.value;
+      if (iFrameRef.value) {
+        iFrameRef.value.src = browserUrl.value;
+      }
     };
 
     const changeHistory = (step: number) => {
@@ -101,11 +110,13 @@ export default defineComponent({
       inputUrl,
       keyDownHandler,
       blurHandler,
+      setNewUrl,
       canGoBack,
       canGoForward,
       position,
       refreshPage,
       changeHistory,
+      shortCuts,
     };
   },
 });
@@ -126,6 +137,7 @@ iframe {
 
 .browser-input {
   width: 300px;
+  margin-right: 15px;
 }
 
 .icons-list {
@@ -137,15 +149,18 @@ iframe {
 
 .control-icon,
 .control-icon-disabled {
-  /* margin: 0px calc(var(--margin) / 2);
-  padding: 0px calc(var(--margin) / 2); */
   font-size: 20px;
-
   height: 26px;
   width: 26px;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-right: var(--margin);
+}
+
+.shortcut-icon {
+  margin-left: 5px;
+  margin-right: 0px;
 }
 
 .control-icon {
@@ -163,5 +178,9 @@ iframe {
 .control-icon:hover {
   background-color: var(--neutral-color_background);
   border-radius: calc(var(--border-radius) * 3);
+}
+
+.shortcut-icon {
+  font-size: 17px;
 }
 </style>
