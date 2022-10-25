@@ -1,21 +1,38 @@
 <template>
   <div class="browser-controls" :style="`height: ${navigationBarHeight}px`">
+    <div class="icons-list" style="color: white">
+      <div
+        :class="{ 'control-icon-disabled': !canGoBack, 'control-icon': canGoBack }"
+        @click="canGoBack ? changeHistory(-1) : ''"
+      >
+        <span class="mdi mdi-arrow-left"></span>
+      </div>
+      <div
+        :class="{ 'control-icon-disabled': !canGoForward, 'control-icon': canGoForward }"
+        @click="canGoForward ? changeHistory(+1) : ''"
+      >
+        <span class="mdi mdi-arrow-right"></span>
+      </div>
+      <div class="control-icon" @click="refreshPage">
+        <span class="mdi mdi-refresh"></span>
+      </div>
+    </div>
     <div class="browser-input">
       <BaseInput v-model="inputUrl" @onKeyDown="keyDownHandler" @onBlur="blurHandler" rounded></BaseInput>
     </div>
   </div>
-  <div style="color: white">{{ browserUrl }}</div>
+
   <iframe
     :src="browserUrl"
     ref="iframeRef"
     title="{ id }"
-    :style="`height: ${height - navigationBarHeight - 20}px; width: ${itemDialog.dimension.width - 4}px; `"
+    :style="`height: ${height - navigationBarHeight}px; width: ${itemDialog.dimension.width - 4}px; `"
   />
 </template>
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 import BaseInput from "@/components/shared/BaseInput.vue";
 
@@ -33,72 +50,63 @@ export default defineComponent({
     const browserUrl = ref("https://www.google.com/webhp?igu=1");
     const inputUrl = ref(browserUrl.value);
     const iFrameRef = ref<HTMLElement>();
+    const position = ref(0);
+    const history = ref([browserUrl.value]);
 
-    const favicon = ref<HTMLImageElement>();
+    const canGoBack = computed(() => {
+      return position.value > 0;
+    });
 
-    const { canGoBack, canGoForward, history, moveHistory, position } = useHistory(browserUrl.value, "");
+    const canGoForward = computed(() => {
+      return position.value < history.value.length - 1;
+    });
+
+    // const favicon = ref<HTMLImageElement>(); // TODO, for the future
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        browserUrl.value = (event.target as any).value;
-        //findAndLoadFavicon();
+        setNewUrl((event.target as any).value);
       }
     };
-
-    // const findAndLoadFavicon = (url: string) => {
-    //   const faviconUrl = `${new URL(url).origin}/favicon.ico`;
-    // };
 
     const blurHandler = () => {
       inputUrl.value = browserUrl.value;
     };
 
-    // const setUrl = useCallback(
-    //   async (addressInput: string): Promise<void> => {
-    //     const { contentWindow } = iframeRef.current || {};
+    const refreshPage = () => {
+      inputUrl.value = "";
+      inputUrl.value = browserUrl.value;
+    };
 
-    //     if (contentWindow?.location) {
-    //       const isHtml = extname(addressInput).toLowerCase() === ".html" && (await exists(addressInput));
+    const changeHistory = (step: number) => {
+      position.value += step;
+      browserUrl.value = history.value[position.value];
+      inputUrl.value = history.value[position.value];
+    };
 
-    //       setLoading(true);
-    //       setSrcDoc("");
-    //       if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
-    //       setIcon(id, processDirectory["Browser"].icon);
+    const setNewUrl = (newUrl: string) => {
+      browserUrl.value = newUrl;
+      inputUrl.value = newUrl;
 
-    //       if (!isHtml) {
-    //         const addressUrl = getUrlOrSearch(addressInput);
+      if (newUrl !== history.value[history.value.length]) {
+        history.value = [...history.value.slice(0, position.value + 1), newUrl];
+        position.value += 1;
+      }
+    };
 
-    //         contentWindow.location.replace(addressUrl);
-
-    //         if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
-    //           prependFileToTitle(`${addressInput} - Google Search`);
-    //         } else {
-    //           const { name = "" } = bookmarks?.find(({ url: bookmarkUrl }) => bookmarkUrl === addressInput) || {};
-
-    //           prependFileToTitle(name);
-    //         }
-
-    //         const favicon = new Image();
-    //         const faviconUrl = `${new URL(addressUrl).origin}/favicon.ico`;
-
-    //         favicon.addEventListener(
-    //           "error",
-    //           () => {
-    //             const { icon } = bookmarks?.find(({ url: bookmarkUrl }) => bookmarkUrl === addressUrl) || {};
-
-    //             if (icon) setIcon(id, icon);
-    //           },
-    //           ONE_TIME_PASSIVE_EVENT
-    //         );
-    //         favicon.addEventListener("load", () => setIcon(id, faviconUrl), ONE_TIME_PASSIVE_EVENT);
-    //         favicon.src = faviconUrl;
-    //       }
-    //     }
-    //   },
-    //   [exists, id, prependFileToTitle, readFile, setIcon]
-    // );
-
-    return { navigationBarHeight, iFrameRef, browserUrl, inputUrl, keyDownHandler, blurHandler };
+    return {
+      navigationBarHeight,
+      iFrameRef,
+      browserUrl,
+      inputUrl,
+      keyDownHandler,
+      blurHandler,
+      canGoBack,
+      canGoForward,
+      position,
+      refreshPage,
+      changeHistory,
+    };
   },
 });
 </script>
@@ -118,6 +126,42 @@ iframe {
 
 .browser-input {
   width: 300px;
-  margin-left: var(--margin);
+}
+
+.icons-list {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  margin: 0px var(--margin);
+}
+
+.control-icon,
+.control-icon-disabled {
+  /* margin: 0px calc(var(--margin) / 2);
+  padding: 0px calc(var(--margin) / 2); */
+  font-size: 20px;
+
+  height: 26px;
+  width: 26px;
+  display: flex;
+  justify-content: center;
+  margin-right: var(--margin);
+}
+
+.control-icon {
+  cursor: pointer;
+}
+
+.control-icon > span {
+  color: var(--font-color);
+}
+
+.control-icon-disabled > span {
+  color: var(--neutral-color);
+}
+
+.control-icon:hover {
+  background-color: var(--neutral-color_background);
+  border-radius: calc(var(--border-radius) * 3);
 }
 </style>
