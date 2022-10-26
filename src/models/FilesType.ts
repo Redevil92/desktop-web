@@ -41,7 +41,7 @@ const codeType = {
     height: 100,
     width: 220,
   },
-  icon: "/System/Icons/photos.webp",
+  icon: "css.svg",
   application: "CodeFileItem",
 };
 
@@ -127,6 +127,7 @@ const fileTypesConfiguration: any = {
   png: imageType,
   jpg: imageType,
   jpeg: imageType,
+  svg: imageType,
   run: {
     allowResizing: false,
     defaultSize: {
