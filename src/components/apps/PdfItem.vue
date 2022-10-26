@@ -5,7 +5,7 @@
     :pdfRef="pdfRef"
     @close="showPrintPdfDialog = false"
   />
-  <div id="pdfItem" :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div id="pdfItem" :style="`height: ${height - 14}px; width: calc(100% -4px);`">
     <div class="pdf-controls">
       <div class="view-option-button">
         <span class="mdi mdi-view-split-vertical control-icon" @click="showViewOption = !showViewOption"
@@ -71,7 +71,7 @@
 
     <div
       class="pdf-container vue-pdf-embed"
-      :style="`height: ${height - 40}px; width: ${itemDialog.dimension.width - 6}px;`"
+      :style="`height: ${height - 40}px; width: calc(100% -6px);`"
       ref="pdfContainerRef"
     >
       <vue-pdf-embed

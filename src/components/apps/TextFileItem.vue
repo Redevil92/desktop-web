@@ -6,7 +6,7 @@
     to="textFileItem"
   ></SaveAsDialog>
 
-  <div id="textFileItem" :style="`height: ${height - 5}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div id="textFileItem" :style="`height: ${height - 5}px; width: calc(100% -4px);`">
     <editor
       v-if="isLoaded"
       class="mce-editor"

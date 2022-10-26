@@ -1,5 +1,5 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <div class="flex" style="position: relative">
       <input v-model="zoomLevel" class="image-zoom zoom-input" type="number" />
       <span class="mdi mdi-percent percent-icon" style="position: absolute"></span>

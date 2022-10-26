@@ -31,7 +31,7 @@
     :src="browserUrl"
     ref="iFrameRef"
     title="{ id }"
-    :style="`height: ${height - navigationBarHeight}px; width: 100%; `"
+    :style="`height: ${height - navigationBarHeight}px; width: calc(100% -4px); `"
   />
 </template>
 

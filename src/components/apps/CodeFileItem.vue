@@ -1,5 +1,5 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <MonacoEditor
       class="monaco-editor"
       theme="vs-dark"

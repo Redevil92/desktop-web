@@ -1,5 +1,5 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: ${itemDialog.dimension.width - 4}px; `">
+  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <div class="system-container">
       <div class="system-header-container">
         <img height="70" :src="require('/src/assets/avatar/male.png')" alt="" />
