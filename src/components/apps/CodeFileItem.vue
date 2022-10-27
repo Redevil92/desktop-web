@@ -6,17 +6,18 @@
       automaticLayout
       :value="code"
       :options="monacoEditorOptions"
-      language="javascript"
+      language="html"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
+import { readFile } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
@@ -59,10 +60,19 @@ export default defineComponent({
       wrappingIndent: "indent",
       // Set this to false to not auto word wrap minified files
       wordWrapMinified: true,
-      //value: "dddd",
+      value: "dddd",
     };
 
     const fileType = getFileTypeFromExtension();
+
+    onBeforeMount(async () => {
+      if (props.itemDialog?.path) {
+        let codeBase64 = await readFile(props.itemDialog?.path);
+        console.log(codeBase64);
+        codeBase64 = codeBase64.substr(codeBase64.indexOf(",") + 1); // removed data uri
+        code.value = decodeURIComponent(escape(window.atob(codeBase64)));
+      }
+    });
 
     return { monacoEditorOptions, fileType, code };
   },
