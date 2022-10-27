@@ -95,8 +95,6 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
 };
 
 export const copyFile = async (filePath: string, destinationPath: string) => {
-  //const fs = require("fs");
-
   const fileData = await readFile(filePath);
   const filesName = await getFiles(destinationPath, true);
   const nameToCheck = getFileNameWithoutExtension(destinationPath + "/" + getFileNameFromPath(filePath));
