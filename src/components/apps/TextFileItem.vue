@@ -96,6 +96,7 @@ export default defineComponent({
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         fileText.value = await readFile(props.itemDialog?.path);
+        console.log(fileText.value);
         isLoaded.value = true;
       } else {
         fileText.value = "";

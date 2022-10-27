@@ -31,9 +31,9 @@ import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
-import MoveAndResizeArea from "@/components/openedItemDialog/MoveAndResizeArea.vue";
+import MoveAndResizeArea from "@/components/system/openedItemDialog/MoveAndResizeArea.vue";
 
-import DialogControls from "@/components/openedItemDialog/DialogControls.vue";
+import DialogControls from "@/components/system/openedItemDialog/DialogControls.vue";
 
 export default defineComponent({
   props: {

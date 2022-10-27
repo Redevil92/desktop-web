@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
-import DesktopFileItem from "@/components/desktop/DesktopFileItem.vue";
+import DesktopFileItem from "@/components/system/desktop/DesktopFileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 import DesktopItem from "@/models/DesktopItem";

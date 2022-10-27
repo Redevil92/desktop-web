@@ -17,10 +17,10 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 
-import DesktopWorkSpace from "@/components/desktop/DesktopWorkSpace.vue";
-import OpenedFileView from "@/components/OpenedFileView.vue";
-import TaskBar from "@/components/TaskBar.vue";
-import ActionMenu from "@/components/ActionMenu.vue";
+import DesktopWorkSpace from "@/components/system/desktop/DesktopWorkSpace.vue";
+import OpenedFileView from "@/components/system/openedItemDialog/OpenedFileView.vue";
+import TaskBar from "@/components/system/taskbar/TaskBar.vue";
+import ActionMenu from "@/components/system/actionMenu/ActionMenu.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 
 import ActionMenuModel from "@/models/ActionMenu";

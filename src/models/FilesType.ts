@@ -109,6 +109,7 @@ const fileTypesConfiguration: any = {
   },
   html: codeType,
   js: codeType,
+  ts: codeType,
   css: codeType,
   pdf: {
     background: "rgb(82, 86, 89)",
