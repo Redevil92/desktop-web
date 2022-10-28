@@ -1,6 +1,9 @@
 <template>
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
-    <div style="height: 20px; color: white" @click="saveFile">SAVE</div>
+    <div class="control-bar">
+      <span class="mdi mdi-content-save save-icon" :class="{ 'disabled-icon': !canSave }" @click="saveFile"></span>
+    </div>
+
     <MonacoEditor
       :style="`height: ${height - 14 - 20}px; width: calc(100% -4px); `"
       class="monaco-editor"
@@ -9,12 +12,13 @@
       :value="code"
       :options="monacoEditorOptions"
       language="html"
+      @change="onChange"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, PropType, ref } from "vue";
+import { computed, defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
@@ -34,9 +38,14 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
-    const { b64ToText } = useBase64Handler();
+    const { b64ToText, utf8ToB64 } = useBase64Handler();
 
-    let code = ref("const noop = () => {}");
+    let code = ref("");
+    let savedCode = ref("");
+
+    const canSave = computed(function (): boolean {
+      return savedCode.value !== code.value;
+    });
 
     function getFileTypeFromExtension(): string {
       let fileType = "";
@@ -73,13 +82,17 @@ export default defineComponent({
     };
 
     const saveFile = () => {
-      if (props.itemDialog?.path) {
+      if (props.itemDialog?.path && canSave.value) {
         console.log("saving", code.value);
         fileSystemStore.updateFile({
           path: props.itemDialog?.path,
-          content: code.value,
+          content: utf8ToB64(code.value),
         } as PathAndContent);
       }
+    };
+
+    const onChange = (newCode: string) => {
+      code.value = newCode;
     };
 
     const fileType = getFileTypeFromExtension();
@@ -87,14 +100,35 @@ export default defineComponent({
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         let codeBase64 = await readFile(props.itemDialog?.path);
+        const codeToShow = b64ToText(codeBase64, true);
 
-        code.value = b64ToText(codeBase64, true);
+        code.value = codeToShow;
+        savedCode.value = codeToShow;
       }
     });
 
-    return { monacoEditorOptions, fileType, code, saveFile };
+    return { monacoEditorOptions, fileType, code, canSave, saveFile, onChange };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.control-bar {
+  display: flex;
+  align-items: center;
+  height: 25px;
+}
+
+.save-icon {
+  color: var(--font-color);
+  text-align: left;
+  text-align: initial;
+  margin-left: var(--margin);
+  cursor: pointer;
+}
+
+.disabled-icon {
+  color: var(--neutral-color);
+  cursor: default;
+}
+</style>
