@@ -19,6 +19,8 @@ import ItemDialog from "@/models/ItemDialog";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import { readFile } from "@/context/fileSystemController";
 
+import useBase64Handler from "@/hooks/useBase64Handler";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
@@ -27,6 +29,8 @@ export default defineComponent({
   components: { MonacoEditor },
   emits: [],
   setup(props, _) {
+    const { b64ToText } = useBase64Handler();
+
     let code = ref("const noop = () => {}");
 
     function getFileTypeFromExtension(): string {
@@ -60,7 +64,7 @@ export default defineComponent({
       wrappingIndent: "indent",
       // Set this to false to not auto word wrap minified files
       wordWrapMinified: true,
-      value: "dddd",
+      value: "",
     };
 
     const fileType = getFileTypeFromExtension();
@@ -68,9 +72,8 @@ export default defineComponent({
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         let codeBase64 = await readFile(props.itemDialog?.path);
-        console.log(codeBase64);
-        codeBase64 = codeBase64.substr(codeBase64.indexOf(",") + 1); // removed data uri
-        code.value = decodeURIComponent(escape(window.atob(codeBase64)));
+
+        code.value = b64ToText(codeBase64, true);
       }
     });
 
