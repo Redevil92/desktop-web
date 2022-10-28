@@ -11,7 +11,7 @@
       automaticLayout
       :value="code"
       :options="monacoEditorOptions"
-      language="html"
+      :language="fileLanguage"
       @change="onChange"
     />
   </div>
@@ -42,6 +42,7 @@ export default defineComponent({
 
     let code = ref("");
     let savedCode = ref("");
+    let fileLanguage = ref("javascript");
 
     const canSave = computed(function (): boolean {
       return savedCode.value !== code.value;
@@ -101,13 +102,13 @@ export default defineComponent({
       if (props.itemDialog?.path) {
         let codeBase64 = await readFile(props.itemDialog?.path);
         const codeToShow = b64ToText(codeBase64, true);
-
+        fileLanguage.value = getFileExtensionFromName(props.itemDialog?.path);
         code.value = codeToShow;
         savedCode.value = codeToShow;
       }
     });
 
-    return { monacoEditorOptions, fileType, code, canSave, saveFile, onChange };
+    return { monacoEditorOptions, fileType, code, canSave, fileLanguage, saveFile, onChange };
   },
 });
 </script>
