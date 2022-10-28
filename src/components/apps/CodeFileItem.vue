@@ -1,6 +1,8 @@
 <template>
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
+    <div class="height:20px; color:white">SAVE</div>
     <MonacoEditor
+      :style="`height: ${height - 14 - 20}px; width: calc(100% -4px); `"
       class="monaco-editor"
       theme="vs-dark"
       automaticLayout
