@@ -1,6 +1,6 @@
 <template>
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
-    <div class="height:20px; color:white">SAVE</div>
+    <div style="height: 20px; color: white" @click="saveFile">SAVE</div>
     <MonacoEditor
       :style="`height: ${height - 14 - 20}px; width: calc(100% -4px); `"
       class="monaco-editor"
@@ -22,6 +22,8 @@ import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import { readFile } from "@/context/fileSystemController";
 
 import useBase64Handler from "@/hooks/useBase64Handler";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
+import PathAndContent from "@/models/PathAndContent";
 
 export default defineComponent({
   props: {
@@ -31,6 +33,7 @@ export default defineComponent({
   components: { MonacoEditor },
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
     const { b64ToText } = useBase64Handler();
 
     let code = ref("const noop = () => {}");
@@ -69,6 +72,16 @@ export default defineComponent({
       value: "",
     };
 
+    const saveFile = () => {
+      if (props.itemDialog?.path) {
+        console.log("saving", code.value);
+        fileSystemStore.updateFile({
+          path: props.itemDialog?.path,
+          content: code.value,
+        } as PathAndContent);
+      }
+    };
+
     const fileType = getFileTypeFromExtension();
 
     onBeforeMount(async () => {
@@ -79,7 +92,7 @@ export default defineComponent({
       }
     });
 
-    return { monacoEditorOptions, fileType, code };
+    return { monacoEditorOptions, fileType, code, saveFile };
   },
 });
 </script>

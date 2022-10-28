@@ -42,6 +42,7 @@ import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { SEVERITY } from "@/constants";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import useBase64Handler from "@/hooks/useBase64Handler";
 
 export default defineComponent({
   props: {
@@ -56,6 +57,7 @@ export default defineComponent({
   setup(props, _) {
     const layoutStore = useLayoutStore();
     const fileSystemStore = useFileSystemStore();
+    const { isBase64, b64ToText } = useBase64Handler();
 
     const fileText = ref("");
     const isLoaded = ref(false);
@@ -63,6 +65,7 @@ export default defineComponent({
     const fileContent = ref("");
 
     const saveFile = (content: any, html: any, body: any) => {
+      console.log(content.content);
       if (props.itemDialog?.path) {
         fileSystemStore.updateFile({
           path: props.itemDialog?.path,
@@ -95,7 +98,15 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
-        fileText.value = await readFile(props.itemDialog?.path);
+        const fileData = await readFile(props.itemDialog?.path);
+        console.log("FILE DATA:", fileData);
+        if (isBase64(fileData)) {
+          console.log("IS BASEEE");
+          fileText.value = b64ToText(fileData, true);
+        } else {
+          fileText.value = fileData;
+        }
+
         console.log(fileText.value);
         isLoaded.value = true;
       } else {

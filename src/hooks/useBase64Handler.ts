@@ -12,9 +12,24 @@ export default function useBase64Handler() {
     return str.substr(str.indexOf(",") + 1);
   };
 
+  const isBase64 = (str: string) => {
+    console.log(str, "kajkjakajk");
+    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+    console.log("OH GG", str, base64regex.test(str));
+    return base64regex.test(str);
+    // try {
+    //   window.atob(str);
+    //   return true;
+    // } catch (e) {
+    //   console.log("HERE IN THE EX");
+    //   return false;
+    // }
+  };
+
   return {
     b64ToText,
     utf8_to_b64,
     removeDataUri,
+    isBase64,
   };
 }

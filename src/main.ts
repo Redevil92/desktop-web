@@ -15,7 +15,6 @@ export async function initializeAppAndFileSystem() {
   BrowserFS.configure(fileSystemConfig, async function (e: any) {
     if (e) {
       // An error occurred.
-      // SHOW SOME ERRORS
       console.error("Error in initialization BrowserFS (main.ts):", e);
       throw e;
     }
