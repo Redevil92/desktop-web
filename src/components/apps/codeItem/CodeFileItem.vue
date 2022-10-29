@@ -103,7 +103,7 @@ export default defineComponent({
       if (props.itemDialog?.path) {
         let codeBase64 = await readFile(props.itemDialog?.path);
         const codeToShow = b64ToText(codeBase64, true);
-        fileLanguage.value = getFileExtensionFromName(props.itemDialog?.path);
+        console.log("FILE LANG", fileLanguage.value);
         code.value = codeToShow;
         savedCode.value = codeToShow;
       }

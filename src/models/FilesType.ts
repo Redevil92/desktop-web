@@ -42,7 +42,7 @@ const codeType = {
     width: 220,
   },
   icon: "css.svg",
-  application: "CodeFileItem",
+  application: "codeItem/CodeFileItem",
 };
 
 const fileTypesConfiguration: any = {
