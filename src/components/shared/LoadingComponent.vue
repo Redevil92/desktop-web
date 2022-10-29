@@ -1,7 +1,6 @@
 <template>
   <div :style="`height: ${height}px`" class="loading-spinner-container">
     <!-- ADD TEXT PROPERTY -->
-    LOADINGNIN
     <BaseLoadingSpinner></BaseLoadingSpinner>
   </div>
 </template>
