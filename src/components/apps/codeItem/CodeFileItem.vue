@@ -30,6 +30,8 @@ import useBase64Handler from "@/hooks/useBase64Handler";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import PathAndContent from "@/models/PathAndContent";
 
+import extensionToFileType from "@/components/apps/codeItem/ExtensionToFileType";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
@@ -103,7 +105,7 @@ export default defineComponent({
       if (props.itemDialog?.path) {
         let codeBase64 = await readFile(props.itemDialog?.path);
         const codeToShow = b64ToText(codeBase64, true);
-        console.log("FILE LANG", fileLanguage.value);
+        fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];
         code.value = codeToShow;
         savedCode.value = codeToShow;
       }
