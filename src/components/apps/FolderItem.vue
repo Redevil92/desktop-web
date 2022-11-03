@@ -37,7 +37,13 @@
             @click.right="openActionMenu($event, false, item)"
           >
             <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
-              <div v-if="getFileExtensionFromName(item)">
+              <FileIcon
+                :height="16"
+                :icon="isDir(item) ? 'folder.svg' : ''"
+                :fileExtension="getFileExtensionFromName(item)"
+              />
+
+              <!-- <div v-if="getFileExtensionFromName(item)">
                 <img
                   class="file-icon"
                   style="margin-top: 3px"
@@ -51,7 +57,7 @@
               </div>
               <div v-else>
                 <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
-              </div>
+              </div> -->
               <div>
                 <span v-if="item === selectedItem && isEditingSelectedValue">
                   <input
@@ -77,23 +83,24 @@
 
 <script lang="ts">
 import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
-import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch, watchEffect } from "vue";
+import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
+
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
+import FileIcon from "@/components/shared/FileIcon.vue";
+import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
-
-import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
-import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import ItemDialog from "@/models/ItemDialog";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { DropExternalFileZone },
+  components: { DropExternalFileZone, FileIcon },
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
