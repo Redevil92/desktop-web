@@ -37,11 +37,7 @@
             @click.right="openActionMenu($event, false, item)"
           >
             <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
-              <FileIcon
-                :height="16"
-                :icon="isDir(item) ? 'folder.svg' : ''"
-                :fileExtension="getFileExtensionFromName(item)"
-              />
+              <FileIcon :height="16" :filePath="item" />
 
               <!-- <div v-if="getFileExtensionFromName(item)">
                 <img
