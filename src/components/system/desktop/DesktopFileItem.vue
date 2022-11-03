@@ -24,35 +24,11 @@
     @click.right="openActionMenu($event, fileItem)"
   >
     <div @click="isEditingText = false">
-      <img
-        :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'"
-        v-if="isFolder"
-        height="60"
-        :src="require('/src/assets/fileIcons/folder.svg')"
-        alt=""
+      <FileIcon
+        :selected="isSelected || (isDraggingItem && isMouseOver && isFolder)"
+        :height="60"
+        :filePath="fileItem.path"
       />
-      <div v-else>
-        <div v-if="fileExtension">
-          <img
-            :class="
-              isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'
-            "
-            height="60"
-            :src="require('/src/assets/fileIcons/' + fileExtension + '.svg')"
-            alt=""
-          />
-        </div>
-        <div v-else>
-          <img
-            :class="
-              isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-item-selected' : 'invisible-border'
-            "
-            height="60"
-            :src="require('/src/assets/fileIcons/unknow.svg')"
-            alt=""
-          />
-        </div>
-      </div>
     </div>
     <div
       :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-text-selected' : ''"
@@ -81,12 +57,12 @@ import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
+import FileIcon from "@/components/shared/FileIcon.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import { DESKTOP_PATH } from "@/constants";
 import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
-import ActionMenu from "@/models/ActionMenu";
 import Coordinates from "@/models/Coordinates";
 
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
@@ -96,13 +72,14 @@ import {
 } from "@/hooks/useLocalStorage";
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import fileTypesConfiguration from "@/models/FilesType";
 
 export default defineComponent({
   props: {
     fileItem: { type: Object as PropType<DesktopItem>, required: true },
     //isSelected: { type: Boolean, default: false },
   },
-  components: { BaseDialog, BaseButton },
+  components: { BaseDialog, BaseButton, FileIcon },
   emits: ["onClick", "onRightClick"],
   setup(props, context) {
     const fileSystemStore = useFileSystemStore();
@@ -144,6 +121,11 @@ export default defineComponent({
 
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.path);
+    });
+
+    const isKnownFileExtension = computed(function () {
+      const fileTypeConfiguration = fileTypesConfiguration[getFileExtensionFromName(props.fileItem.path)];
+      return fileTypeConfiguration && fileTypeConfiguration.icon;
     });
 
     const isCutFile = computed(function () {
@@ -367,6 +349,7 @@ export default defineComponent({
       isDraggingItem,
       isMouseOver,
       isSelected,
+      isKnownFileExtension,
     };
   },
 });
@@ -410,19 +393,6 @@ export default defineComponent({
 .file-icon {
   font-size: 45px;
 }
-
-.invisible-border {
-  border: 3px solid rgba(195, 195, 195, 0);
-  padding: 3px;
-}
-
-.file-item-selected {
-  border: 3px solid rgb(195, 195, 195);
-  border-radius: 3px;
-  padding: 3px;
-  background-color: rgba(214, 214, 214, 0.553);
-}
-
 .file-text-selected {
   background-color: rgba(214, 214, 214, 0.553);
   border-radius: 3px;

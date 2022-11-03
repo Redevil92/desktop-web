@@ -48,16 +48,11 @@
               >
                 <div v-for="file in pathAndFiles.files" :key="pathAndFiles.path + '-' + file">
                   <div
-                    v-if="file.isFolder"
                     class="flex save-as-item"
                     :class="selectedFolder === file.path ? 'selected-folder-item' : ''"
                     @click="clickItemFolderHandler(file.path, index)"
                   >
-                    <img height="14" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
-                    <p class="file-name ellipsis">{{ getFileNameFromPath(file.path) }}</p>
-                  </div>
-                  <div v-else class="flex save-as-item file-item" @click="clickItemHandler(file.path, index)">
-                    <img height="14" :src="require('/src/assets/fileIcons/file.svg')" alt="" />
+                    <FileIcon :height="14" :noStyle="true" :filePath="file.path" />
                     <p class="file-name ellipsis">{{ getFileNameFromPath(file.path) }}</p>
                   </div>
                 </div>
@@ -79,6 +74,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
+import FileIcon from "@/components/shared/FileIcon.vue";
 
 import { DESKTOP_PATH } from "@/constants";
 import { getFiles, isDir } from "@/context/fileSystemController";
@@ -88,7 +84,7 @@ import PathAndIcon from "@/models/PathAndIcon";
 
 export default defineComponent({
   props: { to: String },
-  components: { BaseInput, BaseDialog, BaseButton },
+  components: { BaseInput, BaseDialog, BaseButton, FileIcon },
   emits: ["closeDialog", "saveItem"],
   setup(_, context) {
     const saveAs = ref("");

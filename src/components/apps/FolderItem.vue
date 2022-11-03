@@ -38,22 +38,6 @@
           >
             <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
               <FileIcon :height="16" :filePath="item" />
-
-              <!-- <div v-if="getFileExtensionFromName(item)">
-                <img
-                  class="file-icon"
-                  style="margin-top: 3px"
-                  height="16"
-                  :src="require('/src/assets/fileIcons/' + getFileExtensionFromName(item) + '.svg')"
-                  alt=""
-                />
-              </div>
-              <div v-else-if="isDir(item)">
-                <img height="16" style="margin-top: 3px" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
-              </div>
-              <div v-else>
-                <img class="file-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
-              </div> -->
               <div>
                 <span v-if="item === selectedItem && isEditingSelectedValue">
                   <input
@@ -374,13 +358,6 @@ export default defineComponent({
   font-size: var(--small-font-size);
   text-align: start;
   margin-left: 5px;
-}
-
-.file-icon {
-  /* height: 12px;
-  width: 12px;
-  margin-right: 7px; */
-  margin-top: 3px;
 }
 
 .extension-icon {

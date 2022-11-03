@@ -37,21 +37,23 @@ const textType: FileType = {
   icon: "txt.svg",
 };
 
-const codeType: FileType = {
-  singleton: false,
-  allowResizing: true,
-  background: "#222",
-  defaultSize: {
-    height: 480,
-    width: 550,
-  },
-  minSize: {
-    height: 100,
-    width: 220,
-  },
-  icon: "css.svg",
-  title: "",
-  application: "codeItem/CodeFileItem",
+const codeType = (codeExt: string): FileType => {
+  return {
+    singleton: false,
+    allowResizing: true,
+    background: "#222",
+    defaultSize: {
+      height: 480,
+      width: 550,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
+    icon: `${codeExt}.svg`,
+    title: "",
+    application: "codeItem/CodeFileItem",
+  };
 };
 
 type FileTypes = {
@@ -126,10 +128,10 @@ const fileTypesConfiguration: FileTypes = {
   //   icon: "FOLDER_ICON",
   //   title: "File Explorer",
   // },
-  html: codeType,
-  js: codeType,
-  ts: codeType,
-  css: codeType,
+  html: codeType("html"),
+  js: codeType("js"),
+  ts: codeType("ts"),
+  css: codeType("css"),
   pdf: {
     allowResizing: true,
     singleton: false,
