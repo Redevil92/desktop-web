@@ -80,14 +80,15 @@ export default defineComponent({
     const saveTextFileHandler = async (destinationPath: string) => {
       const destinationPathToSave = destinationPath + ".txt";
 
-      fileSystemStore.createFile({ path: destinationPathToSave, content: fileContent.value });
+      await fileSystemStore.createFile({ path: destinationPathToSave, content: fileContent.value });
       showSaveAsDialog.value = false;
-      fileSystemStore.refreshAllItemDialogFiles();
-      fileSystemStore.fetchDesktopItems();
 
       const itemDialogToUpdate = Object.assign({}, props.itemDialog);
       itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
       fileSystemStore.updateItemDialog(itemDialogToUpdate);
+
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
 
       layoutStore.setSnackBar({
         show: true,
