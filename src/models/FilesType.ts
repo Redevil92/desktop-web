@@ -92,19 +92,22 @@ const fileTypesConfiguration: FileTypes = {
     title: "Directory",
     application: "FolderItem",
   },
-  // browser: {
-  //   defaultSize: {
-  //     height: 500,
-  //     width: 860,
-  //   },
-  //   minSize: {
-  //     height: 400,
-  //     width: 650,
-  //   },
-  //   title: "Browser",
-  //   icon: "browser.svg",
-  //   application: "BrowserItem",
-  // },
+  browser: {
+    background: "rgb(82, 86, 89)",
+    allowResizing: true,
+    singleton: false,
+    defaultSize: {
+      height: 500,
+      width: 860,
+    },
+    minSize: {
+      height: 400,
+      width: 650,
+    },
+    title: "Browser",
+    icon: "browser.svg",
+    application: "BrowserItem",
+  },
   settings: {
     background: "rgb(82, 86, 89)",
     allowResizing: true,

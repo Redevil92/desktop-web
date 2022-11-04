@@ -46,8 +46,6 @@
         class="no-outline file-text"
         v-model="fileName"
       />
-
-      <!-- {{ getFileNameFromPath(fileItem.path) }} -->
     </div>
   </div>
 </template>
