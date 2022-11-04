@@ -13,7 +13,7 @@
 import { isDir } from "@/context/fileSystemController";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import fileTypesConfiguration from "@/models/FilesType";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -40,6 +40,15 @@ export default defineComponent({
   emits: [],
   setup(props, context) {
     const isFolder = ref(false);
+
+    watch(
+      () => props.filePath,
+      async function () {
+        if (props.filePath) {
+          isFolder.value = await isDir(props.filePath);
+        }
+      }
+    );
 
     const fileIconClasses = computed(function () {
       if (props.noStyle) {

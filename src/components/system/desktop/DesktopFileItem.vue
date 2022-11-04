@@ -119,6 +119,13 @@ export default defineComponent({
       }
     );
 
+    watch(
+      () => props.fileItem.path,
+      function () {
+        fileName.value = getFileNameFromPath(props.fileItem.path);
+      }
+    );
+
     const fileExtension = computed(function () {
       return getFileExtensionFromName(props.fileItem.path);
     });

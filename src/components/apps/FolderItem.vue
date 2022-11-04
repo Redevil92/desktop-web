@@ -37,7 +37,7 @@
             @click.right="openActionMenu($event, false, item)"
           >
             <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
-              <FileIcon :height="16" :filePath="item" />
+              <FileIcon :noStyle="true" :height="16" :filePath="item" />
               <div>
                 <span v-if="item === selectedItem && isEditingSelectedValue">
                   <input
