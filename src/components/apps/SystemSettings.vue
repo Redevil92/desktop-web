@@ -41,6 +41,7 @@ import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
+    height: Number,
   },
   components: {},
   emits: [],

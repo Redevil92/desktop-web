@@ -13,16 +13,28 @@
       <div>
         <!-- these application should come from the store/local storage -->
         <div class="application-button" @click="createItemDialog('settings')">
-          <img height="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
+          <div class="icon-image">
+            <img height="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
+          </div>
           <div class="application-name">Settings</div>
         </div>
         <div class="application-button" @click="createItemDialog('text')">
-          <img height="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
+          <div class="icon-image">
+            <img height="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
+          </div>
           <div class="application-name">Rich text</div>
         </div>
         <div class="application-button" @click="createItemDialog('browser')">
-          <img height="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
+          <div class="icon-image">
+            <img height="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
+          </div>
           <div class="application-name">Browser</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('doom')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/doom.png')" alt="" />
+          </div>
+          <div class="application-name">Doom</div>
         </div>
       </div>
       <!-- RECCOMANDED APPLICATION -->
@@ -139,6 +151,13 @@ export default defineComponent({
   width: fit-content;
   border-radius: var(--border-radius);
   cursor: pointer;
+}
+
+.icon-image {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .application-button:hover {

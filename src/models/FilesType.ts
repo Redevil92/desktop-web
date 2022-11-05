@@ -56,6 +56,25 @@ const codeType = (codeExt: string): FileType => {
   };
 };
 
+const dosType = (gameName: string, icon?: string): FileType => {
+  return {
+    background: "rgb(82, 86, 89)",
+    allowResizing: true,
+    singleton: false,
+    defaultSize: {
+      height: 480,
+      width: 760,
+    },
+    minSize: {
+      height: 400,
+      width: 650,
+    },
+    title: `${gameName}`,
+    icon: icon ? icon : `${gameName}.svg`,
+    application: "dosItem/DosPlayer",
+  };
+};
+
 type FileTypes = {
   [key: string]: FileType;
 };
@@ -155,6 +174,7 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
+  doom: dosType("doom"),
   // run: {
   //   allowResizing: false,
   //   defaultSize: {
