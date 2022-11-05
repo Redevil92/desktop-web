@@ -32,7 +32,7 @@
         </div>
         <div class="application-button" @click="createItemDialog('doom')">
           <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/doom.png')" alt="" />
+            <img width="40" :src="require('/src/assets/fileIcons/Doom.png')" alt="" />
           </div>
           <div class="application-name">Doom</div>
         </div>

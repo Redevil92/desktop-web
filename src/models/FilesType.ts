@@ -70,7 +70,7 @@ const dosType = (gameName: string, icon?: string): FileType => {
       width: 650,
     },
     title: `${gameName}`,
-    icon: icon ? icon : `${gameName}.svg`,
+    icon: icon ? icon : `${gameName}.png`,
     application: "dosItem/DosPlayer",
   };
 };
@@ -174,7 +174,7 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
-  doom: dosType("doom"),
+  doom: dosType("Doom"),
   // run: {
   //   allowResizing: false,
   //   defaultSize: {
