@@ -74,6 +74,11 @@
         </div>
       </div>
 
+      <div class="reccomanded-container">
+        <div class="pinned-text">Reccomanded</div>
+        <div style="margin-top: var(--margin)">No reccomandation for now</div>
+      </div>
+
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
     </div>
@@ -181,7 +186,7 @@ export default defineComponent({
 .pinned-application-container {
   display: grid;
   grid-template-columns: 85px 85px 85px 85px 85px;
-  grid-template-rows: 80px auto 80px;
+  grid-template-rows: 80px auto;
   column-gap: 2px;
 }
 
@@ -189,6 +194,7 @@ export default defineComponent({
   font-size: var(--small-font-size);
   color: white;
   width: 70px;
+  margin-top: 5px;
 }
 
 .application-button {
@@ -213,5 +219,12 @@ export default defineComponent({
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.reccomanded-container {
+  margin-top: calc(var(--margin) * 3);
+  text-align: initial;
+  color: var(--font-color);
+  font-size: var(--small-font-size);
 }
 </style>
