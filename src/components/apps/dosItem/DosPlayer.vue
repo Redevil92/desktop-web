@@ -1,6 +1,5 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `">
-    {{heigth}}
     <iframe class="frame" :height="height - 4" :width="itemDialog.dimension.width - 4" frameborder="0" :src="gameLink">
     </iframe>
   </div>

@@ -10,33 +10,70 @@
           <div class="all-apps-button">All apps</div>
         </div>
       </div>
-      <div>
+      <div class="pinned-application-container">
         <!-- these application should come from the store/local storage -->
         <div class="application-button" @click="createItemDialog('settings')">
           <div class="icon-image">
-            <img height="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
+            <img width="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
           </div>
-          <div class="application-name">Settings</div>
+          <div class="application-name one-line-ellipsis">Settings</div>
         </div>
         <div class="application-button" @click="createItemDialog('text')">
           <div class="icon-image">
-            <img height="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
+            <img width="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
           </div>
-          <div class="application-name">Rich text</div>
+          <div class="application-name one-line-ellipsis">Rich text</div>
         </div>
         <div class="application-button" @click="createItemDialog('browser')">
           <div class="icon-image">
-            <img height="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
+            <img width="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
           </div>
-          <div class="application-name">Browser</div>
+          <div class="application-name one-line-ellipsis">Browser</div>
         </div>
-        <div class="application-button" @click="createItemDialog('doom')">
+        <div class="application-button" @click="createItemDialog('Doom')">
           <div class="icon-image">
             <img width="40" :src="require('/src/assets/fileIcons/Doom.png')" alt="" />
           </div>
-          <div class="application-name">Doom</div>
+          <div class="application-name one-line-ellipsis">Doom</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('WarCraft- Orcs & Humans')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/WarCraft- Orcs & Humans.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">WarCraft</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('Duke Nukem 3D')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/Duke Nukem 3D.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">Duke Nukem 3D</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('Sim City')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/Sim City.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">Sim City</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('Prince of Persia')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/Prince of Persia.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">Prince of Persia</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('Grand Theft Auto')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/Grand Theft Auto.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">GTA</div>
+        </div>
+        <div class="application-button" @click="createItemDialog('Mortal Kombat')">
+          <div class="icon-image">
+            <img width="40" :src="require('/src/assets/fileIcons/Mortal Kombat.png')" alt="" />
+          </div>
+          <div class="application-name one-line-ellipsis">Mortal Kombat</div>
         </div>
       </div>
+
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
     </div>
@@ -141,13 +178,21 @@ export default defineComponent({
   padding: 5px;
 }
 
+.pinned-application-container {
+  display: grid;
+  grid-template-columns: 85px 85px 85px 85px 85px;
+  grid-template-rows: 80px auto 80px;
+  column-gap: 2px;
+}
+
 .application-name {
   font-size: var(--small-font-size);
   color: white;
+  width: 70px;
 }
 
 .application-button {
-  padding: 10px;
+  padding: 10px 5px;
   width: fit-content;
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -161,6 +206,12 @@ export default defineComponent({
 }
 
 .application-button:hover {
-  background-color: var(--background-color_light);
+  background-color: var(--background-color_contrast);
+}
+
+.one-line-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

@@ -174,7 +174,13 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
-  doom: dosType("Doom"),
+  Doom: dosType("Doom"),
+  "WarCraft- Orcs & Humans": dosType("WarCraft- Orcs & Humans"),
+  "Duke Nukem 3D": dosType("Duke Nukem 3D"),
+  "Sim City": dosType("Sim City"),
+  "Prince of Persia": dosType("Prince of Persia"),
+  "Grand Theft Auto": dosType("Grand Theft Auto"),
+  "Mortal Kombat": dosType("Mortal Kombat"),
   // run: {
   //   allowResizing: false,
   //   defaultSize: {
