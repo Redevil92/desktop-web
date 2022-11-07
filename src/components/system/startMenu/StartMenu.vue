@@ -12,65 +12,17 @@
       </div>
       <div class="pinned-application-container">
         <!-- these application should come from the store/local storage -->
-        <div class="application-button" @click="createItemDialog('settings')">
+
+        <div
+          v-for="app in pinnedApps"
+          :key="'pinned-' + app.app"
+          class="application-button"
+          @click="createItemDialog(app.app)"
+        >
           <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/settings.svg')" alt="" />
+            <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
           </div>
-          <div class="application-name one-line-ellipsis">Settings</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('text')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/txt.svg')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Rich text</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('browser')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/browser.svg')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Browser</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Doom')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Doom.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Doom</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('WarCraft- Orcs & Humans')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/WarCraft- Orcs & Humans.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">WarCraft</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Duke Nukem 3D')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Duke Nukem 3D.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Duke Nukem 3D</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Sim City')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Sim City.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Sim City</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Prince of Persia')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Prince of Persia.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Prince of Persia</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Grand Theft Auto')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Grand Theft Auto.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">GTA</div>
-        </div>
-        <div class="application-button" @click="createItemDialog('Mortal Kombat')">
-          <div class="icon-image">
-            <img width="40" :src="require('/src/assets/fileIcons/Mortal Kombat.png')" alt="" />
-          </div>
-          <div class="application-name one-line-ellipsis">Mortal Kombat</div>
+          <div class="application-name one-line-ellipsis">{{app.name}}</div>
         </div>
       </div>
 
@@ -86,12 +38,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onDeactivated, onMounted, ref } from "vue";
+import { computed, defineComponent, onDeactivated, onMounted, ref } from "vue";
 import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import { useLayoutStore } from "@/stores/layoutStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { useStartMenuStore } from "@/stores/startMenuStore";
 
 export default defineComponent({
   props: {
@@ -100,9 +53,16 @@ export default defineComponent({
   components: { BaseSearchBar },
   setup(props) {
     const layoutStore = useLayoutStore();
+    const startMenuStore = useStartMenuStore();
     const fileSystemStore = useFileSystemStore();
 
     const search = ref("Type here to search");
+
+    const pinnedApps = computed(() => {
+      console.log("HELP", startMenuStore.pinnedApps);
+      return startMenuStore.pinnedApps;
+    });
+
     const startMenuRef = ref<HTMLElement | undefined>();
 
     const createItemDialog = (applicationToOpen: string) => {
@@ -140,7 +100,7 @@ export default defineComponent({
       window.removeEventListener("click", closeStartMenu);
     });
 
-    return { search, createItemDialog, setStartMenuOpened, startMenuRef };
+    return { search, pinnedApps, createItemDialog, setStartMenuOpened, startMenuRef };
   },
 });
 </script>
