@@ -20,7 +20,7 @@ export async function initializeAppAndFileSystem() {
     }
 
     (window as any).fs = window.require("fs");
-    createFilesStructure();
+    await createFilesStructure();
     createApp(App).use(pinia).use(router).mount("#app");
   });
 }
