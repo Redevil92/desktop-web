@@ -68,6 +68,7 @@ html {
   font-family: Avenir;
   word-break: normal;
   tab-size: 4;
+  overflow: hidden;
 }
 
 .tox-notification--error {
