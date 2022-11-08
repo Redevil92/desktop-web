@@ -33,6 +33,14 @@
 
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
+      <div class="user-profile-container">
+        <div class="flex">
+          <img height="40" :src="require('/src/assets/avatar/male.png')" alt="" />
+          <div class="user-name">Your username</div>
+        </div>
+
+        <span class="mdi mdi-power power-icon"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -130,6 +138,7 @@ export default defineComponent({
 .flex {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .start-menu-content {
@@ -186,5 +195,38 @@ export default defineComponent({
   text-align: initial;
   color: var(--font-color);
   font-size: var(--small-font-size);
+}
+
+.user-profile-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  bottom: 0px;
+  left: 0px;
+  background-color: var(--background-color_contrast);
+  width: 100%;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  padding: 10px 30px;
+  color: white;
+}
+
+.user-name {
+  font-size: var(--medium-font-size);
+  font-weight: 600;
+  margin-left: var(--margin);
+}
+
+.power-icon {
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0px 3px;
+  border-radius: var(--border-radius);
+}
+
+.power-icon:hover {
+  background-color: var(--background-color_light);
 }
 </style>
