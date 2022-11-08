@@ -6,29 +6,38 @@
       <!-- PINNED APPLICATION -->
       <div class="pinned-application">
         <div class="flex">
-          <div class="pinned-text">Pinned</div>
-          <div class="all-apps-button">All apps</div>
+          <div class="pinned-text">{{showAllApps ?'All apps':'Pinned'}}</div>
+          <div class="all-apps-button" @click="showAllApps = !showAllApps">{{showAllApps ?'Pinned':'All apps'}}</div>
         </div>
       </div>
-      <div class="pinned-application-container">
-        <!-- these application should come from the store/local storage -->
+      <div v-if="!showAllApps">
+        <div class="pinned-application-container">
+          <!-- these application should come from the store/local storage -->
 
-        <div
-          v-for="app in pinnedApps"
-          :key="'pinned-' + app.app"
-          class="application-button"
-          @click="createItemDialog(app.app)"
-        >
-          <div class="icon-image">
-            <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
+          <div
+            v-for="app in pinnedApps"
+            :key="'pinned-' + app.app"
+            class="application-button"
+            @click="createItemDialog(app.app)"
+          >
+            <div class="icon-image">
+              <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
+            </div>
+            <div class="application-name one-line-ellipsis">{{app.name}}</div>
           </div>
-          <div class="application-name one-line-ellipsis">{{app.name}}</div>
+        </div>
+        <div class="reccomanded-container">
+          <div class="pinned-text">Reccomanded</div>
+          <div style="margin-top: var(--margin)">No reccomandation for now</div>
         </div>
       </div>
-
-      <div class="reccomanded-container">
-        <div class="pinned-text">Reccomanded</div>
-        <div style="margin-top: var(--margin)">No reccomandation for now</div>
+      <div v-else>
+        <div v-for="app in allAppsToShow" :key="'all-app-' + app.title" class="app-item flex">
+          <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
+          <div>
+            {{app.title}}
+          </div>
+        </div>
       </div>
 
       <!-- RECCOMANDED APPLICATION -->
@@ -54,6 +63,8 @@ import { useLayoutStore } from "@/stores/layoutStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { useStartMenuStore } from "@/stores/startMenuStore";
 
+import fileTypesConfiguration from "@/models/FilesType";
+
 export default defineComponent({
   props: {
     openStartMenuButtonRef: HTMLElement,
@@ -65,10 +76,14 @@ export default defineComponent({
     const fileSystemStore = useFileSystemStore();
 
     const search = ref("Type here to search");
+    const showAllApps = ref(false);
 
     const pinnedApps = computed(() => {
-      console.log("HELP", startMenuStore.pinnedApps);
       return startMenuStore.pinnedApps;
+    });
+
+    const allAppsToShow = computed(() => {
+      return Object.values(fileTypesConfiguration).filter((app) => app.canOpenWithoutFile);
     });
 
     const startMenuRef = ref<HTMLElement | undefined>();
@@ -112,7 +127,16 @@ export default defineComponent({
       window.removeEventListener("click", closeStartMenu);
     });
 
-    return { search, pinnedApps, createItemDialog, setStartMenuOpened, refreshPage, startMenuRef };
+    return {
+      search,
+      pinnedApps,
+      createItemDialog,
+      setStartMenuOpened,
+      refreshPage,
+      startMenuRef,
+      showAllApps,
+      allAppsToShow,
+    };
   },
 });
 </script>
@@ -154,6 +178,7 @@ export default defineComponent({
   font-size: var(--small-font-size);
   background-color: var(--background-color_light);
   padding: 5px;
+  cursor: pointer;
 }
 
 .pinned-application-container {
@@ -232,5 +257,9 @@ export default defineComponent({
 
 .power-icon:hover {
   background-color: var(--background-color_light);
+}
+
+.app-item {
+  color: white;
 }
 </style>

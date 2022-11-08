@@ -18,6 +18,7 @@ const imageType: FileType = {
   icon: "png.svg",
   title: "Photos",
   application: "ImageFileItem",
+  canOpenWithoutFile: false,
 };
 
 const textType: FileType = {
@@ -35,6 +36,7 @@ const textType: FileType = {
   application: "TextFileItem",
   title: "Untitled",
   icon: "txt.svg",
+  canOpenWithoutFile: true,
 };
 
 const codeType = (codeExt: string): FileType => {
@@ -50,9 +52,10 @@ const codeType = (codeExt: string): FileType => {
       height: 100,
       width: 220,
     },
-    icon: `${codeExt}.svg`,
+    icon: `code.svg`,
     title: "",
     application: "codeItem/CodeFileItem",
+    canOpenWithoutFile: false, // TODO implement this functionality
   };
 };
 
@@ -72,6 +75,7 @@ const dosType = (gameName: string, icon?: string): FileType => {
     title: `${gameName}`,
     icon: icon ? icon : `${gameName}.png`,
     application: "dosItem/DosPlayer",
+    canOpenWithoutFile: true,
   };
 };
 
@@ -110,6 +114,7 @@ const fileTypesConfiguration: FileTypes = {
     icon: "folder.svg",
     title: "Directory",
     application: "FolderItem",
+    canOpenWithoutFile: false,
   },
   browser: {
     background: "rgb(82, 86, 89)",
@@ -126,6 +131,7 @@ const fileTypesConfiguration: FileTypes = {
     title: "Browser",
     icon: "browser.svg",
     application: "BrowserItem",
+    canOpenWithoutFile: true,
   },
   settings: {
     background: "rgb(82, 86, 89)",
@@ -142,6 +148,7 @@ const fileTypesConfiguration: FileTypes = {
     title: "Settings",
     icon: "settings.svg",
     application: "SystemSettings",
+    canOpenWithoutFile: true,
   },
   txt: textType,
   text: textType,
@@ -169,6 +176,7 @@ const fileTypesConfiguration: FileTypes = {
     icon: "pdf.svg",
     title: "PDF",
     application: "PdfItem",
+    canOpenWithoutFile: false, // TODO implement this functionality
   },
   png: imageType,
   jpg: imageType,
@@ -243,4 +251,5 @@ export interface FileType {
   title: string;
   singleton: boolean;
   application: string;
+  canOpenWithoutFile: boolean;
 }
