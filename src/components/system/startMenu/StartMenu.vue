@@ -39,7 +39,7 @@
           <div class="user-name">Your username</div>
         </div>
 
-        <span class="mdi mdi-power power-icon"></span>
+        <span @click="refreshPage" class="mdi mdi-power power-icon"></span>
       </div>
     </div>
   </div>
@@ -100,6 +100,10 @@ export default defineComponent({
       }
     };
 
+    const refreshPage = () => {
+      location.reload();
+    };
+
     onMounted(() => {
       window.addEventListener("click", closeStartMenu);
     });
@@ -108,7 +112,7 @@ export default defineComponent({
       window.removeEventListener("click", closeStartMenu);
     });
 
-    return { search, pinnedApps, createItemDialog, setStartMenuOpened, startMenuRef };
+    return { search, pinnedApps, createItemDialog, setStartMenuOpened, refreshPage, startMenuRef };
   },
 });
 </script>
