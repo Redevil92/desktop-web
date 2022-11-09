@@ -1,13 +1,14 @@
 <template>
   <div class="start-menu-container" ref="startMenuRef">
     <BaseSearchBar v-model="search" class="search-bar" />
-
     <div class="start-menu-content">
       <!-- PINNED APPLICATION -->
       <div class="pinned-application">
         <div class="flex">
-          <div class="pinned-text">{{showAllApps ?'All apps':'Pinned'}}</div>
-          <div class="all-apps-button" @click="showAllApps = !showAllApps">{{showAllApps ?'Pinned':'All apps'}}</div>
+          <div class="pinned-text">{{ showAllApps ? "All apps" : "Pinned" }}</div>
+          <div class="all-apps-button" @click="showAllApps = !showAllApps">
+            {{ showAllApps ? "Pinned" : "All apps" }}
+          </div>
         </div>
       </div>
       <div v-if="!showAllApps">
@@ -23,7 +24,7 @@
             <div class="icon-image">
               <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
             </div>
-            <div class="application-name one-line-ellipsis">{{app.name}}</div>
+            <div class="application-name one-line-ellipsis">{{ app.name }}</div>
           </div>
         </div>
         <div class="reccomanded-container">
@@ -31,11 +32,16 @@
           <div style="margin-top: var(--margin)">No reccomandation for now</div>
         </div>
       </div>
-      <div v-else>
-        <div v-for="app in allAppsToShow" :key="'all-app-' + app.title" class="app-item flex">
-          <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
-          <div>
-            {{app.title}}
+      <div v-else class="all-apps-container">
+        <div
+          v-for="app in allAppsToShow"
+          @click="createItemDialog(app.key)"
+          :key="'all-app-' + app.title"
+          class="app-item flex"
+        >
+          <img width="30" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
+          <div class="app-item-title">
+            {{ app.title }}
           </div>
         </div>
       </div>
@@ -83,7 +89,11 @@ export default defineComponent({
     });
 
     const allAppsToShow = computed(() => {
-      return Object.values(fileTypesConfiguration).filter((app) => app.canOpenWithoutFile);
+      return Object.keys(fileTypesConfiguration)
+        .map((key) => {
+          return { ...fileTypesConfiguration[key], key };
+        })
+        .filter((app) => app.canOpenWithoutFile);
     });
 
     const startMenuRef = ref<HTMLElement | undefined>();
@@ -186,6 +196,7 @@ export default defineComponent({
   grid-template-columns: 85px 85px 85px 85px 85px;
   grid-template-rows: 80px auto;
   column-gap: 2px;
+  margin-top: var(--margin);
 }
 
 .application-name {
@@ -256,10 +267,31 @@ export default defineComponent({
 }
 
 .power-icon:hover {
-  background-color: var(--background-color_light);
+  background-color: var(--background-color_contrast);
 }
 
 .app-item {
   color: white;
+  padding: 10px;
+  align-items: center;
+  font-size: var(--medium-font-size);
+  justify-content: flex-start;
+  margin-right: 10px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.app-item:hover {
+  background-color: var(--background-color_contrast);
+}
+
+.all-apps-container {
+  height: 430px;
+  overflow: auto;
+  margin-top: var(--margin);
+}
+
+.app-item-title {
+  margin-left: var(--margin);
 }
 </style>
