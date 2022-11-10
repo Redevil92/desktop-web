@@ -15,16 +15,13 @@
         <div class="pinned-application-container">
           <!-- these application should come from the store/local storage -->
 
-          <div
-            v-for="app in pinnedApps"
-            :key="'pinned-' + app.app"
-            class="application-button"
-            @click="createItemDialog(app.app)"
-          >
-            <div class="icon-image">
-              <img width="40" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
-            </div>
-            <div class="application-name one-line-ellipsis">{{ app.name }}</div>
+          <div v-for="app in pinnedApps" :key="'pinned-' + app.app">
+            <AppItem
+              @closeStartMenu="setStartMenuOpened(false)"
+              :app="app.app"
+              :name="app.name"
+              :icon="app.icon"
+            ></AppItem>
           </div>
         </div>
         <div class="reccomanded-container">
@@ -33,16 +30,14 @@
         </div>
       </div>
       <div v-else class="all-apps-container">
-        <div
-          v-for="app in allAppsToShow"
-          @click="createItemDialog(app.key)"
-          :key="'all-app-' + app.title"
-          class="app-item flex"
-        >
-          <img width="30" :src="require(`/src/assets/fileIcons/${app.icon}`)" alt="" />
-          <div class="app-item-title">
-            {{ app.title }}
-          </div>
+        <div v-for="app in allAppsToShow" :key="'all-app-' + app.title">
+          <AppItem
+            @closeStartMenu="setStartMenuOpened(false)"
+            :lineLayout="true"
+            :app="app.key"
+            :name="app.title"
+            :icon="app.icon"
+          ></AppItem>
         </div>
       </div>
 
@@ -63,10 +58,9 @@
 <script lang="ts">
 import { computed, defineComponent, onDeactivated, onMounted, ref } from "vue";
 import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
-import DesktopItem from "@/models/DesktopItem";
+import AppItem from "@/components/system/startMenu/AppItem.vue";
 
 import { useLayoutStore } from "@/stores/layoutStore";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { useStartMenuStore } from "@/stores/startMenuStore";
 
 import fileTypesConfiguration from "@/models/FilesType";
@@ -75,11 +69,10 @@ export default defineComponent({
   props: {
     openStartMenuButtonRef: HTMLElement,
   },
-  components: { BaseSearchBar },
+  components: { BaseSearchBar, AppItem },
   setup(props) {
     const layoutStore = useLayoutStore();
     const startMenuStore = useStartMenuStore();
-    const fileSystemStore = useFileSystemStore();
 
     const search = ref("Type here to search");
     const showAllApps = ref(false);
@@ -109,18 +102,6 @@ export default defineComponent({
     });
 
     const startMenuRef = ref<HTMLElement | undefined>();
-
-    const createItemDialog = (applicationToOpen: string) => {
-      setStartMenuOpened(false);
-
-      const settingsApp: DesktopItem = {
-        path: "",
-        coordinates: { x: 0, y: 0 },
-        applicationExtension: applicationToOpen,
-        isSelected: true,
-      };
-      fileSystemStore.createItemDialog(settingsApp);
-    };
 
     const setStartMenuOpened = (isOpened: boolean) => {
       layoutStore.setStartMenuOpened(isOpened);
@@ -152,7 +133,6 @@ export default defineComponent({
     return {
       search,
       pinnedApps,
-      createItemDialog,
       setStartMenuOpened,
       refreshPage,
       startMenuRef,
@@ -211,37 +191,6 @@ export default defineComponent({
   margin-top: var(--margin);
 }
 
-.application-name {
-  font-size: var(--small-font-size);
-  color: white;
-  width: 70px;
-  margin-top: 5px;
-}
-
-.application-button {
-  padding: 10px 5px;
-  width: fit-content;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-}
-
-.icon-image {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.application-button:hover {
-  background-color: var(--background-color_contrast);
-}
-
-.one-line-ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .reccomanded-container {
   margin-top: calc(var(--margin) * 3);
   text-align: initial;
@@ -282,28 +231,9 @@ export default defineComponent({
   background-color: var(--background-color_contrast);
 }
 
-.app-item {
-  color: white;
-  padding: 10px;
-  align-items: center;
-  font-size: var(--medium-font-size);
-  justify-content: flex-start;
-  margin-right: 10px;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-}
-
-.app-item:hover {
-  background-color: var(--background-color_contrast);
-}
-
 .all-apps-container {
   height: 430px;
   overflow: auto;
   margin-top: var(--margin);
-}
-
-.app-item-title {
-  margin-left: var(--margin);
 }
 </style>
