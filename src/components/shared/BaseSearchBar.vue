@@ -1,7 +1,13 @@
 <template>
   <div class="search-bar-container">
     <span class="mdi mdi-magnify mdi-28 search-icon"></span>
-    <input id="search-bar" placeholder="Type here to search" :type="type" v-model="search" />
+    <input
+      id="search-bar"
+      placeholder="Type here to search"
+      :autocomplete="autocomplete ? 'on' : 'off'"
+      :type="type"
+      v-model="search"
+    />
   </div>
 </template>
 
@@ -12,6 +18,7 @@ export default {
   props: {
     modelValue: String, // previously was `value: String`
     type: { type: String, default: "text" }, // previously was `value: String`
+    autocomplete: { type: Boolean, default: true },
   },
 
   setup() {

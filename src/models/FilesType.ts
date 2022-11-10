@@ -34,7 +34,7 @@ const textType: FileType = {
     width: 220,
   },
   application: "TextFileItem",
-  title: "Untitled",
+  title: "New text file",
   icon: "txt.svg",
   canOpenWithoutFile: true,
 };
@@ -76,6 +76,7 @@ const dosType = (gameName: string, icon?: string): FileType => {
     icon: icon ? icon : `${gameName}.png`,
     application: "dosItem/DosPlayer",
     canOpenWithoutFile: true,
+    canRepeatInAppList: true,
   };
 };
 
@@ -252,4 +253,5 @@ export interface FileType {
   singleton: boolean;
   application: string;
   canOpenWithoutFile: boolean;
+  canRepeatInAppList?: boolean;
 }

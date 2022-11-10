@@ -1,6 +1,6 @@
 <template>
   <div class="start-menu-container" ref="startMenuRef">
-    <BaseSearchBar v-model="search" class="search-bar" />
+    <BaseSearchBar :autocomplete="false" v-model="search" class="search-bar" />
     <div class="start-menu-content">
       <!-- PINNED APPLICATION -->
       <div class="pinned-application">
@@ -89,11 +89,23 @@ export default defineComponent({
     });
 
     const allAppsToShow = computed(() => {
+      const checkDuplicateApps: any = {};
       return Object.keys(fileTypesConfiguration)
         .map((key) => {
           return { ...fileTypesConfiguration[key], key };
         })
-        .filter((app) => app.canOpenWithoutFile);
+        .filter((app) => {
+          if (checkDuplicateApps[app.application]) {
+            return;
+          }
+          if (app.canOpenWithoutFile) {
+            if (!app.canRepeatInAppList) {
+              checkDuplicateApps[app.application] = true;
+            }
+
+            return app;
+          }
+        });
     });
 
     const startMenuRef = ref<HTMLElement | undefined>();
