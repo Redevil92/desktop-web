@@ -39,6 +39,24 @@ const textType: FileType = {
   canOpenWithoutFile: true,
 };
 
+const audioType: FileType = {
+  singleton: false,
+  allowResizing: true,
+  background: "#222",
+  defaultSize: {
+    height: 480,
+    width: 760,
+  },
+  minSize: {
+    height: 100,
+    width: 220,
+  },
+  application: "audioItem/AudioPlayer",
+  title: "New text file",
+  icon: "music.svg",
+  canOpenWithoutFile: false,
+};
+
 const codeType = (codeExt: string): FileType => {
   return {
     singleton: false,
@@ -179,6 +197,7 @@ const fileTypesConfiguration: FileTypes = {
     application: "PdfItem",
     canOpenWithoutFile: false, // TODO implement this functionality
   },
+  mp3: audioType,
   png: imageType,
   jpg: imageType,
   jpeg: imageType,
