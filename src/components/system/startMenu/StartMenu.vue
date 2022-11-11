@@ -1,6 +1,12 @@
 <template>
   <div class="start-menu-container" ref="startMenuRef">
-    <BaseSearchBar :autocomplete="false" v-model="search" class="search-bar" />
+    <BaseInput
+      :autocomplete="false"
+      :searchBar="true"
+      placeholder="Type here to search"
+      v-model="search"
+      class="search-bar"
+    />
     <div class="start-menu-content">
       <!-- PINNED APPLICATION -->
       <div class="pinned-application">
@@ -11,7 +17,7 @@
           </div>
         </div>
       </div>
-      <div v-if="!showAllApps">
+      <div v-if="!showAllApps && search === ''">
         <div class="pinned-application-container">
           <!-- these application should come from the store/local storage -->
 
@@ -30,7 +36,7 @@
         </div>
       </div>
       <div v-else class="all-apps-container">
-        <div v-for="app in allAppsToShow" :key="'all-app-' + app.title">
+        <div v-for="app in allFilteredAppsToShow" :key="'all-app-' + app.title">
           <AppItem
             @closeStartMenu="setStartMenuOpened(false)"
             :lineLayout="true"
@@ -57,7 +63,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onDeactivated, onMounted, ref } from "vue";
-import BaseSearchBar from "@/components/shared/BaseSearchBar.vue";
+import BaseInput from "@/components/shared/BaseInput.vue";
 import AppItem from "@/components/system/startMenu/AppItem.vue";
 
 import { useLayoutStore } from "@/stores/layoutStore";
@@ -69,19 +75,19 @@ export default defineComponent({
   props: {
     openStartMenuButtonRef: HTMLElement,
   },
-  components: { BaseSearchBar, AppItem },
+  components: { BaseInput, AppItem },
   setup(props) {
     const layoutStore = useLayoutStore();
     const startMenuStore = useStartMenuStore();
 
-    const search = ref("Type here to search");
+    const search = ref("");
     const showAllApps = ref(false);
 
     const pinnedApps = computed(() => {
       return startMenuStore.pinnedApps;
     });
 
-    const allAppsToShow = computed(() => {
+    const allFilteredAppsToShow = computed(() => {
       const checkDuplicateApps: any = {};
       return Object.keys(fileTypesConfiguration)
         .map((key) => {
@@ -98,7 +104,13 @@ export default defineComponent({
 
             return app;
           }
-        });
+        })
+        .filter(
+          (app) =>
+            app.application.toLowerCase().includes(search.value.toLowerCase()) ||
+            app.title.toLowerCase().includes(search.value.toLowerCase()) ||
+            app.key.toLowerCase().includes(search.value.toLowerCase())
+        );
     });
 
     const startMenuRef = ref<HTMLElement | undefined>();
@@ -137,7 +149,7 @@ export default defineComponent({
       refreshPage,
       startMenuRef,
       showAllApps,
-      allAppsToShow,
+      allFilteredAppsToShow,
     };
   },
 });
@@ -155,8 +167,8 @@ export default defineComponent({
 }
 
 .search-bar {
-  margin: var(--margin);
-  width: calc(500px - var(--margin) * 2);
+  margin: calc(var(--margin) * 2);
+  width: calc(500px - var(--margin) * 4);
 }
 
 .pinned-text {
@@ -232,7 +244,7 @@ export default defineComponent({
 }
 
 .all-apps-container {
-  height: 430px;
+  height: 417px;
   overflow: auto;
   margin-top: var(--margin);
 }

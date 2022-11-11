@@ -1,15 +1,19 @@
 <template>
-  <label class="label" v-if="label">{{ label }}</label>
-  <input
-    :readonly="disabled"
-    :class="{ 'rounded-input': rounded }"
-    @change="change"
-    @keydown="onKeyDown"
-    :placeholder="placeholder"
-    :type="type"
-    :value="modelValue"
-    @blur="onBlur"
-  />
+  <div :class="{ 'search-bar-container': searchBar }">
+    <label class="label" v-if="label">{{ label }}</label>
+    <span v-if="searchBar" class="mdi mdi-magnify mdi-28 search-icon"></span>
+    <input
+      :readonly="disabled"
+      :class="{ 'rounded-input': rounded, 'search-input': searchBar }"
+      @change="change"
+      @keydown="onKeyDown"
+      :placeholder="placeholder"
+      :autocomplete="autocomplete ? 'on' : 'off'"
+      :type="type"
+      :value="modelValue"
+      @blur="onBlur"
+    />
+  </div>
 </template>
 
 <script>
@@ -21,6 +25,8 @@ export default {
     modelValue: String, // previously was `value: String`
     type: { type: String, default: "text" }, // previously was `value: String`
     disabled: { type: Boolean, default: false }, // previously was `value: String`
+    autocomplete: { type: Boolean, default: true },
+    searchBar: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "onKeyDown", "onBlur"],
   methods: {
@@ -61,5 +67,49 @@ input:focus {
   text-align: left;
   font-size: var(--medium-font-size);
   margin-right: 10px;
+}
+
+/* SEARCH BAR STYLE */
+.search-bar-container {
+  position: relative;
+}
+
+.search-input {
+  font-size: var(--small-font-size);
+  border: none;
+  padding: 10px;
+  padding-left: 35px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
+  /* border-bottom: 1px solid white; */
+  background-color: rgba(255, 255, 255, 0.21);
+  color: white;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: white;
+}
+
+/* input:focus {
+  border-bottom: 2px solid var(--primary-color);
+  outline: none;
+} */
+
+.search-input:focus,
+.search-input:-webkit-autofill,
+.search-input:-webkit-autofill:hover,
+.search-input:-webkit-autofill:focus {
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.21);
+}
+
+.search-icon {
+  color: white;
+  position: absolute;
+  font-size: var(--small-icon-size);
+  left: 7px;
+  top: 4px;
 }
 </style>
