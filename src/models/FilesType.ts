@@ -198,6 +198,7 @@ const fileTypesConfiguration: FileTypes = {
     canOpenWithoutFile: false, // TODO implement this functionality
   },
   mp3: audioType,
+  mp4: audioType,
   png: imageType,
   jpg: imageType,
   jpeg: imageType,

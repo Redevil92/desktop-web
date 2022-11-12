@@ -1,12 +1,12 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `">
-    HELLO
-    <audio controls ref="audioPlayer" :src="audioSource"></audio>
+    <canvas id="canvas-audio" ref="canvasRef" class="audio-canvas"></canvas>
+    <audio id="audio" controls ref="audioRef" :src="audioSource"></audio>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, PropType, ref } from "vue";
+import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
@@ -23,9 +23,10 @@ export default defineComponent({
   components: {},
   emits: [],
   setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
-    const { b64ToText, utf8ToB64 } = useBase64Handler();
-    const audioSource = ref("");
+    const canvasRef = ref<HTMLCanvasElement>();
+    const audioRef = ref<HTMLAudioElement>();
+
+    const audioSource = ref();
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
@@ -37,9 +38,22 @@ export default defineComponent({
       }
     });
 
-    return { audioSource };
+    onMounted(() => {
+      if (audioRef.value) {
+        console.log(audioRef.value);
+        audioRef.value.play();
+      }
+    });
+
+    return { audioSource, canvasRef, audioRef };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.audio-canvas {
+  height: 300px;
+  width: 600px;
+  border: 2px solid black;
+}
+</style>
