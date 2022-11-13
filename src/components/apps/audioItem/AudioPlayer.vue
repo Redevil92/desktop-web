@@ -41,13 +41,19 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      if (audioRef.value) {
+      if (audioRef.value && canvasRef.value) {
         console.log(audioRef.value);
         audioRef.value.play();
         audioSource.value = audioCtx.value.createMediaElementSource(audioRef.value);
         analyzer.value = audioCtx.value.createAnalyser();
-        audioSource.value.connect(analyzer);
+
+        audioSource.value.connect(analyzer.value);
         analyzer.value.connect(audioCtx.value.destination);
+
+        analyzer.value.fftSize = 128;
+        const bufferLength = analyzer.value.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        const barWidth = canvasRef.value.width / bufferLength;
       }
     });
 
