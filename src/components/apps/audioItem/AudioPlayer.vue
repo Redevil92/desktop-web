@@ -26,6 +26,8 @@ export default defineComponent({
     const canvasRef = ref<HTMLCanvasElement>();
     const audioRef = ref<HTMLAudioElement>();
 
+    const analyzer = ref<AnalyserNode | null>(null);
+    const audioCtx = ref(new window.AudioContext());
     const audioSource = ref();
 
     onBeforeMount(async () => {
@@ -42,6 +44,10 @@ export default defineComponent({
       if (audioRef.value) {
         console.log(audioRef.value);
         audioRef.value.play();
+        audioSource.value = audioCtx.value.createMediaElementSource(audioRef.value);
+        analyzer.value = audioCtx.value.createAnalyser();
+        audioSource.value.connect(analyzer);
+        analyzer.value.connect(audioCtx.value.destination);
       }
     });
 
