@@ -30,6 +30,28 @@ export default defineComponent({
     const audioCtx = ref(new window.AudioContext());
     const audioSource = ref();
 
+    function animate() {
+      let x = 0;
+      if (canvasRef.value && analyzer.value) {
+        const bufferLength = analyzer.value.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        const barWidth = canvasRef.value.width / bufferLength;
+
+        const ctx = canvasRef.value.getContext("2d") as CanvasRenderingContext2D;
+        ctx?.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+
+        analyzer.value?.getByteFrequencyData(dataArray);
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = dataArray[i];
+          ctx.fillStyle = "white";
+          ctx.fillRect(x, canvasRef.value.height - barHeight, barWidth, barHeight);
+          x += barWidth;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         const audioData = await readFile(props.itemDialog?.path);
@@ -51,9 +73,11 @@ export default defineComponent({
         analyzer.value.connect(audioCtx.value.destination);
 
         analyzer.value.fftSize = 128;
-        const bufferLength = analyzer.value.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        const barWidth = canvasRef.value.width / bufferLength;
+        // const bufferLength = analyzer.value.frequencyBinCount;
+        // const dataArray = new Uint8Array(bufferLength);
+        // const barWidth = canvasRef.value.width / bufferLength;
+
+        animate();
       }
     });
 
