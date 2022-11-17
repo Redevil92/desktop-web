@@ -65,18 +65,65 @@ export default defineComponent({
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      fixDpi();
+
       for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i] - 70;
+        console.log(dataArray[i]);
+        barHeight = dataArray[i];
         // const red = (i * barHeight) / 10;
         // const green = i * 4;
         // const blue = barHeight / 4 - 12;
 
         ctx.fillStyle = `var(--font-color)`;
-        ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
+        roundRect(ctx, canvas.width / 2 - firstX, canvas.height - barHeight, barWidth / 1.7, barHeight, 10);
+        roundRect(ctx, secondX, canvas.height - barHeight, barWidth / 1.7, barHeight, 10);
+
+        //ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
         firstX += barWidth;
-        ctx.fillRect(secondX, canvas.height - barHeight, barWidth - 1, barHeight);
+        //ctx.fillRect(secondX, canvas.height - barHeight, barWidth - 1, barHeight);
         secondX += barWidth;
       }
+    };
+
+    const fixDpi = () => {
+      const dpi = window.devicePixelRatio;
+
+      if (canvasRef.value) {
+        const height = +getComputedStyle(canvasRef.value).getPropertyValue("height").slice(0, -2);
+        //get CSS width
+        const width = +getComputedStyle(canvasRef.value).getPropertyValue("width").slice(0, -2);
+        //scale the canvas
+        canvasRef.value.setAttribute("height", (height * dpi).toString());
+        canvasRef.value.setAttribute("width", (width * dpi).toString());
+      }
+    };
+
+    const roundRect = function (
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radius: number
+    ) {
+      if (width < 2 * radius) {
+        radius = width / 2;
+      }
+      if (height < 2 * radius) {
+        radius = height / 2;
+      }
+      const color = getComputedStyle(document.body).getPropertyValue("--font-color");
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + width, y, x + width, y + height, radius);
+      ctx.arcTo(x + width, y + height, x, y + height, radius);
+      ctx.arcTo(x, y + height, x, y, radius);
+      ctx.arcTo(x, y, x + width, y, radius);
+      ctx.closePath();
+
+      ctx.fill();
     };
 
     onBeforeMount(async () => {
@@ -93,7 +140,7 @@ export default defineComponent({
       if (audioRef.value && canvasRef.value) {
         audioRef.value.play();
         audioSource.value = audioCtx.value.createMediaElementSource(audioRef.value);
-        console.log(audioSource.value);
+        //console.log(audioSource.value);
         analyzer.value = audioCtx.value.createAnalyser();
 
         audioSource.value.connect(analyzer.value);
