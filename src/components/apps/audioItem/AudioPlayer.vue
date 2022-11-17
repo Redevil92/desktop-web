@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
+import { defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
@@ -41,7 +41,7 @@ export default defineComponent({
         ctx?.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
 
         analyzer.value?.getByteFrequencyData(dataArray);
-        console.log("DRAW", dataArray);
+
         drawVisualizer(bufferLength, dataArray, ctx, canvasRef.value);
       }
 
@@ -69,14 +69,13 @@ export default defineComponent({
 
       for (let i = 0; i < bufferLength; i++) {
         console.log(dataArray[i]);
-        barHeight = dataArray[i];
+        barHeight = dataArray[i] * 2;
         // const red = (i * barHeight) / 10;
         // const green = i * 4;
         // const blue = barHeight / 4 - 12;
 
-        ctx.fillStyle = `var(--font-color)`;
-        roundRect(ctx, canvas.width / 2 - firstX, canvas.height - barHeight, barWidth / 1.7, barHeight, 10);
-        roundRect(ctx, secondX, canvas.height - barHeight, barWidth / 1.7, barHeight, 10);
+        roundRect(ctx, canvas.width / 2 - firstX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 10);
+        roundRect(ctx, secondX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 10);
 
         //ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
         firstX += barWidth;
@@ -140,13 +139,13 @@ export default defineComponent({
       if (audioRef.value && canvasRef.value) {
         audioRef.value.play();
         audioSource.value = audioCtx.value.createMediaElementSource(audioRef.value);
-        //console.log(audioSource.value);
+        console.log(audioSource.value);
         analyzer.value = audioCtx.value.createAnalyser();
 
         audioSource.value.connect(analyzer.value);
         analyzer.value.connect(audioCtx.value.destination);
 
-        analyzer.value.smoothingTimeConstant = 0.85;
+        analyzer.value.smoothingTimeConstant = 0.9;
         analyzer.value.fftSize = 32;
 
         animate();
