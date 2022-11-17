@@ -1,9 +1,11 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `" style="position: relative">
     <div id="waveform"></div>
+    <div :style="`height: ${height - 80}px; padding: calc(var(--margin)*2) `">
+      <canvas id="canvas-audio" ref="canvasRef" class="audio-canvas"></canvas>
+    </div>
 
-    <canvas id="canvas-audio" ref="canvasRef" class="audio-canvas"></canvas>
-    <audio id="audio" controls ref="audioRef" :src="audioSource"></audio>
+    <audio class="audio-controls" id="audio" controls ref="audioRef" :src="audioSource"></audio>
   </div>
 </template>
 
@@ -111,8 +113,15 @@ export default defineComponent({
 
 <style scoped>
 .audio-canvas {
-  height: 300px;
-  width: 600px;
-  margin-top: 30px;
+  height: 100%;
+  width: 100%;
+}
+
+.audio-controls {
+  position: absolute;
+  bottom: calc(var(--margin) * 2);
+  width: calc(100% - calc(var(--margin) * 4));
+  left: 0px;
+  margin: 0px calc(var(--margin) * 2);
 }
 </style>
