@@ -1,5 +1,7 @@
 <template>
-  <div :style="`height: ${height}px; width: calc(100% -4px); `">
+  <div :style="`height: ${height}px; width: calc(100% -4px); `" style="position: relative">
+    <div id="waveform"></div>
+
     <canvas id="canvas-audio" ref="canvasRef" class="audio-canvas"></canvas>
     <audio id="audio" controls ref="audioRef" :src="audioSource"></audio>
   </div>
@@ -7,14 +9,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, onMounted, PropType, ref } from "vue";
-
 import ItemDialog from "@/models/ItemDialog";
-
 import { readFile } from "@/context/fileSystemController";
-
-import useBase64Handler from "@/hooks/useBase64Handler";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { buffer } from "stream/consumers";
 
 export default defineComponent({
   props: {
@@ -43,7 +39,7 @@ export default defineComponent({
         ctx?.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
 
         analyzer.value?.getByteFrequencyData(dataArray);
-
+        console.log("DRAW", dataArray);
         drawVisualizer(bufferLength, dataArray, ctx, canvasRef.value);
       }
 
@@ -57,28 +53,6 @@ export default defineComponent({
       ctx: CanvasRenderingContext2D,
       canvas: HTMLCanvasElement
     ) => {
-      //   const style = getComputedStyle(document.body);
-      //   ctx.fillStyle = style.getPropertyValue("--font-color");
-
-      //   let barHeight;
-      //   for (let i = 0; i < bufferLength; i++) {
-      //     barHeight = dataArray[i];
-      //     ctx.fillRect(
-      //       canvas.width / 2 - x.value, // this will start the bars at the center of the canvas and move from right to left
-      //       canvas.height - barHeight,
-      //       barWidth,
-      //       barHeight
-      //     );
-      //     x.value += barWidth; // increases the x value by the width of the bar
-      //   }
-      //   ctx.fillStyle = style.getPropertyValue("--font-color");
-
-      //   for (let i = 0; i < bufferLength; i++) {
-      //     barHeight = dataArray[i];
-      //     ctx.fillRect(x.value, canvas.height - barHeight, barWidth, barHeight); // this will continue moving from left to right
-      //     x.value += barWidth; // increases the x value by the width of the bar
-      //   }
-
       const style = getComputedStyle(document.body);
       ctx.fillStyle = style.getPropertyValue("--font-color");
 
@@ -90,14 +64,15 @@ export default defineComponent({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i] - 100;
-        const red = (i * barHeight) / 10;
-        const green = i * 4;
-        const blue = barHeight / 4 - 12;
-        ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
-        ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth, barHeight);
+        barHeight = dataArray[i] - 70;
+        // const red = (i * barHeight) / 10;
+        // const green = i * 4;
+        // const blue = barHeight / 4 - 12;
+
+        ctx.fillStyle = `var(--font-color)`;
+        ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
         firstX += barWidth;
-        ctx.fillRect(secondX, canvas.height - barHeight, barWidth, barHeight);
+        ctx.fillRect(secondX, canvas.height - barHeight, barWidth - 1, barHeight);
         secondX += barWidth;
       }
     };
@@ -114,15 +89,16 @@ export default defineComponent({
 
     onMounted(() => {
       if (audioRef.value && canvasRef.value) {
-        console.log(audioRef.value);
         audioRef.value.play();
         audioSource.value = audioCtx.value.createMediaElementSource(audioRef.value);
+        console.log(audioSource.value);
         analyzer.value = audioCtx.value.createAnalyser();
 
         audioSource.value.connect(analyzer.value);
         analyzer.value.connect(audioCtx.value.destination);
 
-        analyzer.value.fftSize = 128;
+        analyzer.value.smoothingTimeConstant = 0.85;
+        analyzer.value.fftSize = 32;
 
         animate();
       }
@@ -137,6 +113,6 @@ export default defineComponent({
 .audio-canvas {
   height: 300px;
   width: 600px;
-  border: 2px solid black;
+  margin-top: 30px;
 }
 </style>
