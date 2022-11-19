@@ -7,7 +7,7 @@
     </div>
 
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
-      <OpenedFileView v-if="!item.isCollapsed" :itemDialog="item" />
+      <OpenedFileView v-show="!item.isCollapsed" :itemDialog="item" />
     </div>
     <SnackBar></SnackBar>
     <TaskBar />
