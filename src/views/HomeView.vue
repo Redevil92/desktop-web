@@ -5,7 +5,7 @@
     <div @click.right="rightClickHandler">
       <DesktopWorkSpace />
     </div>
-
+    <DynamicIsland />
     <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
       <OpenedFileView v-show="!item.isCollapsed" :itemDialog="item" />
     </div>
@@ -22,6 +22,7 @@ import OpenedFileView from "@/components/system/openedItemDialog/OpenedFileView.
 import TaskBar from "@/components/system/taskbar/TaskBar.vue";
 import ActionMenu from "@/components/system/actionMenu/ActionMenu.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
+import DynamicIsland from "@/components/system/dynamicIsland/DynamicIsland.vue";
 
 import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
@@ -30,7 +31,7 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedFileView, ActionMenu, SnackBar },
+  components: { DesktopWorkSpace, TaskBar, OpenedFileView, ActionMenu, SnackBar, DynamicIsland },
   setup() {
     const fileSystemStore = useFileSystemStore();
 
