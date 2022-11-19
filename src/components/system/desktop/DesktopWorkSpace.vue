@@ -87,7 +87,6 @@ export default defineComponent({
       fileSystemStore.setSelectedDesktopFiles(elementsSelectedNames);
     };
 
-    // TODO, look at this one
     const desktopFiles = computed(function (): DesktopItem[] {
       return fileSystemStore.desktopItems;
     });

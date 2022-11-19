@@ -4,30 +4,41 @@
     <div :style="`height: ${height - 80}px; padding: calc(var(--margin)*2) `">
       <AudioAnalyzer v-if="audioSource" :audioElement="audioRef" />
     </div>
-
+    <AudioWidget :audioElement="audioRef" />
     <audio autoplay class="audio-controls" id="audio" controls ref="audioRef" :src="audioSource"></audio>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
+import { defineComponent, onMounted, PropType, ref, watch } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
 import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
+import AudioWidget from "@/components/apps/audioItem/AudioWidget.vue";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { AudioAnalyzer },
+  components: { AudioAnalyzer, AudioWidget },
   emits: [],
   setup(props, _) {
-    const canvasRef = ref<HTMLCanvasElement>();
     const audioRef = ref<HTMLAudioElement>();
 
     const audioSource = ref();
+
+    watch(
+      () => props.itemDialog?.isCollapsed,
+      async function (newValue: any, oldValue: any) {
+        if (newValue) {
+          //SET DYNAMIC ISLAND
+        } else {
+          //CLOSE DYNAMIC ISLAND
+        }
+      }
+    );
 
     onMounted(async () => {
       if (props.itemDialog?.path) {
@@ -49,7 +60,7 @@ export default defineComponent({
       //   });
     });
 
-    return { audioSource, canvasRef, audioRef };
+    return { audioSource, audioRef };
   },
 });
 </script>
