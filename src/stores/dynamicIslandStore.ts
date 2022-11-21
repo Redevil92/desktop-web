@@ -7,5 +7,15 @@ export const useDynamicIslandStore = defineStore("dynamicIsland", {
     items: [] as DynamicIslandItem[],
   }),
   getters: {},
-  actions: {},
+  actions: {
+    addDynamicIslandItem(item: DynamicIslandItem) {
+      this.items.push(item);
+    },
+    removeDynamicIslandItem(itemGuid: string) {
+      const index = this.items.findIndex((item) => item.itemDialogGuid === itemGuid);
+      if (index !== -1) {
+        this.items.splice(index, 1);
+      }
+    },
+  },
 });
