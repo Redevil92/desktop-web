@@ -1,6 +1,6 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
-    <div class="flex position-relative">
+    <div class="flex-center">
       <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
       <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
       <div class="flex">
@@ -15,8 +15,9 @@
       </div>
     </div>
 
-    <div ref="currentDateRef">
-      <span class="current-date">{{ currentDate }}</span>
+    <div class="task-bar-date" ref="currentDateRef">
+      <div class="current-date">{{ currentTime }}</div>
+      <div class="current-date">{{ currentDate }}</div>
     </div>
   </div>
 </template>
@@ -48,7 +49,8 @@ export default defineComponent({
     const maxItemWidth = 160;
     const itemMargin = 4;
 
-    const currentDate = ref(new Date().toLocaleString().replace(",", " "));
+    const currentDate = ref("");
+    const currentTime = ref("");
 
     const taskBarItems = computed(function () {
       return fileSystemStore.itemsDialog as ItemDialog[];
@@ -67,15 +69,19 @@ export default defineComponent({
     });
 
     const setStartMenuOpened = () => {
-      console.log("OH BOY", layoutStore);
       layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
     };
 
     const updateDate = () => {
-      currentDate.value = new Date().toLocaleString().replace(",", " ");
+      const newDate = new Date();
+      currentDate.value = `${newDate.getDay()}/${newDate.getMonth()}/${newDate.getFullYear()}`;
+      currentTime.value = `${newDate.getHours()}:${
+        (newDate.getMinutes() < 10 ? "0" : "") + newDate.getMinutes()
+      }:${newDate.getSeconds()}`;
     };
 
     onMounted(function () {
+      updateDate();
       setInterval(updateDate, 1000);
     });
 
@@ -87,6 +93,7 @@ export default defineComponent({
       windowIconRef,
       itemMargin,
       currentDate,
+      currentTime,
       isStartMenuOpened,
       setStartMenuOpened,
     };
@@ -96,7 +103,7 @@ export default defineComponent({
 
 <style scoped>
 .window-icon {
-  font-size: 22px;
+  font-size: 32px;
   color: white;
   padding-left: 5px;
   padding-right: 5px;
@@ -117,7 +124,7 @@ export default defineComponent({
   position: absolute;
   right: 0px;
   width: 100vw;
-  display: flex;
+
   z-index: 1000;
   align-items: center;
   justify-content: space-between;
@@ -132,6 +139,10 @@ export default defineComponent({
 .flex {
   display: flex;
 }
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
 
 .flex-grow {
   display: flex;
@@ -140,5 +151,11 @@ export default defineComponent({
 
 .position-relative {
   position: relative;
+}
+
+.task-bar-date {
+  position: absolute;
+  top: 4px;
+  right: 0px;
 }
 </style>

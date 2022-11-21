@@ -160,7 +160,6 @@ export default defineComponent({
   height: 600px;
   width: 500px;
   position: absolute;
-  left: var(--margin);
   bottom: calc(var(--task-bar-height) + var(--margin));
   border-radius: var(--border-radius);
   background-color: var(--background-color);

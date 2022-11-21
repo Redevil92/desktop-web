@@ -1,16 +1,16 @@
 <template>
   <div class="task-bar-item" :class="isFocused ? 'task-bar-item-focused' : ''" @click="taskBarItemClickHandler">
     <div v-if="item.icon">
-      <img class="task-bar-icon" height="16" :src="require('/src/assets/fileIcons/' + item.icon)" alt="" />
+      <img class="task-bar-icon" height="30" :src="require('/src/assets/fileIcons/' + item.icon)" alt="" />
     </div>
 
     <div v-else>
-      <img class="task-bar-icon" height="16" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+      <img class="task-bar-icon" height="30" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
     </div>
 
-    <p class="text">
+    <!-- <p class="text">
       {{ item.name }}
-    </p>
+    </p> -->
   </div>
 </template>
 
@@ -56,15 +56,10 @@ export default defineComponent({
 
 <style scoped>
 .task-bar-item {
-  letter-spacing: -0.1px;
   overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border-bottom: 2px solid #69b0e9;
-  height: 30px;
+
   display: flex;
   align-items: center;
-  padding: 0px 10px;
 }
 
 .task-bar-item:hover,
@@ -83,7 +78,6 @@ export default defineComponent({
 
 .task-bar-icon {
   font-size: 16px;
-  margin-right: 5px;
-  margin-top: 5px;
+  margin: 5px;
 }
 </style>
