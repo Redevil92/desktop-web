@@ -57,7 +57,6 @@ export default defineComponent({
 <style scoped>
 .task-bar-item {
   overflow-x: hidden;
-
   display: flex;
   align-items: center;
 }

@@ -7,10 +7,9 @@
         <div
           v-for="(taskBarItem, index) in taskBarItems"
           :key="`task-bar-item-${index}`"
-          class="task-bar-item"
           :style="`margin-left: ${itemMargin}px`"
         >
-          <TaskBarItem :style="`width: ${itemWidth}px`" :item="taskBarItem"></TaskBarItem>
+          <TaskBarItem :item="taskBarItem"></TaskBarItem>
         </div>
       </div>
     </div>
@@ -46,7 +45,6 @@ export default defineComponent({
     const currentDateRef = ref(null);
     const windowIconRef = ref(null);
 
-    const maxItemWidth = 160;
     const itemMargin = 4;
 
     const currentDate = ref("");
@@ -56,17 +54,17 @@ export default defineComponent({
       return fileSystemStore.itemsDialog as ItemDialog[];
     });
 
-    const itemWidth = computed(function () {
-      const itemContainerWidth =
-        (itemsContainerRef.value as unknown as HTMLElement).clientWidth -
-        (windowIconRef.value as unknown as HTMLElement).clientWidth -
-        (currentDateRef.value as unknown as HTMLElement).clientWidth;
+    // const itemWidth = computed(function () {
+    //   const itemContainerWidth =
+    //     (itemsContainerRef.value as unknown as HTMLElement).clientWidth -
+    //     (windowIconRef.value as unknown as HTMLElement).clientWidth -
+    //     (currentDateRef.value as unknown as HTMLElement).clientWidth;
 
-      const calculatedItemWidth =
-        (itemContainerWidth - (taskBarItems.value.length + 1) * itemMargin) / taskBarItems.value.length;
+    //   const calculatedItemWidth =
+    //     (itemContainerWidth - (taskBarItems.value.length + 1) * itemMargin) / taskBarItems.value.length;
 
-      return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
-    });
+    //   return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
+    // });
 
     const setStartMenuOpened = () => {
       layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
@@ -88,7 +86,6 @@ export default defineComponent({
     return {
       taskBarItems,
       itemsContainerRef,
-      itemWidth,
       currentDateRef,
       windowIconRef,
       itemMargin,
