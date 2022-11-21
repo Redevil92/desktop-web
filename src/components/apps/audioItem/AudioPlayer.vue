@@ -17,6 +17,9 @@ import { readFile } from "@/context/fileSystemController";
 import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
 import AudioWidget from "@/components/apps/audioItem/AudioWidget.vue";
 
+import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
+import { DynamicIslandAudioItem } from "@/models/DynamicIslandItem";
+
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
@@ -25,6 +28,8 @@ export default defineComponent({
   components: { AudioAnalyzer, AudioWidget },
   emits: [],
   setup(props, _) {
+    const dynamicIslandStore = useDynamicIslandStore();
+
     const audioRef = ref<HTMLAudioElement>();
 
     const audioSource = ref();
@@ -34,8 +39,15 @@ export default defineComponent({
       async function (newValue: any, oldValue: any) {
         if (newValue) {
           //SET DYNAMIC ISLAND
+          const dynamicIslandItem: DynamicIslandAudioItem = {
+            componentPath: "audioItem/AudioWidget.vue",
+            itemDialogGuid: props.itemDialog?.guid || "",
+            audioElement: audioRef.value as HTMLAudioElement,
+          };
+          dynamicIslandStore.addDynamicIslandItem(dynamicIslandItem);
         } else {
-          //CLOSE DYNAMIC ISLAND
+          //CLOSE DYNAMIC ISLAND if any
+          dynamicIslandStore.removeDynamicIslandItem(props.itemDialog?.guid || "");
         }
       }
     );

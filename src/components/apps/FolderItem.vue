@@ -314,13 +314,13 @@ export default defineComponent({
   font-size: var(--medium-font-size);
   text-align: left;
   padding-left: 10px;
+  padding-top: 3px;
 }
 
 .flex-align-center {
   align-content: center;
   cursor: pointer;
   display: flex;
-  align-items: center;
 }
 
 .input-placeholder {

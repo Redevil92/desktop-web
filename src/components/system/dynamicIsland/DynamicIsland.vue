@@ -1,14 +1,23 @@
 <template>
-  <div class="dynamic-island" ref="dynamicIslandRef" :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`"></div>
+  <div class="dynamic-island" ref="dynamicIslandRef" :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`">
+    <div>{{ dynamicItems.length }}</div>
+  </div>
 </template>
 
 <script lang="ts">
+import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
 import { computed, defineComponent, ref } from "vue";
 
 export default defineComponent({
   props: {},
   components: {},
   setup() {
+    const dynamicIslandStore = useDynamicIslandStore();
+
+    const dynamicItems = computed(() => {
+      return dynamicIslandStore.items;
+    });
+
     const dynamicIslandRef = ref<HTMLElement | null>(null);
 
     const dynamicIslandWidth = computed(() => {
@@ -18,7 +27,7 @@ export default defineComponent({
       return 200;
     });
 
-    return { dynamicIslandWidth };
+    return { dynamicIslandWidth, dynamicItems };
   },
 });
 </script>
