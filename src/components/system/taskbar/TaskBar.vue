@@ -1,15 +1,16 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
+    <!-- AHHAHA {{ taskBarItemByApplication }} {{taskBarItems}} -->
     <div class="flex-center">
       <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
       <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
       <div class="flex">
         <div
-          v-for="(taskBarItem, index) in taskBarItems"
+          v-for="(taskBarItem, index) in taskBarItemByApplication"
           :key="`task-bar-item-${index}`"
           :style="`margin-left: ${itemMargin}px`"
         >
-          <TaskBarItem :item="taskBarItem"></TaskBarItem>
+          <TaskBarItem :items="taskBarItem"></TaskBarItem>
         </div>
       </div>
     </div>
@@ -54,6 +55,20 @@ export default defineComponent({
       return fileSystemStore.itemsDialog as ItemDialog[];
     });
 
+    const taskBarItemByApplication = computed(function () {
+      const itemByApp: { [key: string]: ItemDialog[] } = {};
+
+      taskBarItems.value.forEach((itemDialog) => {
+        if (itemByApp[itemDialog.applicationToOpen || ""]) {
+          itemByApp[itemDialog.applicationToOpen || ""].push(itemDialog);
+        } else {
+          itemByApp[itemDialog.applicationToOpen || ""] = [itemDialog];
+        }
+      });
+      console.log(taskBarItems.value);
+      return itemByApp;
+    });
+
     // const itemWidth = computed(function () {
     //   const itemContainerWidth =
     //     (itemsContainerRef.value as unknown as HTMLElement).clientWidth -
@@ -92,6 +107,7 @@ export default defineComponent({
       currentDate,
       currentTime,
       isStartMenuOpened,
+      taskBarItemByApplication,
       setStartMenuOpened,
     };
   },

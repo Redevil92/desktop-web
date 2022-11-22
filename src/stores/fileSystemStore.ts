@@ -82,7 +82,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
       }
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
-      console.log(fileTypeConfiguration);
 
       if (fileTypeConfiguration) {
         dimension = fileTypeConfiguration.defaultSize;
