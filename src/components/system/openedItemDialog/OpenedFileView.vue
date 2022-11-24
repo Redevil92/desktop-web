@@ -9,11 +9,16 @@
         <div v-else class="mdi mdi-folder-open folder-icon"></div>
 
         <div class="directory-name">{{ itemDialog.name }}</div>
-        <DialogControls :itemDialog="itemDialog" />
+        <DialogControls
+          :itemDialog="itemDialog"
+          @close="closeDialog"
+          @minimize="minimizeDialog"
+          @expand="setFullScreen"
+        />
       </div>
     </template>
     <template #default>
-      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }">
+      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" id="testScreen" ref="itemContentRef">
         <component
           v-if="applicationComponent"
           :is="applicationComponent"
@@ -26,14 +31,17 @@
 </template>
 
 <script lang="ts">
-import ItemDialog from "@/models/ItemDialog";
 import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
+
+import ItemDialog from "@/models/ItemDialog";
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 import MoveAndResizeArea from "@/components/system/openedItemDialog/MoveAndResizeArea.vue";
-
 import DialogControls from "@/components/system/openedItemDialog/DialogControls.vue";
+
+import { useFileSystemStore } from "@/stores/fileSystemStore";
+import useScreenshot from "@/hooks/useScreenshot";
 
 export default defineComponent({
   props: {
@@ -47,6 +55,30 @@ export default defineComponent({
   },
   emits: [],
   setup(props, _) {
+    const fileSystemStore = useFileSystemStore();
+
+    const itemContentRef = ref<HTMLElement | undefined>();
+
+    const { takeScreenshot } = useScreenshot(itemContentRef.value);
+
+    const closeDialog = () => {
+      fileSystemStore.closeItemDialog(props.itemDialog.guid);
+      fileSystemStore.findAndSetNewFocusedItemDialog();
+    };
+
+    const minimizeDialog = () => {
+      if (itemContentRef.value) {
+        takeScreenshot(itemContentRef.value, { x: 0, y: 0 }, { height: 1000, width: 1000 });
+      }
+
+      fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
+      fileSystemStore.findAndSetNewFocusedItemDialog();
+    };
+
+    const setFullScreen = (isFullscreen: boolean) => {
+      fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
+    };
+
     const applicationComponent = defineAsyncComponent({
       loader: () => import(`@/components/apps/${props.itemDialog.applicationToOpen}.vue`),
       loadingComponent: LoadingComponent,
@@ -72,6 +104,10 @@ export default defineComponent({
       headerRef,
       contentHeight,
       applicationComponent,
+      itemContentRef,
+      closeDialog,
+      minimizeDialog,
+      setFullScreen,
     };
   },
 });
@@ -105,23 +141,6 @@ export default defineComponent({
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.footer {
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  background-color: rgb(25, 25, 25);
-  bottom: 0px;
-  width: inherit;
-  text-align: start;
-}
-
-.footer-text {
-  color: white;
-  font-size: var(--small-font-size);
-  text-align: start;
-  margin-left: 5px;
 }
 
 .file-icon {

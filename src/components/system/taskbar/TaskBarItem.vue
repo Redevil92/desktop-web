@@ -3,6 +3,7 @@
     @mouseenter="showItemsContainerHandler(true)"
     @mouseleave="showItemsContainerHandler(false)"
     @click="taskBarItemClickHandler"
+    ref="testRef"
   >
     <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
       <div v-for="(item, index) in items" :key="index" @click="taskBarItemClickHandler(item)" class="item-content">
@@ -35,6 +36,8 @@ import ItemDialog from "@/models/ItemDialog";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
+import html2canvas from "html2canvas";
+
 export default defineComponent({
   props: {
     items: { type: Array as PropType<ItemDialog[]>, required: true },
@@ -43,18 +46,38 @@ export default defineComponent({
   setup(props) {
     const fileSystemStore = useFileSystemStore();
     const showItemsContainer = ref(false);
+    const testRef = ref<HTMLElement>();
 
     const showItemsContainerHandler = (show: boolean) => {
       showItemsContainer.value = show;
     };
 
     const taskBarItemClickHandler = (item: ItemDialog) => {
+      takeScreenshot();
       if (item.isCollapsed) {
         fileSystemStore.openMinimizedItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog(item);
+        showItemsContainer.value = false;
       } else {
         fileSystemStore.minimizeItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog({} as ItemDialog);
+      }
+    };
+
+    const takeScreenshot = () => {
+      if (testRef.value) {
+        html2canvas(testRef.value).then((canvas) => {
+          let croppedCanvas: HTMLCanvasElement = document.createElement("canvas"),
+            croppedCanvasContext = croppedCanvas.getContext("2d");
+
+          if (croppedCanvas && croppedCanvasContext) {
+            console.log("SCREEEEMSHOT");
+            croppedCanvasContext.drawImage(canvas, 0, 0, 90, 90, 0, 0, 90, 90);
+
+            const imageUrl = croppedCanvas.toDataURL();
+            console.log(imageUrl);
+          }
+        });
       }
     };
 
@@ -64,6 +87,7 @@ export default defineComponent({
       showItemsContainerHandler,
       taskBarItemClickHandler,
       showItemsContainer,
+      testRef,
     };
   },
 });

@@ -29,29 +29,23 @@
 import { defineComponent, PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
     itemDialog: { type: Object as PropType<ItemDialog>, required: true },
   },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
-
+  emits: ["close", "minimize", "expand"],
+  setup(props, ctx) {
     const closeFolderDialog = () => {
-      fileSystemStore.closeItemDialog(props.itemDialog.guid);
-      fileSystemStore.findAndSetNewFocusedItemDialog();
+      ctx.emit("close");
     };
 
     const minimizeFolderDialog = () => {
-      fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
-      fileSystemStore.findAndSetNewFocusedItemDialog();
+      ctx.emit("minimize");
     };
 
     const setFolderDialogFullScreen = (isFullscreen: boolean) => {
-      fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
+      ctx.emit("expand");
     };
 
     return {

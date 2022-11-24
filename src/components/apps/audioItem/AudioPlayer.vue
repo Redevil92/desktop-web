@@ -16,7 +16,6 @@ import { readFile } from "@/context/fileSystemController";
 
 import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
 import AudioWidget from "@/components/apps/audioItem/AudioWidget.vue";
-
 import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
 import { DynamicIslandAudioItem } from "@/models/DynamicIslandItem";
 
