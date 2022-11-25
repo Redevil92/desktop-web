@@ -18,7 +18,7 @@
       </div>
     </template>
     <template #default>
-      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" id="testScreen" ref="itemContentRef">
+      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="dialog-content" ref="itemContentRef">
         <component
           v-if="applicationComponent"
           :is="applicationComponent"
@@ -68,7 +68,7 @@ export default defineComponent({
 
     const minimizeDialog = () => {
       if (itemContentRef.value) {
-        takeScreenshot(itemContentRef.value, { x: 0, y: 0 }, { height: 1000, width: 1000 });
+        takeScreenshot(itemContentRef.value);
       }
 
       fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
@@ -146,6 +146,10 @@ export default defineComponent({
 .file-icon {
   margin-left: 10px;
   margin-top: 3px;
+}
+
+.dialog-content {
+  background-color: var(--background-color);
 }
 
 .not-focused-dialog {
