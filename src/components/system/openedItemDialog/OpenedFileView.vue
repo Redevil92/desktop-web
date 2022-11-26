@@ -41,7 +41,6 @@ import MoveAndResizeArea from "@/components/system/openedItemDialog/MoveAndResiz
 import DialogControls from "@/components/system/openedItemDialog/DialogControls.vue";
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import useScreenshot from "@/hooks/useScreenshot";
 
 export default defineComponent({
   props: {
@@ -59,18 +58,12 @@ export default defineComponent({
 
     const itemContentRef = ref<HTMLElement | undefined>();
 
-    const { takeScreenshot } = useScreenshot(itemContentRef.value);
-
     const closeDialog = () => {
       fileSystemStore.closeItemDialog(props.itemDialog.guid);
       fileSystemStore.findAndSetNewFocusedItemDialog();
     };
 
     const minimizeDialog = () => {
-      if (itemContentRef.value) {
-        takeScreenshot(itemContentRef.value);
-      }
-
       fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
       fileSystemStore.findAndSetNewFocusedItemDialog();
     };
