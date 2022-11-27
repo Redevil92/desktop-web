@@ -1,10 +1,5 @@
 <template>
-  <div
-    @mouseenter="showItemsContainerHandler(true)"
-    @mouseleave="showItemsContainerHandler(false)"
-    @click="taskBarItemClickHandler"
-    ref="testRef"
-  >
+  <div @mouseenter="showItemsContainerHandler(true)" @mouseleave="showItemsContainerHandler(false)" ref="testRef">
     <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
       <div v-for="(item, index) in items" :key="index" @click="taskBarItemClickHandler(item)" class="item-content">
         <div class="flex">
@@ -41,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 
 import FileIcon from "@/components/shared/FileIcon.vue";
 
@@ -49,8 +44,6 @@ import ItemDialog from "@/models/ItemDialog";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
-
-import html2canvas from "html2canvas";
 
 export default defineComponent({
   props: {
@@ -67,7 +60,6 @@ export default defineComponent({
     };
 
     const taskBarItemClickHandler = (item: ItemDialog) => {
-      takeScreenshot();
       if (item.isCollapsed) {
         fileSystemStore.openMinimizedItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog(item);
@@ -76,22 +68,6 @@ export default defineComponent({
         const itemRef = document.getElementById(item.guid) || undefined;
         fileSystemStore.minimizeItemDialog(item.guid, itemRef);
         fileSystemStore.setFocusedItemDialog({} as ItemDialog);
-      }
-    };
-
-    const takeScreenshot = () => {
-      if (testRef.value) {
-        html2canvas(testRef.value).then((canvas) => {
-          let croppedCanvas: HTMLCanvasElement = document.createElement("canvas"),
-            croppedCanvasContext = croppedCanvas.getContext("2d");
-
-          if (croppedCanvas && croppedCanvasContext) {
-            croppedCanvasContext.drawImage(canvas, 0, 0, 90, 90, 0, 0, 90, 90);
-
-            const imageUrl = croppedCanvas.toDataURL();
-            console.log(imageUrl);
-          }
-        });
       }
     };
 

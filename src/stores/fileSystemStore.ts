@@ -206,6 +206,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         item.zIndex = Math.max(item.zIndex - 1, 1);
       });
       const index = itemsToUpdate.findIndex((item) => item.guid === itemDialog.guid);
+
       if (index !== -1) {
         itemsToUpdate[index].isFocused = true;
         itemsToUpdate[index].zIndex = itemsToUpdate.length;
