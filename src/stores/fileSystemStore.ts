@@ -17,6 +17,7 @@ import ItemDialog from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
 import { takeAndSaveItemPreviewScreenshot } from "@/hooks/useScreenshot";
+import { removeItemPreviewInSessionStorage } from "@/hooks/useSessionStorage";
 
 export const useFileSystemStore = defineStore("fileSystem", {
   state: () => ({
@@ -143,8 +144,11 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
     closeItemDialog(itemDialogGuid: string) {
       const index = this.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
-      this.itemsDialog.splice(index, 1);
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      if (index !== -1) {
+        removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
+        this.itemsDialog.splice(index, 1);
+        this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      }
     },
     minimizeItemDialog(itemDialogGuid: string, itemRef: HTMLElement | undefined = undefined) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemDialogGuid);

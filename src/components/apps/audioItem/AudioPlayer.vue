@@ -4,7 +4,7 @@
     <div :style="`height: ${height - 80}px; padding: calc(var(--margin)*2) `">
       <AudioAnalyzer v-if="audioSource" :audioElement="audioRef" />
     </div>
-    <AudioWidget :audioElement="audioRef" />
+    <!-- <AudioWidget :audioElement="audioRef" /> -->
     <audio autoplay class="audio-controls" id="audio" controls ref="audioRef" :src="audioSource"></audio>
   </div>
 </template>
@@ -15,7 +15,7 @@ import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
 import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
-import AudioWidget from "@/components/apps/audioItem/AudioWidget.vue";
+// import AudioWidget from "@/components/apps/audioItem/AudioWidget.vue";
 import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
 import { DynamicIslandAudioItem } from "@/models/DynamicIslandItem";
 
@@ -24,7 +24,7 @@ export default defineComponent({
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { AudioAnalyzer, AudioWidget },
+  components: { AudioAnalyzer },
   emits: [],
   setup(props, _) {
     const dynamicIslandStore = useDynamicIslandStore();

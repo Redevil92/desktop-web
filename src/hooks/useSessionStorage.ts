@@ -1,11 +1,26 @@
-export const saveItemPreviewInSessionStorage = (base64image: string, itemName: string) => {
+export const saveItemPreviewInSessionStorage = (base64image: string, itemPath: string) => {
   const retrievedObject = sessionStorage.getItem("previewItemImages");
-  let previewItemImages = {} as any;
+  let previewItemImages = {} as PreviewItem;
   if (retrievedObject) {
     previewItemImages = JSON.parse(retrievedObject);
   }
 
-  previewItemImages[itemName] = base64image;
+  previewItemImages[itemPath] = base64image;
+  console.log(previewItemImages);
+  sessionStorage.setItem("previewItemImages", JSON.stringify(previewItemImages));
+};
 
-  localStorage.setItem("previewItemImages", JSON.stringify(previewItemImages));
+export const removeItemPreviewInSessionStorage = (itemPath: string) => {
+  const retrievedObject = sessionStorage.getItem("previewItemImages");
+  let previewItemImages = {} as PreviewItem;
+  if (retrievedObject) {
+    previewItemImages = JSON.parse(retrievedObject);
+  }
+
+  delete previewItemImages[itemPath];
+  sessionStorage.setItem("previewItemImages", JSON.stringify(previewItemImages));
+};
+
+type PreviewItem = {
+  [key: string]: string;
 };

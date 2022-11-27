@@ -59,7 +59,8 @@ export default defineComponent({
         fileSystemStore.setFocusedItemDialog(item);
         showItemsContainer.value = false;
       } else {
-        fileSystemStore.minimizeItemDialog(item.guid);
+        const itemRef = document.getElementById(item.guid) || undefined;
+        fileSystemStore.minimizeItemDialog(item.guid, itemRef);
         fileSystemStore.setFocusedItemDialog({} as ItemDialog);
       }
     };
@@ -71,7 +72,6 @@ export default defineComponent({
             croppedCanvasContext = croppedCanvas.getContext("2d");
 
           if (croppedCanvas && croppedCanvasContext) {
-            console.log("SCREEEEMSHOT");
             croppedCanvasContext.drawImage(canvas, 0, 0, 90, 90, 0, 0, 90, 90);
 
             const imageUrl = croppedCanvas.toDataURL();

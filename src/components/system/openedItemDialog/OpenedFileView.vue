@@ -18,7 +18,12 @@
       </div>
     </template>
     <template #default>
-      <div :class="{ 'not-focused-dialog': !itemDialog.isFocused }" class="dialog-content" ref="itemContentRef">
+      <div
+        :class="{ 'not-focused-dialog': !itemDialog.isFocused }"
+        class="dialog-content"
+        :id="itemDialog.guid"
+        ref="itemContentRef"
+      >
         <component
           v-if="applicationComponent"
           :is="applicationComponent"
@@ -64,7 +69,9 @@ export default defineComponent({
     };
 
     const minimizeDialog = () => {
-      fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
+      const itemRef = document.getElementById(props.itemDialog.guid) || undefined;
+      fileSystemStore.minimizeItemDialog(props.itemDialog.guid, itemRef);
+      //fileSystemStore.minimizeItemDialog(props.itemDialog.guid, itemContentRef.value);
       fileSystemStore.findAndSetNewFocusedItemDialog();
     };
 
