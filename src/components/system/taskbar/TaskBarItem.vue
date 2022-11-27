@@ -7,23 +7,36 @@
   >
     <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
       <div v-for="(item, index) in items" :key="index" @click="taskBarItemClickHandler(item)" class="item-content">
-        <FileIcon class="item-icon" :icon="item.icon" :height="17" :noStyle="true" />
-        {{ getFileNameFromPath(item.path) }}
+        <div class="flex">
+          <FileIcon class="item-icon" :icon="item.icon" :height="17" :noStyle="true" />
+          {{ getFileNameFromPath(item.path) }}
+        </div>
+        <img
+          :src="`${getPreviewImageFromSessionStorage(item.path)}`"
+          alt=""
+          :id="`image-${item.path}`"
+          class="preview-image"
+        />
       </div>
+      <div></div>
     </div>
     <div class="task-bar-item" :class="showItemsContainer ? 'task-bar-item-focused' : ''">
-      <div v-if="items[0].icon">
-        <img class="task-bar-icon" height="28" :src="require('/src/assets/fileIcons/' + items[0].icon)" alt="" />
-      </div>
-
-      <div v-else>
-        <img class="task-bar-icon" height="28" :src="require('/src/assets/fileIcons/unknow.svg')" alt="" />
+      <div>
+        <img
+          class="task-bar-icon"
+          height="25"
+          :src="
+            items[0].icon
+              ? require('/src/assets/fileIcons/' + items[0].icon)
+              : require('/src/assets/fileIcons/unknow.svg')
+          "
+          alt=""
+        />
+        <div class="flex-center">
+          <div class="bottom-bar"></div>
+        </div>
       </div>
     </div>
-
-    <!-- <p class="text">
-      {{ item.name }}
-    </p> -->
   </div>
 </template>
 
@@ -35,6 +48,7 @@ import FileIcon from "@/components/shared/FileIcon.vue";
 import ItemDialog from "@/models/ItemDialog";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
 
 import html2canvas from "html2canvas";
 
@@ -88,18 +102,27 @@ export default defineComponent({
       taskBarItemClickHandler,
       showItemsContainer,
       testRef,
+      getPreviewImageFromSessionStorage,
     };
   },
 });
 </script>
 
 <style scoped>
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
 .task-bar-item {
   overflow-x: hidden;
   display: flex;
   align-items: center;
   height: var(--task-bar-height);
-  border-bottom: 3px solid var(--selected-color_light);
 }
 
 .task-bar-item:hover,
@@ -107,14 +130,9 @@ export default defineComponent({
   background-color: rgba(128, 128, 128, 0.393);
 }
 
-/* .text {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: var(--small-font-size);
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  margin-top: 2px;
-} */
+.task-bar-item:hover .bottom-bar {
+  background-color: var(--selected-color_light);
+}
 
 .task-bar-icon {
   margin: 0px 5px;
@@ -130,7 +148,6 @@ export default defineComponent({
 }
 
 .item-content {
-  display: flex;
   padding: 5px;
   color: var(--font-color);
   font-size: var(--medium-font-size);
@@ -142,5 +159,16 @@ export default defineComponent({
 
 .item-icon {
   margin-right: 5px;
+}
+
+.preview-image {
+  max-height: 170px;
+}
+
+.bottom-bar {
+  height: 3px;
+  width: 8px;
+  background-color: var(--font-color_dark);
+  border-radius: var(--border-radius);
 }
 </style>
