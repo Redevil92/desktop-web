@@ -32,7 +32,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
       isOpenedFolder: false,
     } as ActionMenu,
     filePathsToMove: [] as string[],
-
     isSelectionBoxEnabled: true,
     dragginPath: "",
   }),

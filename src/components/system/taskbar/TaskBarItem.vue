@@ -1,7 +1,14 @@
 <template>
   <div @mouseenter="showItemsContainerHandler(true)" @mouseleave="showItemsContainerHandler(false)" ref="testRef">
     <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
-      <div v-for="(item, index) in items" :key="index" @click="taskBarItemClickHandler(item)" class="item-content">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        @mouseenter="setItemToPreview(item)"
+        @mouseleave="removeItemToPreview"
+        @click="taskBarItemClickHandler(item)"
+        class="item-content"
+      >
         <div class="flex">
           <FileIcon class="item-icon" :icon="item.icon" :height="17" :noStyle="true" />
           {{ getFileNameFromPath(item.path) }}
@@ -28,7 +35,7 @@
           alt=""
         />
         <div class="flex-center">
-          <div class="bottom-bar"></div>
+          <div class="bottom-bar" :class="isItemFocused ? 'bottom-bar-selected' : 'bottom-bar-not-selected'"></div>
         </div>
       </div>
     </div>
@@ -36,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 import FileIcon from "@/components/shared/FileIcon.vue";
 
@@ -54,13 +61,38 @@ export default defineComponent({
     const fileSystemStore = useFileSystemStore();
     const showItemsContainer = ref(false);
     const testRef = ref<HTMLElement>();
+    const itemToPreview = ref<ItemDialog | undefined>();
+
+    const isItemFocused = computed(() => {
+      const index = props.items.findIndex((item) => item.isFocused === true && !item.isCollapsed);
+      return index !== -1;
+    });
 
     const showItemsContainerHandler = (show: boolean) => {
       showItemsContainer.value = show;
     };
 
-    const taskBarItemClickHandler = (item: ItemDialog) => {
+    const setItemToPreview = (item: ItemDialog) => {
+      // if item is hidden set item as focused
       if (item.isCollapsed) {
+        itemToPreview.value = item;
+        fileSystemStore.openMinimizedItemDialog(item.guid);
+      }
+
+      fileSystemStore.setFocusedItemDialog(item);
+      // [[ if click while mouse hover remove itemToPreview without collapse item ]]
+    };
+
+    const removeItemToPreview = () => {
+      if (itemToPreview.value) {
+        fileSystemStore.minimizeItemDialog(itemToPreview.value.guid);
+        itemToPreview.value = undefined;
+      }
+    };
+
+    const taskBarItemClickHandler = (item: ItemDialog) => {
+      if (item.isCollapsed || itemToPreview.value) {
+        itemToPreview.value = undefined;
         fileSystemStore.openMinimizedItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog(item);
         showItemsContainer.value = false;
@@ -76,9 +108,13 @@ export default defineComponent({
       getFileExtensionFromName,
       showItemsContainerHandler,
       taskBarItemClickHandler,
+      getPreviewImageFromSessionStorage,
+      setItemToPreview,
+      removeItemToPreview,
+      isItemFocused,
       showItemsContainer,
       testRef,
-      getPreviewImageFromSessionStorage,
+      itemToPreview,
     };
   },
 });
@@ -106,7 +142,7 @@ export default defineComponent({
   background-color: rgba(128, 128, 128, 0.393);
 }
 
-.task-bar-item:hover .bottom-bar {
+.task-bar-item:hover .bottom-bar-selected {
   background-color: var(--selected-color_light);
 }
 
@@ -144,7 +180,14 @@ export default defineComponent({
 .bottom-bar {
   height: 3px;
   width: 8px;
-  background-color: var(--font-color_dark);
   border-radius: var(--border-radius);
+}
+
+.bottom-bar-not-selected {
+  background-color: var(--font-color_dark);
+}
+
+.bottom-bar-selected {
+  background-color: var(--selected-color_light);
 }
 </style>

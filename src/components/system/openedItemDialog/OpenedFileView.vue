@@ -24,7 +24,6 @@
         :id="itemDialog.guid"
         ref="itemContentRef"
       >
-        <span style="color: white">{{ itemDialog.isFocused }}</span>
         <component
           v-if="applicationComponent"
           :is="applicationComponent"
