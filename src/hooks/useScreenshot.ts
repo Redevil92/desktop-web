@@ -12,3 +12,10 @@ export const takeAndSaveItemPreviewScreenshot = (htmlElement: HTMLElement, itemP
     saveItemPreviewInSessionStorage(base64image, itemPath);
   });
 };
+
+export const takeAndSaveItemPreviewScreenshotByItemGuid = (itemGuid: string, itemPath: string) => {
+  const htmlElement = document.getElementById(itemGuid) || undefined;
+  if (htmlElement) {
+    takeAndSaveItemPreviewScreenshot(htmlElement, itemPath);
+  }
+};

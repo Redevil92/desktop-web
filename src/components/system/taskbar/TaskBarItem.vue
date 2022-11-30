@@ -97,8 +97,7 @@ export default defineComponent({
         fileSystemStore.setFocusedItemDialog(item);
         showItemsContainer.value = false;
       } else {
-        const itemRef = document.getElementById(item.guid) || undefined;
-        fileSystemStore.minimizeItemDialog(item.guid, itemRef);
+        fileSystemStore.minimizeItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog({} as ItemDialog);
       }
     };

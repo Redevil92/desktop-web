@@ -16,7 +16,7 @@ import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog from "@/models/ItemDialog";
 import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
-import { takeAndSaveItemPreviewScreenshot } from "@/hooks/useScreenshot";
+import { takeAndSaveItemPreviewScreenshotByItemGuid } from "@/hooks/useScreenshot";
 import { removeItemPreviewInSessionStorage } from "@/hooks/useSessionStorage";
 
 export const useFileSystemStore = defineStore("fileSystem", {
@@ -149,13 +149,11 @@ export const useFileSystemStore = defineStore("fileSystem", {
         this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
       }
     },
-    minimizeItemDialog(itemDialogGuid: string, itemRef: HTMLElement | undefined = undefined) {
+    minimizeItemDialog(itemDialogGuid: string) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemDialogGuid);
       if (index !== -1) {
         this.itemsDialog[index].isCollapsed = true;
-        if (itemRef) {
-          takeAndSaveItemPreviewScreenshot(itemRef, this.itemsDialog[index].path);
-        }
+        takeAndSaveItemPreviewScreenshotByItemGuid(itemDialogGuid, this.itemsDialog[index].path);
       }
 
       this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
