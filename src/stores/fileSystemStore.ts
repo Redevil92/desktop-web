@@ -116,6 +116,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
       this.itemsDialog = [...this.itemsDialog]; // TODO, check if neeeded
 
       this.setFocusedItemDialog(newItemDialog);
+      setTimeout(() => {
+        takeAndSaveItemPreviewScreenshotByItemGuid(newItemDialog.guid, newItemDialog.path);
+      }, 500);
     },
     async updateItemDialogName(pathAndItemToUpdate: { newPath: string; itemDialog: ItemDialog }) {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);

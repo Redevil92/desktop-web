@@ -70,7 +70,6 @@ export default defineComponent({
 
     const minimizeDialog = () => {
       fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
-      //fileSystemStore.minimizeItemDialog(props.itemDialog.guid, itemContentRef.value);
       fileSystemStore.findAndSetNewFocusedItemDialog();
     };
 

@@ -7,11 +7,13 @@
         @mouseenter="setItemToPreview(item)"
         @mouseleave="removeItemToPreview"
         @click="taskBarItemClickHandler(item)"
-        class="item-content"
+        class="preview-item"
       >
-        <div class="flex">
-          <FileIcon class="item-icon" :icon="item.icon" :height="17" :noStyle="true" />
-          {{ getFileNameFromPath(item.path) }}
+        <div class="flex preview-header">
+          <FileIcon class="item-icon" :icon="item.icon" :height="15" :noStyle="true" />
+          <div>
+            {{ getFileNameFromPath(item.path) }}
+          </div>
         </div>
         <img
           :src="`${getPreviewImageFromSessionStorage(item.path)}`"
@@ -145,6 +147,11 @@ export default defineComponent({
   background-color: var(--selected-color_light);
 }
 
+.preview-header {
+  margin-bottom: 5px;
+  align-items: center;
+}
+
 .task-bar-icon {
   margin: 0px 5px;
 }
@@ -153,18 +160,19 @@ export default defineComponent({
   position: absolute;
   display: flex;
   top: 0px;
-  height: 200px;
-  top: -200px;
+  height: 160px;
+  top: -160px;
   background-color: var(--background-color_contrast);
+  border-radius: calc(var(--border-radius) / 2);
 }
 
-.item-content {
+.preview-item {
   padding: 5px;
   color: var(--font-color);
-  font-size: var(--medium-font-size);
+  font-size: var(--small-font-size);
 }
 
-.item-content:hover {
+.preview-item:hover {
   background-color: rgba(128, 128, 128, 0.393);
 }
 
@@ -173,7 +181,7 @@ export default defineComponent({
 }
 
 .preview-image {
-  max-height: 170px;
+  max-height: 125px;
 }
 
 .bottom-bar {
