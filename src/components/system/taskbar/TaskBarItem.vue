@@ -1,5 +1,19 @@
 <template>
-  <div @mouseenter="showItemsContainerHandler(true)" @mouseleave="showItemsContainerHandler(false)" ref="testRef">
+  <div
+    @mouseenter="
+      {
+        isMouseHoveringItem = true;
+        showItemsContainerHandler(true);
+      }
+    "
+    @mouseleave="
+      {
+        isMouseHoveringItem = false;
+        showItemsContainerHandler(false);
+      }
+    "
+    ref="testRef"
+  >
     <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
       <div
         v-for="(item, index) in items"
@@ -27,13 +41,12 @@
           class="preview-image"
         />
       </div>
-      <div></div>
     </div>
     <div class="task-bar-item" :class="showItemsContainer ? 'task-bar-item-focused' : ''">
       <div>
         <img
           class="task-bar-icon"
-          height="25"
+          height="23"
           :src="
             items[0].icon
               ? require('/src/assets/fileIcons/' + items[0].icon)
@@ -67,6 +80,7 @@ export default defineComponent({
   setup(props) {
     const fileSystemStore = useFileSystemStore();
     const showItemsContainer = ref(false);
+    const isMouseHoveringItem = ref(false);
     const testRef = ref<HTMLElement>();
     const itemToPreview = ref<ItemDialog | undefined>();
 
@@ -76,7 +90,15 @@ export default defineComponent({
     });
 
     const showItemsContainerHandler = (show: boolean) => {
-      showItemsContainer.value = show;
+      if (!show) {
+        setTimeout(() => {
+          if (isMouseHoveringItem.value === false) {
+            showItemsContainer.value = false;
+          }
+        }, 300);
+      } else {
+        showItemsContainer.value = true;
+      }
     };
 
     const closeItem = (item: ItemDialog) => {
@@ -122,6 +144,7 @@ export default defineComponent({
       setItemToPreview,
       removeItemToPreview,
       closeItem,
+      isMouseHoveringItem,
       isItemFocused,
       showItemsContainer,
       testRef,
@@ -151,8 +174,9 @@ export default defineComponent({
 .task-bar-item {
   overflow-x: hidden;
   display: flex;
-
-  height: var(--task-bar-height);
+  margin: 3px;
+  padding: 2px;
+  border-radius: calc(var(--border-radius) / 2);
 }
 
 .task-bar-item:hover,
@@ -178,7 +202,7 @@ export default defineComponent({
   display: flex;
   top: 0px;
   height: 160px;
-  top: -160px;
+  top: -165px;
   background-color: var(--background-color_contrast);
   border-radius: calc(var(--border-radius) / 2);
 }
