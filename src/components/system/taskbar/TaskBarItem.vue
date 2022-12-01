@@ -9,10 +9,15 @@
         @click="taskBarItemClickHandler(item)"
         class="preview-item"
       >
-        <div class="flex preview-header">
-          <FileIcon class="item-icon" :icon="item.icon" :height="15" :noStyle="true" />
-          <div>
-            {{ getFileNameFromPath(item.path) }}
+        <div class="flex-space-between preview-header">
+          <div class="flex">
+            <FileIcon class="item-icon" :icon="item.icon" :height="15" :noStyle="true" />
+            <div>
+              {{ getFileNameFromPath(item.path) }}
+            </div>
+          </div>
+          <div class="close-button" @click="closeItem(item)">
+            <span class="mdi mdi-close"></span>
           </div>
         </div>
         <img
@@ -74,6 +79,10 @@ export default defineComponent({
       showItemsContainer.value = show;
     };
 
+    const closeItem = (item: ItemDialog) => {
+      fileSystemStore.closeItemDialog(item.guid);
+    };
+
     const setItemToPreview = (item: ItemDialog) => {
       // if item is hidden set item as focused
       if (item.isCollapsed) {
@@ -112,6 +121,7 @@ export default defineComponent({
       getPreviewImageFromSessionStorage,
       setItemToPreview,
       removeItemToPreview,
+      closeItem,
       isItemFocused,
       showItemsContainer,
       testRef,
@@ -124,6 +134,13 @@ export default defineComponent({
 <style scoped>
 .flex {
   display: flex;
+  align-items: center;
+}
+
+.flex-space-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .flex-center {
@@ -134,7 +151,7 @@ export default defineComponent({
 .task-bar-item {
   overflow-x: hidden;
   display: flex;
-  align-items: center;
+
   height: var(--task-bar-height);
 }
 
@@ -196,5 +213,22 @@ export default defineComponent({
 
 .bottom-bar-selected {
   background-color: var(--selected-color_light);
+}
+
+.close-button span {
+  color: var(--font-color);
+}
+
+.close-button:hover span {
+  color: var(--background-color);
+}
+
+.close-button:hover {
+  background-color: var(--font-color);
+}
+
+.close-button {
+  border-radius: calc(var(--border-radius) / 2);
+  padding: 2px;
 }
 </style>
