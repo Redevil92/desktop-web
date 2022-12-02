@@ -1,6 +1,5 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
-    <!-- AHHAHA {{ taskBarItemByApplication }} {{taskBarItems}} -->
     <div class="flex-center">
       <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
       <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
@@ -10,7 +9,11 @@
           :key="`task-bar-item-${index}`"
           :style="`margin-left: ${itemMargin}px`"
         >
-          <TaskBarItem :items="taskBarItem"></TaskBarItem>
+          <TaskBarItem
+            :items="taskBarItem"
+            @onPreviewOpenedChanged="previewOpened = $event"
+            :previewOpened="previewOpened"
+          ></TaskBarItem>
         </div>
       </div>
     </div>
@@ -37,6 +40,8 @@ export default defineComponent({
   setup() {
     const layoutStore = useLayoutStore();
     const fileSystemStore = useFileSystemStore();
+
+    const previewOpened = ref("");
 
     const isStartMenuOpened = computed(() => {
       return layoutStore.startMenuOpened;
@@ -65,23 +70,11 @@ export default defineComponent({
           itemByApp[itemDialog.applicationToOpen || ""] = [itemDialog];
         }
       });
-      console.log(taskBarItems.value);
       return itemByApp;
     });
 
-    // const itemWidth = computed(function () {
-    //   const itemContainerWidth =
-    //     (itemsContainerRef.value as unknown as HTMLElement).clientWidth -
-    //     (windowIconRef.value as unknown as HTMLElement).clientWidth -
-    //     (currentDateRef.value as unknown as HTMLElement).clientWidth;
-
-    //   const calculatedItemWidth =
-    //     (itemContainerWidth - (taskBarItems.value.length + 1) * itemMargin) / taskBarItems.value.length;
-
-    //   return calculatedItemWidth > maxItemWidth ? maxItemWidth : calculatedItemWidth;
-    // });
-
     const setStartMenuOpened = () => {
+      console.log(!isStartMenuOpened.value);
       layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
     };
 
@@ -108,6 +101,7 @@ export default defineComponent({
       currentTime,
       isStartMenuOpened,
       taskBarItemByApplication,
+      previewOpened,
       setStartMenuOpened,
     };
   },

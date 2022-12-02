@@ -3,18 +3,18 @@
     @mouseenter="
       {
         isMouseHoveringItem = true;
-        showItemsContainerHandler(true);
+        showItemsPreviewHandler(true);
       }
     "
     @mouseleave="
       {
         isMouseHoveringItem = false;
-        showItemsContainerHandler(false);
+        showItemsPreviewHandler(false);
       }
     "
     ref="testRef"
   >
-    <div v-if="showItemsContainer" ref="itemsContainerRef" class="items-container">
+    <div v-if="showItemsPreview" ref="itemsContainerRef" class="items-container">
       <div
         v-for="(item, index) in items"
         :key="index"
@@ -42,28 +42,36 @@
         />
       </div>
     </div>
-    <div class="task-bar-item" :class="showItemsContainer ? 'task-bar-item-focused' : ''">
-      <div>
-        <img
-          class="task-bar-icon"
-          height="23"
-          :src="
-            items[0].icon
-              ? require('/src/assets/fileIcons/' + items[0].icon)
-              : require('/src/assets/fileIcons/unknow.svg')
-          "
-          alt=""
-        />
-        <div class="flex-center">
-          <div class="bottom-bar" :class="isItemFocused ? 'bottom-bar-selected' : 'bottom-bar-not-selected'"></div>
+    <div class="task-bar-item-container">
+      <div class="task-bar-item" :class="showItemsPreview || isItemFocused ? 'task-bar-item-focused' : ''">
+        <div>
+          <img
+            class="task-bar-icon"
+            height="20"
+            :src="
+              items[0].icon
+                ? require('/src/assets/fileIcons/' + items[0].icon)
+                : require('/src/assets/fileIcons/unknow.svg')
+            "
+            alt=""
+          />
+          <div class="flex-center">
+            <div class="bottom-bar" :class="isItemFocused ? 'bottom-bar-selected' : 'bottom-bar-not-selected'"></div>
+          </div>
         </div>
       </div>
+
+      <div
+        v-if="items.length > 1"
+        class="multiple-items"
+        :class="isItemFocused || isMouseHoveringItem ? 'multiple-items-selected' : ''"
+      ></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 
 import FileIcon from "@/components/shared/FileIcon.vue";
 
@@ -75,29 +83,41 @@ import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
 export default defineComponent({
   props: {
     items: { type: Array as PropType<ItemDialog[]>, required: true },
+    previewOpened: { type: String },
   },
   components: { FileIcon },
-  setup(props) {
+  emits: ["onPreviewOpenedChanged"],
+  setup(props, ctx) {
     const fileSystemStore = useFileSystemStore();
-    const showItemsContainer = ref(false);
+    const showItemsPreview = ref(false);
     const isMouseHoveringItem = ref(false);
     const testRef = ref<HTMLElement>();
     const itemToPreview = ref<ItemDialog | undefined>();
+
+    watch(
+      () => props.previewOpened,
+      async function (newValue: any, oldValue: any) {
+        if (newValue !== props.items[0].applicationToOpen) {
+          showItemsPreview.value = false;
+        }
+      }
+    );
 
     const isItemFocused = computed(() => {
       const index = props.items.findIndex((item) => item.isFocused === true && !item.isCollapsed);
       return index !== -1;
     });
 
-    const showItemsContainerHandler = (show: boolean) => {
+    const showItemsPreviewHandler = (show: boolean) => {
       if (!show) {
         setTimeout(() => {
           if (isMouseHoveringItem.value === false) {
-            showItemsContainer.value = false;
+            showItemsPreview.value = false;
           }
         }, 300);
       } else {
-        showItemsContainer.value = true;
+        showItemsPreview.value = true;
+        ctx.emit("onPreviewOpenedChanged", props.items[0].applicationToOpen);
       }
     };
 
@@ -128,7 +148,7 @@ export default defineComponent({
         itemToPreview.value = undefined;
         fileSystemStore.openMinimizedItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog(item);
-        showItemsContainer.value = false;
+        showItemsPreview.value = false;
       } else {
         fileSystemStore.minimizeItemDialog(item.guid);
         fileSystemStore.setFocusedItemDialog({} as ItemDialog);
@@ -138,7 +158,7 @@ export default defineComponent({
     return {
       getFileNameFromPath,
       getFileExtensionFromName,
-      showItemsContainerHandler,
+      showItemsPreviewHandler,
       taskBarItemClickHandler,
       getPreviewImageFromSessionStorage,
       setItemToPreview,
@@ -146,7 +166,7 @@ export default defineComponent({
       closeItem,
       isMouseHoveringItem,
       isItemFocused,
-      showItemsContainer,
+      showItemsPreview,
       testRef,
       itemToPreview,
     };
@@ -174,7 +194,6 @@ export default defineComponent({
 .task-bar-item {
   overflow-x: hidden;
   display: flex;
-  margin: 3px;
   padding: 2px;
   border-radius: calc(var(--border-radius) / 2);
 }
@@ -237,6 +256,7 @@ export default defineComponent({
 
 .bottom-bar-selected {
   background-color: var(--selected-color_light);
+  width: 16px;
 }
 
 .close-button span {
@@ -254,5 +274,22 @@ export default defineComponent({
 .close-button {
   border-radius: calc(var(--border-radius) / 2);
   padding: 2px;
+}
+
+.multiple-items:hover,
+.multiple-items-selected {
+  position: absolute;
+  right: -4px;
+  height: 30px;
+  width: 4px;
+  border-right: 3px solid rgba(128, 128, 128, 0.393);
+  border-radius: 20px;
+  margin-left: 1px;
+}
+
+.task-bar-item-container {
+  margin: 3px;
+  display: flex;
+  position: relative;
 }
 </style>
