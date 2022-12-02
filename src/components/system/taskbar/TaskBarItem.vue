@@ -12,9 +12,13 @@
         showItemsPreviewHandler(false);
       }
     "
-    ref="testRef"
   >
-    <div v-if="showItemsPreview" ref="itemsContainerRef" class="items-container">
+    <div
+      v-if="showItemsPreview"
+      :style="isOutOfScreen ? `right: 10px; max-width:90%; overflow-y:auto; height: auto; ` : ''"
+      ref="itemsContainerRef"
+      class="items-container"
+    >
       <div
         v-for="(item, index) in items"
         :key="index"
@@ -71,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
 
 import FileIcon from "@/components/shared/FileIcon.vue";
 
@@ -91,8 +95,9 @@ export default defineComponent({
     const fileSystemStore = useFileSystemStore();
     const showItemsPreview = ref(false);
     const isMouseHoveringItem = ref(false);
-    const testRef = ref<HTMLElement>();
     const itemToPreview = ref<ItemDialog | undefined>();
+    const itemsContainerRef = ref<HTMLElement | undefined>();
+    const isOutOfScreen = ref(false);
 
     watch(
       () => props.previewOpened,
@@ -108,16 +113,29 @@ export default defineComponent({
       return index !== -1;
     });
 
-    const showItemsPreviewHandler = (show: boolean) => {
+    const showItemsPreviewHandler = async (show: boolean) => {
       if (!show) {
         setTimeout(() => {
           if (isMouseHoveringItem.value === false) {
             showItemsPreview.value = false;
+            isOutOfScreen.value = false;
           }
         }, 300);
       } else {
         showItemsPreview.value = true;
+        await nextTick();
+
+        setIsPreviwOverflow();
         ctx.emit("onPreviewOpenedChanged", props.items[0].applicationToOpen);
+      }
+    };
+
+    const setIsPreviwOverflow = () => {
+      console.log("Hrööp", itemsContainerRef.value);
+      if (itemsContainerRef.value && !isOutOfScreen.value) {
+        const rect = itemsContainerRef.value.getBoundingClientRect();
+        console.log(rect.x, rect.width, window.innerWidth);
+        isOutOfScreen.value = rect.x + rect.width < 0 || rect.x + rect.width > window.innerWidth;
       }
     };
 
@@ -164,11 +182,12 @@ export default defineComponent({
       setItemToPreview,
       removeItemToPreview,
       closeItem,
+      isOutOfScreen,
       isMouseHoveringItem,
       isItemFocused,
       showItemsPreview,
-      testRef,
       itemToPreview,
+      itemsContainerRef,
     };
   },
 });
@@ -242,6 +261,7 @@ export default defineComponent({
 
 .preview-image {
   max-height: 125px;
+  border-radius: calc(var(--border-radius) / 2);
 }
 
 .bottom-bar {
@@ -280,7 +300,8 @@ export default defineComponent({
 .multiple-items-selected {
   position: absolute;
   right: -4px;
-  height: 30px;
+  height: 20px;
+  margin-top: 5px;
   width: 4px;
   border-right: 3px solid rgba(128, 128, 128, 0.393);
   border-radius: 20px;

@@ -6,7 +6,6 @@ export const saveItemPreviewInSessionStorage = (base64image: string, itemPath: s
   }
 
   previewItemImages[itemPath] = base64image;
-  console.log(previewItemImages);
   sessionStorage.setItem("previewItemImages", JSON.stringify(previewItemImages));
 };
 
@@ -22,7 +21,6 @@ export const removeItemPreviewInSessionStorage = (itemPath: string) => {
 };
 
 export const getPreviewImageFromSessionStorage = (itemPath: string) => {
-  console.log("IM HERE", itemPath);
   const retrievedObject = sessionStorage.getItem("previewItemImages");
   let previewItemImages = {} as PreviewItem;
   if (retrievedObject) {
