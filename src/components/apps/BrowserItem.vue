@@ -31,7 +31,7 @@
     :src="browserUrl"
     ref="iFrameRef"
     title="{ id }"
-    :style="`height: ${height - navigationBarHeight}px; width: calc(100% - 4px); `"
+    :style="`height: ${height - navigationBarHeight - 8}px; width: calc(100% - 4px); `"
   />
 </template>
 
@@ -49,7 +49,7 @@ export default defineComponent({
   emits: [],
   components: { BaseInput },
   setup(props, _) {
-    const navigationBarHeight = ref(35);
+    const navigationBarHeight = ref(40);
     const browserUrl = ref("https://www.google.com/webhp?igu=1");
     const inputUrl = ref(browserUrl.value);
     const iFrameRef = ref<IframeHTMLAttributes>();

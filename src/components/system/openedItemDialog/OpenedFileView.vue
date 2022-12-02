@@ -148,6 +148,8 @@ export default defineComponent({
 
 .dialog-content {
   background-color: var(--background-color);
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .not-focused-dialog {
