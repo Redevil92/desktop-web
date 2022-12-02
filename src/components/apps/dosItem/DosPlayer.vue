@@ -1,5 +1,6 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `">
+    <div v-if="!itemDialog.isFocused" class="detect-click-div" :style="`height: ${height - 4}px; width: 100%; `"></div>
     <iframe class="frame" :height="height - 4" :width="itemDialog.dimension.width - 4" frameborder="0" :src="gameLink">
     </iframe>
   </div>
@@ -20,6 +21,7 @@ export default defineComponent({
   setup(props, _) {
     let gameLink = "";
     if (props.itemDialog?.name) {
+      props.itemDialog.isFocused;
       gameLink = dosGameLinks[props.itemDialog.name];
     }
 
@@ -32,5 +34,10 @@ export default defineComponent({
 .frame {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
+}
+
+.detect-click-div {
+  position: absolute;
+  z-index: 1;
 }
 </style>

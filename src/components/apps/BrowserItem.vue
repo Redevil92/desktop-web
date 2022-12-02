@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-
+  <div v-if="!itemDialog.isFocused" class="detect-click-div" :style="`height: ${height - 4}px;width: 100%;  `"></div>
   <iframe
     :src="browserUrl"
     ref="iFrameRef"
@@ -40,6 +40,7 @@ import ItemDialog from "@/models/ItemDialog";
 import { computed, defineComponent, IframeHTMLAttributes, PropType, ref } from "vue";
 
 import BaseInput from "@/components/shared/BaseInput.vue";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
   props: {
@@ -60,6 +61,8 @@ export default defineComponent({
       { url: "https://en.wikipedia.org/wiki/Main_Page", icon: "mdi-wikipedia" },
       { url: "https://www.google.com/intl/it/gmail/about/", icon: "mdi-gmail" },
     ];
+
+    const fileSystemStore = useFileSystemStore();
 
     const canGoBack = computed(() => {
       return position.value > 0;
@@ -182,5 +185,10 @@ iframe {
 
 .shortcut-icon {
   font-size: 17px;
+}
+
+.detect-click-div {
+  position: absolute;
+  z-index: 1;
 }
 </style>
