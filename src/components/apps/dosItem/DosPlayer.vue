@@ -1,13 +1,21 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `">
-    <div v-if="!itemDialog.isFocused" class="detect-click-div" :style="`height: ${height - 4}px; width: 100%; `"></div>
-    <iframe class="frame" :height="height - 4" :width="itemDialog.dimension.width - 4" frameborder="0" :src="gameLink">
-    </iframe>
+    <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 4" />
+    <iframe
+      class="frame"
+      :height="height - 4"
+      :width="itemDialog.dimension.width - 4"
+      title="dos-player"
+      :src="gameLink"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import ItemDialog from "@/models/ItemDialog";
+
+import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
+
 import { defineComponent, PropType } from "vue";
 import { dosGameLinks } from "@/components/apps/dosItem/DosGames";
 
@@ -16,7 +24,7 @@ export default defineComponent({
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: {},
+  components: { IFrameFocuser },
   emits: [],
   setup(props, _) {
     let gameLink = "";
@@ -34,10 +42,5 @@ export default defineComponent({
 .frame {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
-}
-
-.detect-click-div {
-  position: absolute;
-  z-index: 1;
 }
 </style>

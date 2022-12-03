@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div v-if="!itemDialog.isFocused" class="detect-click-div" :style="`height: ${height - 4}px;width: 100%;  `"></div>
+  <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 4" />
   <iframe
     :src="browserUrl"
     ref="iFrameRef"
@@ -40,6 +40,7 @@ import ItemDialog from "@/models/ItemDialog";
 import { computed, defineComponent, IframeHTMLAttributes, PropType, ref } from "vue";
 
 import BaseInput from "@/components/shared/BaseInput.vue";
+import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default defineComponent({
@@ -48,7 +49,7 @@ export default defineComponent({
     height: Number,
   },
   emits: [],
-  components: { BaseInput },
+  components: { BaseInput, IFrameFocuser },
   setup(props, _) {
     const navigationBarHeight = ref(40);
     const browserUrl = ref("https://www.google.com/webhp?igu=1");
@@ -185,10 +186,5 @@ iframe {
 
 .shortcut-icon {
   font-size: 17px;
-}
-
-.detect-click-div {
-  position: absolute;
-  z-index: 1;
 }
 </style>
