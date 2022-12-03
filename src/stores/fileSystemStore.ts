@@ -154,8 +154,10 @@ export const useFileSystemStore = defineStore("fileSystem", {
     closeItemDialog(itemDialogGuid: string) {
       const index = this.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
       if (index !== -1) {
-        // TODO, remove if no other instances are opened
-        removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
+        if (this.itemsDialog.filter((item) => item.path === itemDialogGuid).length === 1) {
+          removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
+        }
+
         this.itemsDialog.splice(index, 1);
         this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
       }
