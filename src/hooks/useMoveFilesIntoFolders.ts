@@ -13,7 +13,6 @@ export default function useMoveFiles() {
   });
 
   const setFilesToMove = (filesToMove: string[]) => {
-    console.log("SET FILES TO MOVE", filesToMove);
     fileSystemStore.setFilePathsToMove(filesToMove);
   };
 
@@ -34,31 +33,25 @@ export default function useMoveFiles() {
 
   const moveFilesInFolderFromDesktop = async (_: Event, destinationPath: string) => {
     const filesToMove = fileSystemStore.getSelectedDesktopItemsPath;
+    moveFiles(filesToMove, destinationPath);
+  };
+
+  const moveFilesInFolder = async (_: Event, destinationPath: string) => {
+    moveFiles(filePathsToMove.value, destinationPath);
+  };
+
+  const moveFiles = async (filesToMove: string[], destinationPath: string) => {
+    console.log("MOVING FOLDERS OR FILE", filesToMove, destinationPath);
     if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
+      console.log("HELLO");
       return;
     }
 
     for (const filePath of filesToMove) {
       await copyFile(filePath, destinationPath);
     }
-    for (const file of filesToMove) {
-      await deleteFile(file);
-    }
-
-    refreshFiles();
-  };
-
-  const moveFilesInFolder = async (event: Event, destinationPath: string) => {
-    // no drag and drop in the same folder
-    if (filePathsToMove.value.length > 0 && getSourcePathFromFilePath(filePathsToMove.value[0]) === destinationPath) {
-      return;
-    }
-
-    for (const filePath of filePathsToMove.value) {
-      await copyFile(filePath, destinationPath);
-    }
-    for (const file of filePathsToMove.value) {
-      await deleteFile(file);
+    for (const filePath of filesToMove) {
+      await deleteFile(filePath);
     }
 
     resetFilesToMove();
