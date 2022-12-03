@@ -61,6 +61,13 @@ export const useFileSystemStore = defineStore("fileSystem", {
   },
   actions: {
     async createItemDialog(itemDialog: DesktopItem) {
+      // if path already opened dont create a new one but
+      const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
+      if (index !== -1) {
+        this.setFocusedItemDialog(this.itemsDialog[index]);
+        return;
+      }
+
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = "";
@@ -147,6 +154,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
     closeItemDialog(itemDialogGuid: string) {
       const index = this.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
       if (index !== -1) {
+        // TODO, remove if no other instances are opened
         removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
         this.itemsDialog.splice(index, 1);
         this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
