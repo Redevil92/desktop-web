@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="actionMenuParams && actionMenuParams.show && actionMenuParams.position"
+    v-if="actionMenuParams && actionMenuParams.show && actionMenuParams.position && isFolder !== undefined"
     :style="`top: ${actionMenuParams.position.y}px; left: ${actionMenuParams.position.x}px;`"
     class="actions-dialog padding"
   >
@@ -47,7 +47,7 @@ export default defineComponent({
   setup(_, context) {
     const fileSystemStore = useFileSystemStore();
 
-    const isFolder = ref(false);
+    const isFolder = ref<boolean | undefined>();
 
     // props -> path
     const actionMenuParams = computed(function () {
@@ -220,11 +220,11 @@ export default defineComponent({
 }
 
 .padding {
-  padding: 3px 5px;
+  padding: 5px 5px;
 }
 
 .action-button {
-  padding: 0px 5px;
+  padding: 2px 5px;
   border-radius: 5px;
   width: 100% !important;
   cursor: pointer;

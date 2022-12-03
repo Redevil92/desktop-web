@@ -269,7 +269,7 @@ export default defineComponent({
       fileItemToUpdate.coordinates = newPosition;
 
       var endTime = performance.now();
-      console.log(`METHOD :=> ${endTime - startTime} milliseconds`);
+      // console.log(`METHOD :=> ${endTime - startTime} milliseconds`);
     }
 
     async function closeDragElement(e: any) {
