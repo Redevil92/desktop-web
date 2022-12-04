@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import {
-  copyFile,
   createDirectory,
   createFile,
   deleteFile,
   getDesktopFiles,
   getFiles,
   isDir,
+  moveFiles,
 } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
@@ -293,17 +293,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
       const filesToCut: string[] = this.filePathsToCut;
 
       if (filesToCopy.length > 0) {
-        for (const file of filesToCopy) {
-          await copyFile(file, destinationPath);
-        }
+        await this.moveFiles(filesToCopy, destinationPath, true);
       } else if (filesToCut.length > 0) {
-        for (const file of filesToCut) {
-          await copyFile(file, destinationPath);
-        }
-
-        for (const file of filesToCut) {
-          await deleteFile(file);
-        }
+        await this.moveFiles(filesToCut, destinationPath, false);
         this.setFilePathsToCut([]);
       }
 
@@ -323,6 +315,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
     setIsSelectionBoxEnabled(isSelectionBoxEnabled: boolean) {
       this.isSelectionBoxEnabled = isSelectionBoxEnabled;
+    },
+    async moveFiles(filesToMove: string[], destinationPath: string, keepOriginal = false) {
+      await moveFiles(filesToMove, destinationPath, keepOriginal);
     },
   },
 });

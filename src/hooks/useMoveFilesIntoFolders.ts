@@ -41,18 +41,7 @@ export default function useMoveFiles() {
   };
 
   const moveFiles = async (filesToMove: string[], destinationPath: string) => {
-    console.log("MOVING FOLDERS OR FILE", filesToMove, destinationPath);
-    if (filesToMove.length > 0 && getSourcePathFromFilePath(filesToMove[0]) === destinationPath) {
-      console.log("HELLO");
-      return;
-    }
-
-    for (const filePath of filesToMove) {
-      await copyFile(filePath, destinationPath);
-    }
-    for (const filePath of filesToMove) {
-      await deleteFile(filePath);
-    }
+    await fileSystemStore.moveFiles(filesToMove, destinationPath);
 
     resetFilesToMove();
     refreshFiles();

@@ -5,6 +5,7 @@ import {
   getFileExtensionFromName,
   getFileNameFromPath,
   getFileNameWithoutExtension,
+  getSourcePathFromFilePath,
 } from "./fileSystemUtils";
 
 export const createDirectory = (path: string, overwrite = false): Promise<any> => {
@@ -101,14 +102,22 @@ export const copyFile = async (filePath: string, destinationPath: string) => {
   const extension = getFileExtensionFromName(filePath);
   const uniqueFilePath = generateUniqueName(nameToCheck, filesName) + `.${extension}`;
 
+  console.log("HEI MAN");
+
   await createFile(uniqueFilePath, fileData);
+};
 
-  // CHECK THERE
+export const moveFiles = async (filesToMove: string[], destinationPath: string, keepOriginal = false) => {
+  for (const filePath of filesToMove) {
+    console.log(getSourcePathFromFilePath(filePath), destinationPath);
+    if (getSourcePathFromFilePath(filePath) === destinationPath) {
+      console.log("Breakign");
+      break;
+    }
 
-  // create  a file should have the path and the buffer if not a directory
-  // uniquePath = await createPath(
-  //   newBasePath,
-  //   directory,
-  //   await readFile(entry)
-  // );
+    await copyFile(filePath, destinationPath);
+    if (!keepOriginal) {
+      await deleteFile(filePath);
+    }
+  }
 };
