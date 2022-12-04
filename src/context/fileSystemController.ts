@@ -1,5 +1,6 @@
 import { DESKTOP_PATH } from "@/constants";
 import FileStats from "@/models/FileSystem/FileStats";
+import { fstat } from "fs";
 import {
   generateUniqueName,
   getFileExtensionFromName,
@@ -75,6 +76,28 @@ export const isDir = async (path: string): Promise<boolean> => {
   });
 
   return fileStat.isDirectory();
+};
+
+export const deleteFolder = async (path: string) => {
+  const fs = (window as any).fs;
+  const isFolder = await isDir(path);
+  if (isFolder) {
+    const dirContents = await getFiles(path, true);
+    for (const content of dirContents) {
+      await deleteFolder(content);
+    }
+    await deleteEmptyFolder(path);
+  } else {
+    deleteFile(path);
+  }
+};
+
+const deleteEmptyFolder = async (path: string) => {
+  const fs = (window as any).fs;
+
+  return new Promise((resolve, reject) => {
+    fs.rmdir(path, (error: any, res: FileStats) => (error ? reject(error) : resolve(res)));
+  });
 };
 
 export const getStat = (path: string): Promise<FileStats> => {
