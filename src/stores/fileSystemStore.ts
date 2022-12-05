@@ -2,11 +2,12 @@ import { defineStore } from "pinia";
 import {
   createDirectory,
   createFile,
-  deleteFile,
+  deleteFileSystemItem,
   getDesktopFiles,
   getFiles,
   isDir,
   moveFiles,
+  renameFile,
 } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
@@ -258,11 +259,17 @@ export const useFileSystemStore = defineStore("fileSystem", {
     async createFile(pathAndContent: PathAndContent) {
       await createFile(pathAndContent.path, pathAndContent.content);
     },
-    async deleteFile(path: string) {
-      await deleteFile(path);
+    async deleteFileSystemItem(path: string) {
+      await deleteFileSystemItem(path);
     },
     async createFolder(path: string) {
       await createDirectory(path);
+    },
+
+    async renameFile(newFilePath: string, oldFilePath: string) {
+      if (newFilePath !== oldFilePath) {
+        renameFile(newFilePath, oldFilePath);
+      }
     },
     setActionMenu(actionMenu: ActionMenu) {
       this.actionMenu = actionMenu;

@@ -59,7 +59,7 @@ import FileIcon from "@/components/shared/FileIcon.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import { DESKTOP_PATH } from "@/constants";
-import { existsFile, isDir, renameFile } from "@/context/fileSystemController";
+import { existsFile, isDir } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import Coordinates from "@/models/Coordinates";
 
@@ -203,7 +203,7 @@ export default defineComponent({
 
         if (newName !== props.fileItem.path && isEditingText.value) {
           const oldName = props.fileItem.path;
-          renameFile(newName, oldName);
+          fileSystemStore.renameFile(newName, oldName);
           refreshFileSystemFiles();
           renameDesktopFileInLocalStorage(oldName, newName);
         }

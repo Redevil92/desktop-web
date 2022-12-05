@@ -25,7 +25,7 @@
     </div>
 
     <div v-if="!actionMenuParams.isOpenedFolder && !isDesktop">
-      <div class="action-button" @click="deleteFile">Delete</div>
+      <div class="action-button" @click="deleteFileSystemItems">Delete</div>
       <div class="action-button" @click="addNewFolder">Rename</div>
       <!-- <div class="action-button" @click="addNewFolder">Create shortcut</div> -->
     </div>
@@ -104,9 +104,9 @@ export default defineComponent({
       fileSystemStore.fetchDesktopItems();
     };
 
-    const deleteFile = async () => {
+    const deleteFileSystemItems = async () => {
       for (const path of actionMenuParams.value.paths) {
-        await fileSystemStore.deleteFile(path);
+        await fileSystemStore.deleteFileSystemItem(path);
       }
       refreshFiles();
     };
@@ -191,7 +191,7 @@ export default defineComponent({
       isDesktop,
       createFile,
       actionMenuParams,
-      deleteFile,
+      deleteFileSystemItems,
       canPasteFiles,
       openFile,
       pasteFiles,

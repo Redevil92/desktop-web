@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { deleteFile, isDir, renameFile } from "@/context/fileSystemController";
+import { isDir } from "@/context/fileSystemController";
 import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
 
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
@@ -191,10 +191,9 @@ export default defineComponent({
 
     const changeFileName = () => {
       const newName = props.itemDialog?.path + "/" + fileNameToChange.value;
-      if (newName !== selectedItem.value) {
-        renameFile(newName, selectedItem.value);
-        refreshFileSystemFiles();
-      }
+
+      fileSystemStore.renameFile(newName, selectedItem.value);
+      refreshFileSystemFiles();
     };
 
     const refreshFileSystemFiles = () => {
@@ -223,7 +222,7 @@ export default defineComponent({
       if (props.itemDialog?.isFocused && selectedItem.value) {
         if (event.code === "Delete" && props.itemDialog?.isFocused && selectedItem.value) {
           // delete item
-          deleteFile(selectedItem.value);
+          fileSystemStore.deleteFileSystemItem(selectedItem.value);
           refreshFileSystemFiles();
         } else if (event.code === "ArrowDown") {
           const index = props.itemDialog.filesPath.findIndex((filePath) => filePath === selectedItem.value);

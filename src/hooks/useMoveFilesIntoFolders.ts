@@ -1,7 +1,5 @@
 import { DESKTOP_PATH } from "@/constants";
-import { copyFile, deleteFile } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
-import DesktopItem from "@/models/DesktopItem";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { computed } from "vue";
 

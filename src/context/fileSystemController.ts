@@ -43,13 +43,6 @@ export const renameFile = (newFilePath: string, oldFilePath: string): Promise<an
   });
 };
 
-export const deleteFile = (filePath: string): Promise<any> => {
-  const fs = (window as any).fs;
-  return new Promise((resolve, reject) => {
-    fs.unlink(filePath, (error: any) => (error ? reject(error) : resolve(true)));
-  });
-};
-
 export const getFiles = async (path: string, fullPath = false): Promise<string[]> => {
   const fs = (window as any).fs;
 
@@ -78,8 +71,23 @@ export const isDir = async (path: string): Promise<boolean> => {
   return fileStat.isDirectory();
 };
 
-export const deleteFolder = async (path: string) => {
+export const deleteFileSystemItem = async (path: string) => {
+  const isFolder = await isDir(path);
+  if (isFolder) {
+    await deleteFolder(path);
+  } else {
+    await deleteFile(path);
+  }
+};
+
+const deleteFile = (filePath: string): Promise<any> => {
   const fs = (window as any).fs;
+  return new Promise((resolve, reject) => {
+    fs.unlink(filePath, (error: any) => (error ? reject(error) : resolve(true)));
+  });
+};
+
+const deleteFolder = async (path: string) => {
   const isFolder = await isDir(path);
   if (isFolder) {
     const dirContents = await getFiles(path, true);
@@ -118,14 +126,26 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
   return fileToRead.toString(encoding);
 };
 
-export const copyFile = async (filePath: string, destinationPath: string) => {
+// export const deleteFolder = async (path: string) => {
+//   const fs = (window as any).fs;
+//   const isFolder = await isDir(path);
+//   if (isFolder) {
+//     const dirContents = await getFiles(path, true);
+//     for (const content of dirContents) {
+//       await deleteFolder(content);
+//     }
+//     await deleteEmptyFolder(path);
+//   } else {
+//     deleteFile(path);
+//   }
+// };
+
+export const copyFileSystemItem = async (filePath: string, destinationPath: string) => {
   const fileData = await readFile(filePath);
   const filesName = await getFiles(destinationPath, true);
   const nameToCheck = getFileNameWithoutExtension(destinationPath + "/" + getFileNameFromPath(filePath));
   const extension = getFileExtensionFromName(filePath);
   const uniqueFilePath = generateUniqueName(nameToCheck, filesName) + `.${extension}`;
-
-  console.log("HEI MAN");
 
   await createFile(uniqueFilePath, fileData);
 };
@@ -138,9 +158,9 @@ export const moveFiles = async (filesToMove: string[], destinationPath: string, 
       break;
     }
 
-    await copyFile(filePath, destinationPath);
+    await copyFileSystemItem(filePath, destinationPath);
     if (!keepOriginal) {
-      await deleteFile(filePath);
+      await deleteFileSystemItem(filePath);
     }
   }
 };
