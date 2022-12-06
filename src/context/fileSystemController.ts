@@ -126,22 +126,10 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
   return fileToRead.toString(encoding);
 };
 
-// export const deleteFolder = async (path: string) => {
-//   const fs = (window as any).fs;
-//   const isFolder = await isDir(path);
-//   if (isFolder) {
-//     const dirContents = await getFiles(path, true);
-//     for (const content of dirContents) {
-//       await deleteFolder(content);
-//     }
-//     await deleteEmptyFolder(path);
-//   } else {
-//     deleteFile(path);
-//   }
-// };
 const copyFolder = async (filePath: string, destinationPath: string) => {
-  // copy folder to path
-  const newFolderPath = destinationPath + "/" + getFileNameFromPath(filePath);
+  const destinationPathFileList = await getFiles(destinationPath);
+  const uniqueFolderName = generateUniqueName(getFileNameFromPath(filePath), destinationPathFileList);
+  const newFolderPath = destinationPath + "/" + uniqueFolderName;
   await createDirectory(newFolderPath);
   const filesName = await getFiles(filePath, true);
   for (const file of filesName) {
@@ -173,7 +161,6 @@ export const moveFiles = async (filesToMove: string[], destinationPath: string, 
   for (const filePath of filesToMove) {
     console.log(getSourcePathFromFilePath(filePath), destinationPath);
     if (getSourcePathFromFilePath(filePath) === destinationPath) {
-      console.log("Breakign");
       break;
     }
 

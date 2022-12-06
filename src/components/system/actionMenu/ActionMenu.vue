@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div v-if="!isFolder">
+    <div v-if="!isDesktop">
       <div class="action-button" @click="openFile">Open</div>
       <!-- <div class="action-button">Open with</div> -->
       <hr class="" />
