@@ -139,8 +139,17 @@ export const readFile = async (path: string, encoding = "utf8"): Promise<string>
 //     deleteFile(path);
 //   }
 // };
+const copyFolder = async (filePath: string, destinationPath: string) => {
+  // copy folder to path
+  const newFolderPath = destinationPath + "/" + getFileNameFromPath(filePath);
+  await createDirectory(newFolderPath);
+  const filesName = await getFiles(filePath, true);
+  for (const file of filesName) {
+    await copyFileSystemItem(file, newFolderPath);
+  }
+};
 
-export const copyFileSystemItem = async (filePath: string, destinationPath: string) => {
+const copyFile = async (filePath: string, destinationPath: string) => {
   const fileData = await readFile(filePath);
   const filesName = await getFiles(destinationPath, true);
   const nameToCheck = getFileNameWithoutExtension(destinationPath + "/" + getFileNameFromPath(filePath));
@@ -148,6 +157,16 @@ export const copyFileSystemItem = async (filePath: string, destinationPath: stri
   const uniqueFilePath = generateUniqueName(nameToCheck, filesName) + `.${extension}`;
 
   await createFile(uniqueFilePath, fileData);
+};
+
+export const copyFileSystemItem = async (filePath: string, destinationPath: string) => {
+  const isDirectory = await isDir(filePath);
+
+  if (isDirectory) {
+    await copyFolder(filePath, destinationPath);
+  } else {
+    await copyFile(filePath, destinationPath);
+  }
 };
 
 export const moveFiles = async (filesToMove: string[], destinationPath: string, keepOriginal = false) => {
