@@ -137,7 +137,7 @@ export default defineComponent({
 
     function dragMouseDown(e: any, eventType: string | string[]) {
       animateDialogWhenMoving.value = false;
-      setItemDialogFocused();
+      setItemDialogFocused(e);
 
       // if fullscreen no moving and resizing
       if (isFullscreen.value) {
@@ -240,8 +240,11 @@ export default defineComponent({
       fileSystemStore.updateItemDialogPosition({ guid: props.itemDialog.guid, position: newPosition } as ItemDialog);
     }
 
-    function setItemDialogFocused() {
-      fileSystemStore.setFocusedItemDialog(props.itemDialog);
+    function setItemDialogFocused(event: PointerEvent) {
+      if (!props.itemDialog.isFocused) {
+        event.stopPropagation();
+        fileSystemStore.setFocusedItemDialog(props.itemDialog);
+      }
     }
 
     function closeDragElement() {

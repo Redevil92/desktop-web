@@ -5,7 +5,7 @@
     @closeDialog="showSaveAsDialog = false"
     to="textFileItem"
   ></SaveAsDialog>
-
+  <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
   <div id="textFileItem" :style="`height: ${height - 5}px; width: calc(100% -4px);`">
     <editor
       v-if="isLoaded"
@@ -34,6 +34,7 @@ import { defineComponent, onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";
+import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 
 import Editor from "@tinymce/tinymce-vue";
 import { readFile } from "@/context/fileSystemController";
@@ -52,7 +53,7 @@ export default defineComponent({
       default: 100,
     },
   },
-  components: { Editor, SaveAsDialog },
+  components: { Editor, SaveAsDialog, IFrameFocuser },
   emits: [],
   setup(props, _) {
     const layoutStore = useLayoutStore();

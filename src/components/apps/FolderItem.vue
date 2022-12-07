@@ -159,9 +159,6 @@ export default defineComponent({
     });
 
     const itemClickHandler = async (fileName: string) => {
-      if (!props.itemDialog?.isFocused) {
-        fileSystemStore.setFocusedItemDialog(props.itemDialog as ItemDialog);
-      }
       if (fileName === selectedItem.value) {
         if (!isEditingSelectedValue.value) {
           fileNameToChange.value = getFileNameFromPath(fileName);
