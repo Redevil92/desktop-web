@@ -15,7 +15,7 @@
           @drop="dropFilehandler"
           class="folder-item-list"
           :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
-          :style="`height:${height - 35}px`"
+          :style="`height:${height - 29}px`"
           ref="folderContentRef"
         >
           <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
