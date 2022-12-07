@@ -1,7 +1,15 @@
 <template>
   <div class="task-bar" ref="itemsContainerRef">
     <div class="flex-center">
-      <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span>
+      <img
+        @click="setStartMenuOpened"
+        height="37"
+        :src="require('/src/assets/icons/start-menu.svg')"
+        ref="windowIconRef"
+        alt="Start menu icon, open menu panel"
+        class="window-icon"
+      />
+      <!-- <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span> -->
       <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
       <div class="flex">
         <div
@@ -110,10 +118,11 @@ export default defineComponent({
 
 <style scoped>
 .window-icon {
-  font-size: 32px;
   color: white;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 5px;
+  margin: 2px;
+  margin-top: 1px;
+  border-radius: var(--border-radius);
 }
 
 .window-icon:hover {
