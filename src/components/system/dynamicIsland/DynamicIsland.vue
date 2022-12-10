@@ -1,13 +1,19 @@
 <template>
   <div class="dynamic-island" ref="dynamicIslandRef" :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`">
     <div>{{ dynamicItems.length }}</div>
-    <component v-if="showDynamic" :is="asyncComponent" :height="30"></component>
+    {{ dynamicItems }}
+    <component
+      v-if="showDynamic && selectedDynamicItem"
+      :is="asyncComponent"
+      :audioElement="selectedDynamicItem.audioElement"
+      :height="30"
+    ></component>
   </div>
 </template>
 
 <script lang="ts">
 import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
-import { computed, defineAsyncComponent, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineAsyncComponent, defineComponent, ref, watch } from "vue";
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
@@ -21,15 +27,19 @@ export default defineComponent({
     const asyncComponent = ref({} as any);
 
     const showDynamic = ref(false);
+    const dynamicItemIndexSelected = ref(0);
 
     const dynamicItems = computed(() => {
       return dynamicIslandStore.items;
     });
 
+    const selectedDynamicItem = computed(() => {
+      return dynamicIslandStore.items[dynamicItemIndexSelected.value];
+    });
+
     watch(dynamicItems.value, function () {
-      console.log("HERE");
       if (dynamicItems.value.length > 0) {
-        loadAndSetAsyncComponent(dynamicItems.value[0].componentPath);
+        loadAndSetAsyncComponent(dynamicItems.value[dynamicItemIndexSelected.value].componentPath);
       }
     });
 
@@ -53,7 +63,14 @@ export default defineComponent({
       return 200;
     });
 
-    return { dynamicIslandWidth, dynamicItems, asyncComponent, showDynamic };
+    return {
+      dynamicIslandWidth,
+      dynamicItems,
+      asyncComponent,
+      showDynamic,
+      dynamicItemIndexSelected,
+      selectedDynamicItem,
+    };
   },
 });
 </script>

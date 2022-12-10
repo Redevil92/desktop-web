@@ -5,6 +5,7 @@
     </div> -->
   <div style="color: yellow; height: 20px; width: 300px">
     <span class="mdi mdi-pause" @click="stopAudio"></span>
+    <span class="mdi mdi-play" @click="playAudio"></span>
   </div>
 </template>
 
@@ -29,7 +30,11 @@ export default defineComponent({
       props.audioElement?.pause();
     };
 
-    return { audioSource, canvasRef, audioRef, stopAudio };
+    const playAudio = () => {
+      props.audioElement?.play();
+    };
+
+    return { audioSource, canvasRef, audioRef, stopAudio, playAudio };
   },
 });
 </script>

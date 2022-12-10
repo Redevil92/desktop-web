@@ -19,6 +19,7 @@ import PathAndContent from "@/models/PathAndContent";
 import { v4 as uuidv4 } from "uuid";
 import { takeAndSaveItemPreviewScreenshotByItemGuid } from "@/hooks/useScreenshot";
 import { removeItemPreviewInSessionStorage } from "@/hooks/useSessionStorage";
+import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
 
 export const useFileSystemStore = defineStore("fileSystem", {
   state: () => ({
@@ -153,14 +154,15 @@ export const useFileSystemStore = defineStore("fileSystem", {
       this.itemsDialog = itemsDialog;
     },
     closeItemDialog(itemDialogGuid: string) {
+      const dynamicIslandStore = useDynamicIslandStore();
       const index = this.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
       if (index !== -1) {
         if (this.itemsDialog.filter((item) => item.path === itemDialogGuid).length === 1) {
           removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
         }
-
+        dynamicIslandStore.removeDynamicIslandItem(itemDialogGuid);
         this.itemsDialog.splice(index, 1);
-        this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+        this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
       }
     },
     minimizeItemDialog(itemDialogGuid: string) {

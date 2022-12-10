@@ -57,6 +57,7 @@
                 ? require('/src/assets/fileIcons/' + items[0].icon)
                 : require('/src/assets/fileIcons/unknow.svg')
             "
+            @click="iconClickHandler"
             alt=""
           />
           <div class="flex-center">
@@ -130,8 +131,20 @@ export default defineComponent({
       }
     };
 
+    const iconClickHandler = () => {
+      if (props.items.length === 1) {
+        const itemDialog = props.items[0];
+        if (!itemDialog.isFocused) {
+          fileSystemStore.setFocusedItemDialog(itemDialog);
+        } else if (itemDialog.isCollapsed) {
+          fileSystemStore.openMinimizedItemDialog(itemDialog.guid);
+        } else {
+          fileSystemStore.minimizeItemDialog(itemDialog.guid);
+        }
+      }
+    };
+
     const setIsPreviwOverflow = () => {
-      console.log("Hrööp", itemsContainerRef.value);
       if (itemsContainerRef.value && !isOutOfScreen.value) {
         const rect = itemsContainerRef.value.getBoundingClientRect();
         console.log(rect.x, rect.width, window.innerWidth);
@@ -182,6 +195,7 @@ export default defineComponent({
       setItemToPreview,
       removeItemToPreview,
       closeItem,
+      iconClickHandler,
       isOutOfScreen,
       isMouseHoveringItem,
       isItemFocused,
