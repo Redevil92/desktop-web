@@ -1,8 +1,7 @@
 <template>
-  <!-- <div id="waveform"></div>
-    <div :style="`height: ${height - 80}px; padding: calc(var(--margin)*2) `">
-      <AudioAnalyzer v-if="audioSource" :audioElement="audioRef" />
-    </div> -->
+  <div :style="`height: ${30}px`">
+    <AudioAnalyzer v-if="audioElement" :audioElement="audioElement" />
+  </div>
   <div style="color: yellow; height: 20px; width: 300px">
     <span class="mdi mdi-pause" @click="stopAudio"></span>
     <span class="mdi mdi-play" @click="playAudio"></span>
@@ -10,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 // import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
 

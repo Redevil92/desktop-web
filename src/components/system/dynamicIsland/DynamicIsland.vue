@@ -1,9 +1,12 @@
 <template>
-  <div class="dynamic-island" ref="dynamicIslandRef" :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`">
-    <div>{{ dynamicItems.length }}</div>
-    {{ dynamicItems }}
+  <div
+    v-if="showDynamicIsland && dynamicItems.length > 0"
+    class="dynamic-island"
+    ref="dynamicIslandRef"
+    :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`"
+  >
     <component
-      v-if="showDynamic && selectedDynamicItem"
+      v-if="showDynamicIsland && selectedDynamicItem"
       :is="asyncComponent"
       :audioElement="selectedDynamicItem.audioElement"
       :height="30"
@@ -26,7 +29,6 @@ export default defineComponent({
 
     const asyncComponent = ref({} as any);
 
-    const showDynamic = ref(false);
     const dynamicItemIndexSelected = ref(0);
 
     const dynamicItems = computed(() => {
@@ -35,6 +37,10 @@ export default defineComponent({
 
     const selectedDynamicItem = computed(() => {
       return dynamicIslandStore.items[dynamicItemIndexSelected.value];
+    });
+
+    const showDynamicIsland = computed(() => {
+      return dynamicIslandStore.showDynamicIsland;
     });
 
     watch(dynamicItems.value, function () {
@@ -53,7 +59,7 @@ export default defineComponent({
         errorComponent: ErrorComponent,
         timeout: 3000,
       });
-      showDynamic.value = true;
+      dynamicIslandStore.setShowDynamicIsland(true);
     };
 
     const dynamicIslandWidth = computed(() => {
@@ -67,7 +73,7 @@ export default defineComponent({
       dynamicIslandWidth,
       dynamicItems,
       asyncComponent,
-      showDynamic,
+      showDynamicIsland,
       dynamicItemIndexSelected,
       selectedDynamicItem,
     };
