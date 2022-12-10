@@ -54,9 +54,9 @@ export default defineComponent({
       return settingsStore.desktopImage;
     });
 
-    const isSelectionBoxEnabled = (): boolean => {
+    const isSelectionBoxEnabled = computed((): boolean => {
       return fileSystemStore.isSelectionBoxEnabled;
-    };
+    });
 
     const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
       let isFolder = false;
