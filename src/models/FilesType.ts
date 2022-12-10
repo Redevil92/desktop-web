@@ -180,6 +180,23 @@ const fileTypesConfiguration: FileTypes = {
   js: codeType("js"),
   ts: codeType("ts"),
   css: codeType("css"),
+  zip: {
+    allowResizing: true,
+    singleton: false,
+    background: "rgb(82, 86, 89)",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    minSize: {
+      height: 300,
+      width: 520,
+    },
+    icon: "zip.svg",
+    title: "Zip",
+    application: "CompressionItem",
+    canOpenWithoutFile: false,
+  },
   pdf: {
     allowResizing: true,
     singleton: false,
@@ -195,7 +212,7 @@ const fileTypesConfiguration: FileTypes = {
     icon: "pdf.svg",
     title: "PDF",
     application: "PdfItem",
-    canOpenWithoutFile: false, // TODO implement this functionality
+    canOpenWithoutFile: false, // TODO: implement this functionality
   },
   mp3: audioType,
   mp4: audioType,
