@@ -132,7 +132,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: "folder.svg",
     title: "Directory",
-    application: "FolderItem",
+    application: "folderItem/FolderItem",
     canOpenWithoutFile: false,
   },
   browser: {
@@ -194,7 +194,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: "zip.svg",
     title: "Zip",
-    application: "CompressionItem",
+    application: "compressionItem/CompressionItem",
     canOpenWithoutFile: false,
   },
   pdf: {
