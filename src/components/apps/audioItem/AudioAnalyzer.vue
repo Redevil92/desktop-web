@@ -112,6 +112,7 @@ export default defineComponent({
     };
 
     const setAnalyzer = () => {
+      console.log("set analyzer", props.audioElement);
       if (props.audioElement && canvasRef.value) {
         const mediaElement = audioCtx.value.createMediaElementSource(props.audioElement);
 
@@ -128,6 +129,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      console.log("SETTING AN");
       setAnalyzer();
     });
 
