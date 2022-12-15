@@ -123,8 +123,8 @@ const fileTypesConfiguration: FileTypes = {
     allowResizing: true,
     singleton: false,
     defaultSize: {
-      height: 480,
-      width: 640,
+      height: 580,
+      width: 840,
     },
     minSize: {
       height: 300,

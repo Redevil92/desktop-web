@@ -18,43 +18,15 @@
           :style="`height:${height - 29}px`"
           ref="folderContentRef"
         >
-          <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{
-            getFileNameFromPath(fileNameToChange)
-          }}</span>
-
-          <div
-            id="drop_zone"
-            class="folder-item"
-            :class="{
-              'folder-item-even': index % 2 === 1,
-              'selected-item': item === selectedItem,
-              'cut-item': isCutFile(item),
-            }"
-            v-for="(item, index) in itemDialog.filesPath"
-            :key="`item-${index}-${item}`"
-            @dblclick="doubleClickHandler(item)"
-            @mousedown.stop="itemClickHandler(item)"
-            @click.right="openActionMenu($event, false, item)"
-          >
-            <div class="flex-align-center" draggable="true" @dragstart="setFilesToMove([selectedItem])">
-              <FileIcon :noStyle="true" :height="16" :filePath="item" />
-              <div>
-                <span v-if="item === selectedItem && isEditingSelectedValue">
-                  <input
-                    ref="fileNameInputRef"
-                    class="file-text no-outline"
-                    v-model="fileNameToChange"
-                    @keyup.enter="changeFileName"
-                    @blur="changeFileName"
-                    @keyup.esc="isEditingSelectedValue = false"
-                    type="text"
-                    :style="`width:${fileFocusedWidth}px`"
-                  />
-                </span>
-                <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
-              </div>
-            </div>
-          </div>
+          <FolderItemsList
+            :itemsList="itemDialog.filesPath"
+            :canRename="true"
+            :isFocused="itemDialog.isFocused"
+            @onDoubleClick="doubleClickHandler"
+            @onRightClick="rightClickItemHandler"
+            @renameFileHandler="renameFileHandler"
+            @onTryDeleteItem="tryDeleteItem"
+          />
         </div>
       </DropExternalFileZone>
     </div>
@@ -65,9 +37,10 @@
 import { isDir } from "@/context/fileSystemController";
 import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
 
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
-import FileIcon from "@/components/shared/FileIcon.vue";
+import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
+
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
@@ -80,7 +53,7 @@ export default defineComponent({
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: { DropExternalFileZone, FileIcon },
+  components: { DropExternalFileZone, FolderItemsList },
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
@@ -96,7 +69,7 @@ export default defineComponent({
 
     const doubleClickHandler = async (fileName: string) => {
       const isDirectory = await isDir(fileName);
-      if (isDirectory && !isEditingSelectedValue.value) {
+      if (isDirectory) {
         updateItemDialogPath(fileName);
       } else {
         const newItemDialog = {
@@ -107,6 +80,10 @@ export default defineComponent({
         } as DesktopItem;
         fileSystemStore.createItemDialog(newItemDialog);
       }
+    };
+
+    const rightClickItemHandler = (eventAndPath: { event: Event; filePath: string }) => {
+      openActionMenu(eventAndPath.event, false, eventAndPath.filePath);
     };
 
     const openActionMenu = (event: any, isOpenedFolder = false, customPath?: string) => {
@@ -130,66 +107,8 @@ export default defineComponent({
       fileSystemStore.updateItemDialogName({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
     };
 
-    // *** ITEM SELECTION AND CHANGE NAME
-    const selectedItem = ref("");
-    const isEditingSelectedValue = ref(false);
-    const fileNameToChange = ref("");
-    const fileNameInputRef = ref(null);
-    const fileNameToChangeSpanRef = ref(null);
-
-    const fileFocusedWidth = ref(200);
-
-    const isCutFile = (itemName: string) => {
-      const filesToCut = fileSystemStore.filePathsToCut;
-      if (filesToCut.includes(itemName)) {
-        return true;
-      }
-      return false;
-    };
-
-    watch(fileNameToChange, async function (_2: any, _3: any) {
-      await nextTick();
-      if (!fileNameToChangeSpanRef.value) {
-        fileFocusedWidth.value = 300;
-      }
-      fileFocusedWidth.value = Math.min(
-        (fileNameToChangeSpanRef.value as unknown as HTMLElement).getBoundingClientRect().width,
-        props.itemDialog ? props.itemDialog?.dimension.width - 30 : 200
-      );
-    });
-
-    const itemClickHandler = async (fileName: string) => {
-      if (fileName === selectedItem.value) {
-        if (!isEditingSelectedValue.value) {
-          fileNameToChange.value = getFileNameFromPath(fileName);
-          setTimeout(async () => {
-            isEditingSelectedValue.value = !isEditingSelectedValue.value;
-            await selectInputText();
-          }, 600);
-        }
-        return;
-      }
-      selectedItem.value = fileName;
-      isEditingSelectedValue.value = false;
-    };
-
-    const deselectItem = () => {
-      selectedItem.value = "";
-      isEditingSelectedValue.value = false;
-    };
-
-    const selectInputText = async () => {
-      setTimeout(async () => {
-        if (fileNameInputRef.value) {
-          console.log("INPUT REF", fileNameInputRef.value);
-        }
-      }, 2000);
-    };
-
-    const changeFileName = () => {
-      const newName = props.itemDialog?.path + "/" + fileNameToChange.value;
-
-      fileSystemStore.renameFile(newName, selectedItem.value);
+    const renameFileHandler = (fileNameToUpdate: { newName: string; oldName: string }) => {
+      fileSystemStore.renameFile(fileNameToUpdate.newName, fileNameToUpdate.oldName);
       refreshFileSystemFiles();
     };
 
@@ -215,27 +134,9 @@ export default defineComponent({
       return newPath;
     };
 
-    const keyDownHandler = (event: { code: string }) => {
-      if (props.itemDialog?.isFocused && selectedItem.value) {
-        if (event.code === "Delete" && props.itemDialog?.isFocused && selectedItem.value) {
-          // delete item
-          fileSystemStore.deleteFileSystemItem(selectedItem.value);
-          refreshFileSystemFiles();
-        } else if (event.code === "ArrowDown") {
-          const index = props.itemDialog.filesPath.findIndex((filePath) => filePath === selectedItem.value);
-          if (index !== -1 && props.itemDialog.filesPath.length > index + 1) {
-            selectedItem.value = props.itemDialog.filesPath[index + 1];
-          }
-        } else if (event.code === "ArrowUp") {
-          const index = props.itemDialog.filesPath.findIndex((filePath) => filePath === selectedItem.value);
-          if (index > 0) {
-            selectedItem.value = props.itemDialog.filesPath[index - 1];
-          }
-        }
-        //  else if (event.code === "ArrowRight") {
-        //   doubleClickHandler(selectedItem.value);
-        // }
-      }
+    const tryDeleteItem = async (filePath: string) => {
+      await fileSystemStore.deleteFileSystemItem(filePath);
+      refreshFileSystemFiles();
     };
 
     const checkMouseOver = (event: any) => {
@@ -257,38 +158,27 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener("mousemove", checkMouseOver);
-
-      window.addEventListener("keydown", keyDownHandler);
     });
 
     onDeactivated(() => {
-      window.removeEventListener("keydown", keyDownHandler);
-
       window.removeEventListener("mousemove", checkMouseOver);
     });
 
     return {
-      folderContentRef,
       getFileNameFromPath,
       doubleClickHandler,
+      tryDeleteItem,
       isDir,
       getFileExtensionFromName,
-      filePathSplitted,
       updateItemDialogPath,
       buildPath,
-      selectedItem,
-      itemClickHandler,
-      isEditingSelectedValue,
-      fileNameToChange,
-      deselectItem,
-      fileNameInputRef,
-      changeFileName,
-      fileNameToChangeSpanRef,
-      fileFocusedWidth,
+      rightClickItemHandler,
+      renameFileHandler,
       openActionMenu,
-      isCutFile,
       dropFilehandler,
       setFilesToMove,
+      folderContentRef,
+      filePathSplitted,
       isDraggingItem,
       isMouseOver,
     };
@@ -300,72 +190,6 @@ export default defineComponent({
 .flex {
   display: flex;
   align-items: center;
-}
-
-.folder-item {
-  height: 22px;
-  margin: 0px 10px;
-  border-radius: 7px;
-  color: rgb(239, 238, 238);
-  font-size: var(--medium-font-size);
-  text-align: left;
-  padding-left: 10px;
-  padding-top: 3px;
-}
-
-.flex-align-center {
-  align-content: center;
-  cursor: pointer;
-  display: flex;
-}
-
-.input-placeholder {
-  font-size: var(--medium-font-size);
-  visibility: hidden;
-  position: absolute;
-}
-
-.folder-item-even {
-  background-color: #86848463;
-}
-
-.folder-item-container {
-  /* background-color: rgb(33, 33, 33);
-  height: -webkit-fill-available; */
-}
-
-.action-icon:hover {
-  background-color: rgb(33, 33, 33);
-  color: white;
-}
-
-.footer {
-  position: absolute;
-  height: 20px;
-  background-color: rgb(25, 25, 25);
-  bottom: 0px;
-  width: inherit;
-  text-align: start;
-  width: -webkit-fill-available;
-}
-
-.footer-text {
-  color: white;
-  font-size: var(--small-font-size);
-  text-align: start;
-  margin-left: 5px;
-}
-
-.extension-icon {
-  font-size: 16px;
-}
-
-.cut-item {
-  opacity: 0.5;
-}
-
-.file-text {
-  margin-left: 10px;
 }
 
 .folder-actions {
@@ -387,26 +211,6 @@ export default defineComponent({
   text-decoration: underline white;
 }
 
-.selected-item {
-  background-color: var(--selected-color) !important;
-}
-
-input {
-  border-top-style: hidden;
-  border-right-style: hidden;
-  border-left-style: hidden;
-  border-bottom-style: none;
-  background-color: #5e5e5e;
-  color: white;
-  outline: 3px solid #5353e8;
-  border-radius: 3px;
-  text-decoration: none;
-}
-
-.no-outline:focus {
-  outline: none;
-}
-
 .folder-item-list {
   overflow-y: auto;
   border: 2px solid rgba(255, 255, 255, 0);
@@ -415,15 +219,5 @@ input {
 .folder-item-list-drag-over {
   border-radius: var(--border-radius);
   border: 2px solid var(--selected-color);
-}
-
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
