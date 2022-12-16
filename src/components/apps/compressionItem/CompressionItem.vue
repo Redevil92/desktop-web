@@ -1,42 +1,82 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">HI MSN</div>
+  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
+    <FolderItemsList
+      :itemsList="items"
+      :canRename="false"
+      :isFocused="itemDialog.isFocused"
+      @onDoubleClick="doubleClickHandler"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, PropType } from "vue";
+import { defineComponent, onBeforeMount, onDeactivated, onMounted, PropType, ref } from "vue";
+
+import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import * as fflate from "fflate";
-import { readFile } from "@/context/fileSystemController";
+import { isDir, readFile } from "@/context/fileSystemController";
 import useBase64Handler from "@/hooks/useBase64Handler";
+import { useFileSystemStore } from "@/stores/fileSystemStore";
+import PathAndContent from "@/models/PathAndContent";
+import { TEMP_PATH } from "@/constants";
+import DesktopItem from "@/models/DesktopItem";
 
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
     height: Number,
   },
-  components: {},
+  components: { FolderItemsList },
   emits: [],
   setup(props, _) {
-    const { removeDataUri, b64ToText, isBase64, utf8ToB64 } = useBase64Handler();
+    const fileSystemStore = useFileSystemStore();
+    const { removeDataUri, utf8ToB64, uint8ArrayToBase64 } = useBase64Handler();
+    const items = ref<string[]>([]);
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         let compressed = await readFile(props.itemDialog?.path);
-        console.log("IS BASE64", isBase64(removeDataUri(compressed)));
-        //let buf = fflate.strToU8(compressed);
-        // const buf = Buffer.from(removeDataUri(compressed));
-
         let buf = Buffer.from(removeDataUri(compressed), "base64");
-        console.log("BUF", buf);
+        const decompressedFiles = fflate.unzipSync(buf);
 
-        const decompressed = fflate.unzip(buf, (error, data) => (error ? console.error(error) : console.log(data)));
-
-        console.log("dec", decompressed);
+        const decompressedFilesName = Object.keys(decompressedFiles);
+        console.log(decompressedFilesName);
+        decompressedFilesName.forEach(async (fileName) => {
+          console.log("HEI", decompressedFiles[fileName]);
+          const base64File = uint8ArrayToBase64(decompressedFiles[fileName]);
+          // TODO: add data URI base on the file extension
+          const filePath = `${TEMP_PATH}/${fileName}`;
+          console.log(filePath, base64File);
+          const pathAndContent: PathAndContent = { path: filePath, content: base64File };
+          await fileSystemStore.createFile(pathAndContent);
+          items.value.push(filePath);
+        });
       }
     });
 
-    return {};
+    onDeactivated(async () => {
+      items.value.forEach((filePath) => {
+        fileSystemStore.deleteFileSystemItem(filePath);
+      });
+    });
+
+    const doubleClickHandler = async (filePath: string) => {
+      const isDirectory = await isDir(filePath);
+      if (isDirectory) {
+        return;
+      } else {
+        const newItemDialog = {
+          path: filePath,
+          coordinates: { x: 0, y: 0 },
+          isSelected: true,
+        } as DesktopItem;
+        await fileSystemStore.createItemDialog(newItemDialog);
+      }
+    };
+
+    return { items, doubleClickHandler };
   },
 });
 </script>

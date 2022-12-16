@@ -3,6 +3,8 @@ export const DESKTOP_FILE_DIMENSION = {
   height: 2.2,
 };
 
+export const TEMP_PATH = "%localappdata%Temp";
+
 export const DESKTOP_PATH = "my PC/Desktop";
 export const MY_PC_PATH = "my PC";
 export const DOCUMENT_PATH = "my PC/Documents";

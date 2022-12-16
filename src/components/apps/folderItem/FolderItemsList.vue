@@ -14,7 +14,7 @@
     @click.right="rightClickHandler($event, item)"
   >
     <div class="flex-align-center" draggable="true" @dragstart="dragStartHandler">
-      <FileIcon :noStyle="true" :height="16" :filePath="item" />
+      <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item" />
       <div>
         <span v-if="item === selectedItem && isEditingSelectedValue && canRename">
           <input
@@ -161,14 +161,18 @@ export default defineComponent({
 }
 
 .folder-item {
-  height: 22px;
-  margin: 0px 10px;
+  height: 24px;
+  margin: 2px 10px;
   border-radius: 7px;
   color: var(--font-color);
   font-size: var(--medium-font-size);
   text-align: left;
   padding-left: 10px;
-  padding-top: 3px;
+  padding-top: 5px;
+}
+
+.file-icon {
+  margin-top: -2px;
 }
 
 .flex-align-center {

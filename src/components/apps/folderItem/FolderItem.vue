@@ -67,13 +67,13 @@ export default defineComponent({
       return fileSystemStore.dragginPath !== "";
     });
 
-    const doubleClickHandler = async (fileName: string) => {
-      const isDirectory = await isDir(fileName);
+    const doubleClickHandler = async (filePath: string) => {
+      const isDirectory = await isDir(filePath);
       if (isDirectory) {
-        updateItemDialogPath(fileName);
+        updateItemDialogPath(filePath);
       } else {
         const newItemDialog = {
-          path: fileName,
+          path: filePath,
           coordinates: { x: 0, y: 0 },
 
           isSelected: true,

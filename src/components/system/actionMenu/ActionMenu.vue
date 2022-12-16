@@ -54,6 +54,10 @@ export default defineComponent({
       return fileSystemStore.actionMenu;
     });
 
+    const isCustomLayout = computed(function () {
+      return !!(fileSystemStore.actionMenu.customLayout && fileSystemStore.actionMenu.customLayout.length > 0);
+    });
+
     watch(actionMenuParams, async function (_2, _3) {
       if (actionMenuParams.value.paths) {
         if (actionMenuParams.value.paths.length === 1) {
@@ -198,6 +202,7 @@ export default defineComponent({
       copyFiles,
       cutFiles,
       openDesktopSettingPage,
+      isCustomLayout,
     };
   },
 });

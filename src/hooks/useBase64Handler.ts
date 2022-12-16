@@ -17,10 +17,20 @@ export default function useBase64Handler() {
     return base64regex.test(str);
   };
 
+  const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {
+    let binary = "";
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
+  };
+
   return {
     b64ToText,
     utf8ToB64,
     removeDataUri,
     isBase64,
+    uint8ArrayToBase64,
   };
 }

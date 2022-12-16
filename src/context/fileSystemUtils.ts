@@ -58,6 +58,7 @@ export const createFilesStructure = async () => {
 
   if (!exists) {
     await createDirectory("my PC");
+    await createDirectory("%localappdata%Temp");
     await createFile("secondFile.txt", "my beautiful text");
     await createFile("my PC/mysecondFile.txt", "my beautiful text");
     await createDirectory("my PC/Desktop");
