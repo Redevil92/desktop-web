@@ -86,7 +86,7 @@ export const getNewItemDialogPosition = (itemDialogCount: number) => {
   return position;
 };
 
-export const mimeTypes: { [key: string]: string } = {
+export const MIME_TYPES: { [key: string]: string } = {
   "3dml": "text/vnd.in3d.3dml",
   "3ds": "image/x-3ds",
   "3g2": "video/3gpp2",

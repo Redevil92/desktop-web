@@ -16,12 +16,13 @@ import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import * as fflate from "fflate";
-import { isDir, readFile } from "@/context/fileSystemController";
+import { getStat, isDir, readFile } from "@/context/fileSystemController";
 import useBase64Handler from "@/hooks/useBase64Handler";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import PathAndContent from "@/models/PathAndContent";
 import { TEMP_PATH } from "@/constants";
 import DesktopItem from "@/models/DesktopItem";
+import { getFileExtensionFromName, MIME_TYPES } from "@/context/fileSystemUtils";
 
 export default defineComponent({
   props: {
@@ -35,6 +36,14 @@ export default defineComponent({
     const { removeDataUri, utf8ToB64, uint8ArrayToBase64 } = useBase64Handler();
     const items = ref<string[]>([]);
 
+    const bufferToBlob = (buffer: Uint8Array, type?: string): Blob => {
+      return new Blob([buffer], type ? { type } : undefined);
+    };
+
+    const typedArrayToBuffer = (array: Uint8Array): ArrayBuffer => {
+      return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset);
+    };
+
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         let compressed = await readFile(props.itemDialog?.path);
@@ -42,13 +51,10 @@ export default defineComponent({
         const decompressedFiles = fflate.unzipSync(buf);
 
         const decompressedFilesName = Object.keys(decompressedFiles);
-        console.log(decompressedFilesName);
         decompressedFilesName.forEach(async (fileName) => {
-          console.log("HEI", decompressedFiles[fileName]);
-          const base64File = uint8ArrayToBase64(decompressedFiles[fileName]);
-          // TODO: add data URI base on the file extension
+          const mimeType = MIME_TYPES[getFileExtensionFromName(fileName)];
+          const base64File = `data:${mimeType};base64,${uint8ArrayToBase64(decompressedFiles[fileName])}`;
           const filePath = `${TEMP_PATH}/${fileName}`;
-          console.log(filePath, base64File);
           const pathAndContent: PathAndContent = { path: filePath, content: base64File };
           await fileSystemStore.createFile(pathAndContent);
           items.value.push(filePath);
