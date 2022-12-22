@@ -1,9 +1,10 @@
 <template>
   <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
+
   <div v-if="showProperties" class="flex-align-center table-header">
     <div style="flex-grow: 1">Name</div>
     <div style="width: 170px">Date modified</div>
-    <div style="width: 50px">Size</div>
+    <div style="width: 100px">Size</div>
   </div>
   <div
     class="folder-item"
@@ -38,7 +39,7 @@
         {{ formatStringDate(item.properties.ctime, dateFormat) }}
         {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
       </div>
-      <div v-if="showProperties" class="prop-field" style="width: 50px">
+      <div v-if="showProperties" class="prop-field" style="width: 100px">
         {{ formatBytes(item.properties.size) }}
       </div>
     </div>
@@ -46,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watch } from "vue";
+import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watch, watchEffect } from "vue";
 
 import { getFileExtensionFromName, getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
@@ -88,11 +89,6 @@ export default defineComponent({
       return settingsStore.dateFormat;
     });
 
-    watch(props.itemsList, async function () {
-      console.log("WATCHING", props.itemsList);
-      await updateItemListWithProperties();
-    });
-
     const updateItemListWithProperties = async () => {
       const itemWithProp = [];
       for (const item of props.itemsList) {
@@ -105,6 +101,12 @@ export default defineComponent({
       }
       itemsListWithProperties.value = itemWithProp;
     };
+
+    watchEffect(async () => {
+      if (props.itemsList) {
+        await updateItemListWithProperties();
+      }
+    });
 
     const isCutFile = (itemName: string) => {
       const filesToCut = fileSystemStore.filePathsToCut;
