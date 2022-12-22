@@ -5,6 +5,7 @@
       :canRename="false"
       :isFocused="itemDialog.isFocused"
       @onDoubleClick="doubleClickHandler"
+      @onRightClick="rightClickItemHandler"
     />
   </div>
 </template>
@@ -23,6 +24,7 @@ import PathAndContent from "@/models/PathAndContent";
 import { TEMP_PATH } from "@/constants";
 import DesktopItem from "@/models/DesktopItem";
 import { getFileExtensionFromName, MIME_TYPES } from "@/context/fileSystemUtils";
+import ActionMenu, { ActionItem } from "@/models/ActionMenu";
 
 export default defineComponent({
   props: {
@@ -33,16 +35,8 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
-    const { removeDataUri, utf8ToB64, uint8ArrayToBase64 } = useBase64Handler();
+    const { removeDataUri, uint8ArrayToBase64 } = useBase64Handler();
     const items = ref<string[]>([]);
-
-    const bufferToBlob = (buffer: Uint8Array, type?: string): Blob => {
-      return new Blob([buffer], type ? { type } : undefined);
-    };
-
-    const typedArrayToBuffer = (array: Uint8Array): ArrayBuffer => {
-      return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset);
-    };
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
@@ -82,7 +76,25 @@ export default defineComponent({
       }
     };
 
-    return { items, doubleClickHandler };
+    const rightClickItemHandler = (eventAndPath: { event: Event; filePath: string }) => {
+      openActionMenu(eventAndPath.event, false, eventAndPath.filePath);
+    };
+
+    const openActionMenu = (event: any, isOpenedFolder = false, customPath?: string) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerEvent = event as PointerEvent;
+
+      fileSystemStore.setActionMenu({
+        show: true,
+        paths: customPath ? [customPath] : [props.itemDialog?.path],
+        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+        isOpenedFolder: isOpenedFolder,
+        customLayout: {},
+      } as ActionMenu);
+    };
+
+    return { items, doubleClickHandler, rightClickItemHandler };
   },
 });
 </script>
