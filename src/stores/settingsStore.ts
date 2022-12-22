@@ -23,6 +23,8 @@ export const useSettingsStore = defineStore("settings", {
       { path: PICTURES_PATH, mdiIcon: "mdi-folder-image" },
       { path: START_MENU_PATH, mdiIcon: "mdi-apps-box" },
     ] as PathAndIcon[],
+    dateFormat: "DD/MM/YYYY",
+    timeFormat: "HH:MM XM",
   }),
   getters: {},
   actions: {

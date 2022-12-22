@@ -1,6 +1,5 @@
 import { DESKTOP_PATH } from "@/constants";
 import FileStats from "@/models/FileSystem/FileStats";
-import { fstat } from "fs";
 import {
   generateUniqueName,
   getFileExtensionFromName,

@@ -21,6 +21,7 @@
           <FolderItemsList
             :itemsList="itemDialog.filesPath"
             :canRename="true"
+            :showProperties="true"
             :isFocused="itemDialog.isFocused"
             @onDoubleClick="doubleClickHandler"
             @onRightClick="rightClickItemHandler"

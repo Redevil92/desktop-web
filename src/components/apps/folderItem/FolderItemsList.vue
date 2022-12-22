@@ -1,22 +1,26 @@
 <template>
   <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
-
+  <div v-if="showProperties" class="flex-align-center table-header">
+    <div style="flex-grow: 1">Name</div>
+    <div style="width: 170px">Date modified</div>
+    <div style="width: 50px">Size</div>
+  </div>
   <div
     class="folder-item"
     :class="{
-      'selected-item': item === selectedItem,
-      'cut-item': isCutFile(item),
+      'selected-item': item.path === selectedItem,
+      'cut-item': isCutFile(item.path),
     }"
-    v-for="(item, index) in itemsList"
-    :key="`item-${index}-${item}`"
-    @dblclick="doubleClickHandler(item)"
-    @mousedown.stop="itemClickHandler(item)"
-    @click.right="rightClickHandler($event, item)"
+    v-for="(item, index) in itemsListWithProperties"
+    :key="`item-${index}-${item.path}`"
+    @dblclick="doubleClickHandler(item.path)"
+    @mousedown.stop="itemClickHandler(item.path)"
+    @click.right="rightClickHandler($event, item.path)"
   >
     <div class="flex-align-center" draggable="true" @dragstart="dragStartHandler">
-      <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item" />
-      <div>
-        <span v-if="item === selectedItem && isEditingSelectedValue && canRename">
+      <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
+      <div style="flex-grow: 1">
+        <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
           <input
             ref="fileNameInputRef"
             class="file-text no-outline"
@@ -28,32 +32,44 @@
             :style="`width:${fileFocusedWidth}px`"
           />
         </span>
-        <span v-else class="file-text noselect">{{ getFileNameFromPath(item) }}</span>
+        <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
+      </div>
+      <div v-if="showProperties" class="prop-field" style="width: 170px">
+        {{ formatStringDate(item.properties.ctime, dateFormat) }}
+        {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
+      </div>
+      <div v-if="showProperties" class="prop-field" style="width: 50px">
+        {{ formatBytes(item.properties.size) }}
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { isDir } from "@/context/fileSystemController";
-import { defineComponent, onDeactivated, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watch } from "vue";
 
 import { getFileExtensionFromName, getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { emit } from "process";
+import { getStat } from "@/context/fileSystemController";
+import FileStats from "@/models/FileSystem/FileStats";
+import { formatBytes } from "@/utils/byteConversionUtils";
+import { formatStringDate, formatTimeFromStringDate } from "@/utils/dateAndTimeConversionUtils";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 export default defineComponent({
   props: {
-    itemsList: Array as PropType<string[]>,
+    itemsList: { type: Array as PropType<string[]>, required: true },
     isFocused: Boolean,
     canRename: Boolean,
+    showProperties: { type: Boolean, default: false },
     viewType: String,
   },
   components: { FileIcon },
   emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem"],
   setup(props, ctx) {
     const fileSystemStore = useFileSystemStore();
+    const settingsStore = useSettingsStore();
 
     // *** ITEM SELECTION AND CHANGE NAME
     const selectedItem = ref("");
@@ -62,6 +78,33 @@ export default defineComponent({
     const fileNameInputRef = ref(null);
     const fileNameToChangeSpanRef = ref(null);
     const fileFocusedWidth = ref(200);
+    const itemsListWithProperties = ref<{ path: string; properties: FileStats | undefined }[]>([]);
+
+    const timeFormat = computed(() => {
+      return settingsStore.timeFormat;
+    });
+
+    const dateFormat = computed(() => {
+      return settingsStore.dateFormat;
+    });
+
+    watch(props.itemsList, async function () {
+      console.log("WATCHING", props.itemsList);
+      await updateItemListWithProperties();
+    });
+
+    const updateItemListWithProperties = async () => {
+      const itemWithProp = [];
+      for (const item of props.itemsList) {
+        const properties = props.showProperties ? ((await getStat(item)) as FileStats) : undefined;
+
+        itemWithProp.push({
+          path: item,
+          properties,
+        });
+      }
+      itemsListWithProperties.value = itemWithProp;
+    };
 
     const isCutFile = (itemName: string) => {
       const filesToCut = fileSystemStore.filePathsToCut;
@@ -125,8 +168,9 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       window.addEventListener("keydown", keyDownHandler);
+      await updateItemListWithProperties();
     });
 
     onDeactivated(() => {
@@ -135,7 +179,6 @@ export default defineComponent({
 
     return {
       getFileNameFromPath,
-      isDir,
       getFileExtensionFromName,
       itemClickHandler,
       doubleClickHandler,
@@ -143,6 +186,12 @@ export default defineComponent({
       deselectItem,
       isCutFile,
       renameFileHandler,
+      formatBytes,
+      formatStringDate,
+      formatTimeFromStringDate,
+      dateFormat,
+      timeFormat,
+      itemsListWithProperties,
       selectedItem,
       isEditingSelectedValue,
       fileNameToChange,
@@ -158,6 +207,17 @@ export default defineComponent({
 .flex {
   display: flex;
   align-items: center;
+}
+
+.prop-field {
+  color: var(--neutral-color);
+}
+
+.table-header {
+  margin: var(--margin);
+  color: var(--font-color_dark);
+  text-align: left;
+  font-size: var(--medium-font-size);
 }
 
 .folder-item {
