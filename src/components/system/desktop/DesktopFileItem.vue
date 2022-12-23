@@ -31,10 +31,10 @@
       />
     </div>
     <div
-      :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-text-selected' : ''"
-      class="file-text"
+      :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-text-preview-selected' : ''"
+      class="file-text-preview"
     >
-      <div v-show="!isEditingText" class="file-text" @click="setIsEditingText">
+      <div v-show="!isEditingText" class="file-text-preview" @click="setIsEditingText">
         {{ fileName }}
       </div>
       <textarea
@@ -43,7 +43,7 @@
         @keyup.enter="changeFileName"
         @blur="changeFileName"
         rows="2"
-        class="no-outline file-text"
+        class="no-outline file-text-preview"
         v-model="fileName"
       />
     </div>
@@ -257,7 +257,6 @@ export default defineComponent({
       const oldCoordinates = Object.assign({}, props.fileItem.coordinates) as Coordinates;
 
       if (selectedDesktopItems.value.length > 1) {
-        console.log("Moving the others files");
         for (let i = 0; i < selectedDesktopItems.value.length; i++) {
           const offsetX = selectedDesktopItems.value[i].coordinates.x - oldCoordinates.x;
           const offsetY = selectedDesktopItems.value[i].coordinates.y - oldCoordinates.y;
@@ -361,27 +360,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.file-text {
-  font-size: var(--small-font-size);
-  color: rgb(255, 255, 255);
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 1px 0px;
-  padding: 1px 1px;
-  margin-top: 2px;
-  word-break: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-family: inherit;
-  text-align: center;
-  width: 100%;
-
-  text-shadow: rgb(0 0 0 / 25%) 0px 0px 1px, rgb(0 0 0 / 20%) 0px 0px 2px, rgb(0 0 0 / 35%) 0px 1px 1px,
-    rgb(0 0 0 / 20%) 0px 1px 2px, rgb(0 0 0 / 35%) 0px 2px 1px, rgb(0 0 0 / 20%) 0px 2px 2px;
-}
+@import "@/css/fileItemPreview.css";
 
 .file-item {
   position: absolute;
@@ -397,23 +376,6 @@ export default defineComponent({
 
 .file-icon {
   font-size: 45px;
-}
-.file-text-selected {
-  background-color: rgba(214, 214, 214, 0.553);
-  border-radius: 3px;
-  background-color: var(--selected-color);
-}
-
-.no-outline {
-  background-color: rgba(255, 255, 255, 0);
-  resize: none;
-  border: 1px solid rgba(255, 255, 255, 0);
-}
-
-.no-outline:focus {
-  border: 1px solid grey;
-  outline: none;
-  background-color: rgb(87, 163, 207);
 }
 
 .error-message {

@@ -1,49 +1,68 @@
 <template>
-  <div class="container">
+  <div class="container" :class="{ 'grid-container': viewType === 'preview' }">
     <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
 
-    <div v-if="viewType === 'list'">
-      <div v-if="showProperties" class="flex-align-center table-header">
-        <div style="flex-grow: 1">Name</div>
-        <div style="width: 170px">Date modified</div>
-        <div style="width: 100px">Size</div>
+    <div v-if="viewType === 'list' && showProperties" class="flex-align-center table-header">
+      <div style="flex-grow: 1">Name</div>
+      <div style="width: 170px">Date modified</div>
+      <div style="width: 100px">Size</div>
+    </div>
+    <div
+      :class="{
+        'cut-item': isCutFile(item.path),
+      }"
+      v-for="(item, index) in itemsListWithProperties"
+      :key="`item-${index}-${item.path}`"
+      @dblclick="doubleClickHandler(item.path)"
+      @mousedown.stop="itemClickHandler(item.path)"
+      @click.right="rightClickHandler($event, item.path)"
+    >
+      <div v-if="viewType === 'preview'">
+        <FileIcon :selected="item.path === selectedItem" :height="60" :filePath="item.path" />
+        <div :class="item.path === selectedItem ? 'file-text-preview-selected' : ''" class="file-text-preview">
+          <textarea
+            v-if="item.path === selectedItem && isEditingSelectedValue && canRename"
+            ref="fileNameInputRef"
+            @keyup.enter="renameFileHandler"
+            @blur="changeFileName"
+            rows="2"
+            class="no-outline file-text-preview"
+            v-model="fileNameToChange"
+          />
+          <div v-else class="file-text-preview" @click="setIsEditingText">
+            {{ getFileNameFromPath(item.path) }}
+          </div>
+        </div>
       </div>
       <div
-        class="folder-item"
-        :class="{
-          'selected-item': item.path === selectedItem,
-          'cut-item': isCutFile(item.path),
-        }"
-        v-for="(item, index) in itemsListWithProperties"
-        :key="`item-${index}-${item.path}`"
-        @dblclick="doubleClickHandler(item.path)"
-        @mousedown.stop="itemClickHandler(item.path)"
-        @click.right="rightClickHandler($event, item.path)"
+        v-if="viewType === 'list'"
+        class="flex-align-center list-folder-item"
+        :class="{ 'selected-item': item.path === selectedItem }"
+        draggable="true"
+        @dragstart="dragStartHandler"
       >
-        <div class="flex-align-center" draggable="true" @dragstart="dragStartHandler">
-          <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
-          <div style="flex-grow: 1">
-            <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
-              <input
-                ref="fileNameInputRef"
-                class="file-text no-outline"
-                v-model="fileNameToChange"
-                @keyup.enter="renameFileHandler"
-                @blur="renameFileHandler"
-                @keyup.esc="isEditingSelectedValue = false"
-                type="text"
-                :style="`width:${fileFocusedWidth}px`"
-              />
-            </span>
-            <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
-          </div>
-          <div v-if="showProperties" class="prop-field" style="width: 170px">
-            {{ formatStringDate(item.properties.ctime, dateFormat) }}
-            {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
-          </div>
-          <div v-if="showProperties" class="prop-field" style="width: 100px">
-            {{ formatBytes(item.properties.size) }}
-          </div>
+        <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
+        <div style="flex-grow: 1">
+          <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
+            <input
+              ref="fileNameInputRef"
+              class="file-text no-outline"
+              v-model="fileNameToChange"
+              @keyup.enter="renameFileHandler"
+              @blur="renameFileHandler"
+              @keyup.esc="isEditingSelectedValue = false"
+              type="text"
+              :style="`width:${fileFocusedWidth}px`"
+            />
+          </span>
+          <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
+        </div>
+        <div v-if="showProperties" class="prop-field" style="width: 170px">
+          {{ formatStringDate(item.properties.ctime, dateFormat) }}
+          {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
+        </div>
+        <div v-if="showProperties" class="prop-field" style="width: 100px">
+          {{ formatBytes(item.properties.size) }}
         </div>
       </div>
     </div>
@@ -58,8 +77,8 @@
         ></span>
         <span
           class="mdi mdi-card-outline preview-icon"
-          :class="{ 'preview-icon-selected': viewType === 'icon' }"
-          @click="viewType = 'icon'"
+          :class="{ 'preview-icon-selected': viewType === 'preview' }"
+          @click="viewType = 'preview'"
         ></span>
       </div>
     </div>
@@ -228,9 +247,18 @@ export default defineComponent({
 </script>
 
 <style scoped>
+@import "@/css/fileItemPreview.css";
+
 .flex {
   display: flex;
   align-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 100px));
+  margin-top: 10px;
+  gap: 5px;
 }
 
 .prop-field {
@@ -244,7 +272,7 @@ export default defineComponent({
   font-size: var(--medium-font-size);
 }
 
-.folder-item {
+.list-folder-item {
   height: 24px;
   margin: 2px 10px;
   border-radius: 7px;
