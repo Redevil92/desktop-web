@@ -281,7 +281,7 @@ export default defineComponent({
   position: absolute;
   top: 50px;
   left: 200px;
-  border: 2px solid var(--dialog-border-color_dark);
+  border: 2px solid #ffffff00;
   border-radius: 10px;
   background-color: var(--background-color);
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 / 80%);
