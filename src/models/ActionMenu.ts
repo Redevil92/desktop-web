@@ -9,10 +9,10 @@ export default interface ActionMenu {
 }
 
 export interface ActionItem {
-  icon: string;
+  icon?: string;
   iconOnly: boolean;
   groupName: string;
-  actionType: string;
+  actionName: string;
   callback: Function;
   disabled: boolean;
 }

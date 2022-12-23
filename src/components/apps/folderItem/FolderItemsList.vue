@@ -1,46 +1,66 @@
 <template>
-  <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
+  <div class="container">
+    <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
 
-  <div v-if="showProperties" class="flex-align-center table-header">
-    <div style="flex-grow: 1">Name</div>
-    <div style="width: 170px">Date modified</div>
-    <div style="width: 100px">Size</div>
-  </div>
-  <div
-    class="folder-item"
-    :class="{
-      'selected-item': item.path === selectedItem,
-      'cut-item': isCutFile(item.path),
-    }"
-    v-for="(item, index) in itemsListWithProperties"
-    :key="`item-${index}-${item.path}`"
-    @dblclick="doubleClickHandler(item.path)"
-    @mousedown.stop="itemClickHandler(item.path)"
-    @click.right="rightClickHandler($event, item.path)"
-  >
-    <div class="flex-align-center" draggable="true" @dragstart="dragStartHandler">
-      <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
-      <div style="flex-grow: 1">
-        <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
-          <input
-            ref="fileNameInputRef"
-            class="file-text no-outline"
-            v-model="fileNameToChange"
-            @keyup.enter="renameFileHandler"
-            @blur="renameFileHandler"
-            @keyup.esc="isEditingSelectedValue = false"
-            type="text"
-            :style="`width:${fileFocusedWidth}px`"
-          />
-        </span>
-        <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
+    <div v-if="viewType === 'list'">
+      <div v-if="showProperties" class="flex-align-center table-header">
+        <div style="flex-grow: 1">Name</div>
+        <div style="width: 170px">Date modified</div>
+        <div style="width: 100px">Size</div>
       </div>
-      <div v-if="showProperties" class="prop-field" style="width: 170px">
-        {{ formatStringDate(item.properties.ctime, dateFormat) }}
-        {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
+      <div
+        class="folder-item"
+        :class="{
+          'selected-item': item.path === selectedItem,
+          'cut-item': isCutFile(item.path),
+        }"
+        v-for="(item, index) in itemsListWithProperties"
+        :key="`item-${index}-${item.path}`"
+        @dblclick="doubleClickHandler(item.path)"
+        @mousedown.stop="itemClickHandler(item.path)"
+        @click.right="rightClickHandler($event, item.path)"
+      >
+        <div class="flex-align-center" draggable="true" @dragstart="dragStartHandler">
+          <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
+          <div style="flex-grow: 1">
+            <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
+              <input
+                ref="fileNameInputRef"
+                class="file-text no-outline"
+                v-model="fileNameToChange"
+                @keyup.enter="renameFileHandler"
+                @blur="renameFileHandler"
+                @keyup.esc="isEditingSelectedValue = false"
+                type="text"
+                :style="`width:${fileFocusedWidth}px`"
+              />
+            </span>
+            <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
+          </div>
+          <div v-if="showProperties" class="prop-field" style="width: 170px">
+            {{ formatStringDate(item.properties.ctime, dateFormat) }}
+            {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
+          </div>
+          <div v-if="showProperties" class="prop-field" style="width: 100px">
+            {{ formatBytes(item.properties.size) }}
+          </div>
+        </div>
       </div>
-      <div v-if="showProperties" class="prop-field" style="width: 100px">
-        {{ formatBytes(item.properties.size) }}
+    </div>
+
+    <div class="footer flex">
+      <div class="items-count">{{ itemsList.length }} item{{ itemsList.length > 1 ? "s" : "" }}</div>
+      <div>
+        <span
+          class="mdi mdi-format-list-bulleted preview-icon"
+          :class="{ 'preview-icon-selected': viewType === 'list' }"
+          @click="viewType = 'list'"
+        ></span>
+        <span
+          class="mdi mdi-card-outline preview-icon"
+          :class="{ 'preview-icon-selected': viewType === 'icon' }"
+          @click="viewType = 'icon'"
+        ></span>
       </div>
     </div>
   </div>
@@ -64,7 +84,7 @@ export default defineComponent({
     isFocused: Boolean,
     canRename: Boolean,
     showProperties: { type: Boolean, default: false },
-    viewType: String,
+    // viewType: String,
   },
   components: { FileIcon },
   emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem"],
@@ -73,6 +93,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore();
 
     // *** ITEM SELECTION AND CHANGE NAME
+    const viewType = ref("list");
     const selectedItem = ref("");
     const isEditingSelectedValue = ref(false);
     const fileNameToChange = ref("");
@@ -191,6 +212,7 @@ export default defineComponent({
       formatBytes,
       formatStringDate,
       formatTimeFromStringDate,
+      viewType,
       dateFormat,
       timeFormat,
       itemsListWithProperties,
@@ -254,23 +276,6 @@ export default defineComponent({
   color: white;
 }
 
-.footer {
-  position: absolute;
-  height: 20px;
-  background-color: rgb(25, 25, 25);
-  bottom: 0px;
-  width: inherit;
-  text-align: start;
-  width: -webkit-fill-available;
-}
-
-.footer-text {
-  color: white;
-  font-size: var(--small-font-size);
-  text-align: start;
-  margin-left: 5px;
-}
-
 .extension-icon {
   font-size: 16px;
 }
@@ -285,6 +290,11 @@ export default defineComponent({
 
 .selected-item {
   background-color: var(--selected-color) !important;
+}
+
+.items-count {
+  color: var(--font-color);
+  font-size: var(--small-font-size);
 }
 
 input {
@@ -311,5 +321,28 @@ input {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.container {
+  margin-bottom: 20px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0px 5px;
+}
+
+.preview-icon {
+  color: var(--font-color);
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.preview-icon:hover,
+.preview-icon-selected {
+  background-color: var(--neutral-color_dark);
 }
 </style>
