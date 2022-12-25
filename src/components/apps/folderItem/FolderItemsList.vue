@@ -69,7 +69,7 @@
 
     <div class="footer flex">
       <div class="items-count">{{ itemsList.length }} item{{ itemsList.length > 1 ? "s" : "" }}</div>
-      <div>
+      <div style="margin-right: 15px">
         <span
           class="mdi mdi-format-list-bulleted preview-icon"
           :class="{ 'preview-icon-selected': viewType === 'list' }"

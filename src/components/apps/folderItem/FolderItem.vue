@@ -1,15 +1,38 @@
 <template>
   <div @click.right="openActionMenu($event, true)" class="droppable" :id="itemDialog.path">
-    <div class="folder-item-container" @mousedown="deselectItem" :style="`height:${height - 5}px`">
-      <div class="folder-actions">
-        <span v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path">
-          <span class="path-item" @click="updateItemDialogPath(buildPath(filePathSplitted, index))">{{ path }}</span
-          >{{ filePathSplitted.length > index + 1 ? " > " : "" }}
-        </span>
+    <div @mousedown="deselectItem" :style="`height:${height - 5}px`">
+      <div class="folder-actions" @click="showPathAsText = true">
+        <div v-show="showPathAsText" class="flex">
+          <div class="mdi mdi-folder path-padding"></div>
+          <input
+            ref="fullPathInputRef"
+            class="no-style-input path-input"
+            v-model="pathToEdit"
+            @keyup.enter="updateItemDialogPath(pathToEdit)"
+            @blur="resetPathInput"
+            @keyup.esc="resetPathInput"
+            type="text"
+          />
+        </div>
+        <div v-show="!showPathAsText" class="flex" @mousedown="setShowPathAsText(true)">
+          <span class="mdi mdi-folder path-padding"></span>
+          <span class="mdi mdi-chevron-right path-padding"></span>
+          <div v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path" class="flex">
+            <div
+              class="path-item path-padding"
+              @mousedown.stop
+              @click.stop="updateItemDialogPath(buildPath(filePathSplitted, index))"
+            >
+              {{ path }}
+            </div>
+            <span v-if="filePathSplitted.length > index + 1" class="mdi mdi-chevron-right path-padding"></span>
+          </div>
+        </div>
       </div>
 
       <DropExternalFileZone :dropPath="itemDialog.path">
         <div
+          @mousedown="showPathAsText = false"
           @mouseover="isMouseOver = true"
           @mouseleave="isMouseOver = false"
           @drop="dropFilehandler"
@@ -60,7 +83,10 @@ export default defineComponent({
     const fileSystemStore = useFileSystemStore();
 
     const folderContentRef = ref<HTMLElement | null>(null);
+    const fullPathInputRef = ref<HTMLInputElement | null>(null);
     const isMouseOver = ref(false as boolean);
+    const showPathAsText = ref(false);
+    const pathToEdit = ref(props.itemDialog?.path);
 
     const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
@@ -100,17 +126,33 @@ export default defineComponent({
       } as ActionMenu);
     };
 
+    const resetPathInput = () => {
+      setShowPathAsText(false);
+      pathToEdit.value = props.itemDialog?.path;
+    };
+
     const dropFilehandler = async (event: Event) => {
       moveFilesInFolder(event, props.itemDialog?.path || "");
     };
 
     const updateItemDialogPath = (fileName: string) => {
       fileSystemStore.updateItemDialogName({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
+      pathToEdit.value = fileName;
     };
 
     const renameFileHandler = (fileNameToUpdate: { newName: string; oldName: string }) => {
       fileSystemStore.renameFile(fileNameToUpdate.newName, fileNameToUpdate.oldName);
       refreshFileSystemFiles();
+    };
+
+    const setShowPathAsText = async (value: boolean) => {
+      if (value && fullPathInputRef.value) {
+        setTimeout(() => {
+          fullPathInputRef.value?.focus();
+          fullPathInputRef.value?.select();
+        }, 10);
+      }
+      showPathAsText.value = value;
     };
 
     const refreshFileSystemFiles = () => {
@@ -166,6 +208,15 @@ export default defineComponent({
     });
 
     return {
+      showPathAsText,
+      folderContentRef,
+      filePathSplitted,
+      isDraggingItem,
+      isMouseOver,
+      fullPathInputRef,
+      pathToEdit,
+      resetPathInput,
+      setShowPathAsText,
       getFileNameFromPath,
       doubleClickHandler,
       tryDeleteItem,
@@ -178,30 +229,36 @@ export default defineComponent({
       openActionMenu,
       dropFilehandler,
       setFilesToMove,
-      folderContentRef,
-      filePathSplitted,
-      isDraggingItem,
-      isMouseOver,
     };
   },
 });
 </script>
 
 <style scoped>
+@import "@/css/input.css";
+
 .flex {
   display: flex;
   align-items: center;
 }
 
+.text-path {
+  margin-left: 5px;
+}
+
 .folder-actions {
   font-size: var(--medium-font-size);
   background-color: rgb(110, 110, 110);
-  color: white;
-  padding: 5px 10px;
-  font-weight: 600;
+  color: var(--font-color);
+  padding: 0px 10px;
   text-align: left;
   white-space: nowrap;
   overflow-x: auto;
+  margin: 5px;
+}
+
+.path-padding {
+  padding: 5px 2px;
 }
 
 .path-item {
@@ -209,7 +266,8 @@ export default defineComponent({
 }
 
 .path-item:hover {
-  text-decoration: underline white;
+  text-decoration: none;
+  background-color: var(--selected-color);
 }
 
 .folder-item-list {
@@ -220,5 +278,10 @@ export default defineComponent({
 .folder-item-list-drag-over {
   border-radius: var(--border-radius);
   border: 2px solid var(--selected-color);
+}
+
+.path-input {
+  color: var(--font-color);
+  width: 100%;
 }
 </style>
