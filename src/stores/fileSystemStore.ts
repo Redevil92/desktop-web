@@ -122,16 +122,17 @@ export const useFileSystemStore = defineStore("fileSystem", {
 
       this.itemsDialog.push(newItemDialog);
 
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if neeeded
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
 
       this.setFocusedItemDialog(newItemDialog);
       setTimeout(() => {
         takeAndSaveItemPreviewScreenshotByItemGuid(newItemDialog.guid, newItemDialog.path);
       }, 500);
     },
-    async updateItemDialogName(pathAndItemToUpdate: { newPath: string; itemDialog: ItemDialog }) {
+    async updateItemDialogPath(pathAndItemToUpdate: { newPath: string; itemDialog: ItemDialog }) {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);
       itemToUpdate.path = pathAndItemToUpdate.newPath;
+      itemToUpdate.name = getFileNameFromPath(pathAndItemToUpdate.newPath);
 
       const filesPath = await getFiles(itemToUpdate.path, true);
       itemToUpdate.filesPath = filesPath;
@@ -140,7 +141,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       if (index !== -1) {
         this.itemsDialog[index] = itemToUpdate;
       }
-      this.itemsDialog = [...this.itemsDialog];
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     refreshAllItemDialogFiles() {
       const itemsDialog = Object.assign([], this.itemsDialog) as ItemDialog[];
@@ -172,14 +173,14 @@ export const useFileSystemStore = defineStore("fileSystem", {
         takeAndSaveItemPreviewScreenshotByItemGuid(itemDialogGuid, this.itemsDialog[index].path);
       }
 
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     updateItemDialog(itemDialogToUpdate: ItemDialog) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemDialogToUpdate.guid);
       if (index !== -1) {
         this.itemsDialog[index] = itemDialogToUpdate;
       }
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     updateItemDialogPosition(itemDialogToUpdate: ItemDialog) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemDialogToUpdate.guid);
@@ -195,14 +196,14 @@ export const useFileSystemStore = defineStore("fileSystem", {
         this.itemsDialog[index].dimension = itemDialogToUpdate.dimension;
       }
 
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     openMinimizedItemDialog(itemDialogGuid: string) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemDialogGuid);
       if (index !== -1) {
         this.itemsDialog[index].isCollapsed = false;
       }
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     findAndSetNewFocusedItemDialog() {
       const itemDialogs: ItemDialog[] = this.itemsDialog;
@@ -233,7 +234,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       if (index !== -1) {
         this.itemsDialog[index].isFullscreen = itemData.isFullscreen || undefined;
       }
-      this.itemsDialog = [...this.itemsDialog]; // TODO, check if needed
+      this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     async fetchDesktopItems() {
       const desktopFiles = await getDesktopFiles(true);

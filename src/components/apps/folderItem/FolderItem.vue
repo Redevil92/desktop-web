@@ -136,7 +136,7 @@ export default defineComponent({
     };
 
     const updateItemDialogPath = (fileName: string) => {
-      fileSystemStore.updateItemDialogName({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
+      fileSystemStore.updateItemDialogPath({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
       pathToEdit.value = fileName;
     };
 
