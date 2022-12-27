@@ -55,7 +55,7 @@
               :style="`width:${fileFocusedWidth}px`"
             />
           </span>
-          <span v-else class="file-text noselect">{{ getFileNameFromPath(item.path) }}</span>
+          <span v-else class="file-text one-line-ellipsis noselect">{{ getFileNameFromPath(item.path) }}</span>
         </div>
         <div v-if="showProperties" class="prop-field" style="width: 170px">
           {{ formatStringDate(item.properties.ctime, dateFormat) }}
@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <div class="footer flex">
+    <div v-if="canChangeViewType" class="footer flex">
       <div class="items-count">{{ itemsList.length }} item{{ itemsList.length > 1 ? "s" : "" }}</div>
       <div style="margin-right: 15px">
         <span
@@ -102,11 +102,13 @@ export default defineComponent({
     itemsList: { type: Array as PropType<string[]>, required: true },
     isFocused: Boolean,
     canRename: Boolean,
+    keyEventsActive: { type: Boolean, default: true },
+    canChangeViewType: { type: Boolean, default: true },
     showProperties: { type: Boolean, default: false },
     // viewType: String,
   },
   components: { FileIcon },
-  emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem"],
+  emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem", "onItemMouseDown"],
   setup(props, ctx) {
     const fileSystemStore = useFileSystemStore();
     const settingsStore = useSettingsStore();
@@ -156,23 +158,24 @@ export default defineComponent({
       return false;
     };
 
-    const itemClickHandler = async (fileName: string) => {
-      if (fileName === selectedItem.value) {
+    const itemClickHandler = async (filePath: string) => {
+      ctx.emit("onItemMouseDown", filePath);
+      if (filePath === selectedItem.value) {
         if (!isEditingSelectedValue.value && props.canRename) {
-          fileNameToChange.value = getFileNameFromPath(fileName);
+          fileNameToChange.value = getFileNameFromPath(filePath);
           setTimeout(async () => {
             isEditingSelectedValue.value = !isEditingSelectedValue.value;
           }, 600);
         }
         return;
       }
-      selectedItem.value = fileName;
+      selectedItem.value = filePath;
       isEditingSelectedValue.value = false;
     };
 
-    const doubleClickHandler = async (fileName: string) => {
+    const doubleClickHandler = async (filePath: string) => {
       if (!isEditingSelectedValue.value) {
-        ctx.emit("onDoubleClick", fileName);
+        ctx.emit("onDoubleClick", filePath);
       }
     };
 
@@ -193,7 +196,7 @@ export default defineComponent({
     };
 
     const keyDownHandler = (event: { code: string }) => {
-      if (props.isFocused && selectedItem.value && props.itemsList) {
+      if (props.isFocused && selectedItem.value && props.itemsList && props.keyEventsActive) {
         if (event.code === "Delete" && selectedItem.value) {
           ctx.emit("onTryDeleteItem", selectedItem.value);
         } else if (event.code === "ArrowDown") {
@@ -211,7 +214,10 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      window.addEventListener("keydown", keyDownHandler);
+      if (props.keyEventsActive) {
+        window.addEventListener("keydown", keyDownHandler);
+      }
+
       await updateItemListWithProperties();
     });
 
@@ -314,6 +320,12 @@ export default defineComponent({
 
 .file-text {
   margin-left: 10px;
+}
+
+.one-line-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selected-item {

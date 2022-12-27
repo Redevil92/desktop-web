@@ -1,6 +1,6 @@
 <template>
   <div style="color: white">
-    <BaseDialog :to="to" :noPadding="true">
+    <BaseDialog :noPadding="true">
       <div class="flex">
         <div class="left-panel">
           <div class="title-text">Favourites</div>
@@ -15,13 +15,13 @@
             :key="'favourite-' + favourite"
             @click="clickItemFolderHandler(favourite.path, -1)"
           >
-            <span :class="`mdi ${favourite.mdiIcon} mdi-18 favourite-icon`"></span>
-            {{ getFileNameFromPath(favourite.path) }}
+            <span :class="`mdi ${favourite.mdiIcon}  favourite-icon`"></span>
+            <span class="medium-font"> {{ getFileNameFromPath(favourite.path) }}</span>
           </div>
           <div class="title-text">Cloud</div>
           <div class="favourite-item">
             <span :class="`mdi mdi-cloud mdi-18 favourite-icon`"></span>
-            Share folder
+            <span class="medium-font">Share folder </span>
           </div>
         </div>
         <div class="right-panel">
@@ -46,16 +46,14 @@
                 :key="'path-files-' + pathAndFiles.path"
                 class="path-item"
               >
-                <div v-for="file in pathAndFiles.files" :key="pathAndFiles.path + '-' + file">
-                  <div
-                    class="flex save-as-item"
-                    :class="selectedFolder === file.path ? 'selected-folder-item' : ''"
-                    @click="clickItemFolderHandler(file.path, index)"
-                  >
-                    <FileIcon :height="14" :noStyle="true" :filePath="file.path" />
-                    <p class="file-name ellipsis">{{ getFileNameFromPath(file.path) }}</p>
-                  </div>
-                </div>
+                <FolderItemsList
+                  :itemsList="mapToPathsList(pathAndFiles.files)"
+                  :canRename="false"
+                  :isFocused="true"
+                  :canChangeViewType="false"
+                  :keyEventsActive="false"
+                  @onItemMouseDown="clickItemFolderHandler($event, index)"
+                />
               </div>
             </div>
           </div>
@@ -74,7 +72,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
-import FileIcon from "@/components/shared/FileIcon.vue";
+import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import { DESKTOP_PATH } from "@/constants";
 import { getFiles, isDir } from "@/context/fileSystemController";
@@ -84,7 +82,7 @@ import PathAndIcon from "@/models/PathAndIcon";
 
 export default defineComponent({
   props: { to: String },
-  components: { BaseInput, BaseDialog, BaseButton, FileIcon },
+  components: { BaseInput, BaseDialog, BaseButton, FolderItemsList },
   emits: ["closeDialog", "saveItem"],
   setup(_, context) {
     const saveAs = ref("");
@@ -105,9 +103,17 @@ export default defineComponent({
       saveAs.value = getFileNameWithoutExtension(getFileNameFromPath(filePath));
     };
 
-    const clickItemFolderHandler = (filePath: string, index: number) => {
+    const clickItemFolderHandler = async (filePath: string, index: number) => {
       setPathAndFileItem(filePath, index);
-      selectedFolder.value = filePath;
+      if (await isDir(filePath)) {
+        selectedFolder.value = filePath;
+      } else {
+        saveAs.value = getFileNameFromPath(filePath);
+      }
+    };
+
+    const mapToPathsList = (items: PathAndIsFolder[]) => {
+      return items.map((item) => item.path);
     };
 
     const closePathFileItem = (index: number): PathAndFiles[] => {
@@ -161,6 +167,7 @@ export default defineComponent({
       selectedFolder,
       selectedFolderNameToShow,
       favouritesPathList,
+      mapToPathsList,
       clickItemHandler,
       clickItemFolderHandler,
       getFileNameFromPath,
@@ -213,21 +220,26 @@ interface PathAndIsFolder {
 .path-and-files-container {
   display: flex;
   overflow-x: auto;
-  height: 400px;
+
   margin-bottom: 1px;
-  border-bottom: 2px solid rgb(164, 164, 164);
-  border-top: 2px solid rgb(164, 164, 164);
+  border-bottom: 1px solid rgb(67, 67, 67);
+  border-top: 1px solid rgb(67, 67, 67);
   /* background-color: var(--background-color_light); */
 }
 
 .path-item {
   border-right: 2px solid rgb(67, 67, 67);
-
+  height: 400px;
   font-size: var(--medium-font-size);
   width: 340px;
   text-align: left;
   padding-left: 10px;
   padding-top: 10px;
+}
+
+.medium-font {
+  font-size: var(--medium-font-size);
+  margin-left: var(--margin);
 }
 
 .flex {
@@ -240,8 +252,14 @@ interface PathAndIsFolder {
 }
 
 .save-as-item {
-  cursor: pointer;
-  padding-left: 5px;
+  height: 24px;
+  margin: 2px 10px;
+  border-radius: 7px;
+  color: var(--font-color);
+  font-size: var(--medium-font-size);
+  text-align: left;
+  padding-left: 10px;
+  padding-top: 5px;
 }
 
 .input {
@@ -300,7 +318,7 @@ interface PathAndIsFolder {
 }
 
 .favourite-item {
-  font-size: var(--medium-font-size);
+  font-size: var(--large-font-size);
   margin: 5px var(--margin);
   padding: 3px var(--margin);
 }
