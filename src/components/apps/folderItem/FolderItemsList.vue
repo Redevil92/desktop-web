@@ -1,5 +1,10 @@
 <template>
-  <div class="container" :class="{ 'grid-container': viewType === 'preview' }">
+  <div
+    :style="height ? `height:${height}px` : ''"
+    class="container"
+    :class="{ 'grid-container': viewType === 'preview' }"
+    @mousedown="deselectItem"
+  >
     <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
 
     <div v-if="viewType === 'list' && showProperties" class="flex-align-center table-header">
@@ -106,6 +111,7 @@ export default defineComponent({
     keyEventsActive: { type: Boolean, default: true },
     canChangeViewType: { type: Boolean, default: true },
     showProperties: { type: Boolean, default: false },
+    height: { type: Number },
     // viewType: String,
   },
   components: { FileIcon },

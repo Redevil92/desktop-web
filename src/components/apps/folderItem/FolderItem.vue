@@ -1,6 +1,6 @@
 <template>
-  <div @click.right="openActionMenu($event, true)" class="droppable" :id="itemDialog.path">
-    <div @mousedown="deselectItem" :style="`height:${height - 5}px`">
+  <div v-if="itemDialog" @click.right="openActionMenu($event, true)" class="droppable" :id="itemDialog.path">
+    <div :style="`height:${height - 5}px`">
       <div class="folder-actions" @click="showPathAsText = true">
         <div v-show="showPathAsText" class="flex">
           <div class="mdi mdi-folder path-padding"></div>
@@ -8,13 +8,13 @@
             ref="fullPathInputRef"
             class="no-style-input path-input"
             v-model="pathToEdit"
-            @keyup.enter="updateItemDialogPath(pathToEdit)"
+            @keyup.enter="updateItemDialogPath(pathToEdit || '')"
             @blur="resetPathInput"
             @keyup.esc="resetPathInput"
             type="text"
           />
         </div>
-        <div v-show="!showPathAsText" class="flex" @mousedown="setShowPathAsText(true)">
+        <div v-if="filePathSplitted" v-show="!showPathAsText" class="flex" @mousedn="setShowPathAsText(true)">
           <span class="mdi mdi-folder path-padding"></span>
           <span class="mdi mdi-chevron-right path-padding"></span>
           <div v-for="(path, index) in filePathSplitted" :key="'path-' + index + '-' + path" class="flex">
@@ -38,7 +38,7 @@
           @drop="dropFilehandler"
           class="folder-item-list"
           :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
-          :style="`height:${height - 29}px`"
+          :style="`height:${height - 55}px`"
           ref="folderContentRef"
         >
           <FolderItemsList
@@ -46,6 +46,7 @@
             :canRename="true"
             :showProperties="true"
             :isFocused="itemDialog.isFocused"
+            :height="height - 100"
             @onDoubleClick="doubleClickHandler"
             @onRightClick="rightClickItemHandler"
             @renameFileHandler="renameFileHandler"
@@ -75,7 +76,7 @@ import ItemDialog from "@/models/ItemDialog";
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
+    height: { type: Number, required: true },
   },
   components: { DropExternalFileZone, FolderItemsList },
   emits: [],
@@ -165,7 +166,10 @@ export default defineComponent({
       return props.itemDialog?.path.split("/");
     });
 
-    const buildPath = (fullPathSplitted: string[], index: number) => {
+    const buildPath = (fullPathSplitted: string[] | undefined, index: number) => {
+      if (fullPathSplitted === undefined) {
+        return "";
+      }
       let newPath = "";
       for (let i = 0; i <= index; i++) {
         if (i !== 0) {
