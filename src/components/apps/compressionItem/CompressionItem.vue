@@ -3,7 +3,7 @@
     <FolderItemsList
       :itemsList="items"
       :canRename="false"
-      :isFocused="itemDialog.isFocused"
+      :isFocused="itemDialog?.isFocused"
       @onDoubleClick="doubleClickHandler"
       @onRightClick="rightClickItemHandler"
     />
@@ -29,7 +29,7 @@ import ActionMenu, { ActionItem } from "@/models/ActionMenu";
 export default defineComponent({
   props: {
     itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
+    height: { type: Number, default: 200 },
   },
   components: { FolderItemsList },
   emits: [],

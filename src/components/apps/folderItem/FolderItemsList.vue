@@ -24,12 +24,12 @@
             v-if="item.path === selectedItem && isEditingSelectedValue && canRename"
             ref="fileNameInputRef"
             @keyup.enter="renameFileHandler"
-            @blur="changeFileName"
+            @blur="renameFileHandler"
             rows="2"
             class="no-outline file-text-preview"
             v-model="fileNameToChange"
           />
-          <div v-else class="file-text-preview" @click="setIsEditingText">
+          <div v-else class="file-text-preview">
             {{ getFileNameFromPath(item.path) }}
           </div>
         </div>
@@ -39,8 +39,9 @@
         class="flex-align-center list-folder-item"
         :class="{ 'selected-item': item.path === selectedItem }"
         draggable="true"
-        @dragstart="dragStartHandler"
       >
+        <!-- @dragstart="dragStartHandler" -->
+
         <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
         <div style="flex-grow: 1">
           <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
@@ -57,11 +58,11 @@
           </span>
           <span v-else class="file-text one-line-ellipsis noselect">{{ getFileNameFromPath(item.path) }}</span>
         </div>
-        <div v-if="showProperties" class="prop-field" style="width: 170px">
+        <div v-if="showProperties && item.properties" class="prop-field" style="width: 170px">
           {{ formatStringDate(item.properties.ctime, dateFormat) }}
           {{ formatTimeFromStringDate(item.properties.ctime, timeFormat) }}
         </div>
-        <div v-if="showProperties" class="prop-field" style="width: 100px">
+        <div v-if="showProperties && item.properties" class="prop-field" style="width: 100px">
           {{ formatBytes(item.properties.size) }}
         </div>
       </div>
