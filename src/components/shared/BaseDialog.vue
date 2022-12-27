@@ -41,8 +41,7 @@ export default defineComponent({
   margin-top: 130px;
   box-shadow: 2px 3px 20px 0px rgb(0 0 0 /20%);
   -webkit-box-shadow: 2px 3px 10px 0px rgb(0 0 0 / 20%);
-  border-radius: 10px;
-  border: 1px solid #9f9f9f;
+  border-radius: var(--border-radius);
 }
 
 .darker-dialog {
