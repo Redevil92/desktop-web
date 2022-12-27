@@ -230,11 +230,13 @@ interface PathAndIsFolder {
 
 .input-list {
   padding: var(--margin);
+  padding-top: 0px;
 }
 
 .label {
   font-size: var(--small-font-size);
   margin-top: var(--margin);
+  margin-bottom: 3px;
 }
 
 .selected-folder {
@@ -246,7 +248,7 @@ interface PathAndIsFolder {
   font-weight: 600;
   border: 1px solid var(--font-color);
   border-radius: var(--border-radius);
-  padding: 0px var(--margin);
+  padding: 2px var(--margin);
   width: 300px;
   font-size: var(--medium-font-size);
 }
