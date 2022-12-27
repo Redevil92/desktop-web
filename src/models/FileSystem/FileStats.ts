@@ -3,7 +3,7 @@ export default interface FileStats {
   birthtime: Date;
   blksize: number;
   blocks: number;
-  ctime: Date;
+  ctime: string;
   dev: 0;
   fileData: any;
   gid: number;
