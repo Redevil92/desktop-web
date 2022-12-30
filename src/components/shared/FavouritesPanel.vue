@@ -1,5 +1,5 @@
 <template>
-  <div class="left-panel" v-if="favouritesPathList">
+  <div class="left-panel" :style="height ? `height:${height}px` : ''" v-if="favouritesPathList">
     <div class="title-text">Favourites</div>
 
     <div
@@ -28,9 +28,9 @@ import { useSettingsStore } from "@/stores/settingsStore";
 import PathAndIcon from "@/models/PathAndIcon";
 
 export default defineComponent({
-  props: { pathSelected: { type: String, default: "" } },
+  props: { pathSelected: { type: String, default: "" }, height: { type: Number, required: false } },
   components: {},
-  emits: ["closeDialog", "saveItem", "onFavouriteSelect"],
+  emits: ["onFavouriteSelect"],
   setup(_, ctx) {
     const settingsStore = useSettingsStore();
 
@@ -53,9 +53,11 @@ export default defineComponent({
 <style scoped>
 .left-panel {
   width: 150px;
+  min-width: 150px;
   border-right: 1px solid rgb(67, 67, 67);
   text-align: left;
   height: 570px;
+  color: var(--font-color);
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
   background-color: var(--background-color_contrast);

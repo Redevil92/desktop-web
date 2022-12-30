@@ -8,7 +8,7 @@
     <span class="input-placeholder" ref="fileNameToChangeSpanRef">{{ getFileNameFromPath(fileNameToChange) }}</span>
 
     <div v-if="viewType === 'list' && showProperties" class="flex-align-center table-header">
-      <div style="flex-grow: 1">Name</div>
+      <div style="width: 400px">Name</div>
       <div style="width: 170px">Date modified</div>
       <div style="width: 100px">Size</div>
     </div>
@@ -47,8 +47,8 @@
       >
         <!-- @dragstart="dragStartHandler" -->
 
-        <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
-        <div style="flex-grow: 1">
+        <div class="flex" style="width: 400px">
+          <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
           <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
             <input
               ref="fileNameInputRef"
@@ -61,7 +61,9 @@
               :style="`width:${fileFocusedWidth}px`"
             />
           </span>
-          <span v-else class="file-text one-line-ellipsis noselect">{{ getFileNameFromPath(item.path) }}</span>
+          <div v-else style="width: 320px" class="file-text one-line-ellipsis noselect">
+            {{ getFileNameFromPath(item.path) }}
+          </div>
         </div>
         <div v-if="showProperties && item.properties" class="prop-field" style="width: 170px">
           {{ formatStringDate(item.properties.ctime, dateFormat) }}
@@ -270,6 +272,7 @@ export default defineComponent({
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 100px));
+  grid-auto-rows: 110px;
   margin-top: 10px;
   gap: 5px;
 }
@@ -287,7 +290,7 @@ export default defineComponent({
 
 .list-folder-item {
   height: 24px;
-  margin: 2px 10px;
+  margin: 2px 0px;
   border-radius: 7px;
   color: var(--font-color);
   font-size: var(--medium-font-size);
@@ -371,11 +374,11 @@ input {
 }
 
 .container {
-  margin-bottom: 20px;
+  position: relative;
 }
 
 .footer {
-  position: absolute;
+  position: sticky;
   bottom: 3px;
   width: 100%;
   justify-content: space-between;

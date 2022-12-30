@@ -1,6 +1,6 @@
 <template>
   <div v-if="itemDialog" @click.right="openActionMenu($event, true)" class="droppable" :id="itemDialog.path">
-    <div :style="`height:${height - 5}px`">
+    <div :style="`height:${height - 5}px; position:relative`">
       <div class="folder-actions" @click="showPathAsText = true">
         <div v-show="showPathAsText" class="flex">
           <div class="mdi mdi-folder path-padding"></div>
@@ -29,31 +29,33 @@
           </div>
         </div>
       </div>
-
-      <DropExternalFileZone :dropPath="itemDialog.path">
-        <div
-          @mousedown="showPathAsText = false"
-          @mouseover="isMouseOver = true"
-          @mouseleave="isMouseOver = false"
-          @drop="dropFilehandler"
-          class="folder-item-list"
-          :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
-          :style="`height:${height - 55}px`"
-          ref="folderContentRef"
-        >
-          <FolderItemsList
-            :itemsList="itemDialog.filesPath"
-            :canRename="true"
-            :showProperties="true"
-            :isFocused="itemDialog.isFocused"
-            :height="height - 100"
-            @onDoubleClick="doubleClickHandler"
-            @onRightClick="rightClickItemHandler"
-            @renameFileHandler="renameFileHandler"
-            @onTryDeleteItem="tryDeleteItem"
-          />
-        </div>
-      </DropExternalFileZone>
+      <div class="flex-start">
+        <FavouritesPanel :height="height - 35"></FavouritesPanel>
+        <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto">
+          <div
+            @mousedown="showPathAsText = false"
+            @mouseover="isMouseOver = true"
+            @mouseleave="isMouseOver = false"
+            @drop="dropFilehandler"
+            class="folder-item-list"
+            :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
+            :style="`height:${height - 60}px; `"
+            ref="folderContentRef"
+          >
+            <FolderItemsList
+              :itemsList="itemDialog.filesPath"
+              :canRename="true"
+              :showProperties="true"
+              :isFocused="itemDialog.isFocused"
+              :height="height - 60"
+              @onDoubleClick="doubleClickHandler"
+              @onRightClick="rightClickItemHandler"
+              @renameFileHandler="renameFileHandler"
+              @onTryDeleteItem="tryDeleteItem"
+            />
+          </div>
+        </DropExternalFileZone>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +66,7 @@ import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
+import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
 
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
@@ -78,7 +81,7 @@ export default defineComponent({
     itemDialog: Object as PropType<ItemDialog>,
     height: { type: Number, required: true },
   },
-  components: { DropExternalFileZone, FolderItemsList },
+  components: { DropExternalFileZone, FolderItemsList, FavouritesPanel },
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
@@ -246,6 +249,11 @@ export default defineComponent({
   align-items: center;
 }
 
+.flex-start {
+  display: flex;
+  align-items: start;
+}
+
 .text-path {
   margin-left: 5px;
 }
@@ -258,7 +266,7 @@ export default defineComponent({
   text-align: left;
   white-space: nowrap;
   overflow-x: auto;
-  margin: 5px;
+  margin: 3px;
 }
 
 .path-padding {
@@ -276,6 +284,7 @@ export default defineComponent({
 
 .folder-item-list {
   overflow-y: auto;
+
   border: 2px solid rgba(255, 255, 255, 0);
 }
 
