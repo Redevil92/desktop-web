@@ -31,7 +31,7 @@
       </div>
       <div class="flex-start">
         <FavouritesPanel :height="height - 35"></FavouritesPanel>
-        <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto">
+        <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto; position: relative">
           <div
             @mousedown="showPathAsText = false"
             @mouseover="isMouseOver = true"
@@ -39,15 +39,14 @@
             @drop="dropFilehandler"
             class="folder-item-list"
             :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
-            :style="`height:${height - 60}px; `"
             ref="folderContentRef"
           >
             <FolderItemsList
               :itemsList="itemDialog.filesPath"
               :canRename="true"
               :showProperties="true"
+              :height="height - 50"
               :isFocused="itemDialog.isFocused"
-              :height="height - 60"
               @onDoubleClick="doubleClickHandler"
               @onRightClick="rightClickItemHandler"
               @renameFileHandler="renameFileHandler"

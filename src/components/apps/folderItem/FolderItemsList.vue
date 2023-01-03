@@ -345,6 +345,9 @@ export default defineComponent({
 .items-count {
   color: var(--font-color);
   font-size: var(--small-font-size);
+  padding: 2px 5px;
+  border-radius: var(--border-radius);
+  background-color: var(--background-color_opacity);
 }
 
 input {
@@ -378,8 +381,8 @@ input {
 }
 
 .footer {
-  position: sticky;
-  bottom: 3px;
+  position: absolute;
+  bottom: 2px;
   width: 100%;
   justify-content: space-between;
   padding: 0px 5px;
