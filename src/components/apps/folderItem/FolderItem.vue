@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="flex-start">
-        <FavouritesPanel :height="height - 35"></FavouritesPanel>
+        <FavouritesPanel :height="height - 35" @onFavouriteSelect="updateItemDialogPath($event)"></FavouritesPanel>
         <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto; position: relative">
           <div
             @mousedown="showPathAsText = false"
