@@ -27,7 +27,10 @@ import { readFile } from "@/context/fileSystemController";
 
 export default defineComponent({
   props: {
-    itemDialog: Object as PropType<ItemDialog>,
+    itemDialog: {
+      type: Object as PropType<ItemDialog>,
+      required: true,
+    },
     height: { type: Number, required: true },
   },
   components: {},

@@ -28,6 +28,7 @@
 
   --background-color_contrast: #454548fc;
   --background-color: rgb(43 45 51 / 97%);
+  --background-color_opacity: rgba(43, 45, 51, 0.638);
   --background-color_light: rgb(43 45 51 / 99%);
   --background-color_dark: rgb(43 45 51 / 99%);
 
