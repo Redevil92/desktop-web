@@ -1,16 +1,17 @@
-export const formatStringDate = (stringDate: string, format: string) => {
-  const date = new Date(stringDate);
-
-  const day = date.getDay() < 10 ? "0" + date.getDay().toString() : date.getDay().toString();
-  const month = date.getMonth() < 10 ? "0" + date.getMonth().toString() : date.getMonth().toString();
+export const formatDate = (date: Date, format: string) => {
+  const day = date.getDay() + 1 < 10 ? "0" + (date.getDay() + 1).toString() : (date.getDay() + 1).toString();
+  const month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1).toString() : (date.getMonth() + 1).toString();
   const year = date.getFullYear().toString();
-
+  console.log(format, day, month, year);
   return format.replace("DD", day).replace("MM", month).replace("YYYY", year);
 };
 
-export const formatTimeFromStringDate = (stringDate: string, format: string) => {
+export const formatStringDate = (stringDate: string, format: string) => {
   const date = new Date(stringDate);
+  return formatDate(date, format);
+};
 
+export const formatTimeFromDate = (date: Date, format: string) => {
   const isHour12 = format.includes("XM");
 
   const seconds = date.getSeconds() < 10 ? "0" + date.getSeconds().toString() : date.getSeconds().toString();
@@ -25,4 +26,9 @@ export const formatTimeFromStringDate = (stringDate: string, format: string) => 
   }
 
   return format.replace("HH", hours.toString()).replace("MM", minutes).replace("SS", seconds).replace("XM", ampm);
+};
+
+export const formatTimeFromStringDate = (stringDate: string, format: string) => {
+  const date = new Date(stringDate);
+  return formatTimeFromDate(date, format);
 };

@@ -83,6 +83,7 @@ export default defineComponent({
 }
 
 .favourite-item {
+  cursor: pointer;
   font-size: var(--large-font-size);
   margin: 5px var(--margin);
   padding: 3px var(--margin);

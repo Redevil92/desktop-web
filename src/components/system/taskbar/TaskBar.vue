@@ -10,7 +10,7 @@
         class="window-icon"
       />
       <!-- <span @click="setStartMenuOpened" class="mdi mdi-microsoft-windows window-icon" ref="windowIconRef"></span> -->
-      <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef" />
+      <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef || undefined" />
       <div class="flex">
         <div
           v-for="(taskBarItem, index) in taskBarItemByApplication"
@@ -39,8 +39,10 @@ import ItemDialog from "@/models/ItemDialog";
 import TaskBarItem from "@/components/system/taskbar/TaskBarItem.vue";
 import StartMenu from "@/components/system/startMenu/StartMenu.vue";
 
+import { useSettingsStore } from "@/stores/settingsStore";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { formatDate, formatTimeFromDate } from "@/utils/dateAndTimeConversionUtils";
 
 export default defineComponent({
   props: {},
@@ -48,6 +50,7 @@ export default defineComponent({
   setup() {
     const layoutStore = useLayoutStore();
     const fileSystemStore = useFileSystemStore();
+    const settingsStore = useSettingsStore();
 
     const previewOpened = ref("");
 
@@ -63,6 +66,14 @@ export default defineComponent({
 
     const currentDate = ref("");
     const currentTime = ref("");
+
+    const dateFormat = computed(() => {
+      return settingsStore.dateFormat;
+    });
+
+    const timeFormat = computed(() => {
+      return settingsStore.timeFormat;
+    });
 
     const taskBarItems = computed(function () {
       return fileSystemStore.itemsDialog as ItemDialog[];
@@ -87,11 +98,10 @@ export default defineComponent({
     };
 
     const updateDate = () => {
-      const newDate = new Date();
-      currentDate.value = `${newDate.getDay()}/${newDate.getMonth()}/${newDate.getFullYear()}`;
-      currentTime.value = `${newDate.getHours()}:${
-        (newDate.getMinutes() < 10 ? "0" : "") + newDate.getMinutes()
-      }:${newDate.getSeconds()}`;
+      const newDate = new Date(Date.now());
+      console.log(newDate, dateFormat.value, newDate.getDay());
+      currentDate.value = formatDate(newDate, dateFormat.value);
+      currentTime.value = formatTimeFromDate(newDate, timeFormat.value);
     };
 
     onMounted(function () {
