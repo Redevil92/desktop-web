@@ -1,6 +1,7 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
+  <div :style="` width: calc(100% -4px); `">
     <FolderItemsList
+      :height="height - 4"
       :itemsList="items"
       :canRename="false"
       :isFocused="itemDialog?.isFocused"

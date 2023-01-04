@@ -269,11 +269,15 @@ export default defineComponent({
   align-items: center;
 }
 
+.container {
+  position: relative;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 100px));
   grid-auto-rows: 110px;
-  margin-top: 10px;
+  padding-top: 10px;
   gap: 5px;
 }
 
@@ -282,7 +286,7 @@ export default defineComponent({
 }
 
 .table-header {
-  margin: var(--margin);
+  padding: var(--margin);
   color: var(--font-color_dark);
   text-align: left;
   font-size: var(--medium-font-size);
@@ -374,10 +378,6 @@ input {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
-}
-
-.container {
-  position: relative;
 }
 
 .footer {
