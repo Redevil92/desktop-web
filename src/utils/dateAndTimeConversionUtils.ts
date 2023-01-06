@@ -2,7 +2,6 @@ export const formatDate = (date: Date, format: string) => {
   const day = date.getDay() + 1 < 10 ? "0" + (date.getDay() + 1).toString() : (date.getDay() + 1).toString();
   const month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1).toString() : (date.getMonth() + 1).toString();
   const year = date.getFullYear().toString();
-  console.log(format, day, month, year);
   return format.replace("DD", day).replace("MM", month).replace("YYYY", year);
 };
 

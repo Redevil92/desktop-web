@@ -12,7 +12,9 @@ export interface ActionItem {
   icon?: string;
   iconOnly: boolean;
   groupName: string;
+  horizontalGroup: boolean;
   actionName: string;
   callback: Function;
   disabled: boolean;
+  subActions?: ActionItem[];
 }
