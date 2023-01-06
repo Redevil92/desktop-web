@@ -14,7 +14,7 @@
         class="desktop-container"
         :style="{ 'background-image': 'url(' + require('/src/assets/desktopImages/' + desktopImage) + ')' }"
       >
-        <div v-for="(item, index) in desktopFiles" :key="`${item.i}-${index}`">
+        <div v-for="(item, index) in desktopFiles" :key="`desktop-item-${index}`">
           <DesktopFileItem :ref="item.path + 'FileRef'" :fileItem="item" />
         </div>
       </div>
@@ -22,8 +22,8 @@
   </DropExternalFileZone>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, onMounted, ref, reactive, computed } from "vue";
+<script lang="ts" setup>
+import { PropType, onMounted, ref, reactive, computed } from "vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import DesktopFileItem from "@/components/system/desktop/DesktopFileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
@@ -35,83 +35,68 @@ import { isDir } from "@/context/fileSystemController";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
-export default defineComponent({
-  props: {
-    msg: String,
-    items: Array as PropType<DesktopItem[]>,
-  },
-  components: { DesktopFileItem, DropExternalFileZone, SelectionBoxZone },
-  emits: ["onFileItemPositionChange"],
-  setup() {
-    const fileSystemStore = useFileSystemStore();
-    const settingsStore = useSettingsStore();
+const props = defineProps({
+  msg: String,
+  items: Array as PropType<DesktopItem[]>,
+});
 
-    const { moveFilesInFolder } = useMoveFiles();
+const emit = defineEmits(["onFileItemPositionChange"]);
 
-    const desktopRef = ref(null as unknown as HTMLElement);
+const fileSystemStore = useFileSystemStore();
+const settingsStore = useSettingsStore();
 
-    const desktopImage = computed((): string => {
-      return settingsStore.desktopImage;
-    });
+const { moveFilesInFolder } = useMoveFiles();
 
-    const isSelectionBoxEnabled = computed((): boolean => {
-      return fileSystemStore.isSelectionBoxEnabled;
-    });
+const desktopRef = ref(null as unknown as HTMLElement);
 
-    const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
-      let isFolder = false;
-      if (dropDestinationFileName) {
-        isFolder = await isDir(dropDestinationFileName);
-      }
-      await moveFilesInFolder(event, dropDestinationFileName);
-    };
+const desktopImage = computed((): string => {
+  return settingsStore.desktopImage;
+});
 
-    const setIsSelectionBoxEnabled = (isSelectionBoxEnabled: boolean) => {
-      fileSystemStore.setIsSelectionBoxEnabled(isSelectionBoxEnabled);
-    };
+const isSelectionBoxEnabled = computed((): boolean => {
+  return fileSystemStore.isSelectionBoxEnabled;
+});
 
-    const selectFile = (filesSelected: DesktopItem[]) => {
-      fileSystemStore.setSelectedDesktopFiles(filesSelected);
-    };
+const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
+  let isFolder = false;
+  if (dropDestinationFileName) {
+    isFolder = await isDir(dropDestinationFileName);
+  }
+  await moveFilesInFolder(event, dropDestinationFileName);
+};
 
-    const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-      //const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
+const setIsSelectionBoxEnabled = (isSelectionBoxEnabled: boolean) => {
+  fileSystemStore.setIsSelectionBoxEnabled(isSelectionBoxEnabled);
+};
 
-      const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
-        const clientRect = element.getBoundingClientRect();
-        return {
-          path: DESKTOP_PATH + "/" + element.textContent,
-          coordinates: { x: clientRect.x, y: clientRect.y },
-        } as DesktopItem;
-      });
-      fileSystemStore.setSelectedDesktopFiles(elementsSelectedNames);
-    };
+const selectFile = (filesSelected: DesktopItem[]) => {
+  fileSystemStore.setSelectedDesktopFiles(filesSelected);
+};
 
-    const desktopFiles = computed(function (): DesktopItem[] {
-      return fileSystemStore.desktopItems;
-    });
+const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
+  //const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
 
-    const refreshFiles = async () => {
-      await fileSystemStore.refreshAllItemDialogFiles();
-      await fileSystemStore.fetchDesktopItems();
-    };
-
-    onMounted(async () => {
-      refreshFiles();
-    });
-
+  const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
+    const clientRect = element.getBoundingClientRect();
     return {
-      desktopRef,
-      desktopFiles,
-      selectFile,
-      desktopImage,
-      dropFilehandler,
-      DESKTOP_PATH,
-      selectItemsWithSelectionBox,
-      isSelectionBoxEnabled,
-      setIsSelectionBoxEnabled,
-    };
-  },
+      path: DESKTOP_PATH + "/" + element.textContent,
+      coordinates: { x: clientRect.x, y: clientRect.y },
+    } as DesktopItem;
+  });
+  fileSystemStore.setSelectedDesktopFiles(elementsSelectedNames);
+};
+
+const desktopFiles = computed(function (): DesktopItem[] {
+  return fileSystemStore.desktopItems;
+});
+
+const refreshFiles = async () => {
+  await fileSystemStore.refreshAllItemDialogFiles();
+  await fileSystemStore.fetchDesktopItems();
+};
+
+onMounted(async () => {
+  refreshFiles();
 });
 </script>
 
