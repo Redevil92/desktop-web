@@ -6,8 +6,9 @@
       <BaseButton @click="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
   </base-dialog>
+  <!-- do not remove 'desktop-item' class, because it is used by DesktopWorkSpace to get the selected elements -->
   <div
-    class="file-item"
+    class="file-item desktop-item"
     ref="fileItemRef"
     :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
     :id="fileItem.path"
@@ -71,6 +72,7 @@ import {
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import fileTypesConfiguration from "@/models/FilesType";
+import { getEditActions } from "@/components/system/actionMenu/editActions";
 
 export default defineComponent({
   props: {
@@ -159,7 +161,7 @@ export default defineComponent({
       }
     };
 
-    const openActionMenu = (event: any, item: DesktopItem) => {
+    const openActionMenu = async (event: any, item: DesktopItem) => {
       event.preventDefault();
       event.stopPropagation();
       const pointerEvent = event as PointerEvent;
@@ -170,6 +172,7 @@ export default defineComponent({
         paths: fileSystemStore.getSelectedDesktopItemsPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
+        customLayout: await getEditActions(fileSystemStore.getSelectedDesktopItemsPath),
       });
     };
 
