@@ -21,3 +21,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Visual studio config files
+slnx.sqlite
+*.vsidx
+applicationhost.config
+read.lock
