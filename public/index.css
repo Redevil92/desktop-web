@@ -65,7 +65,7 @@ html {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
-  font-family: Segoe UI Variable, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Segoe UI Variable, Avenir, Helvetica, Arial, sans-serif; */
   word-break: normal;
   tab-size: 4;
   overflow: hidden;
