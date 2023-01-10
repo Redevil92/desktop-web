@@ -13,7 +13,7 @@
     :class="{ 'cut-file-item': isCutFile, droppable: isFolder }"
     :id="fileItem.path"
     :style="`top: ${fileItem.coordinates.y}px; left: ${fileItem.coordinates.x}px; z-index: ${zIndex}`"
-    @dblclick="doubleClickHandler"
+    @dblclick="openFileItem"
     @mousedown.stop="
       {
         selectFile(fileItem);
@@ -172,7 +172,17 @@ export default defineComponent({
         paths: fileSystemStore.getSelectedDesktopItemsPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
-        customLayout: await getEditActions(fileSystemStore.getSelectedDesktopItemsPath),
+        customLayout: [
+          ...(await getEditActions(fileSystemStore.getSelectedDesktopItemsPath)),
+          {
+            materialIcon: "mdi-open-in-new",
+            iconOnly: false,
+            groupName: "open",
+            actionName: "Open",
+            callback: openFileItem,
+            disabled: false,
+          },
+        ],
       });
     };
 
@@ -180,7 +190,7 @@ export default defineComponent({
       context.emit("onClick", props.fileItem);
     };
 
-    const doubleClickHandler = () => {
+    const openFileItem = () => {
       for (const desktopItem of fileSystemStore.getSelectedDesktopItems) {
         fileSystemStore.createItemDialog(desktopItem);
       }
@@ -335,7 +345,7 @@ export default defineComponent({
     });
 
     return {
-      doubleClickHandler,
+      openFileItem,
       isFolder,
       getFileNameFromPath,
       clickHandler,

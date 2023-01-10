@@ -6,18 +6,22 @@
   >
     <div v-if="actionMenuParams.customLayout">
       <div v-for="(group, i) in actionsByGroup" :key="`group-${i}`">
-        <div :class="{ 'horizontal-group': group[1][0] }">
+        <div :class="{ 'horizontal-group': group[1][0].horizontalGroup }">
           <div v-for="(item, j) in group[1]" @click="item.callback" :key="`group-${j}-action-${i}`">
-            <div class="horizontal-action">
+            <div class="action">
               <div v-if="item.icon">
-                <img height="20" :src="require(`/src/assets/icons/${item.icon}`)" alt="" />
+                <img height="18" :src="require(`/src/assets/icons/${item.icon}`)" alt="" />
               </div>
-              <div v-if="!item.iconOnly">
+              <div v-else-if="item.materialIcon">
+                <span class="material-icon" :class="`mdi ${item.materialIcon}`"></span>
+              </div>
+              <div v-if="!item.iconOnly" class="action-name">
                 {{ item.actionName }}
               </div>
             </div>
           </div>
         </div>
+        <div v-if="actionsByGroup.size !== i + 1" class="separator-line"></div>
       </div>
     </div>
     <div v-else>
@@ -217,14 +221,21 @@ onDeactivated(() => {
   display: flex;
 }
 
-.horizontal-action {
+.material-icon {
+  font-size: 18px;
+}
+
+.action {
   padding: 2px 5px;
   margin-right: 3px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-.horizontal-action:hover {
-  background-color: var(--selected-color);
+.action:hover {
+  background-color: var(--selected-color_opacity);
+  border-radius: var(--border-radius);
 }
 
 .actions-dialog {
@@ -233,7 +244,7 @@ onDeactivated(() => {
   color: white;
   border-radius: var(--border-radius);
   position: absolute;
-  background-color: #616161d6;
+  background-color: #616161ed;
   top: 160px;
   left: 600px;
   z-index: 999;
@@ -254,6 +265,10 @@ onDeactivated(() => {
   width: max-content;
 }
 
+.action-name {
+  margin-left: var(--margin);
+}
+
 .disabled-action-button {
   padding: 0px 7px;
   border-radius: 5px;
@@ -269,5 +284,10 @@ onDeactivated(() => {
 
 hr {
   margin: 5px 0px;
+}
+
+.separator-line {
+  margin: 5px;
+  border-bottom: 1px solid var(--font-color_light);
 }
 </style>

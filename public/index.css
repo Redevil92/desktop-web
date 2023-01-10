@@ -1,9 +1,7 @@
 :root {
-  --font-color_dark: #292929;
-  --font-color_light: #7c7c7c;
-
   --font-color: white;
   --font-color_dark: #7c7c7c;
+  --font-color_light: #c9c9c9;
 
   --primary-color: #4545c9;
   --primary-color_darker: #2323c6;
@@ -24,6 +22,7 @@
   --dialog-background-color_darker: #393939;
   --dialog-border-color_dark: #626262;
   --selected-color: #6b6be1b3;
+  --selected-color_opacity: #6b6be17c;
   --selected-color_light: #5151ff;
 
   --background-color_contrast: #454548fc;
