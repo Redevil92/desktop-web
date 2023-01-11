@@ -75,7 +75,8 @@ input:focus {
 }
 
 .search-input {
-  font-size: var(--small-font-size);
+  font-size: var(--medium-font-size);
+  padding-top: 12px;
   border: none;
   padding: 10px;
   padding-left: 35px;
