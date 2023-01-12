@@ -3,7 +3,7 @@
     <div class="error-message">
       <img height="85" :src="require('/src/assets/icons/error-robot.svg')" alt="" />
       <div>{{ errorMessage }}</div>
-      <BaseButton @click="showDialog = false" class="ok-button">OK</BaseButton>
+      <BaseButton @clicks="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
   </base-dialog>
   <!-- do not remove 'desktop-item' class, because it is used by DesktopWorkSpace to get the selected elements -->

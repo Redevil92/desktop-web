@@ -28,6 +28,7 @@ import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/constants";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { createNewFile, createNewFolder, openDesktopSettingPage } from "@/components/system/actionMenu/editActions";
 
 export default defineComponent({
   props: {},
@@ -45,6 +46,11 @@ export default defineComponent({
         paths: [DESKTOP_PATH],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: false,
+        customLayout: [
+          createNewFile(DESKTOP_PATH, false, false),
+          createNewFolder(DESKTOP_PATH, false, false),
+          openDesktopSettingPage(false, false),
+        ],
       } as ActionMenuModel);
     };
 

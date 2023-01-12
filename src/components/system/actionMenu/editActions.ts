@@ -1,5 +1,7 @@
-import { isDir } from "@/context/fileSystemController";
+import { getFiles, isDir } from "@/context/fileSystemController";
+import { generateUniqueName } from "@/context/fileSystemUtils";
 import { ActionItem } from "@/models/ActionMenu";
+import DesktopItem from "@/models/DesktopItem";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 const refreshFiles = () => {
@@ -47,11 +49,11 @@ export const cutAction = (pathsToCut: string[], disabled = false): ActionItem =>
   };
 };
 
-export const pasteAction = (destinationPath: string, disabled = false): ActionItem => {
+export const pasteAction = (destinationPath: string, disabled = false, iconOnly = true): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "paste.svg",
-    iconOnly: true,
+    iconOnly,
     groupName: "edit",
     horizontalGroup: true,
     actionName: "Cut",
@@ -59,7 +61,7 @@ export const pasteAction = (destinationPath: string, disabled = false): ActionIt
       await fileSystemStore.pasteFiles(destinationPath);
       refreshFiles();
     },
-    disabled: false,
+    disabled,
   };
 };
 
@@ -78,5 +80,67 @@ export const deleteAction = (pathsToDelete: string[], disabled = false): ActionI
       refreshFiles();
     },
     disabled: false,
+  };
+};
+
+export const createNewFile = (destinationPath: string, disabled = false, iconOnly = false): ActionItem => {
+  const fileSystemStore = useFileSystemStore();
+  return {
+    materialIcon: "mdi-file-plus",
+    iconOnly,
+    groupName: "createNew",
+    horizontalGroup: false,
+    actionName: "New file",
+    callback: async () => {
+      const currentFolderFiles: string[] = await getFiles(destinationPath, true);
+
+      const newUniquePath = generateUniqueName(destinationPath + "/" + "new file", currentFolderFiles);
+      await fileSystemStore.createFile({
+        path: newUniquePath + ".txt",
+        content: "",
+      });
+      refreshFiles();
+    },
+    disabled,
+  };
+};
+
+export const createNewFolder = (destinationPath: string, disabled = false, iconOnly = false): ActionItem => {
+  const fileSystemStore = useFileSystemStore();
+  return {
+    materialIcon: "mdi-folder-plus",
+    iconOnly,
+    groupName: "createNew",
+    horizontalGroup: false,
+    actionName: "New folder",
+    callback: async () => {
+      const currentFolderFiles: string[] = await getFiles(destinationPath, true);
+
+      const newUniquePath = generateUniqueName(destinationPath + "/" + "new folder", currentFolderFiles);
+      await fileSystemStore.createFolder(newUniquePath);
+      refreshFiles();
+    },
+    disabled,
+  };
+};
+
+export const openDesktopSettingPage = (disabled = false, iconOnly = false): ActionItem => {
+  const fileSystemStore = useFileSystemStore();
+  return {
+    materialIcon: "mdi-monitor",
+    iconOnly,
+    groupName: "settings",
+    horizontalGroup: false,
+    actionName: "Change desktop image",
+    callback: () => {
+      const settingsApp: DesktopItem = {
+        path: "",
+        coordinates: { x: 0, y: 0 },
+        applicationExtension: "settings",
+        isSelected: true,
+      };
+      fileSystemStore.createItemDialog(settingsApp);
+    },
+    disabled,
   };
 };
