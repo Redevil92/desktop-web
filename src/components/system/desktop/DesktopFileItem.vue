@@ -171,7 +171,6 @@ export default defineComponent({
         show: true,
         paths: fileSystemStore.getSelectedDesktopItemsPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        isOpenedFolder: false,
         customLayout: [
           ...(await getEditActions(fileSystemStore.getSelectedDesktopItemsPath)),
           {

@@ -90,7 +90,6 @@ export default defineComponent({
         show: true,
         paths: customPath ? [customPath] : [props.itemDialog?.path],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        isOpenedFolder: isOpenedFolder,
         customLayout: {},
       } as ActionMenu);
     };

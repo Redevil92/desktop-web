@@ -11,11 +11,7 @@ const refreshFiles = () => {
 };
 
 export const getEditActions = async (paths: string[]) => {
-  const canPaste = paths.length === 1 && (await isDir(paths[0]));
-  const editActions = [copyAction(paths), cutAction(paths), deleteAction(paths)];
-  if (canPaste) {
-    editActions.push(pasteAction(paths[0]));
-  }
+  const editActions = await [copyAction(paths), cutAction(paths), deleteAction(paths), await pasteAction(paths[0])];
   return editActions;
 };
 
@@ -49,19 +45,28 @@ export const cutAction = (pathsToCut: string[], disabled = false): ActionItem =>
   };
 };
 
-export const pasteAction = (destinationPath: string, disabled = false, iconOnly = true): ActionItem => {
+export const pasteAction = async (
+  destinationPath: string,
+  disabled = false,
+  iconOnly = true,
+  horizontalGroup = true
+): Promise<ActionItem> => {
   const fileSystemStore = useFileSystemStore();
+  const canPaste =
+    (fileSystemStore.filePathsToCopy.length > 0 || fileSystemStore.filePathsToCut.length > 0) &&
+    (await isDir(destinationPath));
+
   return {
     icon: "paste.svg",
     iconOnly,
     groupName: "edit",
-    horizontalGroup: true,
-    actionName: "Cut",
+    horizontalGroup,
+    actionName: "Paste",
     callback: async () => {
       await fileSystemStore.pasteFiles(destinationPath);
       refreshFiles();
     },
-    disabled,
+    disabled: disabled || !canPaste,
   };
 };
 

@@ -45,7 +45,6 @@ export default defineComponent({
         show: true,
         paths: [DESKTOP_PATH],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        isOpenedFolder: false,
         customLayout: [
           createNewFile(DESKTOP_PATH, false, false),
           createNewFolder(DESKTOP_PATH, false, false),

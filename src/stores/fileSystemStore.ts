@@ -282,7 +282,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
         show: false,
         paths: [],
         position: { x: 0, y: 0 },
-        isOpenedFolder: false,
       };
 
       this.setActionMenu(emptyActionMenu);

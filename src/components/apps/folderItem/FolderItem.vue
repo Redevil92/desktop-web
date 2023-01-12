@@ -1,5 +1,10 @@
 <template>
-  <div v-if="itemDialog" @click.right="openActionMenu($event, true)" class="droppable" :id="itemDialog.path">
+  <div
+    v-if="itemDialog"
+    @click.right="openActionMenu({ event: $event, filePath: itemDialog?.path || '' }, true)"
+    class="droppable"
+    :id="itemDialog.path"
+  >
     <div :style="`height:${height - 5}px; position:relative`">
       <div class="folder-actions" @click="showPathAsText = true">
         <div v-show="showPathAsText" class="flex">
@@ -48,7 +53,7 @@
               :height="height - 50"
               :isFocused="itemDialog.isFocused"
               @onDoubleClick="doubleClickHandler"
-              @onRightClick="rightClickItemHandler"
+              @onRightClick="openActionMenu($event, false)"
               @renameFileHandler="renameFileHandler"
               @onTryDeleteItem="tryDeleteItem"
             />
@@ -74,6 +79,12 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
+import {
+  createNewFile,
+  createNewFolder,
+  getEditActions,
+  pasteAction,
+} from "@/components/system/actionMenu/editActions";
 
 export default defineComponent({
   props: {
@@ -112,20 +123,35 @@ export default defineComponent({
       }
     };
 
-    const rightClickItemHandler = (eventAndPath: { event: Event; filePath: string }) => {
-      openActionMenu(eventAndPath.event, false, eventAndPath.filePath);
-    };
+    const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, isOpenedFolder = false) => {
+      eventAndPath.event.preventDefault();
+      eventAndPath.event.stopPropagation();
+      const pointerEvent = eventAndPath.event as PointerEvent;
 
-    const openActionMenu = (event: any, isOpenedFolder = false, customPath?: string) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerEvent = event as PointerEvent;
+      const customActions = isOpenedFolder
+        ? [
+            createNewFile(eventAndPath.filePath),
+            createNewFolder(eventAndPath.filePath),
+            await pasteAction(eventAndPath.filePath, false, false, false),
+          ]
+        : [
+            ...(await getEditActions([eventAndPath.filePath])),
+            {
+              materialIcon: "mdi-open-in-new",
+              iconOnly: false,
+              groupName: "open",
+              actionName: "Open",
+              callback: () => doubleClickHandler(eventAndPath.filePath),
+              disabled: false,
+            },
+          ];
 
       fileSystemStore.setActionMenu({
         show: true,
-        paths: customPath ? [customPath] : [props.itemDialog?.path],
+        paths: [eventAndPath.filePath],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         isOpenedFolder: isOpenedFolder,
+        customLayout: customActions,
       } as ActionMenu);
     };
 
@@ -230,7 +256,6 @@ export default defineComponent({
       getFileExtensionFromName,
       updateItemDialogPath,
       buildPath,
-      rightClickItemHandler,
       renameFileHandler,
       openActionMenu,
       dropFilehandler,

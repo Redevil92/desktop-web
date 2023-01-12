@@ -300,7 +300,6 @@ export default defineComponent({
   font-size: var(--medium-font-size);
   text-align: left;
   padding-left: 10px;
-  padding-top: 5px;
 }
 
 .file-icon {
