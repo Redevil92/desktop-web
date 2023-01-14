@@ -2,139 +2,128 @@
   <canvas id="canvas-audio" ref="canvasRef" class="audio-canvas"></canvas>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { onMounted, PropType, ref } from "vue";
 
-export default defineComponent({
-  props: {
-    audioElement: Object as PropType<HTMLAudioElement>,
-  },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const canvasRef = ref<HTMLCanvasElement>();
+const props = defineProps({ audioElement: Object as PropType<HTMLAudioElement> });
 
-    const analyzer = ref<AnalyserNode | null>(null);
-    const audioCtx = ref(new window.AudioContext());
+const canvasRef = ref<HTMLCanvasElement>();
 
-    function animate() {
-      if (canvasRef.value && analyzer.value) {
-        const bufferLength = analyzer.value.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+const analyzer = ref<AnalyserNode | null>(null);
+const audioCtx = ref(new window.AudioContext());
 
-        const ctx = canvasRef.value.getContext("2d") as CanvasRenderingContext2D;
-        ctx?.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+function animate() {
+  if (canvasRef.value && analyzer.value) {
+    const bufferLength = analyzer.value.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-        analyzer.value?.getByteFrequencyData(dataArray);
+    const ctx = canvasRef.value.getContext("2d") as CanvasRenderingContext2D;
+    ctx?.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
 
-        drawVisualizer(bufferLength, dataArray, ctx, canvasRef.value);
-      }
+    analyzer.value?.getByteFrequencyData(dataArray);
 
-      requestAnimationFrame(animate);
-    }
+    drawVisualizer(bufferLength, dataArray, ctx, canvasRef.value);
+  }
 
-    const drawVisualizer = (
-      bufferLength: number,
-      dataArray: Uint8Array,
+  requestAnimationFrame(animate);
+}
 
-      ctx: CanvasRenderingContext2D,
-      canvas: HTMLCanvasElement
-    ) => {
-      const style = getComputedStyle(document.body);
-      ctx.fillStyle = style.getPropertyValue("--font-color");
+const drawVisualizer = (
+  bufferLength: number,
+  dataArray: Uint8Array,
 
-      let barHeight;
-      const barWidth = canvas.width / 2 / bufferLength;
-      let firstX = 0;
-      let secondX = bufferLength * barWidth;
+  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement
+) => {
+  const style = getComputedStyle(document.body);
+  ctx.fillStyle = style.getPropertyValue("--font-color");
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let barHeight;
+  const barWidth = canvas.width / 2 / bufferLength;
+  let firstX = 0;
+  let secondX = bufferLength * barWidth;
 
-      fixDpi();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const maxDataArrayValue = 255;
+  fixDpi();
 
-      for (let i = 0; i < bufferLength; i++) {
-        barHeight = (dataArray[i] / maxDataArrayValue) * canvas.height;
-        // const red = (i * barHeight) / 10;
-        // const green = i * 4;
-        // const blue = barHeight / 4 - 12;
+  const maxDataArrayValue = 255;
 
-        roundRect(ctx, canvas.width / 2 - firstX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 30);
-        roundRect(ctx, secondX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 30);
+  for (let i = 0; i < bufferLength; i++) {
+    barHeight = (dataArray[i] / maxDataArrayValue) * canvas.height;
+    // const red = (i * barHeight) / 10;
+    // const green = i * 4;
+    // const blue = barHeight / 4 - 12;
 
-        //ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
-        firstX += barWidth;
-        //ctx.fillRect(secondX, canvas.height - barHeight, barWidth - 1, barHeight);
-        secondX += barWidth;
-      }
-    };
+    roundRect(ctx, canvas.width / 2 - firstX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 30);
+    roundRect(ctx, secondX, (canvas.height - barHeight) / 2, barWidth / 1.7, barHeight, 30);
 
-    const fixDpi = () => {
-      const dpi = window.devicePixelRatio;
+    //ctx.fillRect(canvas.width / 2 - firstX, canvas.height - barHeight, barWidth - 1, barHeight);
+    firstX += barWidth;
+    //ctx.fillRect(secondX, canvas.height - barHeight, barWidth - 1, barHeight);
+    secondX += barWidth;
+  }
+};
 
-      if (canvasRef.value) {
-        const height = +getComputedStyle(canvasRef.value).getPropertyValue("height").slice(0, -2);
-        //get CSS width
-        const width = +getComputedStyle(canvasRef.value).getPropertyValue("width").slice(0, -2);
-        //scale the canvas
-        canvasRef.value.setAttribute("height", (height * dpi).toString());
-        canvasRef.value.setAttribute("width", (width * dpi).toString());
-      }
-    };
+const fixDpi = () => {
+  const dpi = window.devicePixelRatio;
 
-    const roundRect = function (
-      ctx: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-      radius: number
-    ) {
-      if (width < 2 * radius) {
-        radius = width / 2;
-      }
-      if (height < 2 * radius) {
-        radius = height / 2;
-      }
-      const color = getComputedStyle(document.body).getPropertyValue("--font-color");
+  if (canvasRef.value) {
+    const height = +getComputedStyle(canvasRef.value).getPropertyValue("height").slice(0, -2);
+    //get CSS width
+    const width = +getComputedStyle(canvasRef.value).getPropertyValue("width").slice(0, -2);
+    //scale the canvas
+    canvasRef.value.setAttribute("height", (height * dpi).toString());
+    canvasRef.value.setAttribute("width", (width * dpi).toString());
+  }
+};
 
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.arcTo(x + width, y, x + width, y + height, radius);
-      ctx.arcTo(x + width, y + height, x, y + height, radius);
-      ctx.arcTo(x, y + height, x, y, radius);
-      ctx.arcTo(x, y, x + width, y, radius);
-      ctx.closePath();
+const roundRect = function (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  if (width < 2 * radius) {
+    radius = width / 2;
+  }
+  if (height < 2 * radius) {
+    radius = height / 2;
+  }
+  const color = getComputedStyle(document.body).getPropertyValue("--font-color");
 
-      ctx.fill();
-    };
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
 
-    const setAnalyzer = () => {
-      console.log("set analyzer", props.audioElement);
-      if (props.audioElement && canvasRef.value) {
-        const mediaElement = audioCtx.value.createMediaElementSource(props.audioElement);
+  ctx.fill();
+};
 
-        analyzer.value = audioCtx.value.createAnalyser();
+const setAnalyzer = () => {
+  if (props.audioElement && canvasRef.value) {
+    const mediaElement = audioCtx.value.createMediaElementSource(props.audioElement);
 
-        mediaElement.connect(analyzer.value);
-        analyzer.value.connect(audioCtx.value.destination);
+    analyzer.value = audioCtx.value.createAnalyser();
 
-        analyzer.value.smoothingTimeConstant = 0.9;
-        analyzer.value.fftSize = 32;
+    mediaElement.connect(analyzer.value);
+    analyzer.value.connect(audioCtx.value.destination);
 
-        animate();
-      }
-    };
+    analyzer.value.smoothingTimeConstant = 0.9;
+    analyzer.value.fftSize = 32;
 
-    onMounted(async () => {
-      console.log("SETTING AN");
-      setAnalyzer();
-    });
+    animate();
+  }
+};
 
-    return { canvasRef };
-  },
+onMounted(async () => {
+  setAnalyzer();
 });
 </script>
 

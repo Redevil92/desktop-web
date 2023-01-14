@@ -8,34 +8,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { PropType } from "vue";
 
-// import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
+const props = defineProps({ audioElement: Object as PropType<HTMLAudioElement> });
 
-export default defineComponent({
-  props: {
-    audioElement: Object as PropType<HTMLAudioElement>,
-  },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const canvasRef = ref<HTMLCanvasElement>();
-    const audioRef = ref<HTMLAudioElement>();
+const stopAudio = () => {
+  props.audioElement?.pause();
+};
 
-    const audioSource = ref();
-
-    const stopAudio = () => {
-      props.audioElement?.pause();
-    };
-
-    const playAudio = () => {
-      props.audioElement?.play();
-    };
-
-    return { audioSource, canvasRef, audioRef, stopAudio, playAudio };
-  },
-});
+const playAudio = () => {
+  props.audioElement?.play();
+};
 </script>
 
 <style scoped>
