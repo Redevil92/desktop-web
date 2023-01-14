@@ -19,7 +19,6 @@
       </div>
     </div>
     <div>
-      ::{{ page }}::{{ pageCount }}
       <span
         class="mdi mdi-arrow-left control-icon"
         :class="{ 'control-icon-disabled': page === 1 }"
