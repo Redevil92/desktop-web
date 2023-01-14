@@ -64,15 +64,14 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { isDir } from "@/context/fileSystemController";
-import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
+import { computed, onDeactivated, onMounted, PropType, ref, watch } from "vue";
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
 
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
@@ -86,182 +85,151 @@ import {
   pasteAction,
 } from "@/components/system/actionMenu/editActions";
 
-export default defineComponent({
-  props: {
-    itemDialog: Object as PropType<ItemDialog>,
-    height: { type: Number, required: true },
-  },
-  components: { DropExternalFileZone, FolderItemsList, FavouritesPanel },
-  emits: [],
-  setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
+const props = defineProps({ itemDialog: Object as PropType<ItemDialog>, height: { type: Number, required: true } });
 
-    const folderContentRef = ref<HTMLElement | null>(null);
-    const fullPathInputRef = ref<HTMLInputElement | null>(null);
-    const isMouseOver = ref(false as boolean);
-    const showPathAsText = ref(false);
-    const pathToEdit = ref(props.itemDialog?.path);
+const fileSystemStore = useFileSystemStore();
 
-    const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
+const folderContentRef = ref<HTMLElement | null>(null);
+const fullPathInputRef = ref<HTMLInputElement | null>(null);
+const isMouseOver = ref(false as boolean);
+const showPathAsText = ref(false);
+const pathToEdit = ref(props.itemDialog?.path);
 
-    const isDraggingItem = computed(function () {
-      return fileSystemStore.dragginPath !== "";
-    });
+const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
-    const doubleClickHandler = async (filePath: string) => {
-      const isDirectory = await isDir(filePath);
-      if (isDirectory) {
-        updateItemDialogPath(filePath);
-      } else {
-        const newItemDialog = {
-          path: filePath,
-          coordinates: { x: 0, y: 0 },
+const isDraggingItem = computed(function () {
+  return fileSystemStore.dragginPath !== "";
+});
 
-          isSelected: true,
-        } as DesktopItem;
-        fileSystemStore.createItemDialog(newItemDialog);
-      }
-    };
+const doubleClickHandler = async (filePath: string) => {
+  const isDirectory = await isDir(filePath);
+  if (isDirectory) {
+    updateItemDialogPath(filePath);
+  } else {
+    const newItemDialog = {
+      path: filePath,
+      coordinates: { x: 0, y: 0 },
 
-    const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, isOpenedFolder = false) => {
-      eventAndPath.event.preventDefault();
-      eventAndPath.event.stopPropagation();
-      const pointerEvent = eventAndPath.event as PointerEvent;
+      isSelected: true,
+    } as DesktopItem;
+    fileSystemStore.createItemDialog(newItemDialog);
+  }
+};
 
-      const customActions = isOpenedFolder
-        ? [
-            createNewFile(eventAndPath.filePath),
-            createNewFolder(eventAndPath.filePath),
-            await pasteAction(eventAndPath.filePath, false, false, false),
-          ]
-        : [
-            ...(await getEditActions([eventAndPath.filePath])),
-            {
-              materialIcon: "mdi-open-in-new",
-              iconOnly: false,
-              groupName: "open",
-              actionName: "Open",
-              callback: () => doubleClickHandler(eventAndPath.filePath),
-              disabled: false,
-            },
-          ];
+const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, isOpenedFolder = false) => {
+  eventAndPath.event.preventDefault();
+  eventAndPath.event.stopPropagation();
+  const pointerEvent = eventAndPath.event as PointerEvent;
 
-      fileSystemStore.setActionMenu({
-        show: true,
-        paths: [eventAndPath.filePath],
-        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        isOpenedFolder: isOpenedFolder,
-        customLayout: customActions,
-      } as ActionMenu);
-    };
+  const customActions = isOpenedFolder
+    ? [
+        createNewFile(eventAndPath.filePath),
+        createNewFolder(eventAndPath.filePath),
+        await pasteAction(eventAndPath.filePath, false, false, false),
+      ]
+    : [
+        ...(await getEditActions([eventAndPath.filePath])),
+        {
+          materialIcon: "mdi-open-in-new",
+          iconOnly: false,
+          groupName: "open",
+          actionName: "Open",
+          callback: () => doubleClickHandler(eventAndPath.filePath),
+          disabled: false,
+        },
+      ];
 
-    const resetPathInput = () => {
-      setShowPathAsText(false);
-      pathToEdit.value = props.itemDialog?.path;
-    };
+  fileSystemStore.setActionMenu({
+    show: true,
+    paths: [eventAndPath.filePath],
+    position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+    isOpenedFolder: isOpenedFolder,
+    customLayout: customActions,
+  } as ActionMenu);
+};
 
-    const dropFilehandler = async (event: Event) => {
-      moveFilesInFolder(event, props.itemDialog?.path || "");
-    };
+const resetPathInput = () => {
+  setShowPathAsText(false);
+  pathToEdit.value = props.itemDialog?.path;
+};
 
-    const updateItemDialogPath = (fileName: string) => {
-      fileSystemStore.updateItemDialogPath({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
-      pathToEdit.value = fileName;
-    };
+const dropFilehandler = async (event: Event) => {
+  moveFilesInFolder(event, props.itemDialog?.path || "");
+};
 
-    const renameFileHandler = (fileNameToUpdate: { newName: string; oldName: string }) => {
-      fileSystemStore.renameFile(fileNameToUpdate.newName, fileNameToUpdate.oldName);
-      refreshFileSystemFiles();
-    };
+const updateItemDialogPath = (fileName: string) => {
+  fileSystemStore.updateItemDialogPath({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
+  pathToEdit.value = fileName;
+};
 
-    const setShowPathAsText = async (value: boolean) => {
-      if (value && fullPathInputRef.value) {
-        setTimeout(() => {
-          fullPathInputRef.value?.focus();
-          fullPathInputRef.value?.select();
-        }, 10);
-      }
-      showPathAsText.value = value;
-    };
+const renameFileHandler = (fileNameToUpdate: { newName: string; oldName: string }) => {
+  fileSystemStore.renameFile(fileNameToUpdate.newName, fileNameToUpdate.oldName);
+  refreshFileSystemFiles();
+};
 
-    const refreshFileSystemFiles = () => {
-      fileSystemStore.refreshAllItemDialogFiles();
-      fileSystemStore.fetchDesktopItems();
-    };
+const setShowPathAsText = async (value: boolean) => {
+  if (value && fullPathInputRef.value) {
+    setTimeout(() => {
+      fullPathInputRef.value?.focus();
+      fullPathInputRef.value?.select();
+    }, 10);
+  }
+  showPathAsText.value = value;
+};
 
-    // *** UTILITIES METHODS
-    const filePathSplitted = computed(function () {
-      return props.itemDialog?.path.split("/");
-    });
+const refreshFileSystemFiles = () => {
+  fileSystemStore.refreshAllItemDialogFiles();
+  fileSystemStore.fetchDesktopItems();
+};
 
-    const buildPath = (fullPathSplitted: string[] | undefined, index: number) => {
-      if (fullPathSplitted === undefined) {
-        return "";
-      }
-      let newPath = "";
-      for (let i = 0; i <= index; i++) {
-        if (i !== 0) {
-          newPath += "/";
-        }
-        newPath += fullPathSplitted[i];
-      }
+// *** UTILITIES METHODS
+const filePathSplitted = computed(function () {
+  return props.itemDialog?.path.split("/");
+});
 
-      return newPath;
-    };
+const buildPath = (fullPathSplitted: string[] | undefined, index: number) => {
+  if (fullPathSplitted === undefined) {
+    return "";
+  }
+  let newPath = "";
+  for (let i = 0; i <= index; i++) {
+    if (i !== 0) {
+      newPath += "/";
+    }
+    newPath += fullPathSplitted[i];
+  }
 
-    const tryDeleteItem = async (filePath: string) => {
-      await fileSystemStore.deleteFileSystemItem(filePath);
-      refreshFileSystemFiles();
-    };
+  return newPath;
+};
 
-    const checkMouseOver = (event: any) => {
-      if (isDraggingItem.value) {
-        const boundingRect = folderContentRef.value?.getBoundingClientRect();
-        if (
-          boundingRect &&
-          event.clientX < boundingRect.x + boundingRect.width &&
-          event.clientX > boundingRect.x &&
-          event.clientY < boundingRect.y + boundingRect.height &&
-          event.clientY > boundingRect.y
-        ) {
-          isMouseOver.value = true;
-        } else {
-          isMouseOver.value = false;
-        }
-      }
-    };
+const tryDeleteItem = async (filePath: string) => {
+  await fileSystemStore.deleteFileSystemItem(filePath);
+  refreshFileSystemFiles();
+};
 
-    onMounted(() => {
-      window.addEventListener("mousemove", checkMouseOver);
-    });
+const checkMouseOver = (event: any) => {
+  if (isDraggingItem.value) {
+    const boundingRect = folderContentRef.value?.getBoundingClientRect();
+    if (
+      boundingRect &&
+      event.clientX < boundingRect.x + boundingRect.width &&
+      event.clientX > boundingRect.x &&
+      event.clientY < boundingRect.y + boundingRect.height &&
+      event.clientY > boundingRect.y
+    ) {
+      isMouseOver.value = true;
+    } else {
+      isMouseOver.value = false;
+    }
+  }
+};
 
-    onDeactivated(() => {
-      window.removeEventListener("mousemove", checkMouseOver);
-    });
+onMounted(() => {
+  window.addEventListener("mousemove", checkMouseOver);
+});
 
-    return {
-      showPathAsText,
-      folderContentRef,
-      filePathSplitted,
-      isDraggingItem,
-      isMouseOver,
-      fullPathInputRef,
-      pathToEdit,
-      resetPathInput,
-      setShowPathAsText,
-      getFileNameFromPath,
-      doubleClickHandler,
-      tryDeleteItem,
-      isDir,
-      getFileExtensionFromName,
-      updateItemDialogPath,
-      buildPath,
-      renameFileHandler,
-      openActionMenu,
-      dropFilehandler,
-      setFilesToMove,
-    };
-  },
+onDeactivated(() => {
+  window.removeEventListener("mousemove", checkMouseOver);
 });
 </script>
 

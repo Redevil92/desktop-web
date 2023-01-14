@@ -17,8 +17,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onBeforeMount, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { computed, onBeforeMount, PropType, ref } from "vue";
 
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
@@ -32,87 +32,80 @@ import PathAndContent from "@/models/PathAndContent";
 
 import extensionToFileType from "@/components/apps/codeItem/ExtensionToFileType";
 
-export default defineComponent({
-  props: {
-    itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
-  },
-  components: { MonacoEditor },
-  emits: [],
-  setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
-    const { b64ToText, utf8ToB64 } = useBase64Handler();
+const props = defineProps({
+  itemDialog: Object as PropType<ItemDialog>,
+  height: { type: Number, required: true },
+});
 
-    let code = ref("");
-    let savedCode = ref("");
-    let fileLanguage = ref("javascript");
+const fileSystemStore = useFileSystemStore();
+const { b64ToText, utf8ToB64 } = useBase64Handler();
 
-    const canSave = computed(function (): boolean {
-      return savedCode.value !== code.value;
-    });
+let code = ref("");
+let savedCode = ref("");
+let fileLanguage = ref("javascript");
 
-    function getFileTypeFromExtension(): string {
-      let fileType = "";
-      if (props.itemDialog) {
-        const currentFileExtension = getFileExtensionFromName(props.itemDialog.path);
-        switch (currentFileExtension) {
-          case "css":
-            fileType = "css";
-            break;
-          case "js":
-            fileType = "javascript";
-            break;
-          case "html":
-            fileType = "html";
-            break;
-          case "ts":
-            fileType = "typescript";
-            break;
-          default:
-            break;
-        }
-      }
-      return fileType;
+const canSave = computed(function (): boolean {
+  return savedCode.value !== code.value;
+});
+
+function getFileTypeFromExtension(): string {
+  let fileType = "";
+  if (props.itemDialog) {
+    const currentFileExtension = getFileExtensionFromName(props.itemDialog.path);
+    switch (currentFileExtension) {
+      case "css":
+        fileType = "css";
+        break;
+      case "js":
+        fileType = "javascript";
+        break;
+      case "html":
+        fileType = "html";
+        break;
+      case "ts":
+        fileType = "typescript";
+        break;
+      default:
+        break;
     }
+  }
+  return fileType;
+}
 
-    const monacoEditorOptions = {
-      automaticLayout: true,
-      lineNumbers: "on",
-      // try "same", "indent" or "none"
-      wrappingIndent: "indent",
-      // Set this to false to not auto word wrap minified files
-      wordWrapMinified: true,
-      value: "",
-    };
+const monacoEditorOptions = {
+  automaticLayout: true,
+  lineNumbers: "on",
+  // try "same", "indent" or "none"
+  wrappingIndent: "indent",
+  // Set this to false to not auto word wrap minified files
+  wordWrapMinified: true,
+  value: "",
+};
 
-    const saveFile = () => {
-      if (props.itemDialog?.path && canSave.value) {
-        console.log("saving", code.value);
-        fileSystemStore.updateFile({
-          path: props.itemDialog?.path,
-          content: utf8ToB64(code.value),
-        } as PathAndContent);
-      }
-    };
+const saveFile = () => {
+  if (props.itemDialog?.path && canSave.value) {
+    console.log("saving", code.value);
+    fileSystemStore.updateFile({
+      path: props.itemDialog?.path,
+      content: utf8ToB64(code.value),
+    } as PathAndContent);
+  }
+};
 
-    const onChange = (newCode: string) => {
-      code.value = newCode;
-    };
+const onChange = (newCode: string) => {
+  code.value = newCode;
+};
 
-    const fileType = getFileTypeFromExtension();
+const fileType = getFileTypeFromExtension();
 
-    onBeforeMount(async () => {
-      if (props.itemDialog?.path) {
-        let codeBase64 = await readFile(props.itemDialog?.path);
-        const codeToShow = b64ToText(codeBase64, true);
-        fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];
-        code.value = codeToShow;
-        savedCode.value = codeToShow;
-      }
-    });
-
-    return { monacoEditorOptions, fileType, code, canSave, fileLanguage, saveFile, onChange };
-  },
+onBeforeMount(async () => {
+  if (props.itemDialog?.path) {
+    let codeBase64 = await readFile(props.itemDialog?.path);
+    const codeToShow = b64ToText(codeBase64, true);
+    fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];
+    code.value = codeToShow;
+    savedCode.value = codeToShow;
+  }
 });
 </script>
 

@@ -30,7 +30,7 @@ const audioSource = ref();
 
 watch(
   () => props.itemDialog?.isCollapsed,
-  async function (newValue: any, oldValue: any) {
+  async function (newValue: boolean | undefined, oldValue: boolean | undefined) {
     if (newValue) {
       //SET DYNAMIC ISLAND
       const dynamicIslandItem: DynamicIslandAudioItem = {
