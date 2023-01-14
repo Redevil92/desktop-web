@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="to ? `#${to}` : 'body'">
+  <Teleport :to="to ? `#${to}` : '#app'">
     <div class="dialog-container">
       <div class="dialog" :class="{ 'darker-dialog': darker, padding: !noPadding }">
         <slot></slot>
@@ -8,16 +8,8 @@
   </Teleport>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: { darker: Boolean, to: String, noPadding: Boolean },
-  components: {},
-  setup() {
-    return {};
-  },
-});
+<script lang="ts" setup>
+const props = defineProps({ darker: Boolean, to: String, noPadding: Boolean });
 </script>
 <style scoped>
 .dialog-container {
