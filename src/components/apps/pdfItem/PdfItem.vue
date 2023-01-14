@@ -7,7 +7,6 @@
   />
 
   <div id="pdfItem" :style="`height: ${height - 14}px; width: calc(100% -4px);`">
-    {{ page }}
     <PdfControls
       :page="page"
       :pageCount="pageCount"

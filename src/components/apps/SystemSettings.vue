@@ -31,44 +31,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { computed, defineAsyncComponent, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 
-export default defineComponent({
-  props: {
-    itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
-  },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const showSelectedSettingComponent = ref(false);
-
-    const settingAsyncComponent = ref({} as any);
-
-    const settingsComponentHeight = computed(() => {
-      return (props.itemDialog?.dimension.height || 200) - 180;
-    });
-
-    const loadAndSetSettingComponent = (componentName: string) => {
-      showSelectedSettingComponent.value = true;
-
-      settingAsyncComponent.value = defineAsyncComponent({
-        loader: () => import("@/components/apps/systemSettings/" + componentName),
-        loadingComponent: LoadingComponent,
-        delay: 200,
-        errorComponent: ErrorComponent,
-        timeout: 3000,
-      });
-    };
-
-    return { showSelectedSettingComponent, settingAsyncComponent, loadAndSetSettingComponent, settingsComponentHeight };
-  },
+const props = defineProps({
+  itemDialog: Object as PropType<ItemDialog>,
+  height: { type: Number, required: true },
 });
+
+const showSelectedSettingComponent = ref(false);
+
+const settingAsyncComponent = ref();
+
+const settingsComponentHeight = computed(() => {
+  return (props.itemDialog?.dimension.height || 200) - 180;
+});
+
+const loadAndSetSettingComponent = (componentName: string) => {
+  showSelectedSettingComponent.value = true;
+
+  settingAsyncComponent.value = defineAsyncComponent({
+    loader: () => import("@/components/apps/systemSettings/" + componentName),
+    loadingComponent: LoadingComponent,
+    delay: 200,
+    errorComponent: ErrorComponent,
+    timeout: 3000,
+  });
+};
 </script>
 
 <style scoped>
