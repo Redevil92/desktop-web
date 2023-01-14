@@ -35,95 +35,75 @@
   />
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineComponent, IframeHTMLAttributes, PropType, ref } from "vue";
+import { computed, IframeHTMLAttributes, PropType, ref } from "vue";
 
 import BaseInput from "@/components/shared/BaseInput.vue";
 import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
-export default defineComponent({
-  props: {
-    itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
-  },
-  emits: [],
-  components: { BaseInput, IFrameFocuser },
-  setup(props, _) {
-    const navigationBarHeight = ref(40);
-    const browserUrl = ref("https://www.google.com/webhp?igu=1");
-    const inputUrl = ref(browserUrl.value);
-    const iFrameRef = ref<IframeHTMLAttributes>();
-    const position = ref(0);
-    const history = ref([browserUrl.value]);
-    const shortCuts = [
-      { url: "https://www.google.com/webhp?igu=1", icon: "mdi-google" },
-      { url: "https://en.wikipedia.org/wiki/Main_Page", icon: "mdi-wikipedia" },
-      { url: "https://www.google.com/intl/it/gmail/about/", icon: "mdi-gmail" },
-    ];
-
-    const fileSystemStore = useFileSystemStore();
-
-    const canGoBack = computed(() => {
-      return position.value > 0;
-    });
-
-    const canGoForward = computed(() => {
-      return position.value < history.value.length - 1;
-    });
-
-    // const favicon = ref<HTMLImageElement>(); // TODO, for the future
-
-    const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        setNewUrl((event.target as any).value);
-      }
-    };
-
-    const blurHandler = () => {
-      inputUrl.value = browserUrl.value;
-    };
-
-    const refreshPage = () => {
-      if (iFrameRef.value) {
-        iFrameRef.value.src = browserUrl.value;
-      }
-    };
-
-    const changeHistory = (step: number) => {
-      position.value += step;
-      browserUrl.value = history.value[position.value];
-      inputUrl.value = history.value[position.value];
-    };
-
-    const setNewUrl = (newUrl: string) => {
-      browserUrl.value = newUrl;
-      inputUrl.value = newUrl;
-
-      if (newUrl !== history.value[history.value.length]) {
-        history.value = [...history.value.slice(0, position.value + 1), newUrl];
-        position.value += 1;
-      }
-    };
-
-    return {
-      navigationBarHeight,
-      iFrameRef,
-      browserUrl,
-      inputUrl,
-      keyDownHandler,
-      blurHandler,
-      setNewUrl,
-      canGoBack,
-      canGoForward,
-      position,
-      refreshPage,
-      changeHistory,
-      shortCuts,
-    };
-  },
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
+  height: { type: Number, required: true },
 });
+
+const navigationBarHeight = ref(40);
+const browserUrl = ref("https://www.google.com/webhp?igu=1");
+const inputUrl = ref(browserUrl.value);
+const iFrameRef = ref<IframeHTMLAttributes>();
+const position = ref(0);
+const history = ref([browserUrl.value]);
+const shortCuts = [
+  { url: "https://www.google.com/webhp?igu=1", icon: "mdi-google" },
+  { url: "https://en.wikipedia.org/wiki/Main_Page", icon: "mdi-wikipedia" },
+  { url: "https://www.google.com/intl/it/gmail/about/", icon: "mdi-gmail" },
+];
+
+const fileSystemStore = useFileSystemStore();
+
+const canGoBack = computed(() => {
+  return position.value > 0;
+});
+
+const canGoForward = computed(() => {
+  return position.value < history.value.length - 1;
+});
+
+// const favicon = ref<HTMLImageElement>(); // TODO, for the future
+
+const keyDownHandler = (event: KeyboardEvent) => {
+  if (event.key === "Enter" && event.target) {
+    console.log("AHHHH", event.target);
+    setNewUrl((event.target as HTMLInputElement).value);
+  }
+};
+
+const blurHandler = () => {
+  inputUrl.value = browserUrl.value;
+};
+
+const refreshPage = () => {
+  if (iFrameRef.value) {
+    iFrameRef.value.src = browserUrl.value;
+  }
+};
+
+const changeHistory = (step: number) => {
+  position.value += step;
+  browserUrl.value = history.value[position.value];
+  inputUrl.value = history.value[position.value];
+};
+
+const setNewUrl = (newUrl: string) => {
+  browserUrl.value = newUrl;
+  inputUrl.value = newUrl;
+
+  if (newUrl !== history.value[history.value.length]) {
+    history.value = [...history.value.slice(0, position.value + 1), newUrl];
+    position.value += 1;
+  }
+};
 </script>
 
 <style scoped>

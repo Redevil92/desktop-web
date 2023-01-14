@@ -47,7 +47,7 @@ import BaseRadioButtons from "@/components/shared/BaseRadioButtons.vue";
 export default defineComponent({
   props: {
     show: Boolean,
-    pdfRef: Object,
+    pdfRef: { type: Object as PropType<HTMLElement | null> },
   },
   components: { BaseButton, BaseInput, BaseDialog, BaseRadioButtons },
   emits: ["close"],
@@ -61,7 +61,9 @@ export default defineComponent({
       if (selectedPrintOption.value === "All the pages") {
         // (props.pdfRef as any).pageNums = Array.from(Array((props.pdfRef as any).pageCount).keys());
       }
-      (props.pdfRef as any).print(resolution.value, name.value);
+      if (props.pdfRef) {
+        (props.pdfRef as any).print(resolution.value, name.value);
+      }
     };
 
     const onSelectPrintOptionHandler = (selection: string) => {
@@ -73,12 +75,14 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      if ((props.pdfRef as any).pageNums.length === (props.pdfRef as any).pageCount) {
-        printOptions.value = ["All the pages"];
-        selectedPrintOption.value = "All the pages";
-      } else {
-        printOptions.value = ["Current page"];
-        selectedPrintOption.value = "Current page";
+      if (props.pdfRef) {
+        if ((props.pdfRef as any).pageNums.length === (props.pdfRef as any).pageCount) {
+          printOptions.value = ["All the pages"];
+          selectedPrintOption.value = "All the pages";
+        } else {
+          printOptions.value = ["Current page"];
+          selectedPrintOption.value = "Current page";
+        }
       }
     });
 

@@ -99,7 +99,6 @@ export default defineComponent({
 
     const updateDate = () => {
       const newDate = new Date(Date.now());
-      console.log(newDate, dateFormat.value, newDate.getDay());
       currentDate.value = formatDate(newDate, dateFormat.value);
       currentTime.value = formatTimeFromDate(newDate, timeFormat.value);
     };

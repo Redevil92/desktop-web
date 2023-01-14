@@ -211,7 +211,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: "pdf.svg",
     title: "PDF",
-    application: "PdfItem",
+    application: "pdfItem/PdfItem",
     canOpenWithoutFile: false, // TODO: implement this functionality
   },
   mp3: audioType,
