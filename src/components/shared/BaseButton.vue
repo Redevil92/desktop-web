@@ -19,7 +19,7 @@ export default defineComponent({
   components: {},
   emits: ["click"],
   setup(_, context) {
-    const clickHandler = (event: any) => {
+    const clickHandler = (event: MouseEvent) => {
       context.emit("click", event);
     };
     return { clickHandler };
