@@ -1,7 +1,7 @@
 <template>
-  <div :style="` width: calc(100% -4px); `">
+  <div :style="` width: calc(100% -4px); height:${height - 5}px`">
     <FolderItemsList
-      :height="height - 4"
+      :height="height - 10"
       :itemsList="items"
       :canRename="false"
       :isFocused="itemDialog?.isFocused"
@@ -13,19 +13,14 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeMount, onDeactivated, onMounted, PropType, ref } from "vue";
-
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
-
 import ItemDialog from "@/models/ItemDialog";
-import * as fflate from "fflate";
-import { getStat, isDir, readFile } from "@/context/fileSystemController";
-import useBase64Handler from "@/hooks/useBase64Handler";
+import { isDir, readFile } from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import PathAndContent from "@/models/PathAndContent";
-import { TEMP_PATH } from "@/constants";
+
 import DesktopItem from "@/models/DesktopItem";
-import { getFileExtensionFromName, MIME_TYPES } from "@/context/fileSystemUtils";
 import ActionMenu, { ActionItem } from "@/models/ActionMenu";
+import useCompression from "@/hooks/useCompression";
 
 export default defineComponent({
   props: {
@@ -36,23 +31,18 @@ export default defineComponent({
   emits: [],
   setup(props, _) {
     const fileSystemStore = useFileSystemStore();
-    const { removeDataUri, uint8ArrayToBase64 } = useBase64Handler();
+    const { decompressFile, getContentsFromDecompressedFile } = useCompression();
     const items = ref<string[]>([]);
 
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         let compressed = await readFile(props.itemDialog?.path);
-        let buf = Buffer.from(removeDataUri(compressed), "base64");
-        const decompressedFiles = fflate.unzipSync(buf);
+        const decompressedFiles = decompressFile(compressed);
 
-        const decompressedFilesName = Object.keys(decompressedFiles);
-        decompressedFilesName.forEach(async (fileName) => {
-          const mimeType = MIME_TYPES[getFileExtensionFromName(fileName)];
-          const base64File = `data:${mimeType};base64,${uint8ArrayToBase64(decompressedFiles[fileName])}`;
-          const filePath = `${TEMP_PATH}/${fileName}`;
-          const pathAndContent: PathAndContent = { path: filePath, content: base64File };
-          await fileSystemStore.createFile(pathAndContent);
-          items.value.push(filePath);
+        const files = getContentsFromDecompressedFile(decompressedFiles);
+        files.forEach(async (file) => {
+          await fileSystemStore.createFile(file);
+          items.value.push(file.path);
         });
       }
     });
