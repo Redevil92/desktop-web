@@ -8,23 +8,13 @@
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+const props = defineProps({ small: Boolean, neutralColor: Boolean });
+const emit = defineEmits(["click"]);
 
-export default defineComponent({
-  props: {
-    small: Boolean,
-    neutralColor: Boolean,
-  },
-  components: {},
-  emits: ["click"],
-  setup(_, context) {
-    const clickHandler = (event: MouseEvent) => {
-      context.emit("click", event);
-    };
-    return { clickHandler };
-  },
-});
+const clickHandler = (event: MouseEvent) => {
+  emit("click", event);
+};
 </script>
 <style scoped>
 .base-button {
