@@ -1,7 +1,7 @@
 // Add application to open
 // Have just one action in the store to open
 
-import Dimension from "./Dimension";
+import { FileType } from "./FileType";
 
 const imageType: FileType = {
   background: "#222",
@@ -196,6 +196,7 @@ const fileTypesConfiguration: FileTypes = {
     title: "Zip",
     application: "compressionItem/CompressionItem",
     canOpenWithoutFile: false,
+    additionalActions: [],
   },
   pdf: {
     allowResizing: true,
@@ -279,16 +280,3 @@ const fileTypesConfiguration: FileTypes = {
 };
 
 export default fileTypesConfiguration;
-
-export interface FileType {
-  allowResizing: boolean;
-  background: string;
-  defaultSize: Dimension;
-  minSize: Dimension;
-  icon: string;
-  title: string;
-  singleton: boolean;
-  application: string;
-  canOpenWithoutFile: boolean;
-  canRepeatInAppList?: boolean;
-}
