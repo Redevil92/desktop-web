@@ -167,6 +167,9 @@ export default defineComponent({
       const pointerEvent = event as PointerEvent;
       selectFile(item);
 
+      // TODO: based on the type of the element add new custom actions
+      // I should add the custom actions in filesType
+
       fileSystemStore.setActionMenu({
         show: true,
         paths: fileSystemStore.getSelectedDesktopItemsPath,
