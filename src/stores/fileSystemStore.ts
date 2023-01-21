@@ -10,10 +10,8 @@ import {
   renameFile,
 } from "@/context/fileSystemController";
 import {
-  generateUniqueName,
   getFileExtensionFromName,
   getFileNameFromPath,
-  getFileNameWithoutExtension,
   getNewItemDialogPosition,
   getSourcePathFromFilePath,
 } from "@/context/fileSystemUtils";
@@ -268,25 +266,16 @@ export const useFileSystemStore = defineStore("fileSystem", {
       await createFile(pathAndContent.path, pathAndContent.content);
     },
     async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true) {
-      console.log("HHH", pathAndContent);
-      let filePath = pathAndContent.path;
-      if (!overwriteIfSameName) {
-        const destinationPathFileList = await getFiles(getSourcePathFromFilePath(pathAndContent.path), true);
-
-        const uniqueFilePath = generateUniqueName(getFileNameWithoutExtension(filePath), destinationPathFileList);
-        filePath = uniqueFilePath + "." + getFileExtensionFromName(filePath);
-      }
-
-      await createFile(filePath, pathAndContent.content);
+      await createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
     },
     async deleteFileSystemItem(path: string) {
       await deleteFileSystemItem(path);
     },
     async createFolder(path: string) {
-      const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+      // const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
 
-      const uniqueFilePath = generateUniqueName(path, destinationPathFileList);
-      await createDirectory(uniqueFilePath);
+      // const uniqueFilePath = generateUniqueName(path, destinationPathFileList);
+      await createDirectory(path, false, false);
     },
 
     async renameFile(newFilePath: string, oldFilePath: string) {

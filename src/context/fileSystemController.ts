@@ -8,19 +8,37 @@ import {
   getSourcePathFromFilePath,
 } from "./fileSystemUtils";
 
-export const createDirectory = (path: string, overwrite = false): Promise<any> => {
+export const createDirectory = async (path: string, overwrite = false, overwriteIfSameName = false): Promise<any> => {
   const fs = (window as any).fs;
+  let uniquePath = path;
+  if (!overwriteIfSameName) {
+    const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+    uniquePath = generateUniqueName(path, destinationPathFileList);
+  }
 
   return new Promise((resolve, reject) => {
-    fs.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error: any) => (error ? reject(error) : resolve(true)));
+    fs.mkdir(uniquePath, { flag: overwrite ? "w" : "wx" }, (error: any) => (error ? reject(error) : resolve(true)));
   });
 };
 
-export const createFile = (path: string, text = "", encoding = "utf8"): Promise<any> => {
+export const createFile = async (
+  path: string,
+  text = "",
+  encoding = "utf8",
+  overwriteIfSameName = true
+): Promise<any> => {
   const fs = (window as any).fs;
 
+  let uniqueFilePath = path;
+  if (!overwriteIfSameName) {
+    const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+
+    uniqueFilePath = generateUniqueName(getFileNameWithoutExtension(path), destinationPathFileList);
+    uniqueFilePath = uniqueFilePath + "." + getFileExtensionFromName(path);
+  }
+
   return new Promise((resolve, reject) => {
-    fs.writeFile(path, text, encoding, (error: any) => {
+    fs.writeFile(uniqueFilePath, text, encoding, (error: any) => {
       error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
     });
   });
