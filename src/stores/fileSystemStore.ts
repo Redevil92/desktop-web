@@ -9,7 +9,14 @@ import {
   moveFiles,
   renameFile,
 } from "@/context/fileSystemController";
-import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
+import {
+  generateUniqueName,
+  getFileExtensionFromName,
+  getFileNameFromPath,
+  getFileNameWithoutExtension,
+  getNewItemDialogPosition,
+  getSourcePathFromFilePath,
+} from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
 import ActionMenu from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
@@ -62,7 +69,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
   },
   actions: {
-    async createItemDialog(itemDialog: DesktopItem) {
+    async createItemDialog(itemDialog: DesktopItem, additionalOptions?: any) {
       // if path already opened dont create a new one but
       const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
       if (index !== -1) {
@@ -118,6 +125,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         applicationToOpen,
         filesPath,
         name,
+        additionalOptions,
       } as ItemDialog;
 
       this.itemsDialog.push(newItemDialog);
@@ -259,14 +267,26 @@ export const useFileSystemStore = defineStore("fileSystem", {
     async updateFile(pathAndContent: PathAndContent) {
       await createFile(pathAndContent.path, pathAndContent.content);
     },
-    async createFile(pathAndContent: PathAndContent) {
-      await createFile(pathAndContent.path, pathAndContent.content);
+    async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true) {
+      console.log("HHH", pathAndContent);
+      let filePath = pathAndContent.path;
+      if (!overwriteIfSameName) {
+        const destinationPathFileList = await getFiles(getSourcePathFromFilePath(pathAndContent.path), true);
+
+        const uniqueFilePath = generateUniqueName(getFileNameWithoutExtension(filePath), destinationPathFileList);
+        filePath = uniqueFilePath + "." + getFileExtensionFromName(filePath);
+      }
+
+      await createFile(filePath, pathAndContent.content);
     },
     async deleteFileSystemItem(path: string) {
       await deleteFileSystemItem(path);
     },
     async createFolder(path: string) {
-      await createDirectory(path);
+      const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+
+      const uniqueFilePath = generateUniqueName(path, destinationPathFileList);
+      await createDirectory(uniqueFilePath);
     },
 
     async renameFile(newFilePath: string, oldFilePath: string) {

@@ -1,6 +1,11 @@
 // Add application to open
 // Have just one action in the store to open
 
+import {
+  compressedFileActions,
+  extractFilesInFolder,
+  extractHere,
+} from "@/components/apps/compressedFileItem/compressedFileActions";
 import { FileType } from "./FileType";
 
 const imageType: FileType = {
@@ -194,9 +199,9 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: "zip.svg",
     title: "Zip",
-    application: "compressionItem/CompressionItem",
+    application: "compressedFileItem/CompressedFileItem",
     canOpenWithoutFile: false,
-    additionalActions: [],
+    additionalActions: [extractFilesInFolder, extractHere],
   },
   pdf: {
     allowResizing: true,

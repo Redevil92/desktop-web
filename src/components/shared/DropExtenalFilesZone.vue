@@ -11,70 +11,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { getFiles } from "@/context/fileSystemController";
-import { generateUniqueName, getFileExtensionFromName, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
+<script lang="ts" setup>
 import PathAndContent from "@/models/PathAndContent";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 
-export default defineComponent({
-  props: {
-    dropPath: String,
-  },
-  components: {},
-
-  setup(props, context) {
-    const fileSystemStore = useFileSystemStore();
-
-    let active = ref(false);
-
-    function setActive() {
-      active.value = true;
-    }
-    function setInactive() {
-      active.value = false;
-    }
-
-    function onDrop(event: any) {
-      setInactive();
-      filesDroppedHandler([...event.dataTransfer.files]);
-    }
-
-    const filesDroppedHandler = (files: any) => {
-      if (props.dropPath) {
-        files.forEach((file: any) => {
-          const reader = new FileReader();
-          reader.onload = async function (e) {
-            const dropPathFiles = await getFiles(props.dropPath || "", true);
-
-            // Problem in dropping JPEG files, this is a momentanery fix
-            // TODO: figure it out why it complains with jpeg (hint, the problem could be related to the icon used in the desktop and in the folder header)
-            const uniquePath =
-              generateUniqueName(getFileNameWithoutExtension(props.dropPath + "/" + file.name), dropPathFiles) +
-              "." +
-              getFileExtensionFromName(file.name).replace("jpeg", "jpg");
-
-            await fileSystemStore.createFile({
-              path: uniquePath,
-              content: reader.result?.toString(),
-            } as PathAndContent);
-
-            refreshFiles();
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    };
-
-    const refreshFiles = () => {
-      fileSystemStore.refreshAllItemDialogFiles();
-      fileSystemStore.fetchDesktopItems();
-    };
-
-    return { onDrop, active, setActive, setInactive };
-  },
+const props = defineProps({
+  dropPath: String,
 });
+
+const fileSystemStore = useFileSystemStore();
+
+let active = ref(false);
+
+function setActive() {
+  active.value = true;
+}
+function setInactive() {
+  active.value = false;
+}
+
+function onDrop(event: any) {
+  setInactive();
+  filesDroppedHandler([...event.dataTransfer.files]);
+}
+
+const filesDroppedHandler = (files: any) => {
+  if (props.dropPath) {
+    files.forEach((file: any) => {
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        // Problem in dropping JPEG files, this is a momentanery fix
+        // TODO: figure it out why it complains with jpeg (hint, the problem could be related to the icon used in the desktop and in the folder header)
+
+        await fileSystemStore.createFile(
+          {
+            path: props.dropPath + "/" + file.name,
+            content: reader.result?.toString(),
+          } as PathAndContent,
+          false
+        );
+
+        refreshFiles();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+};
+
+const refreshFiles = () => {
+  fileSystemStore.refreshAllItemDialogFiles();
+  fileSystemStore.fetchDesktopItems();
+};
 </script>
 
 <style scoped></style>

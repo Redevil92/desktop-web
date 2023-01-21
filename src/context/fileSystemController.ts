@@ -44,7 +44,6 @@ export const renameFile = (newFilePath: string, oldFilePath: string): Promise<an
 
 export const getFiles = async (path: string, fullPath = false): Promise<string[]> => {
   const fs = (window as any).fs;
-
   const filesPromise: string[] = await new Promise((resolve, reject) => {
     fs.readdir(path, (error: any, res: string[]) => (error ? reject(error) : resolve(res)));
   });
@@ -139,6 +138,7 @@ const copyFolder = async (filePath: string, destinationPath: string) => {
 const copyFile = async (filePath: string, destinationPath: string) => {
   const fileData = await readFile(filePath);
   const filesName = await getFiles(destinationPath, true);
+
   const nameToCheck = getFileNameWithoutExtension(destinationPath + "/" + getFileNameFromPath(filePath));
   const extension = getFileExtensionFromName(filePath);
   const uniqueFilePath = generateUniqueName(nameToCheck, filesName) + `.${extension}`;
@@ -158,7 +158,6 @@ export const copyFileSystemItem = async (filePath: string, destinationPath: stri
 
 export const moveFiles = async (filesToMove: string[], destinationPath: string, keepOriginal = false) => {
   for (const filePath of filesToMove) {
-    console.log(getSourcePathFromFilePath(filePath), destinationPath);
     if (getSourcePathFromFilePath(filePath) === destinationPath) {
       break;
     }

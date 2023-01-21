@@ -167,24 +167,35 @@ export default defineComponent({
       const pointerEvent = event as PointerEvent;
       selectFile(item);
 
+      let desktopFileActions = [
+        ...(await getEditActions(fileSystemStore.getSelectedDesktopItemsPath)),
+        {
+          materialIcon: "mdi-open-in-new",
+          iconOnly: false,
+          groupName: "open",
+          actionName: "Open",
+          callback: openFileItem,
+          disabled: false,
+        },
+      ];
+
       // TODO: based on the type of the element add new custom actions
       // I should add the custom actions in filesType
+      const itemExtension = getFileExtensionFromName(item.path);
+      const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+
+      if (fileTypeConfiguration?.additionalActions) {
+        console.log(fileTypeConfiguration.additionalActions.map((action) => action(item.path)));
+        desktopFileActions = desktopFileActions.concat(
+          fileTypeConfiguration.additionalActions.map((action) => action(item.path))
+        );
+      }
 
       fileSystemStore.setActionMenu({
         show: true,
         paths: fileSystemStore.getSelectedDesktopItemsPath,
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        customLayout: [
-          ...(await getEditActions(fileSystemStore.getSelectedDesktopItemsPath)),
-          {
-            materialIcon: "mdi-open-in-new",
-            iconOnly: false,
-            groupName: "open",
-            actionName: "Open",
-            callback: openFileItem,
-            disabled: false,
-          },
-        ],
+        customLayout: desktopFileActions,
       });
     };
 

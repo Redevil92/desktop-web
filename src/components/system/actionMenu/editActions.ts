@@ -1,5 +1,4 @@
-import { getFiles, isDir } from "@/context/fileSystemController";
-import { generateUniqueName } from "@/context/fileSystemUtils";
+import { isDir } from "@/context/fileSystemController";
 import { ActionItem } from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
@@ -97,13 +96,13 @@ export const createNewFile = (destinationPath: string, disabled = false, iconOnl
     horizontalGroup: false,
     actionName: "New file",
     callback: async () => {
-      const currentFolderFiles: string[] = await getFiles(destinationPath, true);
-
-      const newUniquePath = generateUniqueName(destinationPath + "/" + "new file", currentFolderFiles);
-      await fileSystemStore.createFile({
-        path: newUniquePath + ".txt",
-        content: "",
-      });
+      await fileSystemStore.createFile(
+        {
+          path: destinationPath + "/" + "new file.txt",
+          content: "",
+        },
+        false
+      );
       refreshFiles();
     },
     disabled,
@@ -119,10 +118,7 @@ export const createNewFolder = (destinationPath: string, disabled = false, iconO
     horizontalGroup: false,
     actionName: "New folder",
     callback: async () => {
-      const currentFolderFiles: string[] = await getFiles(destinationPath, true);
-
-      const newUniquePath = generateUniqueName(destinationPath + "/" + "new folder", currentFolderFiles);
-      await fileSystemStore.createFolder(newUniquePath);
+      await fileSystemStore.createFolder(destinationPath + "/" + "new folder");
       refreshFiles();
     },
     disabled,

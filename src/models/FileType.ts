@@ -12,5 +12,5 @@ export interface FileType {
   application: string;
   canOpenWithoutFile: boolean;
   canRepeatInAppList?: boolean;
-  additionalActions?: ActionItem[];
+  additionalActions?: ((path: string) => ActionItem)[]; // actions to add in ActionMenu for the desktop file item
 }

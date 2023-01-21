@@ -3,6 +3,7 @@ import Dimension from "./Dimension";
 
 export default interface ItemDialog {
   path: string;
+  name: string;
   isFocused: boolean;
   zIndex: number;
   guid: string;
@@ -15,7 +16,7 @@ export default interface ItemDialog {
   isFullscreen?: boolean;
   minDimension?: Dimension;
   filesPath: string[];
-  name: string;
+  additionalOptions?: any;
 }
 
 // export interface FolderDialog extends ItemDialog {
