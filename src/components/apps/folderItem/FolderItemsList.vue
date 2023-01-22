@@ -61,7 +61,7 @@
               :style="`width:${fileFocusedWidth}px`"
             />
           </span>
-          <div v-else style="width: 320px" class="file-text one-line-ellipsis noselect">
+          <div v-else style="width: 290px" class="file-text one-line-ellipsis noselect">
             {{ getFileNameFromPath(item.path) }}
           </div>
         </div>
