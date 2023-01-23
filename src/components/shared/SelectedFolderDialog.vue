@@ -1,6 +1,6 @@
 <template>
   <div style="color: white">
-    <BaseDialog :noPadding="true">
+    <BaseDialog :to="to" :noPadding="true">
       <div class="flex">
         <FavouritesPanel
           :pathSelected="pathAndFilesList[0] ? pathAndFilesList[0].path : ''"
@@ -10,12 +10,12 @@
         <div class="right-panel">
           <div>
             <div class="input-list">
-              <div class="input">
+              <div v-if="showSaveAsInput" class="input">
                 <div class="label">Save as:</div>
                 <BaseInput placeholder="Save as" v-model="saveAs"> </BaseInput>
               </div>
               <div class="input">
-                <div class="label">Destination:</div>
+                <div class="label">{{ inputLabelText }}:</div>
                 <div class="selected-folder flex">
                   <img height="18" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
                   <p>{{ selectedFolderNameToShow }}</p>
@@ -28,6 +28,7 @@
                 v-for="(pathAndFiles, index) in pathAndFilesList"
                 :key="'path-files-' + pathAndFiles.path"
                 class="path-item"
+                :style="` height: ${showSaveAsInput ? 400 : 450}px;`"
               >
                 <FolderItemsList
                   :itemsList="mapToPathsList(pathAndFiles.files)"
@@ -42,7 +43,7 @@
           </div>
           <div class="buttons-container">
             <BaseButton neutralColor @click="closeDialog">Cancel</BaseButton
-            ><BaseButton class="save-button" @click="saveItem">Save</BaseButton>
+            ><BaseButton class="save-button" @click="folderSelected">{{ actionButtonText }}</BaseButton>
           </div>
         </div>
       </div>
@@ -50,8 +51,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
@@ -60,104 +61,80 @@ import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
 
 import { DESKTOP_PATH } from "@/constants";
 import { getFiles, isDir } from "@/context/fileSystemController";
-import { getFileNameFromPath, getFileNameWithoutExtension } from "@/context/fileSystemUtils";
-import { useSettingsStore } from "@/stores/settingsStore";
-import PathAndIcon from "@/models/PathAndIcon";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
-export default defineComponent({
-  props: { to: String },
-  components: { BaseInput, BaseDialog, BaseButton, FolderItemsList, FavouritesPanel },
-  emits: ["closeDialog", "saveItem"],
-  setup(_, context) {
-    const saveAs = ref("");
-    const pathAndFilesList = ref<PathAndFiles[]>([]);
-    const selectedFolder = ref(DESKTOP_PATH);
-    const settingsStore = useSettingsStore();
+const props = defineProps({
+  to: String,
+  showSaveAsInput: { type: Boolean, default: true },
+  inputLabelText: { type: String, default: "Destination" },
+  actionButtonText: { type: String, default: "Save" },
+});
+const emit = defineEmits(["closeDialog", "onFolderSelected"]);
 
-    const selectedFolderNameToShow = computed(() => {
-      return getFileNameFromPath(selectedFolder.value);
-    });
+const saveAs = ref("");
+const pathAndFilesList = ref<PathAndFiles[]>([]);
+const selectedFolder = ref(DESKTOP_PATH);
 
-    const favouritesPathList = computed(() => {
-      return settingsStore.favouritesPathListAndIcon as PathAndIcon[];
-    });
+const selectedFolderNameToShow = computed(() => {
+  return getFileNameFromPath(selectedFolder.value);
+});
 
-    const clickItemHandler = (filePath: string, index: number) => {
-      getListBeforeIndex(pathAndFilesList.value, index);
-      saveAs.value = getFileNameWithoutExtension(getFileNameFromPath(filePath));
-    };
+const clickItemFolderHandler = async (filePath: string, index: number) => {
+  setPathAndFileItem(filePath, index);
+  if (await isDir(filePath)) {
+    selectedFolder.value = filePath;
+  } else {
+    saveAs.value = getFileNameFromPath(filePath);
+  }
+};
 
-    const clickItemFolderHandler = async (filePath: string, index: number) => {
-      setPathAndFileItem(filePath, index);
-      if (await isDir(filePath)) {
-        selectedFolder.value = filePath;
-      } else {
-        saveAs.value = getFileNameFromPath(filePath);
-      }
-    };
+const mapToPathsList = (items: PathAndIsFolder[]) => {
+  return items.map((item) => item.path);
+};
 
-    const mapToPathsList = (items: PathAndIsFolder[]) => {
-      return items.map((item) => item.path);
-    };
+const getListBeforeIndex = (list: any[], index: number): PathAndFiles[] => {
+  if (index === -1) {
+    return [];
+  }
+  const tempList = [...list];
+  if (list.length > index) {
+    tempList.splice(index + 1);
+  }
 
-    const getListBeforeIndex = (list: any[], index: number): PathAndFiles[] => {
-      if (index === -1) {
-        return [];
-      }
-      const tempList = [...list];
-      if (list.length > index) {
-        tempList.splice(index + 1);
-      }
+  return tempList;
+};
 
-      return tempList;
-    };
+const setPathAndFileItem = async (path: string, index: number) => {
+  const pathAndFilesListToUpdate = getListBeforeIndex(pathAndFilesList.value, index);
 
-    const setPathAndFileItem = async (path: string, index: number) => {
-      const pathAndFilesListToUpdate = getListBeforeIndex(pathAndFilesList.value, index);
+  const filesPath = await getFiles(path, true);
+  const pathsAndIsolder = [];
 
-      const filesPath = await getFiles(path, true);
-      const pathsAndIsolder = [];
+  for (const path of filesPath) {
+    const getIsFolder = await isDir(path);
+    pathsAndIsolder.push({ path, isFolder: getIsFolder } as PathAndIsFolder);
+  }
 
-      for (const path of filesPath) {
-        const getIsFolder = await isDir(path);
-        pathsAndIsolder.push({ path, isFolder: getIsFolder } as PathAndIsFolder);
-      }
+  const pathAndFile = { path, files: pathsAndIsolder };
+  pathAndFilesListToUpdate.push(pathAndFile);
+  pathAndFilesList.value = pathAndFilesListToUpdate;
+};
 
-      const pathAndFile = { path, files: pathsAndIsolder };
-      pathAndFilesListToUpdate.push(pathAndFile);
-      pathAndFilesList.value = pathAndFilesListToUpdate;
-    };
+const closeDialog = () => {
+  emit("closeDialog");
+};
 
-    const closeDialog = () => {
-      context.emit("closeDialog");
-    };
+const folderSelected = () => {
+  if (saveAs.value && selectedFolder.value) {
+    const pathToEmit = selectedFolder.value + props.showSaveAsInput ? "/" + saveAs.value : "";
+    emit("onFolderSelected", selectedFolder.value + "/" + pathToEmit);
+  } else {
+    console.log("SHOW ERRO");
+  }
+};
 
-    const saveItem = () => {
-      if (saveAs.value && selectedFolder.value) {
-        context.emit("saveItem", selectedFolder.value + "/" + saveAs.value);
-      } else {
-        console.log("SHOW ERRO");
-      }
-    };
-
-    onMounted(async () => {
-      setPathAndFileItem(DESKTOP_PATH, 0);
-    });
-
-    return {
-      saveAs,
-      pathAndFilesList,
-      selectedFolder,
-      selectedFolderNameToShow,
-      favouritesPathList,
-      mapToPathsList,
-      clickItemHandler,
-      clickItemFolderHandler,
-      getFileNameFromPath,
-      closeDialog,
-      saveItem,
-    };
-  },
+onMounted(async () => {
+  setPathAndFileItem(DESKTOP_PATH, 0);
 });
 
 interface PathAndFiles {
@@ -191,7 +168,7 @@ interface PathAndIsFolder {
 
 .path-item {
   border-right: 2px solid rgb(67, 67, 67);
-  height: 400px;
+  /* height: 400px; */
   font-size: var(--medium-font-size);
   width: 340px;
   text-align: left;

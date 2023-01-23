@@ -1,10 +1,11 @@
 <template>
-  <SaveAsDialog
+  <SelectedFolderDialog
     v-if="showSaveAsDialog"
-    @saveItem="saveTextFileHandler"
+    @onFolderSelected="saveTextFileHandler"
     @closeDialog="showSaveAsDialog = false"
     to="textFileItem"
-  ></SaveAsDialog>
+    :showSaveAsInput="false"
+  ></SelectedFolderDialog>
   <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
   <div id="textFileItem" :style="`height: ${height - 5}px; width: calc(100% -4px);`">
     <editor
@@ -31,7 +32,7 @@
 import { onBeforeMount, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import SaveAsDialog from "@/components/shared/SaveAsDialog.vue";
+import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 
 import Editor from "@tinymce/tinymce-vue";
