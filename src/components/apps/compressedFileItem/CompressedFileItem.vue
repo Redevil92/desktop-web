@@ -1,6 +1,13 @@
 <template>
   <div :style="` width: calc(100% -4px); height:${height - 5}px`">
-    SHOULD SHOW:::: {{ showExtractHereDialog }}
+    <SelectedFolderDialog
+      v-if="showExtractHereDialog"
+      @onFolderSelected="decompressFileAndSave"
+      @closeDialog="showExtractHereDialog = false"
+      :showSaveAsInput="false"
+      actionButtonText="Extract"
+    ></SelectedFolderDialog>
+
     <FolderItemsList
       :height="height - 10"
       :itemsList="items"
@@ -14,7 +21,10 @@
 
 <script lang="ts" setup>
 import { onBeforeMount, onDeactivated, PropType, ref } from "vue";
+
+import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
+
 import ItemDialog from "@/models/ItemDialog";
 import { isDir, readFile } from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
@@ -35,16 +45,10 @@ const items = ref<string[]>([]);
 const showExtractHereDialog = ref<boolean>(false);
 
 onBeforeMount(async () => {
-  if (props.itemDialog?.path) {
-    let compressed = await readFile(props.itemDialog?.path);
-    const decompressedFiles = decompressFile(compressed);
-
-    const filesPath = await saveDecompressedFilesToDestination(decompressedFiles, TEMP_PATH);
-    items.value = filesPath;
-
-    if (props.itemDialog.additionalOptions?.showExtractHereDialog) {
-      showExtractHereDialog.value = props.itemDialog.additionalOptions?.showExtractHereDialog;
-    }
+  await decompressFileAndSave(TEMP_PATH);
+  console.log(props.itemDialog?.additionalOptions?.showExtractHereDialog);
+  if (props.itemDialog?.additionalOptions?.showExtractHereDialog) {
+    showExtractHereDialog.value = props.itemDialog.additionalOptions?.showExtractHereDialog;
   }
 });
 
@@ -65,6 +69,21 @@ const doubleClickHandler = async (filePath: string) => {
       isSelected: true,
     } as DesktopItem;
     await fileSystemStore.createItemDialog(newItemDialog);
+  }
+};
+
+const decompressFileAndSave = async (destinationFile: string) => {
+  if (props.itemDialog?.path) {
+    console.log("DEST FF", destinationFile);
+    let compressed = await readFile(props.itemDialog?.path);
+    const decompressedFiles = decompressFile(compressed);
+
+    const filesPath = await saveDecompressedFilesToDestination(decompressedFiles, destinationFile);
+    items.value = filesPath;
+
+    await fileSystemStore.refreshAllItemDialogFiles();
+    await fileSystemStore.fetchDesktopItems();
+    showExtractHereDialog.value = false;
   }
 };
 

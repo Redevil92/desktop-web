@@ -69,6 +69,7 @@ const props = defineProps({
   inputLabelText: { type: String, default: "Destination" },
   actionButtonText: { type: String, default: "Save" },
 });
+
 const emit = defineEmits(["closeDialog", "onFolderSelected"]);
 
 const saveAs = ref("");
@@ -125,9 +126,14 @@ const closeDialog = () => {
 };
 
 const folderSelected = () => {
-  if (saveAs.value && selectedFolder.value) {
-    const pathToEmit = selectedFolder.value + props.showSaveAsInput ? "/" + saveAs.value : "";
-    emit("onFolderSelected", selectedFolder.value + "/" + pathToEmit);
+  if (((props.showSaveAsInput && saveAs.value) || !props.showSaveAsInput) && selectedFolder.value) {
+    console.log("PATH TO EMIT", selectedFolder.value);
+    let pathToEmit = selectedFolder.value;
+    if (props.showSaveAsInput) {
+      pathToEmit += "/" + saveAs.value;
+    }
+
+    emit("onFolderSelected", pathToEmit);
   } else {
     console.log("SHOW ERRO");
   }
@@ -147,6 +153,7 @@ interface PathAndIsFolder {
   isFolder: boolean;
 }
 </script>
+
 <style scoped>
 .right-panel {
   text-align: left;

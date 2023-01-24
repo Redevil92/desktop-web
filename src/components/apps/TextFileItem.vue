@@ -4,7 +4,7 @@
     @onFolderSelected="saveTextFileHandler"
     @closeDialog="showSaveAsDialog = false"
     to="textFileItem"
-    :showSaveAsInput="false"
+    :showSaveAsInput="true"
   ></SelectedFolderDialog>
   <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
   <div id="textFileItem" :style="`height: ${height - 5}px; width: calc(100% -4px);`">
