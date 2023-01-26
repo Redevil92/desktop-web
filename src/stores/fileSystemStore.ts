@@ -72,6 +72,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
       if (index !== -1) {
         this.setFocusedItemDialog(this.itemsDialog[index]);
+        this.openMinimizedItemDialog(this.itemsDialog[index].guid);
         return;
       }
 
