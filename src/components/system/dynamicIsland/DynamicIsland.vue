@@ -22,8 +22,6 @@ import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 
 export default defineComponent({
-  props: {},
-  components: {},
   setup() {
     const dynamicIslandStore = useDynamicIslandStore();
 

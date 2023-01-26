@@ -17,8 +17,6 @@ import { useLayoutStore } from "@/stores/layoutStore";
 import { computed, defineComponent, watch } from "vue";
 
 export default defineComponent({
-  props: {},
-  components: {},
   setup() {
     const layoutStore = useLayoutStore();
 

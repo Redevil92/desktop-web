@@ -45,7 +45,6 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { formatDate, formatTimeFromDate } from "@/utils/dateAndTimeConversionUtils";
 
 export default defineComponent({
-  props: {},
   components: { TaskBarItem, StartMenu },
   setup() {
     const layoutStore = useLayoutStore();

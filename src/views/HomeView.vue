@@ -28,7 +28,12 @@ import ActionMenuModel from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/constants";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { createNewFile, createNewFolder, openDesktopSettingPage } from "@/components/system/actionMenu/editActions";
+import {
+  createNewFile,
+  createNewFolder,
+  openDesktopSettingPage,
+  pasteAction,
+} from "@/components/system/actionMenu/editActions";
 
 export default defineComponent({
   props: {},
@@ -36,7 +41,7 @@ export default defineComponent({
   setup() {
     const fileSystemStore = useFileSystemStore();
 
-    const rightClickHandler = (event: Event) => {
+    const rightClickHandler = async (event: Event) => {
       event.preventDefault();
 
       const pointerEvent = event as PointerEvent;
@@ -46,6 +51,7 @@ export default defineComponent({
         paths: [DESKTOP_PATH],
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         customLayout: [
+          await pasteAction(DESKTOP_PATH, true, false),
           createNewFile(DESKTOP_PATH, false, false),
           createNewFolder(DESKTOP_PATH, false, false),
           openDesktopSettingPage(false, false),
