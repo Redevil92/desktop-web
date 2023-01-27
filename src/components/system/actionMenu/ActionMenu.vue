@@ -51,6 +51,7 @@ const actionsByGroup = computed(() => {
       } else actions.set(action.groupName, [action]);
     });
   }
+  console.log(actions);
   return actions;
 });
 

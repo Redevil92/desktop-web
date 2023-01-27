@@ -14,11 +14,11 @@ export const getEditActions = async (paths: string[]) => {
   return editActions;
 };
 
-export const copyAction = (pathsToCopy: string[], disabled = false): ActionItem => {
+export const copyAction = (pathsToCopy: string[], disabled = false, iconOnly = true): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "copy.svg",
-    iconOnly: true,
+    iconOnly,
     groupName: "edit",
     horizontalGroup: true,
     actionName: "Copy",
@@ -29,11 +29,11 @@ export const copyAction = (pathsToCopy: string[], disabled = false): ActionItem 
   };
 };
 
-export const cutAction = (pathsToCut: string[], disabled = false): ActionItem => {
+export const cutAction = (pathsToCut: string[], disabled = false, iconOnly = true): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "cut.svg",
-    iconOnly: true,
+    iconOnly,
     groupName: "edit",
     horizontalGroup: true,
     actionName: "Cut",
@@ -62,18 +62,21 @@ export const pasteAction = async (
     horizontalGroup,
     actionName: "Paste",
     callback: async () => {
+      if (!canPaste || disabled) {
+        return;
+      }
       await fileSystemStore.pasteFiles(destinationPath);
       refreshFiles();
     },
-    disabled: disabled || !canPaste,
+    disabled: !canPaste || disabled,
   };
 };
 
-export const deleteAction = (pathsToDelete: string[], disabled = false): ActionItem => {
+export const deleteAction = (pathsToDelete: string[], disabled = false, iconOnly = true): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "trash.svg",
-    iconOnly: true,
+    iconOnly,
     groupName: "edit",
     horizontalGroup: true,
     actionName: "Delete",
