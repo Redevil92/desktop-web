@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onDeactivated } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { ActionItem } from "@/models/ActionMenu";
@@ -63,7 +63,7 @@ onMounted(() => {
   window.addEventListener("click", closeActionDialog);
 });
 
-onDeactivated(() => {
+onUnmounted(() => {
   window.removeEventListener("click", closeActionDialog);
 });
 </script>

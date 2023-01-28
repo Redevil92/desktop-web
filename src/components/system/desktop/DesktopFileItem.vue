@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onDeactivated, onMounted, PropType, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, PropType, ref, watch } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";
@@ -185,7 +185,6 @@ export default defineComponent({
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
 
       if (fileTypeConfiguration?.additionalActions) {
-        console.log(fileTypeConfiguration.additionalActions.map((action) => action(item.path)));
         desktopFileActions = desktopFileActions.concat(
           fileTypeConfiguration.additionalActions.map((action) => action(item.path))
         );
@@ -353,7 +352,7 @@ export default defineComponent({
       window.addEventListener("mousemove", checkMouseOver);
     });
 
-    onDeactivated(() => {
+    onUnmounted(() => {
       window.removeEventListener("mousemove", checkMouseOver);
     });
 

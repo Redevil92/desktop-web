@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onDeactivated, onMounted, PropType, ref, watch, watchEffect } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, watch, watchEffect } from "vue";
 
 import { getFileExtensionFromName, getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
@@ -230,7 +230,7 @@ export default defineComponent({
       await updateItemListWithProperties();
     });
 
-    onDeactivated(() => {
+    onUnmounted(() => {
       window.removeEventListener("keydown", keyDownHandler);
     });
 

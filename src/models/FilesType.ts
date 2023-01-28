@@ -5,7 +5,7 @@ import {
   compressedFileActions,
   extractFilesInFolder,
   extractHere,
-} from "@/components/apps/compressedFileItem/compressedFileActions";
+} from "@/components/system/actionMenu/compressedFileActions";
 import { FileType } from "./FileType";
 
 const imageType: FileType = {

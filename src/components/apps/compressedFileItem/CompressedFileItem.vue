@@ -20,13 +20,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, onDeactivated, PropType, ref } from "vue";
+import { onBeforeMount, onUnmounted, PropType, ref } from "vue";
 
 import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { isDir, readFile } from "@/context/fileSystemController";
+import { getFiles, isDir, readFile } from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
@@ -47,16 +47,17 @@ const showExtractHereDialog = ref<boolean>(false);
 
 onBeforeMount(async () => {
   await decompressFileAndSave(TEMP_PATH);
-  console.log(props.itemDialog?.additionalOptions?.showExtractHereDialog);
   if (props.itemDialog?.additionalOptions?.showExtractHereDialog) {
     showExtractHereDialog.value = props.itemDialog.additionalOptions?.showExtractHereDialog;
   }
 });
 
-onDeactivated(async () => {
-  items.value.forEach((filePath) => {
-    fileSystemStore.deleteFileSystemItem(filePath);
-  });
+onUnmounted(async () => {
+  console.log("deleting", items.value);
+  for (const filePath of items.value) {
+    console.log(3, "deleting", filePath);
+    await fileSystemStore.deleteFileSystemItem(filePath);
+  }
 });
 
 const doubleClickHandler = async (filePath: string) => {
@@ -75,12 +76,13 @@ const doubleClickHandler = async (filePath: string) => {
 
 const decompressFileAndSave = async (destinationFile: string) => {
   if (props.itemDialog?.path) {
-    console.log("DEST FF", destinationFile);
     let compressed = await readFile(props.itemDialog?.path);
+
     const decompressedFiles = decompressFile(compressed);
 
-    const filesPath = await saveDecompressedFilesToDestination(decompressedFiles, destinationFile);
-    items.value = filesPath;
+    const allCompressedFiles = await saveDecompressedFilesToDestination(decompressedFiles, destinationFile);
+    //items.value = await getFiles(destinationFile); // TODO: this would be nice, now we have all the items flat in the directory
+    items.value = allCompressedFiles;
 
     await fileSystemStore.refreshAllItemDialogFiles();
     await fileSystemStore.fetchDesktopItems();

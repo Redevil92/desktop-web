@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Coordinates from "@/models/Coordinates";
-import { defineComponent, onDeactivated, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, onUnmounted, ref, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -148,7 +148,7 @@ export default defineComponent({
       initEventHandlers();
     });
 
-    onDeactivated(() => {
+    onUnmounted(() => {
       removeEventHandlers();
     });
 

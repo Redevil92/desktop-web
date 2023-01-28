@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onDeactivated, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import AppItem from "@/components/system/startMenu/AppItem.vue";
 
@@ -138,7 +138,7 @@ export default defineComponent({
       window.addEventListener("click", closeStartMenu);
     });
 
-    onDeactivated(() => {
+    onUnmounted(() => {
       window.removeEventListener("click", closeStartMenu);
     });
 

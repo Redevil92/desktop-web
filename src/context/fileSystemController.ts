@@ -8,12 +8,28 @@ import {
   getSourcePathFromFilePath,
 } from "./fileSystemUtils";
 
+const ensureDirectoryExistence = async (filePath: string) => {
+  const dirname = getSourcePathFromFilePath(filePath);
+
+  if ((await existsFile(dirname)) || !dirname) {
+    return true;
+  }
+  console.log("creating dir", dirname);
+  await ensureDirectoryExistence(dirname);
+  await createDirectory(dirname);
+};
+
 export const createDirectory = async (path: string, overwrite = false, overwriteIfSameName = false): Promise<any> => {
   const fs = (window as any).fs;
+  await ensureDirectoryExistence(path);
   let uniquePath = path;
+
   if (!overwriteIfSameName) {
-    const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
-    uniquePath = generateUniqueName(path, destinationPathFileList);
+    const exists = await existsFile(path);
+    if (exists) {
+      const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+      uniquePath = generateUniqueName(path, destinationPathFileList);
+    }
   }
 
   return new Promise((resolve, reject) => {
@@ -28,13 +44,16 @@ export const createFile = async (
   overwriteIfSameName = true
 ): Promise<any> => {
   const fs = (window as any).fs;
+  await ensureDirectoryExistence(path);
 
   let uniqueFilePath = path;
   if (!overwriteIfSameName) {
-    const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
-
-    uniqueFilePath = generateUniqueName(getFileNameWithoutExtension(path), destinationPathFileList);
-    uniqueFilePath = uniqueFilePath + "." + getFileExtensionFromName(path);
+    const exists = await existsFile(path);
+    if (exists) {
+      const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
+      uniqueFilePath = generateUniqueName(getFileNameWithoutExtension(path), destinationPathFileList);
+      uniqueFilePath = uniqueFilePath + "." + getFileExtensionFromName(path);
+    }
   }
 
   return new Promise((resolve, reject) => {

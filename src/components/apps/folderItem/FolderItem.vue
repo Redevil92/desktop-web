@@ -66,7 +66,7 @@
 
 <script lang="ts" setup>
 import { isDir } from "@/context/fileSystemController";
-import { computed, onDeactivated, onMounted, PropType, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, PropType, ref, watch } from "vue";
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
@@ -228,7 +228,7 @@ onMounted(() => {
   window.addEventListener("mousemove", checkMouseOver);
 });
 
-onDeactivated(() => {
+onUnmounted(() => {
   window.removeEventListener("mousemove", checkMouseOver);
 });
 </script>
