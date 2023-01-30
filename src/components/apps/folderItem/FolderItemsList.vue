@@ -114,7 +114,6 @@ export default defineComponent({
     canChangeViewType: { type: Boolean, default: true },
     showProperties: { type: Boolean, default: false },
     height: { type: Number },
-    // viewType: String,
   },
   components: { FileIcon },
   emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem", "onItemMouseDown"],
