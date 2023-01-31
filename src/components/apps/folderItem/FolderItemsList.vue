@@ -121,7 +121,6 @@ export default defineComponent({
     const fileSystemStore = useFileSystemStore();
     const settingsStore = useSettingsStore();
 
-    // *** ITEM SELECTION AND CHANGE NAME
     const viewType = ref("list");
     const selectedItem = ref("");
     const isEditingSelectedValue = ref(false);
