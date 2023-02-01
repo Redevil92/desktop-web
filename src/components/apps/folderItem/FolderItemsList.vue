@@ -93,10 +93,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, watch, watchEffect } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, PropType, ref, watchEffect } from "vue";
 
-import { getFileExtensionFromName, getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { getStat } from "@/context/fileSystemController";
@@ -105,157 +105,130 @@ import { formatBytes } from "@/utils/byteConversionUtils";
 import { formatStringDate, formatTimeFromStringDate } from "@/utils/dateAndTimeConversionUtils";
 import { useSettingsStore } from "@/stores/settingsStore";
 
-export default defineComponent({
-  props: {
-    itemsList: { type: Array as PropType<string[]>, required: true },
-    isFocused: Boolean,
-    canRename: Boolean,
-    keyEventsActive: { type: Boolean, default: true },
-    canChangeViewType: { type: Boolean, default: true },
-    showProperties: { type: Boolean, default: false },
-    height: { type: Number },
-  },
-  components: { FileIcon },
-  emits: ["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem", "onItemMouseDown"],
-  setup(props, ctx) {
-    const fileSystemStore = useFileSystemStore();
-    const settingsStore = useSettingsStore();
+const props = defineProps({
+  itemsList: { type: Array as PropType<string[]>, required: true },
+  isFocused: Boolean,
+  canRename: Boolean,
+  keyEventsActive: { type: Boolean, default: true },
+  canChangeViewType: { type: Boolean, default: true },
+  showProperties: { type: Boolean, default: false },
+  height: { type: Number },
+});
 
-    const viewType = ref("list");
-    const selectedItem = ref("");
-    const isEditingSelectedValue = ref(false);
-    const fileNameToChange = ref("");
-    const fileNameInputRef = ref(null);
-    const fileNameToChangeSpanRef = ref(null);
-    const fileFocusedWidth = ref(200);
-    const itemsListWithProperties = ref<{ path: string; properties: FileStats | undefined }[]>([]);
+const emit = defineEmits(["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem", "onItemMouseDown"]);
 
-    const timeFormat = computed(() => {
-      return settingsStore.timeFormat;
+const fileSystemStore = useFileSystemStore();
+const settingsStore = useSettingsStore();
+
+const viewType = ref("list");
+const selectedItem = ref("");
+const isEditingSelectedValue = ref(false);
+const fileNameToChange = ref("");
+const fileNameInputRef = ref(null);
+const fileNameToChangeSpanRef = ref(null);
+const fileFocusedWidth = ref(200);
+const itemsListWithProperties = ref<{ path: string; properties: FileStats | undefined }[]>([]);
+
+const timeFormat = computed(() => {
+  return settingsStore.timeFormat;
+});
+
+const dateFormat = computed(() => {
+  return settingsStore.dateFormat;
+});
+
+const updateItemListWithProperties = async () => {
+  const itemWithProp = [];
+  for (const item of props.itemsList) {
+    const properties = props.showProperties ? ((await getStat(item)) as FileStats) : undefined;
+
+    itemWithProp.push({
+      path: item,
+      properties,
     });
+  }
+  itemsListWithProperties.value = itemWithProp;
+};
 
-    const dateFormat = computed(() => {
-      return settingsStore.dateFormat;
-    });
+watchEffect(async () => {
+  if (props.itemsList) {
+    await updateItemListWithProperties();
+  }
+});
 
-    const updateItemListWithProperties = async () => {
-      const itemWithProp = [];
-      for (const item of props.itemsList) {
-        const properties = props.showProperties ? ((await getStat(item)) as FileStats) : undefined;
+const isCutFile = (itemName: string) => {
+  const filesToCut = fileSystemStore.filePathsToCut;
+  if (filesToCut.includes(itemName)) {
+    return true;
+  }
+  return false;
+};
 
-        itemWithProp.push({
-          path: item,
-          properties,
-        });
+const itemClickHandler = async (filePath: string) => {
+  emit("onItemMouseDown", filePath);
+  if (filePath === selectedItem.value) {
+    if (!isEditingSelectedValue.value && props.canRename) {
+      fileNameToChange.value = getFileNameFromPath(filePath);
+      setTimeout(async () => {
+        isEditingSelectedValue.value = !isEditingSelectedValue.value;
+      }, 600);
+    }
+    return;
+  }
+  selectedItem.value = filePath;
+  isEditingSelectedValue.value = false;
+};
+
+const doubleClickHandler = async (filePath: string) => {
+  if (!isEditingSelectedValue.value) {
+    emit("onDoubleClick", filePath);
+  }
+};
+
+const rightClickHandler = (event: Event, filePath: string) => {
+  emit("onRightClick", { event, filePath });
+};
+
+const renameFileHandler = () => {
+  emit("renameFileHandler", {
+    newName: getSourcePathFromFilePath(selectedItem.value) + "/" + fileNameToChange.value,
+    oldName: selectedItem.value,
+  });
+};
+
+const deselectItem = () => {
+  selectedItem.value = "";
+  isEditingSelectedValue.value = false;
+};
+
+const keyDownHandler = (event: { code: string }) => {
+  if (props.isFocused && selectedItem.value && props.itemsList && props.keyEventsActive) {
+    if (event.code === "Delete" && selectedItem.value) {
+      emit("onTryDeleteItem", selectedItem.value);
+    } else if (event.code === "ArrowDown") {
+      const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
+      if (index !== -1 && props.itemsList.length > index + 1) {
+        selectedItem.value = props.itemsList[index + 1];
       }
-      itemsListWithProperties.value = itemWithProp;
-    };
-
-    watchEffect(async () => {
-      if (props.itemsList) {
-        await updateItemListWithProperties();
+    } else if (event.code === "ArrowUp") {
+      const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
+      if (index > 0) {
+        selectedItem.value = props.itemsList[index - 1];
       }
-    });
+    }
+  }
+};
 
-    const isCutFile = (itemName: string) => {
-      const filesToCut = fileSystemStore.filePathsToCut;
-      if (filesToCut.includes(itemName)) {
-        return true;
-      }
-      return false;
-    };
+onMounted(async () => {
+  if (props.keyEventsActive) {
+    window.addEventListener("keydown", keyDownHandler);
+  }
 
-    const itemClickHandler = async (filePath: string) => {
-      ctx.emit("onItemMouseDown", filePath);
-      if (filePath === selectedItem.value) {
-        if (!isEditingSelectedValue.value && props.canRename) {
-          fileNameToChange.value = getFileNameFromPath(filePath);
-          setTimeout(async () => {
-            isEditingSelectedValue.value = !isEditingSelectedValue.value;
-          }, 600);
-        }
-        return;
-      }
-      selectedItem.value = filePath;
-      isEditingSelectedValue.value = false;
-    };
+  await updateItemListWithProperties();
+});
 
-    const doubleClickHandler = async (filePath: string) => {
-      if (!isEditingSelectedValue.value) {
-        ctx.emit("onDoubleClick", filePath);
-      }
-    };
-
-    const rightClickHandler = (event: Event, filePath: string) => {
-      ctx.emit("onRightClick", { event, filePath });
-    };
-
-    const renameFileHandler = () => {
-      ctx.emit("renameFileHandler", {
-        newName: getSourcePathFromFilePath(selectedItem.value) + "/" + fileNameToChange.value,
-        oldName: selectedItem.value,
-      });
-    };
-
-    const deselectItem = () => {
-      selectedItem.value = "";
-      isEditingSelectedValue.value = false;
-    };
-
-    const keyDownHandler = (event: { code: string }) => {
-      if (props.isFocused && selectedItem.value && props.itemsList && props.keyEventsActive) {
-        if (event.code === "Delete" && selectedItem.value) {
-          ctx.emit("onTryDeleteItem", selectedItem.value);
-        } else if (event.code === "ArrowDown") {
-          const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
-          if (index !== -1 && props.itemsList.length > index + 1) {
-            selectedItem.value = props.itemsList[index + 1];
-          }
-        } else if (event.code === "ArrowUp") {
-          const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
-          if (index > 0) {
-            selectedItem.value = props.itemsList[index - 1];
-          }
-        }
-      }
-    };
-
-    onMounted(async () => {
-      if (props.keyEventsActive) {
-        window.addEventListener("keydown", keyDownHandler);
-      }
-
-      await updateItemListWithProperties();
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("keydown", keyDownHandler);
-    });
-
-    return {
-      getFileNameFromPath,
-      getFileExtensionFromName,
-      itemClickHandler,
-      doubleClickHandler,
-      rightClickHandler,
-      deselectItem,
-      isCutFile,
-      renameFileHandler,
-      formatBytes,
-      formatStringDate,
-      formatTimeFromStringDate,
-      viewType,
-      dateFormat,
-      timeFormat,
-      itemsListWithProperties,
-      selectedItem,
-      isEditingSelectedValue,
-      fileNameToChange,
-      fileNameInputRef,
-      fileNameToChangeSpanRef,
-      fileFocusedWidth,
-    };
-  },
+onUnmounted(() => {
+  window.removeEventListener("keydown", keyDownHandler);
 });
 </script>
 
