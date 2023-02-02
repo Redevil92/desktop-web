@@ -55,3 +55,15 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
 // create the other compression actions
 // add this actions to filesType in the field additionalActions (compression item)
 // add the additional actions to FolderItem.vue in openActionMenu function
+export const createZipFilr = (filePaths: string[], disabled = false, iconOnly = false): ActionItem => {
+  const fileSystemStore = useFileSystemStore();
+  return {
+    materialIcon: "mdi-folder-zip",
+    iconOnly,
+    groupName: "compression",
+    horizontalGroup: false,
+    actionName: "Create zip file",
+    callback: async () => {},
+    disabled,
+  };
+};
