@@ -6,7 +6,7 @@ import PathAndContent from "@/models/PathAndContent";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 export default function useCompression() {
-  const { removeDataUri, uint8ArrayToBase64 } = useBase64Handler();
+  const { removeDataUri, uint8ArrayToBase64, base64ToUint8Array } = useBase64Handler();
 
   const decompressFile = (compressedFile: string) => {
     const buf = Buffer.from(removeDataUri(compressedFile), "base64");
@@ -47,7 +47,17 @@ export default function useCompression() {
     return pathAndContentList.map((item) => item.path);
   };
 
+  const compressToZipFile = async (filesToZip: { fileName: string; contentBase64: string }[]) => {
+    const zippabble: fflate.Zippable = {};
+    filesToZip.forEach((file) => {
+      const uint8 = base64ToUint8Array(file.contentBase64);
+      zippabble[file.fileName] = uint8;
+    });
+    const zippedFile = await fflate.zipSync(zippabble);
+    return zippedFile;
+  };
+
   // const extractFiles = (compressedFile: string, destinationPath: string) => {};
 
-  return { decompressFile, getContentsFromDecompressedFile, saveDecompressedFilesToDestination };
+  return { decompressFile, getContentsFromDecompressedFile, saveDecompressedFilesToDestination, compressToZipFile };
 }

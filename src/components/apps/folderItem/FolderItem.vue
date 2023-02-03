@@ -78,12 +78,8 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
-import {
-  createNewFile,
-  createNewFolder,
-  getEditActions,
-  pasteAction,
-} from "@/components/system/actionMenu/editActions";
+import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/editActions";
+import { getFileActions } from "@/components/system/actionMenu/fileActions";
 
 const props = defineProps({ itemDialog: Object as PropType<ItemDialog>, height: { type: Number, required: true } });
 
@@ -128,7 +124,7 @@ const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, 
         await pasteAction(eventAndPath.filePath, false, false, false),
       ]
     : [
-        ...(await getEditActions([eventAndPath.filePath])),
+        ...(await getFileActions([eventAndPath.filePath])),
         {
           materialIcon: "mdi-open-in-new",
           iconOnly: false,

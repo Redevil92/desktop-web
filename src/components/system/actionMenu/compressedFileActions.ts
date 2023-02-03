@@ -1,5 +1,5 @@
 import { readFile } from "@/context/fileSystemController";
-import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
 import { ActionItem } from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
@@ -55,15 +55,25 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
 // create the other compression actions
 // add this actions to filesType in the field additionalActions (compression item)
 // add the additional actions to FolderItem.vue in openActionMenu function
-export const createZipFilr = (filePaths: string[], disabled = false, iconOnly = false): ActionItem => {
+export const compressToZipFileAction = (filePaths: string[], disabled = false, iconOnly = false): ActionItem => {
   const fileSystemStore = useFileSystemStore();
+  const { compressToZipFile } = useCompression();
+
   return {
     materialIcon: "mdi-folder-zip",
     iconOnly,
     groupName: "compression",
     horizontalGroup: false,
-    actionName: "Create zip file",
-    callback: async () => {},
+    actionName: "Comptess to ZIP file",
+    callback: async () => {
+      const filesToZip: { fileName: string; contentBase64: string }[] = [];
+      for (const path of filePaths) {
+        const fileContent = await readFile(path);
+        filesToZip.push({ fileName: path, contentBase64: fileContent });
+      }
+      const zippedFile = await compressToZipFile(filesToZip);
+      console.log("NEW ZIPPED FILE", zippedFile);
+    },
     disabled,
   };
 };

@@ -26,11 +26,24 @@ export default function useBase64Handler() {
     return window.btoa(binary);
   };
 
+  const base64ToUint8Array = (base64: string) => {
+    console.log(isBase64(base64));
+    const binaryString = window.atob(removeDataUri(base64));
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const uint8: Uint8Array = new Uint8Array(bytes.buffer);
+    return uint8;
+  };
+
   return {
     b64ToText,
     utf8ToB64,
     removeDataUri,
     isBase64,
     uint8ArrayToBase64,
+    base64ToUint8Array,
   };
 }
