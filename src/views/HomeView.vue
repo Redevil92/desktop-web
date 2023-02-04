@@ -6,7 +6,7 @@
       <DesktopWorkSpace />
     </div>
     <DynamicIsland />
-    <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${index}`">
+    <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${item.guid}`">
       <OpenedFileView v-show="!item.isCollapsed" :itemDialog="item" />
     </div>
     <SnackBar></SnackBar>
@@ -60,6 +60,7 @@ export default defineComponent({
     };
 
     const itemsDialog = computed(function () {
+      console.log(fileSystemStore.itemsDialog);
       return fileSystemStore.itemsDialog as ItemDialog[];
     });
 
