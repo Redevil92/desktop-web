@@ -9,7 +9,7 @@ export default function useBase64Handler() {
   };
 
   const removeDataUri = (str: string) => {
-    return str.substr(str.indexOf(",") + 1);
+    return str.split(",").pop() || "";
   };
 
   const isBase64 = (str: string) => {
@@ -27,7 +27,6 @@ export default function useBase64Handler() {
   };
 
   const base64ToUint8Array = (base64: string) => {
-    console.log(isBase64(base64));
     const binaryString = window.atob(removeDataUri(base64));
     const len = binaryString.length;
     const bytes = new Uint8Array(len);

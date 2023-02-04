@@ -54,7 +54,7 @@ const props = defineProps({
 
 const layoutStore = useLayoutStore();
 const fileSystemStore = useFileSystemStore();
-const { isBase64, b64ToText } = useBase64Handler();
+const { isBase64, b64ToText, utf8ToB64 } = useBase64Handler();
 
 const fileText = ref("");
 const isLoaded = ref(false);
@@ -62,11 +62,10 @@ const showSaveAsDialog = ref(false);
 const fileContent = ref("");
 
 const saveFile = (content: any, html: any, body: any) => {
-  console.log(content.content);
   if (props.itemDialog?.path) {
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,
-      content: content.content,
+      content: utf8ToB64(content.content),
     } as PathAndContent);
   } else {
     fileContent.value = content.content;
@@ -77,7 +76,7 @@ const saveFile = (content: any, html: any, body: any) => {
 const saveTextFileHandler = async (destinationPath: string) => {
   const destinationPathToSave = destinationPath + ".txt";
 
-  await fileSystemStore.createFile({ path: destinationPathToSave, content: fileContent.value });
+  await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(fileContent.value) });
   showSaveAsDialog.value = false;
 
   const itemDialogToUpdate = Object.assign({}, props.itemDialog);
@@ -97,11 +96,9 @@ const saveTextFileHandler = async (destinationPath: string) => {
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
     const fileData = await readFile(props.itemDialog?.path);
-    if (isBase64(fileData)) {
-      fileText.value = b64ToText(fileData, true);
-    } else {
-      fileText.value = fileData;
-    }
+    console.log(fileData, 1, isBase64(fileData));
+
+    fileText.value = b64ToText(fileData, true);
 
     isLoaded.value = true;
   } else {

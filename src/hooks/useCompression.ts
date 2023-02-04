@@ -50,11 +50,12 @@ export default function useCompression() {
   const compressToZipFile = async (filesToZip: { fileName: string; contentBase64: string }[]) => {
     const zippabble: fflate.Zippable = {};
     filesToZip.forEach((file) => {
-      const uint8 = base64ToUint8Array(file.contentBase64);
+      console.log(file.contentBase64);
+      const uint8 = base64ToUint8Array(removeDataUri(file.contentBase64));
       zippabble[file.fileName] = uint8;
     });
     const zippedFile = await fflate.zipSync(zippabble);
-    return zippedFile;
+    return uint8ArrayToBase64(zippedFile);
   };
 
   // const extractFiles = (compressedFile: string, destinationPath: string) => {};

@@ -64,7 +64,7 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     iconOnly,
     groupName: "compression",
     horizontalGroup: false,
-    actionName: "Comptess to ZIP file",
+    actionName: "Compress to ZIP file",
     callback: async () => {
       const filesToZip: { fileName: string; contentBase64: string }[] = [];
       for (const path of filePaths) {
@@ -73,6 +73,10 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
       }
       const zippedFile = await compressToZipFile(filesToZip);
       console.log("NEW ZIPPED FILE", zippedFile);
+      const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
+      await fileSystemStore.createFile({ path: zipFilePath, content: zippedFile }, false);
+      await fileSystemStore.fetchDesktopItems();
+      fileSystemStore.refreshAllItemDialogFiles();
     },
     disabled,
   };

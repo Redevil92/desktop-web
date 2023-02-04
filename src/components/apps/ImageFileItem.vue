@@ -63,6 +63,7 @@ export default defineComponent({
     onBeforeMount(async () => {
       if (props.itemDialog?.path) {
         const file = await readFile(props.itemDialog?.path);
+        console.log("Image", file);
         imageFile.value = file.toString();
       }
     });
