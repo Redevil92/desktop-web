@@ -62,10 +62,12 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     horizontalGroup: false,
     actionName: "Compress to ZIP file",
     callback: async () => {
-      const filesToZip2: { fileName: string; contentBase64: string }[] = await addFilesFromPathRecursivelyToList(
-        filePaths
+      const filesToZip: { fileName: string; contentBase64: string }[] = await addFilesFromPathRecursivelyToList(
+        filePaths,
+        []
       );
-      const zippedFile = await compressToZipFile(filesToZip2);
+      console.log("AH AH", filePaths, filesToZip);
+      const zippedFile = await compressToZipFile(filesToZip);
       const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
       await fileSystemStore.createFile({ path: zipFilePath, content: zippedFile }, false);
       await fileSystemStore.fetchDesktopItems();
@@ -75,19 +77,20 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
   };
 };
 
-const addFilesFromPathRecursivelyToList = async (filePaths: string[]) => {
-  const filesList: { fileName: string; contentBase64: string }[] = [];
+const addFilesFromPathRecursivelyToList = async (
+  filePaths: string[],
+  existingList: { fileName: string; contentBase64: string }[]
+) => {
   for (const path of filePaths) {
     const isFolder = await isDir(path);
     if (isFolder) {
       const filesPathFromFolder = await getFiles(path, true);
-      console.log("IS FOLDER AHHHHH", filesPathFromFolder);
-      const folderFiles = await addFilesFromPathRecursivelyToList(filesPathFromFolder);
-      filesList.concat(folderFiles);
+      console.log("IS DIR", filesPathFromFolder);
+      await addFilesFromPathRecursivelyToList(filesPathFromFolder, existingList);
     } else {
       const fileContent = await readFile(path);
-      filesList.push({ fileName: path, contentBase64: fileContent });
+      existingList.push({ fileName: path, contentBase64: fileContent });
     }
   }
-  return filesList;
+  return existingList;
 };
