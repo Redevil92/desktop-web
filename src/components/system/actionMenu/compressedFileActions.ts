@@ -1,4 +1,4 @@
-import { readFile } from "@/context/fileSystemController";
+import { getFiles, isDir, readFile } from "@/context/fileSystemController";
 import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
 import { ActionItem } from "@/models/ActionMenu";
@@ -51,10 +51,6 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
   };
 };
 
-// TODO:
-// create the other compression actions
-// add this actions to filesType in the field additionalActions (compression item)
-// add the additional actions to FolderItem.vue in openActionMenu function
 export const compressToZipFileAction = (filePaths: string[], disabled = false, iconOnly = false): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   const { compressToZipFile } = useCompression();
@@ -66,13 +62,10 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     horizontalGroup: false,
     actionName: "Compress to ZIP file",
     callback: async () => {
-      const filesToZip: { fileName: string; contentBase64: string }[] = [];
-      for (const path of filePaths) {
-        const fileContent = await readFile(path);
-        filesToZip.push({ fileName: path, contentBase64: fileContent });
-      }
-      const zippedFile = await compressToZipFile(filesToZip);
-      console.log("NEW ZIPPED FILE", zippedFile);
+      const filesToZip2: { fileName: string; contentBase64: string }[] = await addFilesFromPathRecursivelyToList(
+        filePaths
+      );
+      const zippedFile = await compressToZipFile(filesToZip2);
       const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
       await fileSystemStore.createFile({ path: zipFilePath, content: zippedFile }, false);
       await fileSystemStore.fetchDesktopItems();
@@ -80,4 +73,21 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     },
     disabled,
   };
+};
+
+const addFilesFromPathRecursivelyToList = async (filePaths: string[]) => {
+  const filesList: { fileName: string; contentBase64: string }[] = [];
+  for (const path of filePaths) {
+    const isFolder = await isDir(path);
+    if (isFolder) {
+      const filesPathFromFolder = await getFiles(path, true);
+      console.log("IS FOLDER AHHHHH", filesPathFromFolder);
+      const folderFiles = await addFilesFromPathRecursivelyToList(filesPathFromFolder);
+      filesList.concat(folderFiles);
+    } else {
+      const fileContent = await readFile(path);
+      filesList.push({ fileName: path, contentBase64: fileContent });
+    }
+  }
+  return filesList;
 };

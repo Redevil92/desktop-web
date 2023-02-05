@@ -6,7 +6,7 @@
       <DesktopWorkSpace />
     </div>
     <DynamicIsland />
-    <div v-for="(item, index) in itemsDialog" :key="`folder-opened-${item.guid}`">
+    <div v-for="item in itemsDialog" :key="`folder-opened-${item.guid}`">
       <OpenedFileView v-show="!item.isCollapsed" :itemDialog="item" />
     </div>
     <SnackBar></SnackBar>

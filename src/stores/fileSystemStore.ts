@@ -165,9 +165,10 @@ export const useFileSystemStore = defineStore("fileSystem", {
       const dynamicIslandStore = useDynamicIslandStore();
       const index = this.itemsDialog.findIndex((dir) => dir.guid === itemDialogGuid);
       if (index !== -1) {
-        if (this.itemsDialog.filter((item) => item.path === itemDialogGuid).length === 1) {
+        if (this.itemsDialog.filter((item) => item.guid === itemDialogGuid).length === 1) {
           removeItemPreviewInSessionStorage(this.itemsDialog[index].path);
         }
+
         dynamicIslandStore.removeDynamicIslandItem(itemDialogGuid);
         this.itemsDialog.splice(index, 1);
         this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
@@ -273,9 +274,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
       await deleteFileSystemItem(path);
     },
     async createFolder(path: string) {
-      // const destinationPathFileList = await getFiles(getSourcePathFromFilePath(path), true);
-
-      // const uniqueFilePath = generateUniqueName(path, destinationPathFileList);
       await createDirectory(path, false, false);
     },
 
