@@ -238,7 +238,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
     setItemDialogFullScreen(itemData: { itemGuid: string; isFullscreen: boolean }) {
       const index = this.itemsDialog.findIndex((item) => item.guid === itemData.itemGuid);
-      console.log(index, "full screen:", itemData.isFullscreen);
       if (index !== -1) {
         this.itemsDialog[index].isFullscreen = itemData.isFullscreen;
       }
