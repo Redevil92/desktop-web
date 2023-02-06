@@ -45,7 +45,7 @@ export default defineComponent({
     };
 
     const setFolderDialogFullScreen = (isFullscreen: boolean) => {
-      ctx.emit("expand");
+      ctx.emit("expand", isFullscreen);
     };
 
     return {

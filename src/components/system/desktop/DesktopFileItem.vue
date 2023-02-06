@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, nextTick, onMounted, onUnmounted, PropType, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, PropType, ref, watch } from "vue";
 
 import BaseDialog from "@/components/shared/BaseDialog.vue";
 import BaseButton from "@/components/shared/BaseButton.vue";

@@ -85,7 +85,6 @@ const addFilesFromPathRecursivelyToList = async (
     const isFolder = await isDir(path);
     if (isFolder) {
       const filesPathFromFolder = await getFiles(path, true);
-      console.log("IS DIR", filesPathFromFolder);
       await addFilesFromPathRecursivelyToList(filesPathFromFolder, existingList);
     } else {
       const fileContent = await readFile(path);
