@@ -62,6 +62,24 @@ const audioType: FileType = {
   canOpenWithoutFile: false,
 };
 
+const videoType: FileType = {
+  singleton: false,
+  allowResizing: true,
+  background: "#222",
+  defaultSize: {
+    height: 480,
+    width: 760,
+  },
+  minSize: {
+    height: 100,
+    width: 220,
+  },
+  application: "videoItem/VideoPlayer",
+  title: "Video player",
+  icon: "mp4.svg",
+  canOpenWithoutFile: false,
+};
+
 const codeType = (codeExt: string): FileType => {
   return {
     singleton: false,
@@ -185,6 +203,9 @@ const fileTypesConfiguration: FileTypes = {
   js: codeType("js"),
   ts: codeType("ts"),
   css: codeType("css"),
+  mp4: videoType,
+  webm: videoType,
+  ogg: videoType,
   zip: {
     allowResizing: true,
     singleton: false,
@@ -221,7 +242,6 @@ const fileTypesConfiguration: FileTypes = {
     canOpenWithoutFile: false, // TODO: implement this functionality
   },
   mp3: audioType,
-  mp4: audioType,
   png: imageType,
   jpg: imageType,
   jpeg: imageType,
