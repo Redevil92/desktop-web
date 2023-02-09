@@ -80,6 +80,9 @@ const decompressFileAndSave = async (destinationFile: string) => {
 
     const decompressedFiles = decompressFile(compressed);
 
+    //TODO: From the decompressed files delete the part of the path common to all the files
+    // After that create the file structure, folders and paths. At the moment we have a flat structure
+
     const allCompressedFiles = await saveDecompressedFilesToDestination(decompressedFiles, destinationFile);
     //items.value = await getFiles(destinationFile); // TODO: this would be nice, now we have all the items flat in the directory
     items.value = allCompressedFiles;
