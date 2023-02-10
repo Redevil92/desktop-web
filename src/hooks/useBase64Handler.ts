@@ -12,6 +12,10 @@ export default function useBase64Handler() {
     return str.split(",").pop() || "";
   };
 
+  const getDataUri = (str: string) => {
+    return str.split(",").shift() || "";
+  };
+
   const isBase64 = (str: string) => {
     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
     return base64regex.test(str);
@@ -41,6 +45,7 @@ export default function useBase64Handler() {
     b64ToText,
     utf8ToB64,
     removeDataUri,
+    getDataUri,
     isBase64,
     uint8ArrayToBase64,
     base64ToUint8Array,
