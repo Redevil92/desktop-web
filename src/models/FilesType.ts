@@ -65,7 +65,7 @@ const audioType: FileType = {
 const videoType: FileType = {
   singleton: false,
   allowResizing: true,
-  background: "#222",
+  background: "black",
   defaultSize: {
     height: 480,
     width: 760,
@@ -206,6 +206,23 @@ const fileTypesConfiguration: FileTypes = {
   mp4: videoType,
   webm: videoType,
   ogg: videoType,
+  swf: {
+    allowResizing: true,
+    singleton: false,
+    background: "rgb(82, 86, 89)",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    minSize: {
+      height: 300,
+      width: 520,
+    },
+    icon: "flash.svg",
+    title: "Flash",
+    application: "flashItem/flashItem",
+    canOpenWithoutFile: false,
+  },
   zip: {
     allowResizing: true,
     singleton: false,
