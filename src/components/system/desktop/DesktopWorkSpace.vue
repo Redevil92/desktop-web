@@ -14,7 +14,7 @@
         class="desktop-container"
         :style="{ 'background-image': 'url(' + require('/src/assets/desktopImages/' + desktopImage) + ')' }"
       >
-        <div v-for="(item, index) in desktopFiles" :key="`desktop-item-${index}`">
+        <div v-for="item in desktopFiles" :key="`desktop-item-${item.path}`">
           <DesktopFileItem :ref="item.path + 'FileRef'" :fileItem="item" />
         </div>
       </div>
