@@ -13,8 +13,8 @@
       <StartMenu v-if="isStartMenuOpened" :openStartMenuButtonRef="windowIconRef || undefined" />
       <div class="flex">
         <div
-          v-for="(taskBarItem, index) in taskBarItemByApplication"
-          :key="`task-bar-item-${index}`"
+          v-for="taskBarItem in taskBarItemByApplication"
+          :key="`task-bar-item-${taskBarItem[0].guid}`"
           :style="`margin-left: ${itemMargin}px`"
         >
           <TaskBarItem

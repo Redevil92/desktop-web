@@ -1,5 +1,5 @@
 <template>
-  <div class="left-panel" :style="height ? `height:${height}px` : ''" v-if="favouritesPathList">
+  <div class="left-panel" :style="height ? `height:${height - 2}px` : ''" v-if="favouritesPathList">
     <div class="title-text">Favourites</div>
 
     <div
