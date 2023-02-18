@@ -13,8 +13,8 @@ const imageType: FileType = {
   singleton: false,
   allowResizing: true,
   defaultSize: {
-    height: 432,
-    width: 576,
+    height: 700,
+    width: 800,
   },
   minSize: {
     height: 100,
