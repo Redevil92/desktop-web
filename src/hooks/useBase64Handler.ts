@@ -28,6 +28,14 @@ export default function useBase64Handler() {
     return window.btoa(unescape(encodeURIComponent(str)));
   };
 
+  const blobToBase64 = (blob: Blob): Promise<string | ArrayBuffer | null> => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const removeDataUri = (str: string) => {
     return str.split(",").pop() || "";
   };
@@ -70,5 +78,6 @@ export default function useBase64Handler() {
     uint8ArrayToBase64,
     base64ToUint8Array,
     b64ToBlob,
+    blobToBase64,
   };
 }

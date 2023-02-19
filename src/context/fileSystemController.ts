@@ -20,7 +20,11 @@ const ensureDirectoryExistence = async (filePath: string) => {
   await createDirectory(dirname);
 };
 
-export const createDirectory = async (path: string, overwrite = false, overwriteIfSameName = false): Promise<any> => {
+export const createDirectory = async (
+  path: string,
+  overwrite = false,
+  overwriteIfSameName = false
+): Promise<string> => {
   const fs = (window as any).fs;
   await ensureDirectoryExistence(path);
   let uniquePath = path;
@@ -34,7 +38,9 @@ export const createDirectory = async (path: string, overwrite = false, overwrite
   }
 
   return new Promise((resolve, reject) => {
-    fs.mkdir(uniquePath, { flag: overwrite ? "w" : "wx" }, (error: any) => (error ? reject(error) : resolve(true)));
+    fs.mkdir(uniquePath, { flag: overwrite ? "w" : "wx" }, (error: any) =>
+      error ? reject(error) : resolve(uniquePath)
+    );
   });
 };
 
@@ -43,7 +49,7 @@ export const createFile = async (
   text = "",
   encoding = "utf8",
   overwriteIfSameName = true
-): Promise<any> => {
+): Promise<string> => {
   const fs = (window as any).fs;
   await ensureDirectoryExistence(path);
 
@@ -59,7 +65,7 @@ export const createFile = async (
 
   return new Promise((resolve, reject) => {
     fs.writeFile(uniqueFilePath, text, encoding, (error: any) => {
-      error && error.code !== "EEXIST" ? reject(error) : resolve(!error);
+      error && error.code !== "EEXIST" ? reject(error) : resolve(uniqueFilePath);
     });
   });
 };

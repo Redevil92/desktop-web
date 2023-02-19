@@ -33,7 +33,7 @@ import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import useCompression from "@/hooks/useCompression";
 import { TEMP_PATH } from "@/constants";
-import { copyAction } from "@/components/system/actionMenu/editActions";
+import { copyAction } from "@/components/system/actionMenu/ActionsList";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
@@ -107,8 +107,9 @@ const openActionMenu = (event: any, isOpenedFolder = false, customPath: string) 
     {
       materialIcon: "mdi-open-in-new",
       iconOnly: false,
-      groupName: "open",
+      groupName: "other",
       actionName: "Open",
+      horizontalGroup: false,
       callback: () => doubleClickHandler(customPath),
       disabled: false,
     },

@@ -53,34 +53,6 @@ export const getFileNameWithoutExtension = (path: string): string => {
   return path.replace(/\.[^/.]+$/, "");
 };
 
-export const createFilesStructure = async () => {
-  //window.localStorage.clear();
-  const exists = await existsFile("my PC");
-
-  if (!exists) {
-    await createDirectory("my PC");
-    await createDirectory(TEMP_PATH);
-    // await createFile("secondFile.txt", "my beautiful text", "utf8", false);
-    // await createFile("my PC/mysecondFile.txt", "my beautiful text"), "utf8", false;
-    await createDirectory("my PC/Desktop");
-    await createDirectory("my PC/Documents");
-    await createDirectory("my PC/Start Menu");
-    await createDirectory("my PC/Pictures");
-    await createDirectory("my PC/Music");
-    await createDirectory("my PC/Videos");
-    //await createFile("my PC/Desktop/file_desktop3.txt", "MY start text to test.", "utf8", false);
-    await createDirectory("my PC/Desktop/FOLDER");
-    await createDirectory("my PC/Desktop/FOLDER/sub directory");
-    await createDirectory("my PC/Desktop/FOLDER/another sub directory");
-    // await createFile(
-    //   "my PC/Desktop/FOLDER/another sub directory/another file.txt",
-    //   "This is my text file 2.",
-    //   "utf8",
-    //   false
-    // );
-  }
-};
-
 export const getNewItemDialogPosition = (itemDialogCount: number) => {
   const padding = 40;
   const startingPoint = 50;

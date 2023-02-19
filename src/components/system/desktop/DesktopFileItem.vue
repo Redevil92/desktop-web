@@ -171,7 +171,8 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
     {
       materialIcon: "mdi-open-in-new",
       iconOnly: false,
-      groupName: "open",
+      horizontalGroup: false,
+      groupName: "other",
       actionName: "Open",
       callback: openFileItem,
       disabled: false,

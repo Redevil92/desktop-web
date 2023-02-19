@@ -51,3 +51,7 @@ export const saveSelectedDesktopItemsPositionInLocalStorage = (desktopItems: Des
 
   localStorage.setItem("desktopItemsPositions", JSON.stringify(desktopItemsPositions));
 };
+
+export const clearLocalStorage = () => {
+  window.localStorage.clear();
+};

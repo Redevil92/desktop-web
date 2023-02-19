@@ -1,11 +1,7 @@
 // Add application to open
 // Have just one action in the store to open
 
-import {
-  compressedFileActions,
-  extractFilesInFolder,
-  extractHere,
-} from "@/components/system/actionMenu/compressedFileActions";
+import { extractFilesInFolder, extractHere } from "@/components/system/actionMenu/ActionsList";
 import { FileType } from "./FileType";
 
 const imageType: FileType = {

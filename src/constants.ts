@@ -19,3 +19,5 @@ export const SEVERITY = {
   information: { type: "information", color: "#b7b7b75f" },
   error: { type: "error", color: "#ba1616" },
 };
+
+export const INDEXED_DB_NAME = "fileSystem";

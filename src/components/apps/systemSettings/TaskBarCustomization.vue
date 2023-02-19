@@ -1,18 +1,14 @@
 <template>
-  <div :style="`height: ${height}px`">COMPONENT TO IMPLEMENT</div>
+  <div :style="`height: ${height}px`">
+    <ErrorComponent></ErrorComponent>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 
-export default defineComponent({
-  props: {
-    height: Number,
-  },
-  components: {},
-  setup() {
-    return {};
-  },
+const props = defineProps({
+  height: Number,
 });
 </script>
 

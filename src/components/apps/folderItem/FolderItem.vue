@@ -78,7 +78,7 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
-import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/editActions";
+import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/ActionsList";
 import { getFileActions } from "@/components/system/actionMenu/fileActions";
 
 const props = defineProps({ itemDialog: Object as PropType<ItemDialog>, height: { type: Number, required: true } });
@@ -105,7 +105,6 @@ const doubleClickHandler = async (filePath: string) => {
     const newItemDialog = {
       path: filePath,
       coordinates: { x: 0, y: 0 },
-
       isSelected: true,
     } as DesktopItem;
     fileSystemStore.createItemDialog(newItemDialog);
@@ -119,8 +118,8 @@ const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, 
 
   const customActions = isOpenedFolder
     ? [
-        createNewFile(eventAndPath.filePath),
-        createNewFolder(eventAndPath.filePath),
+        createNewFile(pointerEvent, eventAndPath.filePath),
+        createNewFolder(pointerEvent, eventAndPath.filePath),
         await pasteAction(eventAndPath.filePath, false, false, false),
       ]
     : [
@@ -128,7 +127,8 @@ const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, 
         {
           materialIcon: "mdi-open-in-new",
           iconOnly: false,
-          groupName: "open",
+          horizontalGroup: false,
+          groupName: "other",
           actionName: "Open",
           callback: () => doubleClickHandler(eventAndPath.filePath),
           disabled: false,

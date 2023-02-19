@@ -33,7 +33,7 @@ import {
   createNewFolder,
   openDesktopSettingPage,
   pasteAction,
-} from "@/components/system/actionMenu/editActions";
+} from "@/components/system/actionMenu/ActionsList";
 
 export default defineComponent({
   props: {},
@@ -52,8 +52,8 @@ export default defineComponent({
         position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
         customLayout: [
           await pasteAction(DESKTOP_PATH, true, false),
-          createNewFile(DESKTOP_PATH, false, false),
-          createNewFolder(DESKTOP_PATH, false, false),
+          createNewFile(pointerEvent, DESKTOP_PATH, false, false),
+          createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
           openDesktopSettingPage(false, false),
         ],
       } as ActionMenuModel);

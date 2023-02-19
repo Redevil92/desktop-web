@@ -266,14 +266,14 @@ export const useFileSystemStore = defineStore("fileSystem", {
     async updateFile(pathAndContent: PathAndContent) {
       await createFile(pathAndContent.path, pathAndContent.content);
     },
-    async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true) {
-      await createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
+    async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true): Promise<string> {
+      return await createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
     },
     async deleteFileSystemItem(path: string) {
       await deleteFileSystemItem(path);
     },
-    async createFolder(path: string) {
-      await createDirectory(path, false, false);
+    async createFolder(path: string): Promise<string> {
+      return await createDirectory(path, false, false);
     },
 
     async renameFile(newFilePath: string, oldFilePath: string) {

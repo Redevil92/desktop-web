@@ -43,7 +43,7 @@
     <div
       class="resize-element"
       style="width: 6px; height: 100%; top: 0px; left: -3px; cursor: ew-resize"
-      @mousedown.stop="dragMouseDown($event, actionTypes.RESIZING_LEFT, actionTypes.RESIZING_TOP)"
+      @mousedown.stop="dragMouseDown($event, [actionTypes.RESIZING_LEFT, actionTypes.RESIZING_TOP])"
     >
       <!-- TL -->
     </div>
@@ -228,9 +228,16 @@ export default defineComponent({
 
       // set the element's new position:
       const newX = draggableElement.value.offsetTop - pos2;
+
       const newY = draggableElement.value.offsetLeft - pos1;
 
-      const newPosition = { x: newX, y: newY } as Coordinates;
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+
+      const newPosition = {
+        x: newX > 0 && newX < windowHeight - 70 ? newX : props.itemDialog.position.x,
+        y: newY > 0 && newY < windowWidth - 70 ? newY : props.itemDialog.position.y,
+      } as Coordinates;
 
       updateItemPosition(newPosition);
     }
@@ -240,7 +247,7 @@ export default defineComponent({
       fileSystemStore.updateItemDialogPosition({ guid: props.itemDialog.guid, position: newPosition } as ItemDialog);
     }
 
-    function setItemDialogFocused(event: PointerEvent) {
+    function setItemDialogFocused(event: MouseEvent) {
       if (!props.itemDialog.isFocused) {
         event.stopPropagation();
         fileSystemStore.setFocusedItemDialog(props.itemDialog);
