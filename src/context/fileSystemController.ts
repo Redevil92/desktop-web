@@ -6,6 +6,7 @@ import {
   getFileNameFromPath,
   getFileNameWithoutExtension,
   getSourcePathFromFilePath,
+  MIME_TYPES,
 } from "./fileSystemUtils";
 
 const ensureDirectoryExistence = async (filePath: string) => {
@@ -203,5 +204,25 @@ export const moveFiles = async (filesToMove: string[], destinationPath: string, 
     if (!keepOriginal) {
       await deleteFileSystemItem(filePath);
     }
+  }
+};
+
+export const downloadFiles = async (filesPath: string[]) => {
+  //TODO: if multiple filesPath -> create a zip file and then download
+  for (const filePath of filesPath) {
+    const downloadLink = document.createElement("a");
+    document.body.appendChild(downloadLink);
+    let fileData = await readFile(filePath);
+    console.log(fileData);
+
+    if (!fileData.startsWith("data:")) {
+      const mimeType = MIME_TYPES[getFileExtensionFromName(filePath)];
+      fileData = `data:${mimeType};base64,${fileData}`;
+    }
+
+    downloadLink.href = fileData;
+    downloadLink.target = "_self";
+    downloadLink.download = getFileNameFromPath(filePath);
+    downloadLink.click();
   }
 };
