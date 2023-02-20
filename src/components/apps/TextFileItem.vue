@@ -61,7 +61,7 @@ const isLoaded = ref(false);
 const showSaveAsDialog = ref(false);
 const fileContent = ref("");
 
-const saveFile = (content: any, html: any, body: any) => {
+const saveFile = (content: any, _html: any, _body: any) => {
   if (props.itemDialog?.path) {
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,

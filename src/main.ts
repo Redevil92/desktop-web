@@ -14,8 +14,8 @@ const pinia = createPinia();
 
 export async function initializeAppAndFileSystem() {
   // Debug mode, TODO: remove it
-  clearIndexedDB(INDEXED_DB_NAME);
-  clearLocalStorage();
+  //clearIndexedDB(INDEXED_DB_NAME);
+  //clearLocalStorage();
 
   BrowserFS.install(window);
 
