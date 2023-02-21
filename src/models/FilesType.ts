@@ -96,7 +96,7 @@ const codeType = (codeExt: string): FileType => {
   };
 };
 
-const dosType = (gameName: string, icon?: string): FileType => {
+const applicationType = (name: string, applicationToOpen: string, icon?: string) => {
   return {
     background: "rgb(82, 86, 89)",
     allowResizing: true,
@@ -109,9 +109,9 @@ const dosType = (gameName: string, icon?: string): FileType => {
       height: 400,
       width: 650,
     },
-    title: `${gameName}`,
-    icon: icon ? icon : `${gameName}.png`,
-    application: "dosItem/DosPlayer",
+    title: `${name}`,
+    icon: icon ? icon : `${icon}.png`,
+    application: applicationToOpen,
     canOpenWithoutFile: true,
     canRepeatInAppList: true,
   };
@@ -137,6 +137,23 @@ const fileTypesConfiguration: FileTypes = {
   //   singleton: true,
   //   title: "DevTools",
   // },
+  application: {
+    background: "rgb(82, 86, 89)",
+    allowResizing: true,
+    singleton: false,
+    defaultSize: {
+      height: 580,
+      width: 840,
+    },
+    minSize: {
+      height: 300,
+      width: 820,
+    },
+    icon: "folder.svg",
+    title: "Directory",
+    application: "folderItem/FolderItem",
+    canOpenWithoutFile: false,
+  },
   dir: {
     background: "rgb(82, 86, 89)",
     allowResizing: true,
@@ -259,13 +276,13 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
-  Doom: dosType("Doom"),
-  "WarCraft- Orcs & Humans": dosType("WarCraft- Orcs & Humans"),
-  "Duke Nukem 3D": dosType("Duke Nukem 3D"),
-  "Sim City": dosType("Sim City"),
-  "Prince of Persia": dosType("Prince of Persia"),
-  "Grand Theft Auto": dosType("Grand Theft Auto"),
-  "Mortal Kombat": dosType("Mortal Kombat"),
+  Doom: applicationType("Doom", "dosItem/DosPlayer", "dosItem/DosPlayer"),
+  "WarCraft- Orcs & Humans": applicationType("WarCraft- Orcs & Humans", "dosItem/DosPlayer"),
+  "Duke Nukem 3D": applicationType("Duke Nukem 3D", "dosItem/DosPlayer"),
+  "Sim City": applicationType("Sim City", "dosItem/DosPlayer"),
+  "Prince of Persia": applicationType("Prince of Persia", "dosItem/DosPlayer"),
+  "Grand Theft Auto": applicationType("Grand Theft Auto", "dosItem/DosPlayer"),
+  "Mortal Kombat": applicationType("Mortal Kombat", "dosItem/DosPlayer"),
   // run: {
   //   allowResizing: false,
   //   defaultSize: {
