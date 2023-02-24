@@ -12,6 +12,12 @@ export const getDesktopFilesPositionFromLocalStorage = (): { [path: string]: Coo
   return desktopItemsPositions;
 };
 
+export const getDesktopFilePositionFromLocalStorage = (path: string): Coordinates => {
+  const desktopItemsPositions = getDesktopFilesPositionFromLocalStorage();
+
+  return desktopItemsPositions[path];
+};
+
 export const saveDesktopFilePosition = async (desktopItemPath: string, coordinates: Coordinates) => {
   const retrievedObject = localStorage.getItem("desktopItemsPositions");
   let desktopItemsPositions = {} as any;

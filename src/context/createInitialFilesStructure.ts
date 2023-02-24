@@ -19,6 +19,7 @@ export const createFilesStructure = async () => {
     await createDirectory("my PC/Desktop");
     await createDirectory("my PC/Documents");
     await createDirectory("my PC/Start Menu");
+    await createDirectory("my PC/Program Files");
     await createDirectory("my PC/Pictures");
     await createDirectory("my PC/Music");
     await createDirectory("my PC/Videos");

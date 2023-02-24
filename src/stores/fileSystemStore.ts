@@ -9,12 +9,7 @@ import {
   moveFiles,
   renameFile,
 } from "@/context/fileSystemController";
-import {
-  getFileExtensionFromName,
-  getFileNameFromPath,
-  getNewItemDialogPosition,
-  getSourcePathFromFilePath,
-} from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
 import ActionMenu from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";

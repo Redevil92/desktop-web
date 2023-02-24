@@ -16,13 +16,15 @@
       :class="{
         'cut-item': isCutFile(item.path),
       }"
-      v-for="(item, index) in itemsListWithProperties"
-      :key="`item-${index}-${item.path}`"
+      draggable="true"
+      v-for="item in itemsListWithProperties"
+      :key="`item-${item.path}`"
       @dblclick="doubleClickHandler(item.path)"
+      @dragstart="dragStart"
       @mousedown.stop="itemClickHandler(item.path)"
       @click.right="rightClickHandler($event, item.path)"
     >
-      <div v-if="viewType === 'preview'">
+      <div v-if="viewType === 'preview'" draggable="true" @dragstart="dragStart">
         <FileIcon :selected="item.path === selectedItem" :height="60" :filePath="item.path" />
         <div :class="item.path === selectedItem ? 'file-text-preview-selected' : ''" class="file-text-preview">
           <textarea
@@ -136,6 +138,10 @@ const timeFormat = computed(() => {
 const dateFormat = computed(() => {
   return settingsStore.dateFormat;
 });
+
+const dragStart = () => {
+  console.log("DRag start");
+};
 
 const updateItemListWithProperties = async () => {
   const itemWithProp = [];

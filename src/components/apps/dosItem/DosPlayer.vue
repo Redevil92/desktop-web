@@ -11,30 +11,26 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import ItemDialog from "@/models/ItemDialog";
 
 import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 
-import { defineComponent, PropType } from "vue";
+import { onMounted, PropType, ref } from "vue";
 import { dosGameLinks } from "@/components/apps/dosItem/DosGames";
 
-export default defineComponent({
-  props: {
-    itemDialog: Object as PropType<ItemDialog>,
-    height: Number,
-  },
-  components: { IFrameFocuser },
-  emits: [],
-  setup(props, _) {
-    let gameLink = "";
-    if (props.itemDialog?.name) {
-      props.itemDialog.isFocused;
-      gameLink = dosGameLinks[props.itemDialog.name];
-    }
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
+  height: { type: Number, required: true },
+});
 
-    return { gameLink };
-  },
+const gameLink = ref("");
+
+onMounted(() => {
+  if (props.itemDialog?.name) {
+    props.itemDialog.isFocused;
+    gameLink.value = dosGameLinks[props.itemDialog.name];
+  }
 });
 </script>
 

@@ -5,6 +5,7 @@ import {
   pasteAction,
   compressToZipFileAction,
   downloadFileAction,
+  createShortcut,
 } from "./ActionsList";
 
 export const getFileActions = async (paths: string[]) => {
@@ -14,6 +15,7 @@ export const getFileActions = async (paths: string[]) => {
     deleteAction(paths),
     await pasteAction(paths[0]),
     await compressToZipFileAction(paths),
+    createShortcut(paths),
     downloadFileAction(paths),
   ];
   return fileActions;

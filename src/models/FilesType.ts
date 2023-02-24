@@ -219,7 +219,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     title: "",
     icon: "",
-    application: "linkItem",
+    application: "LinkItem",
     canOpenWithoutFile: true,
   },
   txt: textType,

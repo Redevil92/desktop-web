@@ -15,7 +15,6 @@ const ensureDirectoryExistence = async (filePath: string) => {
   if ((await existsFile(dirname)) || !dirname) {
     return true;
   }
-  console.log("creating dir", dirname);
   await ensureDirectoryExistence(dirname);
   await createDirectory(dirname);
 };
@@ -51,6 +50,7 @@ export const createFile = async (
   overwriteIfSameName = true
 ): Promise<string> => {
   const fs = (window as any).fs;
+  console.log(3, path, text);
   await ensureDirectoryExistence(path);
 
   let uniqueFilePath = path;
@@ -62,6 +62,7 @@ export const createFile = async (
       uniqueFilePath = uniqueFilePath + "." + getFileExtensionFromName(path);
     }
   }
+  console.log(4, uniqueFilePath, text);
 
   return new Promise((resolve, reject) => {
     fs.writeFile(uniqueFilePath, text, encoding, (error: any) => {
@@ -160,7 +161,6 @@ export const getStat = (path: string): Promise<FileStats> => {
 
 export const readFile = async (path: string, encoding = "utf8"): Promise<string> => {
   const fs = (window as any).fs;
-
   const fileToRead: any = await new Promise((resolve, reject) => {
     fs.readFile(path, (error: any, res: any) => (error ? reject(error) : resolve(res)));
   });

@@ -1,9 +1,14 @@
 import { downloadFiles, getFiles, isDir, readFile } from "@/context/fileSystemController";
 import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
-import { saveDesktopFilePosition } from "@/hooks/useLocalStorage";
+import {
+  getDesktopFilePositionFromLocalStorage,
+  getDesktopFilesPositionFromLocalStorage,
+  saveDesktopFilePosition,
+} from "@/hooks/useLocalStorage";
 import { ActionItem } from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
+import LinkData from "@/models/LinkData";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 const refreshFiles = () => {
@@ -156,6 +161,34 @@ export const openDesktopSettingPage = (disabled = false, iconOnly = false): Acti
       fileSystemStore.createItemDialog(settingsApp);
     },
     disabled,
+  };
+};
+
+export const createShortcut = (paths: string[], disabled = false, iconOnly = false): ActionItem => {
+  const fileSystemStore = useFileSystemStore();
+  return {
+    materialIcon: "mdi-link-plus",
+    iconOnly,
+    groupName: "settings",
+    horizontalGroup: false,
+    actionName: "Create shortcut",
+    callback: async () => {
+      const settingsApp: DesktopItem = {
+        path: "",
+        coordinates: { x: 0, y: 0 },
+        applicationExtension: "settings",
+        isSelected: true,
+      };
+      const linkData: LinkData = { filePath: paths[0] };
+      const createdFileName = await fileSystemStore.createFile({
+        path: `${paths[0]}.lnk`,
+        content: JSON.stringify(linkData),
+      });
+      const positons = getDesktopFilePositionFromLocalStorage(paths[0]);
+      saveDesktopFilePosition(createdFileName, positons);
+      refreshFiles();
+    },
+    disabled: disabled || paths.length > 1,
   };
 };
 
