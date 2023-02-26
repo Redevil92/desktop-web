@@ -1,7 +1,9 @@
 <template>
-  <div v-if="isLinkFile && filePath && linkIcon">
+  <div v-if="isLinkFile && filePath && linkIcon" style="position: relative">
     <img :class="fileIconClasses" :height="height" :src="linkIcon" alt="" />
-    LINK
+    <div>
+      <span class="mdi mdi-arrow-top-right-thin link-icon"></span>
+    </div>
   </div>
 
   <img
@@ -143,5 +145,12 @@ onMounted(async () => {
   border-radius: 3px;
   padding: 3px;
   background-color: rgba(214, 214, 214, 0.553);
+}
+
+.link-icon {
+  position: absolute;
+  padding: 2px;
+  border: 1px solid var(---primary-color);
+  border-radius: 2px;
 }
 </style>
