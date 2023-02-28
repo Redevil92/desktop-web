@@ -27,9 +27,9 @@ export const createFilesStructure = async () => {
     await createDirectory("my PC/Videos");
 
     try {
-      const browserElement: LinkData = { applicationToOpen: "BrowserItem" };
+      const browserElement: LinkData = { applicationToOpen: "browser" };
       await createFile("my PC/Desktop/Browser.lnk", JSON.stringify(browserElement), "utf8", false);
-      saveDesktopFilePosition("my PC/Desktop/Browser.lnk", { x: 700, y: 0 });
+      saveDesktopFilePosition("my PC/Desktop/Browser.lnk", { x: 120, y: 0 });
 
       const pdfElement = (await readLocalFile("./files/CV-Stefano Badalucco.pdf")) as string;
       await createFile("my PC/Desktop/CV-Stefano_Badalucco.pdf", pdfElement, "utf8", false);

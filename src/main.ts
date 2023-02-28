@@ -5,7 +5,7 @@ import router from "./router";
 import { createPinia } from "pinia";
 import fileSystemConfig from "./context/fileSystemConfiguration";
 import { clearIndexedDB } from "./hooks/indexedDB";
-import { INDEXED_DB_NAME } from "./constants";
+import { DEBUG_MODE, INDEXED_DB_NAME } from "./constants";
 import { clearLocalStorage } from "./hooks/useLocalStorage";
 
 // eslint-disable-next-line
@@ -13,9 +13,10 @@ const BrowserFS = require("browserfs");
 const pinia = createPinia();
 
 export async function initializeAppAndFileSystem() {
-  // Debug mode, TODO: remove it
-  //clearIndexedDB(INDEXED_DB_NAME);
-  //clearLocalStorage();
+  if (DEBUG_MODE === true) {
+    clearIndexedDB(INDEXED_DB_NAME);
+    clearLocalStorage();
+  }
 
   BrowserFS.install(window);
 
