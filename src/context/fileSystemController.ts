@@ -50,7 +50,6 @@ export const createFile = async (
   overwriteIfSameName = true
 ): Promise<string> => {
   const fs = (window as any).fs;
-  console.log(3, path, text);
   await ensureDirectoryExistence(path);
 
   let uniqueFilePath = path;
@@ -62,7 +61,6 @@ export const createFile = async (
       uniqueFilePath = uniqueFilePath + "." + getFileExtensionFromName(path);
     }
   }
-  console.log(4, uniqueFilePath, text);
 
   return new Promise((resolve, reject) => {
     fs.writeFile(uniqueFilePath, text, encoding, (error: any) => {
@@ -219,7 +217,6 @@ export const downloadFiles = async (filesPath: string[]) => {
     const downloadLink = document.createElement("a");
     document.body.appendChild(downloadLink);
     let fileData = await readFile(filePath);
-    console.log(fileData);
 
     if (!fileData.startsWith("data:")) {
       const mimeType = MIME_TYPES[getFileExtensionFromName(filePath)];
