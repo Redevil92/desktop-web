@@ -21,3 +21,5 @@ export const SEVERITY = {
 };
 
 export const INDEXED_DB_NAME = "fileSystem";
+
+export const DEBUG_MODE = true;

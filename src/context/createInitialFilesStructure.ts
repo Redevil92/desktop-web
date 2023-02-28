@@ -1,6 +1,7 @@
 import { TEMP_PATH } from "@/constants";
 import useBase64Handler from "@/hooks/useBase64Handler";
 import { saveDesktopFilePosition } from "@/hooks/useLocalStorage";
+import LinkData from "@/models/LinkData";
 import { existsFile, createDirectory, createFile } from "./fileSystemController";
 
 const readLocalFile = async (filePath: string) => {
@@ -13,6 +14,7 @@ const readLocalFile = async (filePath: string) => {
 
 export const createFilesStructure = async () => {
   const exists = await existsFile("my PC");
+
   if (!exists) {
     await createDirectory("my PC");
     await createDirectory(TEMP_PATH); // needed for zip files
@@ -25,6 +27,10 @@ export const createFilesStructure = async () => {
     await createDirectory("my PC/Videos");
 
     try {
+      const browserElement: LinkData = { applicationToOpen: "BrowserItem" };
+      await createFile("my PC/Desktop/Browser.lnk", JSON.stringify(browserElement), "utf8", false);
+      saveDesktopFilePosition("my PC/Desktop/Browser.lnk", { x: 700, y: 0 });
+
       const pdfElement = (await readLocalFile("./files/CV-Stefano Badalucco.pdf")) as string;
       await createFile("my PC/Desktop/CV-Stefano_Badalucco.pdf", pdfElement, "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/CV-Stefano_Badalucco.pdf", { x: 0, y: 0 });
