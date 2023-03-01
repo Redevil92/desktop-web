@@ -31,6 +31,10 @@ export const createFilesStructure = async () => {
       await createFile("my PC/Desktop/Browser.lnk", JSON.stringify(browserElement), "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/Browser.lnk", { x: 120, y: 0 });
 
+      const dukeNuken: LinkData = { applicationToOpen: "Duke Nukem 3D" };
+      await createFile("my PC/Desktop/Duke Nukem 3D.lnk", JSON.stringify(dukeNuken), "utf8", false);
+      saveDesktopFilePosition("my PC/Desktop/Duke Nukem 3D.lnk", { x: 120, y: 110 });
+
       const pdfElement = (await readLocalFile("./files/CV-Stefano Badalucco.pdf")) as string;
       await createFile("my PC/Desktop/CV-Stefano_Badalucco.pdf", pdfElement, "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/CV-Stefano_Badalucco.pdf", { x: 0, y: 0 });

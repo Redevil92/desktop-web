@@ -66,6 +66,7 @@ watch(
 const getLinkFileIcon = async () => {
   if (props.filePath) {
     const linkData: LinkData = JSON.parse(await readFile(props.filePath));
+
     if (linkData.filePath) {
       console.log(linkData.filePath);
 
@@ -73,7 +74,8 @@ const getLinkFileIcon = async () => {
       return require(`/src/assets/fileIcons/${iconFromPath}`);
     } else if (linkData.applicationToOpen) {
       const fileTypeConfig = fileTypesConfiguration[linkData.applicationToOpen];
-      return fileTypeConfig.icon;
+
+      return require(`/src/assets/fileIcons/${fileTypeConfig.icon}`);
     }
   }
   return "file.svg";

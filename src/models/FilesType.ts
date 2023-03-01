@@ -110,7 +110,7 @@ const applicationType = (name: string, applicationToOpen: string, icon?: string)
       width: 650,
     },
     title: `${name}`,
-    icon: icon ? icon : `${icon}.png`,
+    icon: icon ? icon : `${name}.png`,
     application: applicationToOpen,
     canOpenWithoutFile: true,
     canRepeatInAppList: true,
