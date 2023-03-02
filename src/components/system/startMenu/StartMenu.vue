@@ -19,8 +19,6 @@
       </div>
       <div v-if="!showAllApps && search === ''">
         <div class="pinned-application-container">
-          <!-- these application should come from the store/local storage -->
-
           <div v-for="app in pinnedApps" :key="'pinned-' + app.app">
             <AppItem
               @closeStartMenu="setStartMenuOpened(false)"

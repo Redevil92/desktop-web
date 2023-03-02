@@ -1,8 +1,8 @@
 <template>
   <div v-if="isLinkFile && filePath && linkIcon" style="position: relative">
     <img :class="fileIconClasses" :height="height" :src="linkIcon" alt="" />
-    <div class="link-icon-container">
-      <span class="mdi mdi-arrow-top-right-thin link-icon"></span>
+    <div class="link-icon-container" v-if="height > 50">
+      <span class="mdi mdi-arrow-top-right-thin"></span>
     </div>
   </div>
 
@@ -31,7 +31,10 @@ import LinkData from "@/models/LinkData";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 
 const props = defineProps({
-  height: Number,
+  height: {
+    type: Number,
+    required: true,
+  },
   // if icon use it, otherwise find the icon with filePath
   icon: {
     type: String,
@@ -160,8 +163,5 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.link-icon {
 }
 </style>
