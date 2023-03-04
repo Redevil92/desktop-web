@@ -6,6 +6,7 @@ import {
   compressToZipFileAction,
   downloadFileAction,
   createShortcut,
+  openFileAction,
 } from "./ActionsList";
 
 export const getFileActions = async (paths: string[]) => {
@@ -17,6 +18,7 @@ export const getFileActions = async (paths: string[]) => {
     await compressToZipFileAction(paths),
     createShortcut(paths),
     downloadFileAction(paths),
+    await openFileAction(paths),
   ];
   return fileActions;
 };

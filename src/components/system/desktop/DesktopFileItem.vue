@@ -166,18 +166,7 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
   const pointerEvent = event as PointerEvent;
   selectFile(item);
 
-  let desktopFileActions = [
-    ...(await getFileActions(fileSystemStore.getSelectedDesktopItemsPath)),
-    {
-      materialIcon: "mdi-open-in-new",
-      iconOnly: false,
-      horizontalGroup: false,
-      groupName: "other",
-      actionName: "Open",
-      callback: openFileItem,
-      disabled: false,
-    },
-  ];
+  let desktopFileActions = [...(await getFileActions(fileSystemStore.getSelectedDesktopItemsPath))];
 
   // TODO: based on the type of the element add new custom actions
   // I should add the custom actions in filesType

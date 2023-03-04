@@ -33,7 +33,7 @@ import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import useCompression from "@/hooks/useCompression";
 import { TEMP_PATH } from "@/constants";
-import { copyAction } from "@/components/system/actionMenu/ActionsList";
+import { copyAction, openFileAction } from "@/components/system/actionMenu/ActionsList";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
@@ -97,23 +97,12 @@ const rightClickItemHandler = (eventAndPath: { event: Event; filePath: string })
   openActionMenu(eventAndPath.event, false, eventAndPath.filePath);
 };
 
-const openActionMenu = (event: any, isOpenedFolder = false, customPath: string) => {
+const openActionMenu = async (event: any, isOpenedFolder = false, customPath: string) => {
   event.preventDefault();
   event.stopPropagation();
   const pointerEvent = event as PointerEvent;
 
-  const customActions = [
-    copyAction([customPath], false, false),
-    {
-      materialIcon: "mdi-open-in-new",
-      iconOnly: false,
-      groupName: "other",
-      actionName: "Open",
-      horizontalGroup: false,
-      callback: () => doubleClickHandler(customPath),
-      disabled: false,
-    },
-  ];
+  const customActions = [copyAction([customPath], false, false), await openFileAction([customPath])];
 
   fileSystemStore.setActionMenu({
     show: true,

@@ -267,7 +267,6 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
         filePaths,
         []
       );
-      console.log("AH AH", filePaths, filesToZip);
       const zippedFile = await compressToZipFile(filesToZip);
       const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
       await fileSystemStore.createFile({ path: zipFilePath, content: zippedFile }, false);
@@ -277,6 +276,38 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     disabled,
   };
 };
+
+export const openFileAction = (filePaths: string[]) => {
+  return {
+    materialIcon: "mdi-open-in-new",
+    iconOnly: false,
+    horizontalGroup: false,
+    groupName: "other",
+    actionName: "Open",
+    callback: async () => {
+      const fileSystemStore = useFileSystemStore();
+
+      for (const path of filePaths) {
+        const isDirectory = await isDir(path);
+        const alreadyOpenedItemDialog = fileSystemStore.itemsDialog.find(
+          (itemDialog) => filePaths[0] === itemDialog.path
+        );
+        if (isDirectory && filePaths.length === 1 && alreadyOpenedItemDialog) {
+          fileSystemStore.updateItemDialogPath({ newPath: path, itemDialog: alreadyOpenedItemDialog });
+        }
+        const desktopItem = {
+          path,
+          coordinates: { x: 0, y: 0 },
+          isSelected: true,
+        };
+        fileSystemStore.createItemDialog(desktopItem);
+      }
+    },
+    disabled: false,
+  };
+};
+
+export const openFileWith = () => {};
 
 const addFilesFromPathRecursivelyToList = async (
   filePaths: string[],

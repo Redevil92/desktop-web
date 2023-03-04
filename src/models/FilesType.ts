@@ -74,6 +74,7 @@ const videoType: FileType = {
   title: "Video player",
   icon: "mp4.svg",
   canOpenWithoutFile: false,
+  openWith: ["TextFileItem"],
 };
 
 const codeType = (codeExt: string): FileType => {
@@ -220,7 +221,7 @@ const fileTypesConfiguration: FileTypes = {
     title: "",
     icon: "",
     application: "LinkItem",
-    canOpenWithoutFile: true,
+    canOpenWithoutFile: false,
   },
   txt: textType,
   text: textType,
@@ -288,7 +289,7 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
-  Doom: applicationType("Doom", "dosItem/DosPlayer", "dosItem/DosPlayer"),
+  Doom: applicationType("Doom", "dosItem/DosPlayer"),
   "WarCraft- Orcs & Humans": applicationType("WarCraft- Orcs & Humans", "dosItem/DosPlayer"),
   "Duke Nukem 3D": applicationType("Duke Nukem 3D", "dosItem/DosPlayer"),
   "Sim City": applicationType("Sim City", "dosItem/DosPlayer"),

@@ -93,6 +93,15 @@ const pathToEdit = ref(props.itemDialog?.path);
 
 const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
 
+watch(
+  () => props.itemDialog,
+  (oldValue, newValue) => {
+    if (oldValue?.path !== newValue?.path && newValue?.path) {
+      pathToEdit.value = newValue.path;
+    }
+  }
+);
+
 const isDraggingItem = computed(function () {
   return fileSystemStore.dragginPath !== "";
 });
@@ -122,18 +131,7 @@ const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, 
         createNewFolder(pointerEvent, eventAndPath.filePath),
         await pasteAction(eventAndPath.filePath, false, false, false),
       ]
-    : [
-        ...(await getFileActions([eventAndPath.filePath])),
-        {
-          materialIcon: "mdi-open-in-new",
-          iconOnly: false,
-          horizontalGroup: false,
-          groupName: "other",
-          actionName: "Open",
-          callback: () => doubleClickHandler(eventAndPath.filePath),
-          disabled: false,
-        },
-      ];
+    : [...(await getFileActions([eventAndPath.filePath]))];
 
   fileSystemStore.setActionMenu({
     show: true,
