@@ -1,5 +1,5 @@
 import { downloadFiles, getFiles, isDir, readFile } from "@/context/fileSystemController";
-import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
 import {
   getDesktopFilePositionFromLocalStorage,
@@ -8,6 +8,7 @@ import {
 } from "@/hooks/useLocalStorage";
 import { ActionItem } from "@/models/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
+import fileTypesConfiguration from "@/models/FilesType";
 import LinkData from "@/models/LinkData";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
@@ -288,13 +289,6 @@ export const openFileAction = (filePaths: string[]) => {
       const fileSystemStore = useFileSystemStore();
 
       for (const path of filePaths) {
-        const isDirectory = await isDir(path);
-        const alreadyOpenedItemDialog = fileSystemStore.itemsDialog.find(
-          (itemDialog) => filePaths[0] === itemDialog.path
-        );
-        if (isDirectory && filePaths.length === 1 && alreadyOpenedItemDialog) {
-          fileSystemStore.updateItemDialogPath({ newPath: path, itemDialog: alreadyOpenedItemDialog });
-        }
         const desktopItem = {
           path,
           coordinates: { x: 0, y: 0 },
@@ -307,7 +301,25 @@ export const openFileAction = (filePaths: string[]) => {
   };
 };
 
-export const openFileWith = () => {};
+export const openFileWith = (filePaths: string[]) => {
+  if (filePaths.length === 1) {
+    const itemExtension = getFileExtensionFromName(filePaths[0]);
+    const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+    if (fileTypeConfiguration && fileTypeConfiguration.openWith) {
+      return {
+        materialIcon: "mdi-open-in-new",
+        iconOnly: false,
+        horizontalGroup: false,
+        groupName: "other",
+        actionName: "Open with",
+        callback: () => {
+          console.log("HEY");
+        },
+        disabled: false,
+      };
+    }
+  }
+};
 
 const addFilesFromPathRecursivelyToList = async (
   filePaths: string[],

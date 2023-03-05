@@ -7,6 +7,7 @@ import {
   downloadFileAction,
   createShortcut,
   openFileAction,
+  openFileWith,
 } from "./ActionsList";
 
 export const getFileActions = async (paths: string[]) => {
@@ -19,6 +20,7 @@ export const getFileActions = async (paths: string[]) => {
     createShortcut(paths),
     downloadFileAction(paths),
     await openFileAction(paths),
+    openFileWith(paths),
   ];
   return fileActions;
 };

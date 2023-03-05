@@ -62,7 +62,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
   },
   actions: {
-    async createItemDialog(itemDialog: DesktopItem, additionalOptions?: any) {
+    async createItemDialog(itemDialog: DesktopItem, additionalOptions?: any, applicationToOpen?: string) {
       // if path already opened dont create a new one but
       const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
       if (index !== -1) {
@@ -74,7 +74,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = "";
-      let applicationToOpen = "";
+      let currentApplicationToOpen = applicationToOpen;
       let filesPath = [] as string[];
       let name = "";
       let itemExtension = "";
@@ -98,7 +98,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         dimension = fileTypeConfiguration.defaultSize;
         minDimension = fileTypeConfiguration.minSize;
         icon = fileTypeConfiguration.icon;
-        applicationToOpen = fileTypeConfiguration.application;
+        currentApplicationToOpen = applicationToOpen || fileTypeConfiguration.application;
         name = fileTypeConfiguration.title;
       }
 
@@ -116,7 +116,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         position: getNewItemDialogPosition(this.itemsDialog.length),
         dimension,
         minDimension,
-        applicationToOpen,
+        applicationToOpen: currentApplicationToOpen,
         filesPath,
         name,
         additionalOptions,

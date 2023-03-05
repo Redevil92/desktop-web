@@ -46,9 +46,13 @@ const actionsByGroup = computed(() => {
   const actions: Map<string, ActionItem[]> = new Map();
   if (actionMenuParams.value.customLayout) {
     actionMenuParams.value.customLayout.forEach((action) => {
-      if (actions.has(action.groupName)) {
-        actions.get(action.groupName)?.push(action);
-      } else actions.set(action.groupName, [action]);
+      if (action) {
+        if (actions.has(action.groupName)) {
+          actions.get(action.groupName)?.push(action);
+        } else {
+          actions.set(action.groupName, [action]);
+        }
+      }
     });
   }
   console.log(actions);
