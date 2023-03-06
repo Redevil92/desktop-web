@@ -33,7 +33,7 @@ import {
   createNewFolder,
   openDesktopSettingPage,
   pasteAction,
-} from "@/components/system/actionMenu/ActionsList";
+} from "@/components/system/actionMenu/actionsList";
 
 export default defineComponent({
   props: {},

@@ -33,7 +33,7 @@ import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import useCompression from "@/hooks/useCompression";
 import { TEMP_PATH } from "@/constants";
-import { copyAction, openFileAction } from "@/components/system/actionMenu/ActionsList";
+import { copyAction, openFileAction } from "@/components/system/actionMenu/actionsList";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,

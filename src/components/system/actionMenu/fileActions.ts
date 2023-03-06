@@ -1,3 +1,4 @@
+import { ActionItem } from "@/models/ActionMenu";
 import {
   copyAction,
   cutAction,
@@ -8,9 +9,9 @@ import {
   createShortcut,
   openFileAction,
   openFileWith,
-} from "./ActionsList";
+} from "./actionsList";
 
-export const getFileActions = async (paths: string[]) => {
+export const getFileActions = async (paths: string[], event: PointerEvent): Promise<(ActionItem | undefined)[]> => {
   const fileActions = await [
     copyAction(paths),
     cutAction(paths),

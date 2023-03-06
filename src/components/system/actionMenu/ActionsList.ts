@@ -278,7 +278,7 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
   };
 };
 
-export const openFileAction = (filePaths: string[]) => {
+export const openFileAction = (filePaths: string[]): ActionItem => {
   return {
     materialIcon: "mdi-open-in-new",
     iconOnly: false,
@@ -301,7 +301,7 @@ export const openFileAction = (filePaths: string[]) => {
   };
 };
 
-export const openFileWith = (filePaths: string[]) => {
+export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
   if (filePaths.length === 1) {
     const itemExtension = getFileExtensionFromName(filePaths[0]);
     const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
@@ -312,11 +312,14 @@ export const openFileWith = (filePaths: string[]) => {
         horizontalGroup: false,
         groupName: "other",
         actionName: "Open with",
+        callbackOnHover: true,
         callback: () => {
+          // create new action menu that contains the open with action
           console.log("HEY");
         },
+        subActions: [],
         disabled: false,
-      };
+      } as ActionItem;
     }
   }
 };

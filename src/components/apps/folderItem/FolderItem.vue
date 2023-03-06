@@ -78,7 +78,7 @@ import { useFileSystemStore } from "@/stores/fileSystemStore";
 import DesktopItem from "@/models/DesktopItem";
 import ActionMenu from "@/models/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
-import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/ActionsList";
+import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/actionsList";
 import { getFileActions } from "@/components/system/actionMenu/fileActions";
 
 const props = defineProps({ itemDialog: Object as PropType<ItemDialog>, height: { type: Number, required: true } });
@@ -131,13 +131,12 @@ const openActionMenu = async (eventAndPath: { event: Event; filePath: string }, 
         createNewFolder(pointerEvent, eventAndPath.filePath),
         await pasteAction(eventAndPath.filePath, false, false, false),
       ]
-    : [...(await getFileActions([eventAndPath.filePath]))];
+    : [...(await getFileActions([eventAndPath.filePath], eventAndPath.event as PointerEvent))];
 
   fileSystemStore.setActionMenu({
     show: true,
     paths: [eventAndPath.filePath],
     position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-    isOpenedFolder: isOpenedFolder,
     customLayout: customActions,
   } as ActionMenu);
 };

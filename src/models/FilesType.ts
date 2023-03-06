@@ -1,7 +1,7 @@
 // Add application to open
 // Have just one action in the store to open
 
-import { extractFilesInFolder, extractHere } from "@/components/system/actionMenu/ActionsList";
+import { extractFilesInFolder, extractHere } from "@/components/system/actionMenu/actionsList";
 import { FileType } from "./FileType";
 
 const imageType: FileType = {

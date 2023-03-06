@@ -73,6 +73,7 @@ import {
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import fileTypesConfiguration from "@/models/FilesType";
 import { getFileActions } from "../actionMenu/fileActions";
+import { ActionItem } from "@/models/ActionMenu";
 
 const props = defineProps({
   fileItem: { type: Object as PropType<DesktopItem>, required: true },
@@ -166,7 +167,11 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
   const pointerEvent = event as PointerEvent;
   selectFile(item);
 
-  let desktopFileActions = [...(await getFileActions(fileSystemStore.getSelectedDesktopItemsPath))];
+  let desktopFileActions = [
+    ...((await getFileActions(fileSystemStore.getSelectedDesktopItemsPath, event)).filter(
+      (action) => action !== undefined
+    ) as ActionItem[]),
+  ];
 
   // TODO: based on the type of the element add new custom actions
   // I should add the custom actions in filesType
@@ -178,13 +183,14 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
       fileTypeConfiguration.additionalActions.map((action) => action(item.path))
     );
   }
-
-  fileSystemStore.setActionMenu({
-    show: true,
-    paths: fileSystemStore.getSelectedDesktopItemsPath,
-    position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-    customLayout: desktopFileActions,
-  });
+  if (desktopFileActions) {
+    fileSystemStore.setActionMenu({
+      show: true,
+      paths: fileSystemStore.getSelectedDesktopItemsPath,
+      position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+      customLayout: desktopFileActions,
+    });
+  }
 };
 
 const clickHandler = () => {
