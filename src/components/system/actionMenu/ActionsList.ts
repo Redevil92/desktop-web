@@ -306,6 +306,29 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
     const itemExtension = getFileExtensionFromName(filePaths[0]);
     const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
     if (fileTypeConfiguration && fileTypeConfiguration.openWith) {
+      const subActions = fileTypeConfiguration.openWith.map((application: string) => {
+        return {
+          materialIcon: "mdi-open-in-new",
+          iconOnly: false,
+          horizontalGroup: false,
+          groupName: "other",
+          actionName: application,
+          callback: async () => {
+            const fileSystemStore = useFileSystemStore();
+
+            for (const path of filePaths) {
+              const desktopItem = {
+                path,
+                coordinates: { x: 0, y: 0 },
+                isSelected: true,
+              };
+              fileSystemStore.createItemDialog(desktopItem, undefined, application);
+            }
+          },
+          disabled: false,
+        };
+      });
+
       return {
         materialIcon: "mdi-open-in-new",
         iconOnly: false,
@@ -314,10 +337,9 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
         actionName: "Open with",
         callbackOnHover: true,
         callback: () => {
-          // create new action menu that contains the open with action
-          console.log("HEY");
+          console.log();
         },
-        subActions: [],
+        subActions: subActions,
         disabled: false,
       } as ActionItem;
     }
