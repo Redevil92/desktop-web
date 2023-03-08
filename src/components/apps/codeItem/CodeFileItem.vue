@@ -101,10 +101,15 @@ const fileType = getFileTypeFromExtension();
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
     let codeBase64 = await readFile(props.itemDialog?.path);
-    const codeToShow = b64ToText(codeBase64, true);
-    fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];
-    code.value = codeToShow;
-    savedCode.value = codeToShow;
+    try {
+      const codeToShow = b64ToText(codeBase64, true);
+      fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];
+      code.value = codeToShow;
+      savedCode.value = codeToShow;
+    } catch (error) {
+      code.value = codeBase64;
+      savedCode.value = codeBase64;
+    }
   }
 });
 </script>

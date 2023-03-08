@@ -74,7 +74,13 @@ const videoType: FileType = {
   title: "Video player",
   icon: "mp4.svg",
   canOpenWithoutFile: false,
-  openWith: ["TextFileItem"],
+  openWith: [
+    {
+      actionName: "Monaco editor",
+      applicationToOpen: "codeItem/CodeFileItem",
+      iconMdi: "mdi-microsoft-visual-studio-code",
+    },
+  ],
 };
 
 const codeType = (codeExt: string): FileType => {

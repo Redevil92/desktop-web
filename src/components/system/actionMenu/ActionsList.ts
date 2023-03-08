@@ -6,7 +6,7 @@ import {
   getDesktopFilesPositionFromLocalStorage,
   saveDesktopFilePosition,
 } from "@/hooks/useLocalStorage";
-import { ActionItem } from "@/models/ActionMenu";
+import ActionItem from "@/models/ActionMenu/ActionItem";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import LinkData from "@/models/LinkData";
@@ -306,13 +306,13 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
     const itemExtension = getFileExtensionFromName(filePaths[0]);
     const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
     if (fileTypeConfiguration && fileTypeConfiguration.openWith) {
-      const subActions = fileTypeConfiguration.openWith.map((application: string) => {
+      const subActions = fileTypeConfiguration.openWith.map((application) => {
         return {
-          materialIcon: "mdi-open-in-new",
+          materialIcon: application.iconMdi || "mdi-open-in-new",
           iconOnly: false,
           horizontalGroup: false,
           groupName: "other",
-          actionName: application,
+          actionName: application.actionName,
           callback: async () => {
             const fileSystemStore = useFileSystemStore();
 
@@ -322,7 +322,8 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
                 coordinates: { x: 0, y: 0 },
                 isSelected: true,
               };
-              fileSystemStore.createItemDialog(desktopItem, undefined, application);
+              console.log("OPEN", application);
+              fileSystemStore.createItemDialog(desktopItem, undefined, application.applicationToOpen);
             }
           },
           disabled: false,

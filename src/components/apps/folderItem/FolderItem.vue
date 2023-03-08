@@ -76,7 +76,7 @@ import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
-import ActionMenu from "@/models/ActionMenu";
+import ActionMenu from "@/models/ActionMenu/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/actionsList";
 import { getFileActions } from "@/components/system/actionMenu/fileActions";

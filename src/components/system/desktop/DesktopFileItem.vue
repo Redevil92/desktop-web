@@ -73,7 +73,7 @@ import {
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import fileTypesConfiguration from "@/models/FilesType";
 import { getFileActions } from "../actionMenu/fileActions";
-import { ActionItem } from "@/models/ActionMenu";
+import ActionItem from "@/models/ActionMenu/ActionItem";
 
 const props = defineProps({
   fileItem: { type: Object as PropType<DesktopItem>, required: true },

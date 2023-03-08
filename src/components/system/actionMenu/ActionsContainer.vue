@@ -1,85 +1,49 @@
 <template>
-  <div
-    v-if="actionMenuParams && actionMenuParams.show && actionMenuParams.position"
-    :style="`top: ${actionMenuParams.position.y}px; left: ${actionMenuParams.position.x}px;`"
-    class="actions-dialog padding"
-  >
-    <div v-if="actionMenuParams.customLayout">
-      <div v-for="(group, i) in actionsByGroup" :key="`group-${i}`">
-        <div :class="{ 'horizontal-group': group[1][0].horizontalGroup }">
-          <ActionItem v-for="(item, j) in group[1]" :key="`group-${j}-action-${i}`"></ActionItem>
-        </div>
-        <div v-if="actionsByGroup.size !== i + 1" class="separator-line"></div>
+  <div :style="`top: ${position.y}px; left: ${position.x}px;`" class="actions-dialog">
+    <div v-for="(group, i) in actionsByGroup" :key="`group-${i}`">
+      <div :class="{ 'horizontal-group': group[1][0].horizontalGroup }">
+        <ActionItemVue v-for="(item, j) in group[1]" :actionItem="item" :key="`group-${j}-action-${i}`"></ActionItemVue>
       </div>
+      <div v-if="actionsByGroup.size !== i + 1" class="separator-line"></div>
     </div>
   </div>
 </template>
-
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, PropType } from "vue";
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { ActionItem } from "@/models/ActionMenu";
-
-const emit = defineEmits(["onAddNewFile", "onAddNewFolder"]);
+import ActionItem from "@/models/ActionMenu/ActionItem";
+import ActionItemVue from "./ActionItem.vue";
+import Coordinates from "@/models/Coordinates";
 
 const fileSystemStore = useFileSystemStore();
 
-// props -> path
-const actionMenuParams = computed(function () {
-  return fileSystemStore.actionMenu;
+const props = defineProps({
+  actionList: { type: Array as PropType<ActionItem[]>, required: true },
+  position: { type: Object as PropType<Coordinates>, required: true },
 });
 
 const actionsByGroup = computed(() => {
   const actions: Map<string, ActionItem[]> = new Map();
-  if (actionMenuParams.value.customLayout) {
-    actionMenuParams.value.customLayout.forEach((action) => {
-      if (action) {
-        if (actions.has(action.groupName)) {
-          actions.get(action.groupName)?.push(action);
-        } else {
-          actions.set(action.groupName, [action]);
-        }
+
+  props.actionList.forEach((action) => {
+    if (action) {
+      if (actions.has(action.groupName)) {
+        actions.get(action.groupName)?.push(action);
+      } else {
+        actions.set(action.groupName, [action]);
       }
-    });
-  }
-  console.log(actions);
+    }
+  });
+
   return actions;
-});
-
-const closeActionDialog = () => {
-  fileSystemStore.closeActionMenu();
-};
-
-onMounted(() => {
-  window.addEventListener("click", closeActionDialog);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("click", closeActionDialog);
 });
 </script>
 
 <style scoped>
 .horizontal-group {
   display: flex;
-}
-
-.material-icon {
-  font-size: 18px;
-}
-
-.action {
-  padding: 2px 5px;
-  margin-right: 3px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.action:hover {
-  background-color: var(--selected-color_opacity);
-  border-radius: var(--border-radius);
+  padding: 4px 4px 0px 4px;
 }
 
 .actions-dialog {
@@ -87,7 +51,7 @@ onUnmounted(() => {
     outline: 1px solid #575757; */
   color: white;
   border-radius: var(--border-radius);
-  position: absolute;
+  position: fixed;
   background-color: #616161ed;
   top: 160px;
   left: 600px;
@@ -99,15 +63,6 @@ onUnmounted(() => {
 
 .padding {
   padding: 5px 10px;
-}
-
-.disabled-action {
-  cursor: default;
-  opacity: 0.3;
-}
-
-.action-name {
-  margin-left: var(--margin);
 }
 
 hr {

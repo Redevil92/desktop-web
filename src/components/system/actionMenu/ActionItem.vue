@@ -1,6 +1,7 @@
 <template>
-  <div @click="actionItem.callback">
-    <div class="action" :class="{ 'disabled-action': actionItem.disabled }">
+  <div @mouseenter="setShowSubActions(true)" @mouseleave="setShowSubActions(false)" @click="actionItem.callback">
+    <div ref="actionRef" class="action" :class="{ 'disabled-action': actionItem.disabled }">
+      <div></div>
       <div v-if="actionItem.icon">
         <img height="18" :src="require(`/src/assets/icons/${actionItem.icon}`)" alt="" />
       </div>
@@ -10,17 +11,23 @@
       <div v-if="!actionItem.iconOnly" class="action-name">
         {{ actionItem.actionName }}
       </div>
+      <div v-if="actionItem.subActions" style="position: absolute; right: 5px">
+        <span class="mdi mdi-chevron-right"></span>
+      </div>
+    </div>
+
+    <div v-if="actionItem.subActions && actionRef && showSubActions">
+      <ActionsContainer :action-list="actionItem.subActions" :position="subActionsContainerPosition"></ActionsContainer>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue";
+import { computed, PropType, ref, watch } from "vue";
 
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { ActionItem } from "@/models/ActionMenu";
-
-const emit = defineEmits(["onAddNewFile", "onAddNewFolder"]);
+import ActionItem from "@/models/ActionMenu/ActionItem";
+import ActionsContainer from "./ActionsContainer.vue";
+import Coordinates from "@/models/Coordinates";
 
 const props = defineProps({
   actionItem: {
@@ -29,7 +36,30 @@ const props = defineProps({
   },
 });
 
-const fileSystemStore = useFileSystemStore();
+const actionRef = ref<HTMLElement | null>(null);
+const showSubActions = ref(false);
+const isMouseCurrentlyHover = ref(false);
+
+const subActionsContainerPosition = computed((): Coordinates => {
+  if (actionRef.value) {
+    return {
+      x: actionRef.value.getBoundingClientRect().right,
+      y: actionRef.value.getBoundingClientRect().top,
+    };
+  }
+  return { x: 0, y: 0 };
+});
+
+const setShowSubActions = (show: boolean) => {
+  isMouseCurrentlyHover.value = show;
+  setTimeout(() => {
+    if (!show && !isMouseCurrentlyHover.value) {
+      showSubActions.value = show;
+    } else {
+      showSubActions.value = true;
+    }
+  }, 200);
+};
 </script>
 
 <style scoped>
@@ -38,7 +68,7 @@ const fileSystemStore = useFileSystemStore();
 }
 
 .action {
-  padding: 2px 5px;
+  padding: 3px 8px;
   margin-right: 3px;
   cursor: pointer;
   display: flex;
@@ -55,29 +85,8 @@ const fileSystemStore = useFileSystemStore();
   opacity: 0.3;
 }
 
-.action-button {
-  padding: 2px 5px;
-  border-radius: 5px;
-  width: 100% !important;
-  cursor: pointer;
-  width: max-content;
-}
-
 .action-name {
   margin-left: var(--margin);
-}
-
-.disabled-action-button {
-  padding: 0px 7px;
-  border-radius: 5px;
-  width: 100% !important;
-  cursor: pointer;
-  width: max-content;
-  opacity: 0.5;
-}
-
-.action-button:hover {
-  background-color: var(--selected-color);
 }
 
 hr {

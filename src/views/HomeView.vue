@@ -24,7 +24,7 @@ import ActionMenu from "@/components/system/actionMenu/ActionMenu.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 import DynamicIsland from "@/components/system/dynamicIsland/DynamicIsland.vue";
 
-import ActionMenuModel from "@/models/ActionMenu";
+import ActionMenuModel from "@/models/ActionMenu/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { DESKTOP_PATH } from "@/constants";
 import { useFileSystemStore } from "@/stores/fileSystemStore";

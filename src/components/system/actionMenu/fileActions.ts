@@ -1,4 +1,4 @@
-import { ActionItem } from "@/models/ActionMenu";
+import ActionItem from "@/models/ActionMenu/ActionItem";
 import {
   copyAction,
   cutAction,

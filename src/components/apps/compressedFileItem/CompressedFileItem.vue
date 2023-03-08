@@ -30,7 +30,7 @@ import { getFiles, isDir, readFile } from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
-import ActionMenu from "@/models/ActionMenu";
+import ActionMenu from "@/models/ActionMenu/ActionMenu";
 import useCompression from "@/hooks/useCompression";
 import { TEMP_PATH } from "@/constants";
 import { copyAction, openFileAction } from "@/components/system/actionMenu/actionsList";

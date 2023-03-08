@@ -1,4 +1,5 @@
-import { ActionItem } from "./ActionMenu";
+import ActionItem from "./ActionMenu/ActionItem";
+import OpenWithAction from "./ActionMenu/OpenWithAction";
 import Dimension from "./Dimension";
 
 export interface FileType {
@@ -12,6 +13,6 @@ export interface FileType {
   application: string;
   canOpenWithoutFile: boolean;
   canRepeatInAppList?: boolean;
-  openWith?: string[];
+  openWith?: OpenWithAction[];
   additionalActions?: ((path: string) => ActionItem)[]; // actions to add in ActionMenu for the desktop file item
 }

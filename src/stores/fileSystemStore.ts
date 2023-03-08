@@ -11,7 +11,7 @@ import {
 } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
-import ActionMenu from "@/models/ActionMenu";
+import ActionMenu from "@/models/ActionMenu/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import ItemDialog from "@/models/ItemDialog";
