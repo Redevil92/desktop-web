@@ -1,5 +1,10 @@
 # Desktop web
 
+Hello! This is my personal project developed in my spare time.
+The purpose of the project is to emulate the desktop environment in the browser. You can drop files from your pc inside the app, create and open various type of files.
+It's still a work in progress and some new feature will be added in the next months.
+In the coming weeks I will update the README file and provide more information about features already implemented and upcoming plans!
+
 ## Project setup
 
 ```
