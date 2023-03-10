@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, onMounted, ref, reactive, computed } from "vue";
+import { PropType, onMounted, ref, computed } from "vue";
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
 import DesktopFileItem from "@/components/system/desktop/DesktopFileItem.vue";
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
@@ -65,12 +65,9 @@ const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
   await moveFilesInFolder(event, dropDestinationFileName);
 };
 
-const setIsSelectionBoxEnabled = (isSelectionBoxEnabled: boolean) => {
-  fileSystemStore.setIsSelectionBoxEnabled(isSelectionBoxEnabled);
-};
-
 const selectFile = (filesSelected: DesktopItem[]) => {
   fileSystemStore.setSelectedDesktopFiles(filesSelected);
+  fileSystemStore.setFocusedItemDialog(null);
 };
 
 const selectItemsWithSelectionBox = (selectedElements: Element[]) => {

@@ -216,13 +216,13 @@ export const useFileSystemStore = defineStore("fileSystem", {
         this.setFocusedItemDialog(itemDialogToFocus);
       }
     },
-    setFocusedItemDialog(itemDialog: ItemDialog) {
+    setFocusedItemDialog(itemDialog: ItemDialog | null) {
       const itemsToUpdate = [...this.itemsDialog];
       itemsToUpdate.forEach((item) => {
         item.isFocused = false;
         item.zIndex = Math.max(item.zIndex - 1, 1);
       });
-      const index = itemsToUpdate.findIndex((item) => item.guid === itemDialog.guid);
+      const index = itemsToUpdate.findIndex((item) => item.guid === itemDialog?.guid);
 
       if (index !== -1) {
         itemsToUpdate[index].isFocused = true;
