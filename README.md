@@ -3,9 +3,9 @@
 Hello there!<br/>
 The purpose of the project is to emulate the desktop environment in the browser. You can drop files from your pc inside the app, create and open various type of files.<br/>
 It's still a work in progress and some new feature will be added in the next months.<br/>
-In the coming weeks I will update the README file and provide more information about features already implemented and upcoming plans!
+In the coming weeks I will update the README file and provide more information about already implemented features and upcoming plans!
 
-## Clone reepo
+## Clone repo
 
 ```
 git clone https://github.com/Redevil92/desktop-web.git
