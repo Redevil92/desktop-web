@@ -16,6 +16,7 @@ export default interface ItemDialog {
   isFullscreen?: boolean;
   minDimension?: Dimension;
   filesPath: string[];
+  selectedFilesPath?: string[];
   additionalOptions?: any;
 }
 

@@ -152,6 +152,7 @@ const setIsEditingText = async () => {
 };
 
 const selectFile = (newFileSelected: DesktopItem) => {
+  fileSystemStore.setFocusedItemDialog(null);
   const index = selectedDesktopItems.value.findIndex((item) => item.path === newFileSelected.path);
 
   if (index === -1) {

@@ -1,22 +1,43 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { isDir } from "@/context/fileSystemController";
+import { DESKTOP_PATH } from "@/constants";
 
 export default function useKeyboardShortcut() {
-  const keydown = ref("");
   const fileSystemStore = useFileSystemStore();
 
-  const keyDownHandler = (event: KeyboardEvent) => {
+  const keyDownHandler = async (event: KeyboardEvent) => {
     const itemDialogFocused = fileSystemStore.itemsDialog.find((item) => item.isFocused);
-    console.log(itemDialogFocused);
+    let isFolder = false;
+    if (itemDialogFocused) {
+      isFolder = await isDir(itemDialogFocused.path);
+    }
+
+    let elementsSelected: string[] = [];
+    if (!itemDialogFocused) {
+      elementsSelected = fileSystemStore.getSelectedDesktopItems.map((item) => item.path);
+    } else if (itemDialogFocused.selectedFilesPath) {
+      elementsSelected = itemDialogFocused.selectedFilesPath;
+    }
+
     if (event.ctrlKey && event.key === "c") {
-      // if(itemDialogFocused && itemDialogFocused.)
-      fileSystemStore.setFilePathsToCopy([]);
+      fileSystemStore.setFilePathsToCopy(elementsSelected);
     } else if (event.ctrlKey && event.key === "v") {
-      fileSystemStore.pasteFiles("");
+      if (itemDialogFocused) {
+        if (isFolder) {
+          fileSystemStore.pasteFiles(itemDialogFocused.path);
+        }
+      } else {
+        fileSystemStore.pasteFiles(DESKTOP_PATH);
+      }
     } else if (event.ctrlKey && event.key === "x") {
-      fileSystemStore.setFilePathsToCut([]);
+      fileSystemStore.setFilePathsToCut(elementsSelected);
     } else if (event.key === "Delete") {
-      console.log("HEI UOMO, delete");
+      for (const path of elementsSelected) {
+        await fileSystemStore.deleteFileSystemItem(path);
+      }
+      fileSystemStore.refreshAllItemDialogFiles();
+      fileSystemStore.fetchDesktopItems();
     }
   };
 
@@ -28,5 +49,5 @@ export default function useKeyboardShortcut() {
     window.removeEventListener("keydown", keyDownHandler);
   });
 
-  return { keydown };
+  return {};
 }

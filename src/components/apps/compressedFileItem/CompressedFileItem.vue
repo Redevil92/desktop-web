@@ -53,9 +53,7 @@ onBeforeMount(async () => {
 });
 
 onUnmounted(async () => {
-  console.log("deleting", items.value);
   for (const filePath of items.value) {
-    console.log(3, "deleting", filePath);
     await fileSystemStore.deleteFileSystemItem(filePath);
   }
 });

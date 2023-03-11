@@ -34,6 +34,7 @@ import { isDir } from "@/context/fileSystemController";
 
 import { useSettingsStore } from "@/stores/settingsStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 
 const props = defineProps({
   msg: String,
@@ -46,6 +47,7 @@ const fileSystemStore = useFileSystemStore();
 const settingsStore = useSettingsStore();
 
 const { moveFilesInFolder } = useMoveFiles();
+useKeyboardShortcut();
 
 const desktopRef = ref(null as unknown as HTMLElement);
 
@@ -71,7 +73,7 @@ const selectFile = (filesSelected: DesktopItem[]) => {
 };
 
 const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-  //const desktopPaths = store.getters["fileSystem/GET_DESKTOP_FILES"] as string[];
+  fileSystemStore.setFocusedItemDialog(null);
 
   const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
     const clientRect = element.getBoundingClientRect();

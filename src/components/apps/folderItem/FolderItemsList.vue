@@ -25,13 +25,13 @@
       @click.right="rightClickHandler($event, item.path)"
     >
       <div v-if="viewType === 'preview'" draggable="true" @dragstart="dragStart">
-        <FileIcon :selected="item.path === selectedItem" :height="60" :filePath="item.path" />
-        <div :class="item.path === selectedItem ? 'file-text-preview-selected' : ''" class="file-text-preview">
+        <FileIcon :selected="selectedItems.includes(item.path)" :height="60" :filePath="item.path" />
+        <div :class="selectedItems.includes(item.path) ? 'file-text-preview-selected' : ''" class="file-text-preview">
           <textarea
-            v-if="item.path === selectedItem && isEditingSelectedValue && canRename"
+            v-if="selectedItems.includes(item.path) && isEditingSelectedValue && canRename"
             ref="fileNameInputRef"
-            @keyup.enter="renameFileHandler"
-            @blur="renameFileHandler"
+            @keyup.enter="renameFileHandler(item.path)"
+            @blur="renameFileHandler(item.path)"
             rows="2"
             class="no-outline file-text-preview"
             v-model="fileNameToChange"
@@ -44,20 +44,18 @@
       <div
         v-if="viewType === 'list'"
         class="flex-align-center list-folder-item"
-        :class="{ 'selected-item': item.path === selectedItem }"
+        :class="{ 'selected-item': selectedItems.includes(item.path) }"
         draggable="true"
       >
-        <!-- @dragstart="dragStartHandler" -->
-
         <div class="flex" style="width: 400px">
           <FileIcon class="file-icon" :noStyle="true" :height="18" :filePath="item.path" />
-          <span v-if="item.path === selectedItem && isEditingSelectedValue && canRename">
+          <span v-if="selectedItems.includes(item.path) && isEditingSelectedValue && canRename">
             <input
               ref="fileNameInputRef"
               class="file-text no-outline"
               v-model="fileNameToChange"
-              @keyup.enter="renameFileHandler"
-              @blur="renameFileHandler"
+              @keyup.enter="renameFileHandler(item.path)"
+              @blur="renameFileHandler(item.path)"
               @keyup.esc="isEditingSelectedValue = false"
               type="text"
               :style="`width:${fileFocusedWidth}px`"
@@ -96,7 +94,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, PropType, ref, watchEffect } from "vue";
+import { computed, onMounted, onUnmounted, PropType, ref, watch, watchEffect } from "vue";
 
 import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
@@ -117,13 +115,19 @@ const props = defineProps({
   height: { type: Number },
 });
 
-const emit = defineEmits(["onDoubleClick", "onRightClick", "renameFileHandler", "onTryDeleteItem", "onItemMouseDown"]);
+const emit = defineEmits([
+  "onDoubleClick",
+  "onRightClick",
+  "renameFileHandler",
+  "onItemMouseDown",
+  "onSelectedItemsChange",
+]);
 
 const fileSystemStore = useFileSystemStore();
 const settingsStore = useSettingsStore();
 
 const viewType = ref("list");
-const selectedItem = ref("");
+const selectedItems = ref<string[]>([]);
 const isEditingSelectedValue = ref(false);
 const fileNameToChange = ref("");
 const fileNameInputRef = ref(null);
@@ -138,6 +142,13 @@ const timeFormat = computed(() => {
 const dateFormat = computed(() => {
   return settingsStore.dateFormat;
 });
+
+watch(
+  () => selectedItems.value,
+  async function () {
+    emit("onSelectedItemsChange", selectedItems.value);
+  }
+);
 
 const dragStart = () => {
   console.log("DRag start");
@@ -172,7 +183,7 @@ const isCutFile = (itemName: string) => {
 
 const itemClickHandler = async (filePath: string) => {
   emit("onItemMouseDown", filePath);
-  if (filePath === selectedItem.value) {
+  if (selectedItems.value.includes(filePath) && selectedItems.value.length === 1) {
     if (!isEditingSelectedValue.value && props.canRename) {
       fileNameToChange.value = getFileNameFromPath(filePath);
       setTimeout(async () => {
@@ -181,7 +192,7 @@ const itemClickHandler = async (filePath: string) => {
     }
     return;
   }
-  selectedItem.value = filePath;
+  selectedItems.value = [filePath];
   isEditingSelectedValue.value = false;
 };
 
@@ -195,31 +206,33 @@ const rightClickHandler = (event: Event, filePath: string) => {
   emit("onRightClick", { event, filePath });
 };
 
-const renameFileHandler = () => {
+const renameFileHandler = (filePathToRename: string) => {
   emit("renameFileHandler", {
-    newName: getSourcePathFromFilePath(selectedItem.value) + "/" + fileNameToChange.value,
-    oldName: selectedItem.value,
+    newName: getSourcePathFromFilePath(filePathToRename) + "/" + fileNameToChange.value,
+    oldName: filePathToRename,
   });
 };
 
 const deselectItem = () => {
-  selectedItem.value = "";
+  selectedItems.value = [];
   isEditingSelectedValue.value = false;
 };
 
 const keyDownHandler = (event: { code: string }) => {
-  if (props.isFocused && selectedItem.value && props.itemsList && props.keyEventsActive) {
-    if (event.code === "Delete" && selectedItem.value) {
-      emit("onTryDeleteItem", selectedItem.value);
-    } else if (event.code === "ArrowDown") {
-      const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
+  if (props.isFocused && selectedItems.value.length > 0 && props.itemsList && props.keyEventsActive) {
+    if (event.code === "ArrowDown") {
+      const index = props.itemsList.findIndex(
+        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1]
+      );
       if (index !== -1 && props.itemsList.length > index + 1) {
-        selectedItem.value = props.itemsList[index + 1];
+        selectedItems.value = [props.itemsList[index + 1]];
       }
     } else if (event.code === "ArrowUp") {
-      const index = props.itemsList.findIndex((filePath) => filePath === selectedItem.value);
+      const index = props.itemsList.findIndex(
+        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1]
+      );
       if (index > 0) {
-        selectedItem.value = props.itemsList[index - 1];
+        selectedItems.value = [props.itemsList[index - 1]];
       }
     }
   }
