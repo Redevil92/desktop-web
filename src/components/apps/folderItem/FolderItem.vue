@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="itemDialog"
+    @click="setFocusedItemDialog"
     @click.right="openActionMenu({ event: $event, filePath: itemDialog?.path || '' }, true)"
     class="droppable"
     :id="itemDialog.path"
@@ -39,8 +40,6 @@
         <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto; position: relative">
           <div
             @mousedown="showPathAsText = false"
-            @mouseover="isMouseOver = true"
-            @mouseleave="isMouseOver = false"
             @drop="dropFilehandler"
             class="folder-item-list"
             :class="{ 'folder-item-list-drag-over': isDraggingItem && isMouseOver }"
@@ -55,7 +54,7 @@
               @onDoubleClick="doubleClickHandler"
               @onRightClick="openActionMenu($event, false)"
               @renameFileHandler="renameFileHandler"
-              @onTryDeleteItem="tryDeleteItem"
+              @onSelectedItemsChange="setSelectedItemsForFolder"
             />
           </div>
         </DropExternalFileZone>
@@ -80,18 +79,23 @@ import ActionMenu from "@/models/ActionMenu/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
 import { createNewFile, createNewFolder, pasteAction } from "@/components/system/actionMenu/actionsList";
 import { getFileActions } from "@/components/system/actionMenu/fileActions";
+import useIsMouseOver from "@/hooks/useIsMouseOver";
 
-const props = defineProps({ itemDialog: Object as PropType<ItemDialog>, height: { type: Number, required: true } });
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
+  height: { type: Number, required: true },
+});
 
 const fileSystemStore = useFileSystemStore();
 
 const folderContentRef = ref<HTMLElement | null>(null);
 const fullPathInputRef = ref<HTMLInputElement | null>(null);
-const isMouseOver = ref(false as boolean);
+//const isMouseOver = ref(false as boolean);
 const showPathAsText = ref(false);
 const pathToEdit = ref(props.itemDialog?.path);
 
 const { moveFilesInFolder, setFilesToMove } = useMoveFiles();
+const { isMouseOver } = useIsMouseOver(folderContentRef);
 
 watch(
   () => props.itemDialog,
@@ -105,6 +109,12 @@ watch(
 const isDraggingItem = computed(function () {
   return fileSystemStore.dragginPath !== "";
 });
+
+const setSelectedItemsForFolder = (selectedItems: string[]) => {
+  const updatedItemDialog = Object.assign({}, props.itemDialog);
+  updatedItemDialog.selectedFilesPath = selectedItems;
+  fileSystemStore.updateItemDialog(updatedItemDialog);
+};
 
 const doubleClickHandler = async (filePath: string) => {
   const isDirectory = await isDir(filePath);
@@ -151,6 +161,7 @@ const dropFilehandler = async (event: Event) => {
 };
 
 const updateItemDialogPath = (fileName: string) => {
+  setFocusedItemDialog();
   fileSystemStore.updateItemDialogPath({ newPath: fileName, itemDialog: props.itemDialog as ItemDialog });
   pathToEdit.value = fileName;
 };
@@ -195,35 +206,9 @@ const buildPath = (fullPathSplitted: string[] | undefined, index: number) => {
   return newPath;
 };
 
-const tryDeleteItem = async (filePath: string) => {
-  await fileSystemStore.deleteFileSystemItem(filePath);
-  refreshFileSystemFiles();
+const setFocusedItemDialog = () => {
+  fileSystemStore.setFocusedItemDialog(props.itemDialog || null);
 };
-
-const checkMouseOver = (event: any) => {
-  if (isDraggingItem.value) {
-    const boundingRect = folderContentRef.value?.getBoundingClientRect();
-    if (
-      boundingRect &&
-      event.clientX < boundingRect.x + boundingRect.width &&
-      event.clientX > boundingRect.x &&
-      event.clientY < boundingRect.y + boundingRect.height &&
-      event.clientY > boundingRect.y
-    ) {
-      isMouseOver.value = true;
-    } else {
-      isMouseOver.value = false;
-    }
-  }
-};
-
-onMounted(() => {
-  window.addEventListener("mousemove", checkMouseOver);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("mousemove", checkMouseOver);
-});
 </script>
 
 <style scoped>

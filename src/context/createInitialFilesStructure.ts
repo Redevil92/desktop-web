@@ -27,11 +27,11 @@ export const createFilesStructure = async () => {
     await createDirectory("my PC/Videos");
 
     try {
-      const browserElement: LinkData = { applicationToOpen: "browser" };
+      const browserElement: LinkData = { fileTypeToOpen: "browser" };
       await createFile("my PC/Desktop/Browser.lnk", JSON.stringify(browserElement), "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/Browser.lnk", { x: 120, y: 0 });
 
-      const dukeNuken: LinkData = { applicationToOpen: "Duke Nukem 3D" };
+      const dukeNuken: LinkData = { fileTypeToOpen: "Duke Nukem 3D" };
       await createFile("my PC/Desktop/Duke Nukem 3D.lnk", JSON.stringify(dukeNuken), "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/Duke Nukem 3D.lnk", { x: 120, y: 110 });
 

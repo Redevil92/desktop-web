@@ -75,8 +75,8 @@ const getLinkFileIcon = async () => {
 
       const iconFromPath = await getFileIconFromPath(linkData.filePath);
       return require(`/src/assets/fileIcons/${iconFromPath}`);
-    } else if (linkData.applicationToOpen) {
-      const fileTypeConfig = fileTypesConfiguration[linkData.applicationToOpen];
+    } else if (linkData.fileTypeToOpen) {
+      const fileTypeConfig = fileTypesConfiguration[linkData.fileTypeToOpen];
 
       return require(`/src/assets/fileIcons/${fileTypeConfig.icon}`);
     }

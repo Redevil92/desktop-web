@@ -20,7 +20,7 @@ onBeforeMount(async () => {
 
   const appToOpen: DesktopItem = {
     path: linkData.filePath || "",
-    applicationExtension: linkData.applicationToOpen,
+    applicationExtension: linkData.fileTypeToOpen,
     coordinates: { x: 0, y: 0 },
     isSelected: true,
   };

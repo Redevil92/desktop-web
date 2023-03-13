@@ -1,11 +1,7 @@
 import { downloadFiles, getFiles, isDir, readFile } from "@/context/fileSystemController";
 import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
-import {
-  getDesktopFilePositionFromLocalStorage,
-  getDesktopFilesPositionFromLocalStorage,
-  saveDesktopFilePosition,
-} from "@/hooks/useLocalStorage";
+import { getDesktopFilePositionFromLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
 import ActionItem from "@/models/ActionMenu/ActionItem";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
