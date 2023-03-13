@@ -200,9 +200,9 @@ export const copyFileSystemItem = async (filePath: string, destinationPath: stri
 
 export const moveFiles = async (filesToMove: string[], destinationPath: string, keepOriginal = false) => {
   for (const filePath of filesToMove) {
-    if (getSourcePathFromFilePath(filePath) === destinationPath) {
-      break;
-    }
+    // if (getSourcePathFromFilePath(filePath) === destinationPath) {
+    //   break;
+    // }
 
     await copyFileSystemItem(filePath, destinationPath);
     if (!keepOriginal) {
