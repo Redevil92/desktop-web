@@ -5,6 +5,7 @@ import SnackBar from "@/models/SnackBar";
 export const useLayoutStore = defineStore("layout", {
   state: () => ({
     startMenuOpened: false,
+    loadingSpinner: { show: false, text: "" },
     snackbar: { show: false, text: "", severity: SEVERITY.information } as SnackBar,
     snackbarDurationTime: 3000 as number,
   }),
