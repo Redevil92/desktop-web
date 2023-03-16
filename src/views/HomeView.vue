@@ -9,13 +9,14 @@
     <div v-for="item in itemsDialog" :key="`folder-opened-${item.guid}`">
       <OpenedFileView v-show="!item.isCollapsed" :itemDialog="item" />
     </div>
-    <SnackBar></SnackBar>
+    <SnackBar />
     <TaskBar />
+    <LoadingComponent />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 
 import DesktopWorkSpace from "@/components/system/desktop/DesktopWorkSpace.vue";
 import OpenedFileView from "@/components/system/openedItemDialog/OpenedFileView.vue";
@@ -23,6 +24,7 @@ import TaskBar from "@/components/system/taskbar/TaskBar.vue";
 import ActionMenu from "@/components/system/actionMenu/ActionMenu.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 import DynamicIsland from "@/components/system/dynamicIsland/DynamicIsland.vue";
+import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 
 import ActionMenuModel from "@/models/ActionMenu/ActionMenu";
 import ItemDialog from "@/models/ItemDialog";
@@ -35,51 +37,32 @@ import {
   pasteAction,
 } from "@/components/system/actionMenu/actionsList";
 
-export default defineComponent({
-  props: {},
-  components: { DesktopWorkSpace, TaskBar, OpenedFileView, ActionMenu, SnackBar, DynamicIsland },
-  setup() {
-    const fileSystemStore = useFileSystemStore();
+const fileSystemStore = useFileSystemStore();
 
-    const rightClickHandler = async (event: Event) => {
-      event.preventDefault();
+const rightClickHandler = async (event: Event) => {
+  event.preventDefault();
 
-      const pointerEvent = event as PointerEvent;
+  const pointerEvent = event as PointerEvent;
 
-      fileSystemStore.setActionMenu({
-        show: true,
-        paths: [DESKTOP_PATH],
-        position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-        customLayout: [
-          await pasteAction(DESKTOP_PATH, true, false),
-          createNewFile(pointerEvent, DESKTOP_PATH, false, false),
-          createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
-          openDesktopSettingPage(false, false),
-        ],
-      } as ActionMenuModel);
-    };
+  fileSystemStore.setActionMenu({
+    show: true,
+    paths: [DESKTOP_PATH],
+    position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+    customLayout: [
+      await pasteAction(DESKTOP_PATH, true, false),
+      createNewFile(pointerEvent, DESKTOP_PATH, false, false),
+      createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
+      openDesktopSettingPage(false, false),
+    ],
+  } as ActionMenuModel);
+};
 
-    const itemsDialog = computed(function () {
-      console.log(fileSystemStore.itemsDialog);
-      return fileSystemStore.itemsDialog as ItemDialog[];
-    });
-
-    return {
-      itemsDialog,
-      rightClickHandler,
-    };
-  },
+const itemsDialog = computed(function () {
+  console.log(fileSystemStore.itemsDialog);
+  return fileSystemStore.itemsDialog as ItemDialog[];
 });
 </script>
 <style scoped>
-.folder-object {
-  cursor: pointer;
-}
-
-.directory-object {
-  cursor: pointer;
-}
-
 .home {
   overflow: hidden;
 }
