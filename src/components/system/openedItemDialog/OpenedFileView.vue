@@ -35,8 +35,8 @@
   </MoveAndResizeArea>
 </template>
 
-<script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { computed, defineAsyncComponent, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
@@ -47,67 +47,46 @@ import DialogControls from "@/components/system/openedItemDialog/DialogControls.
 
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
-export default defineComponent({
-  props: {
-    itemDialog: { type: Object as PropType<ItemDialog>, required: true },
-  },
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
+});
 
-  components: {
-    DialogControls,
-    MoveAndResizeArea,
-    LoadingComponent,
-  },
-  emits: [],
-  setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
+const fileSystemStore = useFileSystemStore();
 
-    const itemContentRef = ref<HTMLElement | undefined>();
+const itemContentRef = ref<HTMLElement | undefined>();
 
-    const closeDialog = () => {
-      fileSystemStore.closeItemDialog(props.itemDialog.guid);
-      fileSystemStore.findAndSetNewFocusedItemDialog();
-    };
+const closeDialog = () => {
+  fileSystemStore.closeItemDialog(props.itemDialog.guid);
+  fileSystemStore.findAndSetNewFocusedItemDialog();
+};
 
-    const minimizeDialog = () => {
-      fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
-      fileSystemStore.findAndSetNewFocusedItemDialog();
-    };
+const minimizeDialog = () => {
+  fileSystemStore.minimizeItemDialog(props.itemDialog.guid);
+  fileSystemStore.findAndSetNewFocusedItemDialog();
+};
 
-    const setFullScreen = (isFullscreen: boolean) => {
-      fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
-    };
+const setFullScreen = (isFullscreen: boolean) => {
+  fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
+};
 
-    const applicationComponent = defineAsyncComponent({
-      loader: () => import(`@/components/apps/${props.itemDialog.applicationToOpen}.vue`),
-      loadingComponent: LoadingComponent,
-      delay: 200,
-      errorComponent: ErrorComponent,
-      timeout: 3000,
-    });
+const applicationComponent = defineAsyncComponent({
+  loader: () => import(`@/components/apps/${props.itemDialog.applicationToOpen}.vue`),
+  loadingComponent: LoadingComponent,
+  delay: 200,
+  errorComponent: ErrorComponent,
+  timeout: 3000,
+});
 
-    const headerRef = ref({} as HTMLElement);
-    const draggableElement = ref({} as HTMLElement);
+const headerRef = ref({} as HTMLElement);
+const draggableElement = ref({} as HTMLElement);
 
-    const contentHeight = computed(function () {
-      if (props.itemDialog.isFullscreen) {
-        const style = getComputedStyle(document.body);
-        const taskBarHeight = Number(style.getPropertyValue("--task-bar-height").trim().replace("px", ""));
-        return window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4;
-      }
-      return props.itemDialog.dimension.height - headerRef.value.clientHeight;
-    });
-
-    return {
-      draggableElement,
-      headerRef,
-      contentHeight,
-      applicationComponent,
-      itemContentRef,
-      closeDialog,
-      minimizeDialog,
-      setFullScreen,
-    };
-  },
+const contentHeight = computed(function () {
+  if (props.itemDialog.isFullscreen) {
+    const style = getComputedStyle(document.body);
+    const taskBarHeight = Number(style.getPropertyValue("--task-bar-height").trim().replace("px", ""));
+    return window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4;
+  }
+  return props.itemDialog.dimension.height - headerRef.value.clientHeight;
 });
 </script>
 
