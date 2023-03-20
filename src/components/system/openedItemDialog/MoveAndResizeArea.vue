@@ -77,204 +77,186 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
 import { computed, defineComponent, PropType, ref } from "vue";
 import Dimension from "@/models/Dimension";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
-export default defineComponent({
-  props: {
-    itemDialog: { type: Object as PropType<ItemDialog>, required: true },
-  },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const fileSystemStore = useFileSystemStore();
-
-    const actionTypes = {
-      RESIZING_LEFT: "resizing_left",
-      RESIZING_RIGHT: "resizing_right",
-      RESIZING_TOP: "resizing_top",
-      RESIZING_BOTTOM: "resizing_bottom",
-      MOVING: "moving",
-    };
-
-    const animateDialogWhenMoving = ref(true);
-
-    const isFullscreen = computed(function () {
-      return props.itemDialog.isFullscreen;
-    });
-
-    const minHeight = computed(function () {
-      return props.itemDialog.minDimension?.height || 200;
-    });
-
-    const minWidth = computed(function () {
-      return props.itemDialog.minDimension?.width || 200;
-    });
-
-    const dialogHeader = ref({} as HTMLElement);
-    const draggableElement = ref({} as HTMLElement);
-
-    const contentHeight = computed(function () {
-      return props.itemDialog.dimension.height - dialogHeader.value.clientHeight;
-    });
-
-    const topPosition = computed(function () {
-      return props.itemDialog.position ? props.itemDialog.position.x : 0;
-    });
-
-    const leftPosition = computed(function () {
-      return props.itemDialog.position ? props.itemDialog.position.y : 0;
-    });
-
-    let pos1 = 0,
-      pos2 = 0,
-      pos3 = 0,
-      pos4 = 0;
-
-    function dragMouseDown(e: any, eventType: string | string[]) {
-      animateDialogWhenMoving.value = false;
-      setItemDialogFocused(e);
-
-      // if fullscreen no moving and resizing
-      if (isFullscreen.value) {
-        return;
-      }
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      if (eventType === actionTypes.MOVING) {
-        document.onmousemove = elementDrag;
-      } else {
-        document.onmousemove = elementResize.bind(eventType);
-      }
-    }
-
-    function elementResize(this: any, e: any) {
-      const actionsToPerform = this as string[];
-
-      e = e || window.event;
-      e.preventDefault();
-
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      let newHeight = props.itemDialog.dimension.height;
-      let newWidth = props.itemDialog.dimension.width;
-
-      // set the four actions type
-      if (actionsToPerform.includes(actionTypes.RESIZING_LEFT)) {
-        newWidth =
-          props.itemDialog.dimension.width + pos1 > minWidth.value
-            ? props.itemDialog.dimension.width + pos1
-            : minWidth.value;
-        const newPosition = {
-          x: props.itemDialog.position.x,
-          y: draggableElement.value.offsetLeft - pos1,
-        } as Coordinates;
-
-        updateItemPosition(newPosition);
-      } else if (actionsToPerform.includes(actionTypes.RESIZING_RIGHT)) {
-        newWidth =
-          props.itemDialog.dimension.width - pos1 > minWidth.value
-            ? props.itemDialog.dimension.width - pos1
-            : minWidth.value;
-      }
-
-      if (actionsToPerform.includes(actionTypes.RESIZING_TOP)) {
-        newHeight =
-          props.itemDialog.dimension.height + pos2 > minHeight.value
-            ? props.itemDialog.dimension.height + pos2
-            : minHeight.value;
-        const newPosition = {
-          x: draggableElement.value.offsetTop - pos2,
-          y: props.itemDialog.position.y,
-        } as Coordinates;
-
-        updateItemPosition(newPosition);
-      } else if (actionsToPerform.includes(actionTypes.RESIZING_BOTTOM)) {
-        newHeight =
-          props.itemDialog.dimension.height - pos2 > minHeight.value
-            ? props.itemDialog.dimension.height - pos2
-            : minHeight.value;
-      }
-
-      const newDimension = { height: newHeight, width: newWidth } as Dimension;
-
-      fileSystemStore.updateItemDialogDimension({
-        guid: props.itemDialog.guid,
-        dimension: newDimension,
-      } as ItemDialog);
-    }
-
-    function elementDrag(e: any) {
-      e = e || window.event;
-      e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      // set the element's new position:
-      const newX = draggableElement.value.offsetTop - pos2;
-
-      const newY = draggableElement.value.offsetLeft - pos1;
-
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-
-      const newPosition = {
-        x: newX > 0 && newX < windowHeight - 70 ? newX : props.itemDialog.position.x,
-        y: newY > 0 && newY < windowWidth - 70 ? newY : props.itemDialog.position.y,
-      } as Coordinates;
-
-      updateItemPosition(newPosition);
-    }
-
-    function updateItemPosition(newPosition: Coordinates) {
-      // TODO if out of screen dont update!!!!
-      fileSystemStore.updateItemDialogPosition({ guid: props.itemDialog.guid, position: newPosition } as ItemDialog);
-    }
-
-    function setItemDialogFocused(event: MouseEvent) {
-      if (!props.itemDialog.isFocused) {
-        event.stopPropagation();
-        fileSystemStore.setFocusedItemDialog(props.itemDialog);
-      }
-    }
-
-    function closeDragElement() {
-      /* stop moving when mouse button is released:*/
-      animateDialogWhenMoving.value = true;
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
-
-    return {
-      draggableElement,
-      topPosition,
-      leftPosition,
-      dragMouseDown,
-      setItemDialogFocused,
-      actionTypes,
-      dialogHeader,
-      contentHeight,
-      isFullscreen,
-      animateDialogWhenMoving,
-    };
-  },
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
 });
+
+const fileSystemStore = useFileSystemStore();
+
+const actionTypes = {
+  RESIZING_LEFT: "resizing_left",
+  RESIZING_RIGHT: "resizing_right",
+  RESIZING_TOP: "resizing_top",
+  RESIZING_BOTTOM: "resizing_bottom",
+  MOVING: "moving",
+};
+
+const animateDialogWhenMoving = ref(true);
+
+const isFullscreen = computed(function () {
+  return props.itemDialog.isFullscreen;
+});
+
+const minHeight = computed(function () {
+  return props.itemDialog.minDimension?.height || 200;
+});
+
+const minWidth = computed(function () {
+  return props.itemDialog.minDimension?.width || 200;
+});
+
+const dialogHeader = ref({} as HTMLElement);
+const draggableElement = ref({} as HTMLElement);
+
+const contentHeight = computed(function () {
+  return props.itemDialog.dimension.height - dialogHeader.value.clientHeight;
+});
+
+const topPosition = computed(function () {
+  return props.itemDialog.position ? props.itemDialog.position.x : 0;
+});
+
+const leftPosition = computed(function () {
+  return props.itemDialog.position ? props.itemDialog.position.y : 0;
+});
+
+let pos1 = 0,
+  pos2 = 0,
+  pos3 = 0,
+  pos4 = 0;
+
+function dragMouseDown(e: any, eventType: string | string[]) {
+  animateDialogWhenMoving.value = false;
+  setItemDialogFocused(e);
+
+  // if fullscreen no moving and resizing
+  if (isFullscreen.value) {
+    return;
+  }
+  e = e || window.event;
+  e.preventDefault();
+  // get the mouse cursor position at startup:
+  pos3 = e.clientX;
+  pos4 = e.clientY;
+  document.onmouseup = closeDragElement;
+  // call a function whenever the cursor moves:
+  if (eventType === actionTypes.MOVING) {
+    document.onmousemove = elementDrag;
+  } else {
+    document.onmousemove = elementResize.bind(eventType);
+  }
+}
+
+function elementResize(this: any, e: any) {
+  const actionsToPerform = this as string[];
+
+  e = e || window.event;
+  e.preventDefault();
+
+  // calculate the new cursor position:
+  pos1 = pos3 - e.clientX;
+  pos2 = pos4 - e.clientY;
+  pos3 = e.clientX;
+  pos4 = e.clientY;
+
+  let newHeight = props.itemDialog.dimension.height;
+  let newWidth = props.itemDialog.dimension.width;
+
+  // set the four actions type
+  if (actionsToPerform.includes(actionTypes.RESIZING_LEFT)) {
+    newWidth =
+      props.itemDialog.dimension.width + pos1 > minWidth.value
+        ? props.itemDialog.dimension.width + pos1
+        : minWidth.value;
+    const newPosition = {
+      x: props.itemDialog.position.x,
+      y: draggableElement.value.offsetLeft - pos1,
+    } as Coordinates;
+
+    updateItemPosition(newPosition);
+  } else if (actionsToPerform.includes(actionTypes.RESIZING_RIGHT)) {
+    newWidth =
+      props.itemDialog.dimension.width - pos1 > minWidth.value
+        ? props.itemDialog.dimension.width - pos1
+        : minWidth.value;
+  }
+
+  if (actionsToPerform.includes(actionTypes.RESIZING_TOP)) {
+    newHeight =
+      props.itemDialog.dimension.height + pos2 > minHeight.value
+        ? props.itemDialog.dimension.height + pos2
+        : minHeight.value;
+    const newPosition = {
+      x: draggableElement.value.offsetTop - pos2,
+      y: props.itemDialog.position.y,
+    } as Coordinates;
+
+    updateItemPosition(newPosition);
+  } else if (actionsToPerform.includes(actionTypes.RESIZING_BOTTOM)) {
+    newHeight =
+      props.itemDialog.dimension.height - pos2 > minHeight.value
+        ? props.itemDialog.dimension.height - pos2
+        : minHeight.value;
+  }
+
+  const newDimension = { height: newHeight, width: newWidth } as Dimension;
+
+  fileSystemStore.updateItemDialogDimension({
+    guid: props.itemDialog.guid,
+    dimension: newDimension,
+  } as ItemDialog);
+}
+
+function elementDrag(e: any) {
+  e = e || window.event;
+  e.preventDefault();
+  // calculate the new cursor position:
+  pos1 = pos3 - e.clientX;
+  pos2 = pos4 - e.clientY;
+  pos3 = e.clientX;
+  pos4 = e.clientY;
+
+  // set the element's new position:
+  const newX = draggableElement.value.offsetTop - pos2;
+
+  const newY = draggableElement.value.offsetLeft - pos1;
+
+  const windowHeight = window.innerHeight;
+  const windowWidth = window.innerWidth;
+
+  const newPosition = {
+    x: newX > 0 && newX < windowHeight - 70 ? newX : props.itemDialog.position.x,
+    y: newY > 0 && newY < windowWidth - 70 ? newY : props.itemDialog.position.y,
+  } as Coordinates;
+
+  updateItemPosition(newPosition);
+}
+
+function updateItemPosition(newPosition: Coordinates) {
+  // TODO if out of screen dont update!!!!
+  fileSystemStore.updateItemDialogPosition({ guid: props.itemDialog.guid, position: newPosition } as ItemDialog);
+}
+
+function setItemDialogFocused(event: MouseEvent) {
+  if (!props.itemDialog.isFocused) {
+    event.stopPropagation();
+    fileSystemStore.setFocusedItemDialog(props.itemDialog);
+  }
+}
+
+function closeDragElement() {
+  /* stop moving when mouse button is released:*/
+  animateDialogWhenMoving.value = true;
+  document.onmouseup = null;
+  document.onmousemove = null;
+}
 </script>
 
 <style scoped>
