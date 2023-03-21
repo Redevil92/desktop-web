@@ -1,50 +1,55 @@
 <template>
   <div v-if="lineLayout" @click="createItemDialog(app)" class="app-item">
-    <img width="30" :src="require(`/src/assets/fileIcons/${icon}`)" alt="" />
+    <img width="30" v-if="imageRequire" :src="imageRequire" alt="" />
+    <span v-else class="mdi mdi-image-remove"></span>
     <div class="app-item-title">
       {{ name }}
     </div>
   </div>
   <div v-else class="application-button" @click="createItemDialog(app)">
     <div class="icon-image">
-      <img width="40" :src="require(`/src/assets/fileIcons/${icon}`)" alt="" />
+      <img v-if="imageRequire" width="40" :src="imageRequire" alt="" />
+      <span v-else class="mdi mdi-image-remove image-not-found"></span>
     </div>
     <div class="application-name one-line-ellipsis">{{ name }}</div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import DesktopItem from "@/models/DesktopItem";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { computed } from "vue";
 
-export default defineComponent({
-  props: {
-    lineLayout: { type: Boolean, default: false },
-    app: { type: String, required: true },
-    icon: { type: String, required: true },
-    name: { type: String, required: true },
-  },
-  setup(props, ctx) {
-    const fileSystemStore = useFileSystemStore();
-
-    const createItemDialog = (applicationToOpen: string) => {
-      ctx.emit("closeStartMenu");
-
-      const settingsApp: DesktopItem = {
-        path: "",
-        coordinates: { x: 0, y: 0 },
-        applicationExtension: applicationToOpen,
-        isSelected: true,
-      };
-      fileSystemStore.createItemDialog(settingsApp);
-    };
-
-    return {
-      createItemDialog,
-    };
-  },
+const props = defineProps({
+  lineLayout: { type: Boolean, default: false },
+  app: { type: String, required: true },
+  icon: { type: String, required: true },
+  name: { type: String, required: true },
 });
+
+const emit = defineEmits(["closeStartMenu"]);
+
+const fileSystemStore = useFileSystemStore();
+
+const imageRequire = computed(() => {
+  try {
+    return require("/src/assets/fileIcons/" + props.icon);
+  } catch (error) {
+    return "";
+  }
+});
+
+const createItemDialog = (applicationToOpen: string) => {
+  emit("closeStartMenu");
+
+  const settingsApp: DesktopItem = {
+    path: "",
+    coordinates: { x: 0, y: 0 },
+    applicationExtension: applicationToOpen,
+    isSelected: true,
+  };
+  fileSystemStore.createItemDialog(settingsApp);
+};
 </script>
 
 <style scoped>
@@ -109,5 +114,10 @@ export default defineComponent({
 
 .app-item-title {
   margin-left: var(--margin);
+}
+
+.image-not-found {
+  color: rgb(205, 205, 205);
+  font-size: 20px;
 }
 </style>
