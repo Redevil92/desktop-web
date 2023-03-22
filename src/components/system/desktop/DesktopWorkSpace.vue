@@ -41,8 +41,6 @@ const props = defineProps({
   items: Array as PropType<DesktopItem[]>,
 });
 
-const emit = defineEmits(["onFileItemPositionChange"]);
-
 const fileSystemStore = useFileSystemStore();
 const settingsStore = useSettingsStore();
 
