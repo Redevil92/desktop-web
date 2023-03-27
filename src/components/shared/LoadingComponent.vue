@@ -1,21 +1,13 @@
 <template>
   <div :style="`height: ${height}px`" class="loading-spinner-container">
-    <!-- ADD TEXT PROPERTY -->
     <BaseLoadingSpinner></BaseLoadingSpinner>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import BaseLoadingSpinner from "@/components/shared/BaseLoadingSpinner.vue";
 
-export default defineComponent({
-  props: {
-    height: Number,
-  },
-  components: { BaseLoadingSpinner },
-  emits: [],
-});
+const props = defineProps({ height: Number, text: String });
 </script>
 <style scoped>
 .loading-spinner-container {
