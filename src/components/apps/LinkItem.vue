@@ -2,7 +2,7 @@
 
 <script lang="ts" setup>
 import ItemDialog from "@/models/ItemDialog";
-import { onBeforeMount, PropType, ref } from "vue";
+import { onBeforeMount, PropType } from "vue";
 import { readFile } from "@/context/fileSystemController";
 import LinkData from "@/models/LinkData";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
@@ -28,10 +28,3 @@ onBeforeMount(async () => {
   await fileSystemStore.createItemDialog(appToOpen);
 });
 </script>
-
-<style scoped>
-.frame {
-  border-bottom-left-radius: var(--border-radius);
-  border-bottom-right-radius: var(--border-radius);
-}
-</style>
