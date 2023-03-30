@@ -19,61 +19,53 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { computed, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import { readFile } from "@/context/fileSystemController";
 
-export default defineComponent({
-  props: {
-    itemDialog: {
-      type: Object as PropType<ItemDialog>,
-      required: true,
-    },
-    height: { type: Number, required: true },
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
+  height: {
+    type: Number,
+    required: true,
   },
-  components: {},
-  emits: [],
-  setup(props, _) {
-    const imageFile = ref("");
-    const zoomLevel = ref(100);
-    const originalHeight = ref(0);
+});
 
-    const calculatedHeight = computed(() => {
-      return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
-    });
+const imageFile = ref("");
+const zoomLevel = ref(100);
+const originalHeight = ref(0);
 
-    const zoomImage = (zoom: boolean) => {
-      if (props.itemDialog?.guid) {
-        const imageRef = document.getElementById("image-" + props.itemDialog.guid);
-        if (originalHeight.value === 0 && imageRef?.getBoundingClientRect()) {
-          originalHeight.value = (imageRef?.getBoundingClientRect().height * 100) / zoomLevel.value;
-        }
-      }
+const calculatedHeight = computed(() => {
+  return Math.trunc(originalHeight.value * (zoomLevel.value / 100));
+});
 
-      if (zoom && zoomLevel.value < 900) {
-        zoomLevel.value = Math.trunc(zoomLevel.value * 1.3);
-      }
-      if (!zoom && zoomLevel.value > 20) {
-        zoomLevel.value = Math.trunc(zoomLevel.value * 0.75);
-      }
-    };
+const zoomImage = (zoom: boolean) => {
+  if (props.itemDialog?.guid) {
+    const imageRef = document.getElementById("image-" + props.itemDialog.guid);
+    if (originalHeight.value === 0 && imageRef?.getBoundingClientRect()) {
+      originalHeight.value = (imageRef?.getBoundingClientRect().height * 100) / zoomLevel.value;
+    }
+  }
 
-    onBeforeMount(async () => {
-      if (props.itemDialog?.path) {
-        const file = await readFile(props.itemDialog?.path);
-        console.log("Image", file);
-        imageFile.value = file.toString();
-      }
-    });
+  if (zoom && zoomLevel.value < 900) {
+    zoomLevel.value = Math.trunc(zoomLevel.value * 1.3);
+  }
+  if (!zoom && zoomLevel.value > 20) {
+    zoomLevel.value = Math.trunc(zoomLevel.value * 0.75);
+  }
+};
 
-    onMounted(async () => {
-      await nextTick();
-    });
+onBeforeMount(async () => {
+  if (props.itemDialog?.path) {
+    const file = await readFile(props.itemDialog?.path);
+    imageFile.value = file.toString();
+  }
+});
 
-    return { imageFile, zoomImage, calculatedHeight, zoomLevel };
-  },
+onMounted(async () => {
+  await nextTick();
 });
 </script>
 
