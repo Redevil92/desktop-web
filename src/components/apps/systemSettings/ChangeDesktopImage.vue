@@ -19,33 +19,30 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useSettingsStore } from "@/stores/settingsStore";
-import { computed, defineComponent, ref } from "vue";
+import { computed } from "vue";
 
-export default defineComponent({
-  props: {
-    height: Number,
-  },
-  components: {},
-  setup() {
-    const settingsStore = useSettingsStore();
-
-    const desktopImagesList = computed(() => {
-      return settingsStore.desktopImagesList;
-    });
-
-    const selectedDesktopImage = computed(() => {
-      return settingsStore.desktopImage;
-    });
-
-    const setDesktopImage = (desktopImageSelected: string) => {
-      settingsStore.setDesktopImage(desktopImageSelected);
-    };
-
-    return { desktopImagesList, selectedDesktopImage, setDesktopImage };
+const props = defineProps({
+  height: {
+    type: Number,
+    required: true,
   },
 });
+
+const settingsStore = useSettingsStore();
+
+const desktopImagesList = computed(() => {
+  return settingsStore.desktopImagesList;
+});
+
+const selectedDesktopImage = computed(() => {
+  return settingsStore.desktopImage;
+});
+
+const setDesktopImage = (desktopImageSelected: string) => {
+  settingsStore.setDesktopImage(desktopImageSelected);
+};
 </script>
 
 <style scoped>
