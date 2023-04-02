@@ -59,8 +59,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import AppItem from "@/components/system/startMenu/AppItem.vue";
 
@@ -69,87 +69,73 @@ import { useStartMenuStore } from "@/stores/startMenuStore";
 
 import fileTypesConfiguration from "@/models/FilesType";
 
-export default defineComponent({
-  props: {
-    openStartMenuButtonRef: HTMLElement,
-  },
-  components: { BaseInput, AppItem },
-  setup(props) {
-    const layoutStore = useLayoutStore();
-    const startMenuStore = useStartMenuStore();
+const props = defineProps({
+  openStartMenuButtonRef: HTMLElement,
+});
 
-    const search = ref("");
-    const showAllApps = ref(false);
+const layoutStore = useLayoutStore();
+const startMenuStore = useStartMenuStore();
 
-    const pinnedApps = computed(() => {
-      return startMenuStore.pinnedApps;
-    });
+const search = ref("");
+const showAllApps = ref(false);
 
-    const allFilteredAppsToShow = computed(() => {
-      const checkDuplicateApps: any = {};
-      return Object.keys(fileTypesConfiguration)
-        .map((key) => {
-          return { ...fileTypesConfiguration[key], key };
-        })
-        .filter((app) => {
-          if (checkDuplicateApps[app.application]) {
-            return;
-          }
-          if (app.canOpenWithoutFile) {
-            if (!app.canRepeatInAppList) {
-              checkDuplicateApps[app.application] = true;
-            }
+const pinnedApps = computed(() => {
+  return startMenuStore.pinnedApps;
+});
 
-            return app;
-          }
-        })
-        .filter(
-          (app) =>
-            app.application.toLowerCase().includes(search.value.toLowerCase()) ||
-            app.title.toLowerCase().includes(search.value.toLowerCase()) ||
-            app.key.toLowerCase().includes(search.value.toLowerCase())
-        );
-    });
-
-    const startMenuRef = ref<HTMLElement | undefined>();
-
-    const setStartMenuOpened = (isOpened: boolean) => {
-      layoutStore.setStartMenuOpened(isOpened);
-    };
-
-    const closeStartMenu = (event: any) => {
-      if (
-        startMenuRef.value &&
-        !startMenuRef.value.contains(event.target) &&
-        props.openStartMenuButtonRef &&
-        !props.openStartMenuButtonRef.contains(event.target)
-      ) {
-        setStartMenuOpened(false);
+const allFilteredAppsToShow = computed(() => {
+  const checkDuplicateApps: any = {};
+  return Object.keys(fileTypesConfiguration)
+    .map((key) => {
+      return { ...fileTypesConfiguration[key], key };
+    })
+    .filter((app) => {
+      if (checkDuplicateApps[app.application]) {
+        return;
       }
-    };
+      if (app.canOpenWithoutFile) {
+        if (!app.canRepeatInAppList) {
+          checkDuplicateApps[app.application] = true;
+        }
 
-    const refreshPage = () => {
-      location.reload();
-    };
+        return app;
+      }
+    })
+    .filter(
+      (app) =>
+        app.application.toLowerCase().includes(search.value.toLowerCase()) ||
+        app.title.toLowerCase().includes(search.value.toLowerCase()) ||
+        app.key.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
 
-    onMounted(() => {
-      window.addEventListener("click", closeStartMenu);
-    });
+const startMenuRef = ref<HTMLElement | undefined>();
 
-    onUnmounted(() => {
-      window.removeEventListener("click", closeStartMenu);
-    });
+const setStartMenuOpened = (isOpened: boolean) => {
+  layoutStore.setStartMenuOpened(isOpened);
+};
 
-    return {
-      search,
-      pinnedApps,
-      setStartMenuOpened,
-      refreshPage,
-      startMenuRef,
-      showAllApps,
-      allFilteredAppsToShow,
-    };
-  },
+const closeStartMenu = (event: any) => {
+  if (
+    startMenuRef.value &&
+    !startMenuRef.value.contains(event.target) &&
+    props.openStartMenuButtonRef &&
+    !props.openStartMenuButtonRef.contains(event.target)
+  ) {
+    setStartMenuOpened(false);
+  }
+};
+
+const refreshPage = () => {
+  location.reload();
+};
+
+onMounted(() => {
+  window.addEventListener("click", closeStartMenu);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("click", closeStartMenu);
 });
 </script>
 
