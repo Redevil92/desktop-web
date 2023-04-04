@@ -212,6 +212,23 @@ const fileTypesConfiguration: FileTypes = {
     application: "SystemSettings",
     canOpenWithoutFile: true,
   },
+  dutiesTaxCalculator: {
+    background: "rgb(82, 86, 89)",
+    allowResizing: true,
+    singleton: false,
+    defaultSize: {
+      height: 720,
+      width: 760,
+    },
+    minSize: {
+      height: 400,
+      width: 650,
+    },
+    title: "Duties & Tax Calculator",
+    icon: "taxCalculator.svg",
+    application: "dutiesCalculator/DutiesCalculator",
+    canOpenWithoutFile: true,
+  },
   lnk: {
     background: "rgb(82, 86, 89)",
     allowResizing: false,
