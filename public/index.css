@@ -91,11 +91,13 @@ Not supports in Firefox and IE */
   background-color: var(--dialog-background-color_dark);
   width: 14px;
   height: 14px;
+  border-radius: 14px;
 }
 
 /* background of the scrollbar except button or resizer */
 ::-webkit-scrollbar-track {
   background-color: var(--dialog-background-color_dark);
+  border-radius: 14px;
 }
 
 /* scrollbar itself */
