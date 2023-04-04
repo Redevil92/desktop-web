@@ -58,7 +58,6 @@ const rightClickHandler = async (event: Event) => {
 };
 
 const itemsDialog = computed(function () {
-  console.log(fileSystemStore.itemsDialog);
   return fileSystemStore.itemsDialog as ItemDialog[];
 });
 </script>
