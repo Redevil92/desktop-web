@@ -71,8 +71,6 @@ const selectFile = (filesSelected: DesktopItem[]) => {
 };
 
 const selectItemsWithSelectionBox = (selectedElements: Element[]) => {
-  fileSystemStore.setFocusedItemDialog(null);
-
   const elementsSelectedNames = [].slice.call(selectedElements).map((element: Element) => {
     const clientRect = element.getBoundingClientRect();
     return {
