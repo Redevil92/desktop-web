@@ -35,6 +35,10 @@ export const createFilesStructure = async () => {
       await createFile("my PC/Desktop/Duke Nukem 3D.lnk", JSON.stringify(dukeNuken), "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/Duke Nukem 3D.lnk", { x: 120, y: 110 });
 
+      const taxCalculator: LinkData = { fileTypeToOpen: "dutiesTaxCalculator" };
+      await createFile("my PC/Desktop/Duties tax calculator.lnk", JSON.stringify(taxCalculator), "utf8", false);
+      saveDesktopFilePosition("my PC/Desktop/Duties tax calculator.lnk", { x: 240, y: 0 });
+
       const pdfElement = (await readLocalFile("./files/CV-Stefano Badalucco.pdf")) as string;
       await createFile("my PC/Desktop/CV-Stefano_Badalucco.pdf", pdfElement, "utf8", false);
       saveDesktopFilePosition("my PC/Desktop/CV-Stefano_Badalucco.pdf", { x: 0, y: 0 });
