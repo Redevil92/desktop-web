@@ -13,7 +13,7 @@ const BrowserFS = require("browserfs");
 const pinia = createPinia();
 
 export async function initializeAppAndFileSystem() {
-  if (DEBUG_MODE === true) {
+  if (DEBUG_MODE) {
     clearIndexedDB(INDEXED_DB_NAME);
     clearLocalStorage();
   }
