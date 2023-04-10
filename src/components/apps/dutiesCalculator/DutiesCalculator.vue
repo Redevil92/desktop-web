@@ -56,8 +56,12 @@ const dutiesByQuantity = ref(0);
 }
 
 .total-duties {
-  padding: 10px;
-  margin-top: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
   font-size: var(--x-large-font-size);
+  border: 2px solid #5d5d5d;
+  width: fit-content;
+  border-radius: 10px;
 }
 </style>

@@ -7,10 +7,18 @@
     >
     <input
       type="number"
-      @keyup="changeNumberOfPeople(numberOfPeople)"
+      @keyup="changeNumberOfPeople"
       id="people"
       default="1"
       min="1"
+      required
+      @blur="
+        () => {
+          if (!numberOfPeople) {
+            numberOfPeople = 1;
+          }
+        }
+      "
       v-model="numberOfPeople"
     />
     <br />
@@ -35,21 +43,13 @@
         <span class="mdi mdi-pencil edit-icon" @click="showEditExchangeRate = !showEditExchangeRate"></span
       ></span>
 
-      <div class="absolute-pos-dialog" v-if="showEditExchangeRate">
+      <BaseTooltip :show="showEditExchangeRate" :left="333">
+        <span class="mdi mdi-close close-icon" @click="showEditExchangeRate = false"></span>
         <label for="exchange-rate">Exchange rate:</label>
         <br />
         <input type="number" id="exchange-rate" @keyup="changeTotalGoodsCHF" v-model="exchangeRate" />
-      </div>
+      </BaseTooltip>
     </div>
-
-    <!-- <br />
-        <div style="margin-left: 30px; font-size: 12px; margin-top: 5px">
-          <label for="total-value-eur">VAT 7.7% :</label>
-          <input type="number" id="total-value-eur" v-model="goodsWith7VAT" />
-          <br />
-          <label for="total-value-eur" style="margin-top: 5px">VAT 2.5% :</label>
-          <input type="number" id="total-value-eur" v-model="goodsWith2VAT" />
-        </div> -->
   </div>
 
   <div class="results">
@@ -62,19 +62,18 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
+import BaseTooltip from "@/components/shared/BaseTooltip.vue";
+import { VAT_RATE } from "./constants";
 
 const emit = defineEmits(["changeNumberOfPeople", "changePersonDuty"]);
 
-const numberOfPeople = ref(1);
+const numberOfPeople = ref<number | undefined>(1);
 const totalGoodsValueCHF = ref(0);
 const totalGoodsValueEUR = ref(0);
 
 const showEditExchangeRate = ref<boolean>(false);
 
 const exchangeRate = ref(1.0);
-
-// const goodsWith7VAT = ref(0);
-// const goodsWith2VAT = ref(0);
 
 const amountToTax = ref(0);
 
@@ -86,17 +85,15 @@ watch(
 );
 
 const taxToPay = computed(() => {
-  return amountToTax.value * 0.077;
+  return amountToTax.value * VAT_RATE;
 });
 
 const changeTotalGoodsHandler = (_: any) => {
   calculateDuties();
-
-  //goodsWith7VAT.value = amountToTax.value;
 };
 
-const changeNumberOfPeople = (peopleNumber: number) => {
-  emit("changeNumberOfPeople", peopleNumber);
+const changeNumberOfPeople = () => {
+  emit("changeNumberOfPeople", numberOfPeople.value || 1);
   calculateDuties();
 };
 
@@ -110,7 +107,7 @@ const changeTotalGoodsCHF = () => {
 };
 
 const calculateDuties = () => {
-  let toTax = totalGoodsValueCHF.value - 300 * numberOfPeople.value;
+  let toTax = (totalGoodsValueCHF.value || 0) - 300 * (numberOfPeople.value || 1);
   if (toTax > 0) {
     toTax += 300;
   }
@@ -176,16 +173,11 @@ label {
   cursor: pointer;
 }
 
-.absolute-pos-dialog {
+.close-icon {
   position: absolute;
-  top: 20;
-  left: 333px;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 5px;
-  border-radius: 5px;
-  z-index: 1;
-  padding: 10px;
-  box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  cursor: pointer;
+  top: 0px;
+  right: 0px;
+  padding: 2px;
 }
 </style>

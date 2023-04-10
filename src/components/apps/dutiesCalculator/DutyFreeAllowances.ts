@@ -20,15 +20,15 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
   },
   {
     name: "Butter and cream",
-    description: "with a fat content of 15 % or more",
+    description: "Butter and cream with a fat content of 15 % or more",
     category: "Animal products",
     units: [units.LITRE, units.KG],
     allowedQuantityPerPerson: 1,
     dutyPerUnit: 16,
   },
   {
-    name: "Oils, fats, margarine ",
-    description: "for human consumption",
+    name: "Oils, fats, margarine",
+    description: "Oils, fats, margarine for human consumption",
     category: "Animal products",
     units: [units.LITRE, units.KG],
     allowedQuantityPerPerson: 5,
@@ -36,7 +36,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
   },
   {
     name: "Alcoholic beverages > 18%",
-    description: "with an alcohol content by volume of over 18%",
+    description: "Alcoholic beverages with an alcohol content by volume of over 18%",
     category: "Alcoholic beverages",
     units: [units.LITRE],
     allowedQuantityPerPerson: 1,
@@ -44,7 +44,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
   },
   {
     name: "Alcoholic beverages < 18%",
-    description: "with an alcohol content by volume of under 18%",
+    description: "Alcoholic beverages with an alcohol content by volume of under 18%",
     category: "Alcoholic beverages",
     units: [units.LITRE],
     allowedQuantityPerPerson: 5,

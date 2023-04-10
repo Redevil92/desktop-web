@@ -7,6 +7,43 @@
         ><strong>{{ catDuties[0] }}</strong></small
       >
       <div v-for="(duty, index) in catDuties[1]" :key="index" style="display: flex; align-items: center">
+        <div style="position: relative">
+          <span
+            class="mdi mdi-information info-icon"
+            :ref="
+              (el) => {
+                infoIconRefs.push(el);
+              }
+            "
+            @click="showDutyInfo = duty.name"
+          >
+          </span>
+          <BaseTooltip :show="showDutyInfo === duty.name">
+            <div class="item-info">
+              {{ duty.description }} <br v-if="duty.description" />
+              <div>
+                Allowed quantity pp: <strong>{{ duty.allowedQuantityPerPerson }} {{ duty.units.join("/") }}</strong>
+              </div>
+              <br />
+              <div v-if="duty.dutyUptoPerUnit">
+                Duty per excess unit up to: <br />
+                <div v-for="(item, index) in duty.dutyUptoPerUnit" :key="`${index}-${duty.name}-upto`">
+                  <li>
+                    up to {{ item.upTo }} {{ duty.units.join("/") }}: <strong>{{ item.duty }} .-</strong>
+                  </li>
+                </div>
+                <li>
+                  more than {{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].upTo }} {{ duty.units.join("/") }}:
+                  <strong>{{ duty.dutyPerUnit }}.-</strong>
+                </li>
+              </div>
+              <div v-else>
+                Duty per excess unit: <strong>{{ duty.dutyPerUnit }}.-</strong>
+              </div>
+            </div>
+          </BaseTooltip>
+        </div>
+
         <label :for="duty.name">{{ duty.name }}</label>
         <div style="position: relative">
           <div class="unit">
@@ -30,12 +67,17 @@
 </template>
 
 <script lang="ts" setup>
+import BaseTooltip from "@/components/shared/BaseTooltip.vue";
 import DutyFreeAllowance from "@/models/DutyFreeAllowance";
-import { computed, reactive, watch } from "vue";
+import { computed, onBeforeMount, onUnmounted, reactive, ref, watch } from "vue";
 
 import { dutyFreeAllowances } from "./DutyFreeAllowances";
 
 const emit = defineEmits(["changeQuantityDuty"]);
+
+const showDutyInfo = ref<string>("");
+
+const infoIconRefs = ref<any[]>([]);
 
 const props = defineProps<{
   numberOfPeople: number;
@@ -104,12 +146,37 @@ const calculateDuty = (quantity: number, dutyItem: DutyFreeAllowance) => {
       : 0;
   dutiesByQuantity[dutyItem.name] = { duty: dutyForItem, quantity: quantity };
 };
+
+const closeInfo = (event: any) => {
+  let clickOnInfoIcon = false;
+  (infoIconRefs.value as HTMLElement[]).forEach((ref) => {
+    if (ref && ref.contains(event.target as Node)) {
+      clickOnInfoIcon = true;
+    }
+  });
+
+  if (!clickOnInfoIcon) {
+    showDutyInfo.value = "";
+  }
+};
+
+onBeforeMount(() => {
+  window.addEventListener("click", closeInfo);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("click", closeInfo);
+});
 </script>
 
 <style scoped>
 label {
   width: 250px;
   display: inline-flex;
+}
+
+.item-info {
+  font-size: var(--small-font-size);
 }
 
 .unit {
@@ -143,5 +210,12 @@ label {
 .note-text {
   font-size: var(--small-font-size);
   margin-left: 5px;
+}
+
+.info-icon {
+  margin-right: 5px;
+  font-size: var(--medium-font-size);
+  cursor: pointer;
+  opacity: 0.3;
 }
 </style>
