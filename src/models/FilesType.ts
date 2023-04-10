@@ -218,7 +218,7 @@ const fileTypesConfiguration: FileTypes = {
     singleton: false,
     defaultSize: {
       height: 720,
-      width: 760,
+      width: 790,
     },
     minSize: {
       height: 400,
