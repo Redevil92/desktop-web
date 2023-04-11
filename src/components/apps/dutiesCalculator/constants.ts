@@ -1,1 +1,1 @@
-export const VAT_RATE = 0.77;
+export const VAT_RATE = 0.077;
