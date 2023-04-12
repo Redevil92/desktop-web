@@ -128,23 +128,42 @@ const updateQuantityDuty = () => {
 };
 
 const calculateDuty = (quantity: number, dutyItem: DutyFreeAllowance) => {
-  let dutyUptoPerUnit = null;
-  if (dutyItem.dutyUptoPerUnit) {
-    dutyItem.dutyUptoPerUnit.forEach((dutyUpto) => {
-      if (quantity <= dutyUpto.upTo) {
-        dutyUptoPerUnit = dutyUpto.duty;
+  let duty = 0;
+  const excessQuantity = quantity - dutyItem.allowedQuantityPerPerson * props.numberOfPeople;
+
+  if (excessQuantity > 0) {
+    const sortedDutiesPerQuantity = dutyItem.dutyUptoPerUnit.sort((a, b) => a.upTo - b.upTo);
+    for (let i = 0; i < sortedDutiesPerQuantity.length; i++) {
+      const dutyUpTo = sortedDutiesPerQuantity[i];
+      const previousUpTo = i > 0 ? sortedDutiesPerQuantity[i - 1].upTo : 0;
+
+      if (excessQuantity <= dutyUpTo.upTo) {
+        duty += (excessQuantity - previousUpTo) * dutyUpTo.duty;
+        break;
+      } else {
+        duty += (dutyUpTo.upTo - previousUpTo) * dutyUpTo.duty;
       }
-    });
-  }
-  if (!dutyUptoPerUnit) {
-    dutyUptoPerUnit = dutyItem.dutyPerUnit;
+    }
   }
 
-  const dutyForItem =
-    quantity > dutyItem.allowedQuantityPerPerson * props.numberOfPeople
-      ? (quantity - props.numberOfPeople * dutyItem.allowedQuantityPerPerson) * dutyUptoPerUnit
-      : 0;
-  dutiesByQuantity[dutyItem.name] = { duty: dutyForItem, quantity: quantity };
+  dutiesByQuantity[dutyItem.name] = { duty: duty, quantity: quantity };
+  // let dutyUptoPerUnit = null;
+  // if (dutyItem.dutyUptoPerUnit) {
+  //   dutyItem.dutyUptoPerUnit.forEach((dutyUpto) => {
+  //     if (quantity <= dutyUpto.upTo) {
+  //       dutyUptoPerUnit = dutyUpto.duty;
+  //     }
+  //   });
+  // }
+  // if (!dutyUptoPerUnit) {
+  //   dutyUptoPerUnit = dutyItem.dutyPerUnit;
+  // }
+
+  // const dutyForItem =
+  //   quantity > dutyItem.allowedQuantityPerPerson * props.numberOfPeople
+  //     ? (quantity - props.numberOfPeople * dutyItem.allowedQuantityPerPerson) * dutyUptoPerUnit
+  //     : 0;
+  // dutiesByQuantity[dutyItem.name] = { duty: dutyForItem, quantity: quantity };
 };
 
 const closeInfo = (event: any) => {
