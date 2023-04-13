@@ -23,17 +23,7 @@
     />
     <br />
     <label for="total-value"> <span class="mdi mdi-hospital-box label-icon"></span>Goods total value (CHF):</label>
-    <input
-      type="number"
-      @keyup="
-        ($event) => {
-          changeTotalGoodsCHF();
-          changeTotalGoodsHandler($event);
-        }
-      "
-      id="total-value"
-      v-model="totalGoodsValueCHF"
-    />
+    <input type="number" @keyup="changeTotalGoodsCHF" id="total-value" v-model="totalGoodsValueCHF" />
 
     <div style="position: relative">
       <label for="total-value-eur"><span class="mdi mdi-currency-eur label-icon"></span>Goods total value (EUR):</label>
@@ -50,20 +40,59 @@
         <input type="number" id="exchange-rate" @keyup="changeTotalGoodsCHF" v-model="exchangeRate" />
       </BaseTooltip>
     </div>
+    <hr style="margin: 5px 0px" />
+    <div>
+      <div>
+        <label for="total-value">Goods with VAT 7.7%:</label>
+        <input
+          type="number"
+          @keyup="
+            () => {
+              if (amountToTax_7 <= totalGoodsValueCHF) {
+                amountToTax_2 = totalGoodsValueCHF - amountToTax_7;
+              } else {
+                amountToTax_7 = totalGoodsValueCHF;
+                amountToTax_2 = 0;
+              }
+            }
+          "
+          id="total-value"
+          v-model="amountToTax_7"
+        />
+      </div>
+      <div>
+        <label for="total-value">Goods with VAT 2.5%:</label>
+        <input
+          type="number"
+          @keyup="
+            () => {
+              if (amountToTax_2 <= totalGoodsValueCHF) {
+                amountToTax_7 = totalGoodsValueCHF - amountToTax_2;
+              } else {
+                amountToTax_2 = totalGoodsValueCHF;
+                amountToTax_7 = 0;
+              }
+            }
+          "
+          id="total-value"
+          v-model="amountToTax_2"
+        />
+      </div>
+    </div>
   </div>
 
   <div class="results">
-    <small><label class="semibold">Amount to tax:</label> {{ amountToTax }} .-</small>
+    <small><label class="semibold">Amount to tax:</label> {{ amountToTax.toFixed(2) }} .-</small>
     <br />
     <hr style="margin: 5px 0px" />
-    <label class="semibold">Tax to pay:</label> <strong>{{ taxToPay }} .-</strong>
+    <label class="semibold">Tax to pay:</label> <strong>{{ taxToPay.toFixed(2) }} .-</strong>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import BaseTooltip from "@/components/shared/BaseTooltip.vue";
-import { VAT_RATE } from "./constants";
+import { VAT_RATE_2, VAT_RATE_7 } from "./constants";
 
 const emit = defineEmits(["changeNumberOfPeople", "changePersonDuty"]);
 
@@ -76,21 +105,22 @@ const showEditExchangeRate = ref<boolean>(false);
 const exchangeRate = ref(1.0);
 
 const amountToTax = ref(0);
-
-watch(
-  () => amountToTax.value,
-  () => {
-    emit("changePersonDuty", taxToPay);
-  }
-);
+const amountToTax_2 = ref(0);
+const amountToTax_7 = ref(0);
 
 const taxToPay = computed(() => {
-  return amountToTax.value * VAT_RATE;
+  if (amountToTax.value === 0) {
+    return 0;
+  }
+  return amountToTax_2.value * VAT_RATE_2 + amountToTax_7.value * VAT_RATE_7;
 });
 
-const changeTotalGoodsHandler = (_: any) => {
-  calculateDuties();
-};
+watch(
+  () => taxToPay.value,
+  () => {
+    emit("changePersonDuty", taxToPay.value);
+  }
+);
 
 const changeNumberOfPeople = () => {
   emit("changeNumberOfPeople", numberOfPeople.value || 1);
@@ -99,11 +129,16 @@ const changeNumberOfPeople = () => {
 
 const changeTotalGoodsEUR = () => {
   totalGoodsValueCHF.value = totalGoodsValueEUR.value / exchangeRate.value;
+  amountToTax_7.value = totalGoodsValueCHF.value;
+  amountToTax_2.value = 0;
   calculateDuties();
 };
 
 const changeTotalGoodsCHF = () => {
   totalGoodsValueEUR.value = totalGoodsValueCHF.value * exchangeRate.value;
+  amountToTax_7.value = totalGoodsValueCHF.value;
+  amountToTax_2.value = 0;
+  calculateDuties();
 };
 
 const calculateDuties = () => {

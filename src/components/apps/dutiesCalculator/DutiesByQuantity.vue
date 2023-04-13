@@ -25,20 +25,22 @@
                 Allowed quantity pp: <strong>{{ duty.allowedQuantityPerPerson }} {{ duty.units.join("/") }}</strong>
               </div>
               <br />
-              <div v-if="duty.dutyUptoPerUnit">
+              <div v-if="duty.dutyUptoPerUnit.length > 1">
                 Duty per excess unit up to: <br />
                 <div v-for="(item, index) in duty.dutyUptoPerUnit" :key="`${index}-${duty.name}-upto`">
-                  <li>
+                  <li v-if="item.upTo !== Infinity">
                     up to {{ item.upTo }} {{ duty.units.join("/") }}: <strong>{{ item.duty }} .-</strong>
                   </li>
+                  <li v-else>
+                    more than {{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 2].upTo }}
+                    {{ duty.units.join("/") }}:
+                    <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
+                  </li>
                 </div>
-                <li>
-                  more than {{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].upTo }} {{ duty.units.join("/") }}:
-                  <strong>{{ duty.dutyPerUnit }}.-</strong>
-                </li>
               </div>
-              <div v-else>
-                Duty per excess unit: <strong>{{ duty.dutyPerUnit }}.-</strong>
+              <div v-else-if="duty.dutyUptoPerUnit.length === 1">
+                Duty per excess unit:
+                <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
               </div>
             </div>
           </BaseTooltip>
@@ -53,7 +55,7 @@
         </div>
 
         <span class="note-text">
-          [ {{ dutiesByQuantity[duty.name] ? dutiesByQuantity[duty.name].duty : 0 || 0 }}.- ]
+          [ {{ dutiesByQuantity[duty.name] ? dutiesByQuantity[duty.name].duty.toFixed(2) : 0 || 0 }}.- ]
         </span>
         <br />
       </div>
@@ -61,7 +63,7 @@
 
     <div class="results">
       <label class="semibold">Total quantity duty to pay:</label>
-      <strong>{{ totalQuantityDuty }} .-</strong>
+      <strong>{{ totalQuantityDuty.toFixed(2) }} .-</strong>
     </div>
   </div>
 </template>
@@ -147,23 +149,6 @@ const calculateDuty = (quantity: number, dutyItem: DutyFreeAllowance) => {
   }
 
   dutiesByQuantity[dutyItem.name] = { duty: duty, quantity: quantity };
-  // let dutyUptoPerUnit = null;
-  // if (dutyItem.dutyUptoPerUnit) {
-  //   dutyItem.dutyUptoPerUnit.forEach((dutyUpto) => {
-  //     if (quantity <= dutyUpto.upTo) {
-  //       dutyUptoPerUnit = dutyUpto.duty;
-  //     }
-  //   });
-  // }
-  // if (!dutyUptoPerUnit) {
-  //   dutyUptoPerUnit = dutyItem.dutyPerUnit;
-  // }
-
-  // const dutyForItem =
-  //   quantity > dutyItem.allowedQuantityPerPerson * props.numberOfPeople
-  //     ? (quantity - props.numberOfPeople * dutyItem.allowedQuantityPerPerson) * dutyUptoPerUnit
-  //     : 0;
-  // dutiesByQuantity[dutyItem.name] = { duty: dutyForItem, quantity: quantity };
 };
 
 const closeInfo = (event: any) => {

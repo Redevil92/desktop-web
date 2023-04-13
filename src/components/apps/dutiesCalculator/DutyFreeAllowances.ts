@@ -15,7 +15,10 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
       This does not include bone marrow, bones for stock, and dog and cat food in individual packets marked as animal feed.`,
     units: [units.KG],
     allowedQuantityPerPerson: 1,
-    dutyUptoPerUnit: [{ upTo: 10, duty: 17 }],
+    dutyUptoPerUnit: [
+      { upTo: 10, duty: 17 },
+      { upTo: Infinity, duty: 23 },
+    ],
     dutyPerUnit: 23,
   },
   {
@@ -25,6 +28,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.LITRE, units.KG],
     allowedQuantityPerPerson: 1,
     dutyPerUnit: 16,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 16 }],
   },
   {
     name: "Oils, fats, margarine",
@@ -33,6 +37,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.LITRE, units.KG],
     allowedQuantityPerPerson: 5,
     dutyPerUnit: 2,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 2 }],
   },
   {
     name: "Alcoholic beverages > 18%",
@@ -41,6 +46,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.LITRE],
     allowedQuantityPerPerson: 1,
     dutyPerUnit: 15,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 15 }],
   },
   {
     name: "Alcoholic beverages < 18%",
@@ -49,6 +55,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.LITRE],
     allowedQuantityPerPerson: 5,
     dutyPerUnit: 2,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 2 }],
   },
   {
     name: "cigarettesIcigars",
@@ -56,6 +63,7 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.UNIT],
     allowedQuantityPerPerson: 250,
     dutyPerUnit: 0.25,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 0.25 }],
   },
   {
     name: "other tabacco products",
@@ -63,5 +71,6 @@ export const dutyFreeAllowances: DutyFreeAllowance[] = [
     units: [units.GRAMME],
     allowedQuantityPerPerson: 250,
     dutyPerUnit: 0.1,
+    dutyUptoPerUnit: [{ upTo: Infinity, duty: 0.1 }],
   },
 ];

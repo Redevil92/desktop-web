@@ -20,7 +20,8 @@
     ></DutiesByQuantity>
 
     <div class="total-duties">
-      Total duties to pay: <strong style="margin-left: 10px">{{ dutiesByPerson + dutiesByQuantity }} .-</strong>
+      Total duties to pay:
+      <strong style="margin-left: 10px">{{ (dutiesByPerson + dutiesByQuantity).toFixed(2) }} .-</strong>
     </div>
   </div>
 </template>
@@ -57,7 +58,7 @@ const dutiesByQuantity = ref(0);
 
 .total-duties {
   padding: 15px;
-  margin-top: 20px;
+  margin-top: 35px;
   margin-bottom: 10px;
   font-size: var(--x-large-font-size);
   border: 2px solid #5d5d5d;

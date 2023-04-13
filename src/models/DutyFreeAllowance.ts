@@ -7,6 +7,6 @@ export default interface DutyFreeAllowance {
   note?: string;
   units: units[];
   allowedQuantityPerPerson: number;
-  dutyUptoPerUnit?: { upTo: number; duty: number }[];
+  dutyUptoPerUnit: { upTo: number; duty: number }[];
   dutyPerUnit: number;
 }
