@@ -192,11 +192,11 @@ label {
 }
 
 .results {
-  border-radius: 10px;
-  background-color: rgba(79, 219, 219, 0.171);
+  background-color: rgb(181 222 222 / 17%);
   padding: 5px 10px;
   margin-top: 5px;
-  width: 415px;
+  width: 445px;
+  border: 1px solid #e4e4e4;
 }
 
 .semibold {
@@ -204,8 +204,7 @@ label {
 }
 
 .title {
-  font-size: var(--large-font-size);
-  background-color: rgba(255, 0, 0, 0.083);
+  font-size: var(--x-large-font-size);
   width: fit-content;
   border-radius: 5px;
   padding: 2px 10px;

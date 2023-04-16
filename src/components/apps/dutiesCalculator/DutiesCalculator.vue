@@ -1,12 +1,18 @@
 <template>
   <div :style="`height: ${height - 4}px; width: calc(100% -4px); `" class="duties-calculator">
     <div style="margin-bottom: 30px">
-      <h3>Duties calculator</h3>
-      <small
-        ><span
-          >To have more information about the calculation click <a :href="linkMoreInformation" target="_blank">here</a>
-        </span></small
-      >
+      <div style="display: flex">
+        <img :src="require('/src/assets/fileIcons/taxCalculator.svg')" style="height: 25px; margin-right: 10px" />
+        <div>
+          <h3>Duties calculator</h3>
+          <small>
+            <span>
+              To have more information about the calculation click
+              <a :href="linkMoreInformation" target="_blank">here</a>
+            </span>
+          </small>
+        </div>
+      </div>
     </div>
     <div style="margin-bottom: 50px">
       <DutiesByPerson
@@ -58,11 +64,10 @@ const dutiesByQuantity = ref(0);
 
 .total-duties {
   padding: 15px;
-  margin-top: 35px;
+  margin-top: 25px;
   margin-bottom: 10px;
   font-size: var(--x-large-font-size);
-  border: 2px solid #5d5d5d;
+  border: 1px solid #5d5d5d;
   width: fit-content;
-  border-radius: 10px;
 }
 </style>
