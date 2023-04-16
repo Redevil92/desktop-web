@@ -7,46 +7,47 @@
         ><strong>{{ catDuties[0] }}</strong></small
       >
       <div v-for="(duty, index) in catDuties[1]" :key="index" style="display: flex; align-items: center">
-        <div style="position: relative">
-          <span
-            class="mdi mdi-information info-icon"
-            :ref="
-              (el) => {
-                infoIconRefs.push(el);
-              }
-            "
-            @click="showDutyInfo = duty.name"
-          >
-          </span>
-          <BaseTooltip :show="showDutyInfo === duty.name">
-            <div class="item-info">
-              {{ duty.description }} <br v-if="duty.description" />
-              <div>
-                Allowed quantity pp: <strong>{{ duty.allowedQuantityPerPerson }} {{ duty.units.join("/") }}</strong>
-              </div>
-              <br />
-              <div v-if="duty.dutyUptoPerUnit.length > 1">
-                Duty per excess unit up to: <br />
-                <div v-for="(item, index) in duty.dutyUptoPerUnit" :key="`${index}-${duty.name}-upto`">
-                  <li v-if="item.upTo !== Infinity">
-                    up to {{ item.upTo }} {{ duty.units.join("/") }}: <strong>{{ item.duty }} .-</strong>
-                  </li>
-                  <li v-else>
-                    more than {{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 2].upTo }}
-                    {{ duty.units.join("/") }}:
-                    <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
-                  </li>
+        <label :for="duty.name">
+          <div style="position: relative">
+            <span
+              class="mdi mdi-information info-icon"
+              :ref="
+                (el) => {
+                  infoIconRefs.push(el);
+                }
+              "
+              @click="showDutyInfo = duty.name"
+            >
+            </span>
+            <BaseTooltip :show="showDutyInfo === duty.name">
+              <div class="item-info">
+                {{ duty.description }} <br v-if="duty.description" />
+                <div>
+                  Allowed quantity pp: <strong>{{ duty.allowedQuantityPerPerson }} {{ duty.units.join("/") }}</strong>
+                </div>
+                <br />
+                <div v-if="duty.dutyUptoPerUnit.length > 1">
+                  Duty per excess unit up to: <br />
+                  <div v-for="(item, index) in duty.dutyUptoPerUnit" :key="`${index}-${duty.name}-upto`">
+                    <li v-if="item.upTo !== Infinity">
+                      up to {{ item.upTo }} {{ duty.units.join("/") }}: <strong>{{ item.duty }} .-</strong>
+                    </li>
+                    <li v-else>
+                      more than {{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 2].upTo }}
+                      {{ duty.units.join("/") }}:
+                      <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
+                    </li>
+                  </div>
+                </div>
+                <div v-else-if="duty.dutyUptoPerUnit.length === 1">
+                  Duty per excess unit:
+                  <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
                 </div>
               </div>
-              <div v-else-if="duty.dutyUptoPerUnit.length === 1">
-                Duty per excess unit:
-                <strong>{{ duty.dutyUptoPerUnit[duty.dutyUptoPerUnit.length - 1].duty }}.-</strong>
-              </div>
-            </div>
-          </BaseTooltip>
-        </div>
-
-        <label :for="duty.name">{{ duty.name }}</label>
+            </BaseTooltip>
+          </div>
+          {{ duty.name }}</label
+        >
         <div style="position: relative">
           <div class="unit">
             {{ duty.units.join("/") }}
