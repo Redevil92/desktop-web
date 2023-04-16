@@ -1,4 +1,4 @@
-<template></template>
+<template><div></div></template>
 
 <script lang="ts" setup>
 import { onMounted, PropType } from "vue";

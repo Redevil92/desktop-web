@@ -11,7 +11,7 @@
     <editor
       v-if="isLoaded"
       class="mce-editor"
-      api-key=""
+      api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
       :init="{
         height: '100%',
         resize: false,
@@ -54,7 +54,7 @@ const props = defineProps({
 
 const layoutStore = useLayoutStore();
 const fileSystemStore = useFileSystemStore();
-const { isBase64, b64ToText, utf8ToB64 } = useBase64Handler();
+const { isBase64, b64ToText, utf8ToB64, removeDataUri } = useBase64Handler();
 
 const fileText = ref("");
 const isLoaded = ref(false);
@@ -95,7 +95,7 @@ const saveTextFileHandler = async (destinationPath: string) => {
 
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
-    const fileData = await readFile(props.itemDialog?.path);
+    let fileData = await readFile(props.itemDialog?.path);
     console.log(fileData, 1, isBase64(fileData));
 
     fileText.value = b64ToText(fileData, true);
