@@ -69,16 +69,19 @@ watch(
 const getLinkFileIcon = async () => {
   if (props.filePath) {
     const linkData: LinkData = JSON.parse(await readFile(props.filePath));
+    try {
+      if (linkData.filePath) {
+        console.log(linkData.filePath);
 
-    if (linkData.filePath) {
-      console.log(linkData.filePath);
+        const iconFromPath = await getFileIconFromPath(linkData.filePath);
+        return require(`/src/assets/fileIcons/${iconFromPath}`);
+      } else if (linkData.fileTypeToOpen) {
+        const fileTypeConfig = fileTypesConfiguration[linkData.fileTypeToOpen];
 
-      const iconFromPath = await getFileIconFromPath(linkData.filePath);
-      return require(`/src/assets/fileIcons/${iconFromPath}`);
-    } else if (linkData.fileTypeToOpen) {
-      const fileTypeConfig = fileTypesConfiguration[linkData.fileTypeToOpen];
-
-      return require(`/src/assets/fileIcons/${fileTypeConfig.icon}`);
+        return require(`/src/assets/fileIcons/${fileTypeConfig.icon}`);
+      }
+    } catch (error) {
+      return "file.svg";
     }
   }
   return "file.svg";
