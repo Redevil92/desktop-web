@@ -69,7 +69,12 @@
     >
       <!-- LB -->
     </div>
-    <div @mousedown.stop="dragMouseDown($event, actionTypes.MOVING)">
+    <div
+      @dblclick.stop="
+        fileSystemStore.setItemDialogFullScreen({ itemGuid: itemDialog.guid, isFullscreen: !itemDialog.isFullscreen })
+      "
+      @mousedown.stop="dragMouseDown($event, actionTypes.MOVING)"
+    >
       <slot name="header"> </slot>
     </div>
 
@@ -80,7 +85,7 @@
 <script lang="ts" setup>
 import Coordinates from "@/models/Coordinates";
 import ItemDialog from "@/models/ItemDialog";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, PropType, ref } from "vue";
 import Dimension from "@/models/Dimension";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 

@@ -25,36 +25,28 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { PropType } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
-export default defineComponent({
-  props: {
-    itemDialog: { type: Object as PropType<ItemDialog>, required: true },
-  },
-  emits: ["close", "minimize", "expand"],
-  setup(props, ctx) {
-    const closeFolderDialog = () => {
-      ctx.emit("close");
-    };
-
-    const minimizeFolderDialog = () => {
-      ctx.emit("minimize");
-    };
-
-    const setFolderDialogFullScreen = (isFullscreen: boolean) => {
-      ctx.emit("expand", isFullscreen);
-    };
-
-    return {
-      closeFolderDialog,
-      minimizeFolderDialog,
-      setFolderDialogFullScreen,
-    };
-  },
+const props = defineProps({
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
 });
+
+const emit = defineEmits(["close", "minimize", "expand"]);
+
+const closeFolderDialog = () => {
+  emit("close");
+};
+
+const minimizeFolderDialog = () => {
+  emit("minimize");
+};
+
+const setFolderDialogFullScreen = (isFullscreen: boolean) => {
+  emit("expand", isFullscreen);
+};
 </script>
 
 <style scoped>
