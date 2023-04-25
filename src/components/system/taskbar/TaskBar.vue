@@ -33,8 +33,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, ref } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 import TaskBarItem from "@/components/system/taskbar/TaskBarItem.vue";
 import StartMenu from "@/components/system/startMenu/StartMenu.vue";
@@ -44,83 +44,64 @@ import { useLayoutStore } from "@/stores/layoutStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { formatDate, formatTimeFromDate } from "@/utils/dateAndTimeConversionUtils";
 
-export default defineComponent({
-  components: { TaskBarItem, StartMenu },
-  setup() {
-    const layoutStore = useLayoutStore();
-    const fileSystemStore = useFileSystemStore();
-    const settingsStore = useSettingsStore();
+const layoutStore = useLayoutStore();
+const fileSystemStore = useFileSystemStore();
+const settingsStore = useSettingsStore();
 
-    const previewOpened = ref("");
+const previewOpened = ref("");
 
-    const isStartMenuOpened = computed(() => {
-      return layoutStore.startMenuOpened;
-    });
+const isStartMenuOpened = computed(() => {
+  return layoutStore.startMenuOpened;
+});
 
-    const itemsContainerRef = ref(null);
-    const currentDateRef = ref(null);
-    const windowIconRef = ref(null);
+const itemsContainerRef = ref(null);
+const currentDateRef = ref(null);
+const windowIconRef = ref(null);
 
-    const itemMargin = 4;
+const itemMargin = 4;
 
-    const currentDate = ref("");
-    const currentTime = ref("");
+const currentDate = ref("");
+const currentTime = ref("");
 
-    const dateFormat = computed(() => {
-      return settingsStore.dateFormat;
-    });
+const dateFormat = computed(() => {
+  return settingsStore.dateFormat;
+});
 
-    const timeFormat = computed(() => {
-      return settingsStore.timeFormat;
-    });
+const timeFormat = computed(() => {
+  return settingsStore.timeFormat;
+});
 
-    const taskBarItems = computed(function () {
-      return fileSystemStore.itemsDialog as ItemDialog[];
-    });
+const taskBarItems = computed(function () {
+  return fileSystemStore.itemsDialog as ItemDialog[];
+});
 
-    const taskBarItemByApplication = computed(function () {
-      const itemByApp: { [key: string]: ItemDialog[] } = {};
+const taskBarItemByApplication = computed(function () {
+  const itemByApp: { [key: string]: ItemDialog[] } = {};
 
-      taskBarItems.value.forEach((itemDialog) => {
-        if (itemByApp[itemDialog.applicationToOpen || ""]) {
-          itemByApp[itemDialog.applicationToOpen || ""].push(itemDialog);
-        } else {
-          itemByApp[itemDialog.applicationToOpen || ""] = [itemDialog];
-        }
-      });
-      return itemByApp;
-    });
+  taskBarItems.value.forEach((itemDialog) => {
+    if (itemByApp[itemDialog.applicationToOpen || ""]) {
+      itemByApp[itemDialog.applicationToOpen || ""].push(itemDialog);
+    } else {
+      itemByApp[itemDialog.applicationToOpen || ""] = [itemDialog];
+    }
+  });
+  return itemByApp;
+});
 
-    const setStartMenuOpened = () => {
-      console.log(!isStartMenuOpened.value);
-      layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
-    };
+const setStartMenuOpened = () => {
+  console.log(!isStartMenuOpened.value);
+  layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
+};
 
-    const updateDate = () => {
-      const newDate = new Date(Date.now());
-      currentDate.value = formatDate(newDate, dateFormat.value);
-      currentTime.value = formatTimeFromDate(newDate, timeFormat.value);
-    };
+const updateDate = () => {
+  const newDate = new Date(Date.now());
+  currentDate.value = formatDate(newDate, dateFormat.value);
+  currentTime.value = formatTimeFromDate(newDate, timeFormat.value);
+};
 
-    onMounted(function () {
-      updateDate();
-      setInterval(updateDate, 1000);
-    });
-
-    return {
-      taskBarItems,
-      itemsContainerRef,
-      currentDateRef,
-      windowIconRef,
-      itemMargin,
-      currentDate,
-      currentTime,
-      isStartMenuOpened,
-      taskBarItemByApplication,
-      previewOpened,
-      setStartMenuOpened,
-    };
-  },
+onMounted(function () {
+  updateDate();
+  setInterval(updateDate, 1000);
 });
 </script>
 
