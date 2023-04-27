@@ -52,7 +52,12 @@
           <div class="unit">
             {{ duty.units.join("/") }}
           </div>
-          <input @keyup="calculateDuty(($event.target as any).value, duty)" type="number" id="people" />
+          <input
+            @keyup="calculateDuty(($event.target as any).value, duty)"
+            @change="calculateDuty(($event.target as any).value, duty)"
+            type="number"
+            id="people"
+          />
         </div>
 
         <span class="note-text">

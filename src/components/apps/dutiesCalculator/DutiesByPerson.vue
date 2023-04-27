@@ -8,6 +8,7 @@
     <input
       type="number"
       @keyup="changeNumberOfPeople"
+      @change="changeNumberOfPeople"
       id="people"
       default="1"
       min="1"
@@ -23,11 +24,23 @@
     />
     <br />
     <label for="total-value"> <span class="mdi mdi-hospital-box label-icon"></span>Goods total value (CHF):</label>
-    <input type="number" @keyup="changeTotalGoodsCHF" id="total-value" v-model="totalGoodsValueCHF" />
+    <input
+      type="number"
+      @keyup="changeTotalGoodsCHF"
+      @change="changeTotalGoodsCHF"
+      id="total-value"
+      v-model="totalGoodsValueCHF"
+    />
 
     <div style="position: relative">
       <label for="total-value-eur"><span class="mdi mdi-currency-eur label-icon"></span>Goods total value (EUR):</label>
-      <input type="number" id="total-value-eur" @keyup="changeTotalGoodsEUR" v-model="totalGoodsValueEUR" />
+      <input
+        type="number"
+        id="total-value-eur"
+        @keyup="changeTotalGoodsEUR"
+        @change="changeTotalGoodsEUR"
+        v-model="totalGoodsValueEUR"
+      />
       <span class="exchange-rate">
         [ Exchange rate: {{ exchangeRate }} ]
         <span class="mdi mdi-pencil edit-icon" @click="showEditExchangeRate = !showEditExchangeRate"></span
@@ -37,7 +50,13 @@
         <span class="mdi mdi-close close-icon" @click="showEditExchangeRate = false"></span>
         <label for="exchange-rate">Exchange rate:</label>
         <br />
-        <input type="number" id="exchange-rate" @keyup="changeTotalGoodsCHF" v-model="exchangeRate" />
+        <input
+          type="number"
+          id="exchange-rate"
+          @keyup="changeTotalGoodsCHF"
+          @change="changeTotalGoodsCHF"
+          v-model="exchangeRate"
+        />
       </BaseTooltip>
     </div>
     <hr style="margin: 5px 0px" />
@@ -46,16 +65,8 @@
         <label for="total-value">Goods with VAT 7.7%:</label>
         <input
           type="number"
-          @keyup="
-            () => {
-              if (amountToTax_7 <= totalGoodsValueCHF) {
-                amountToTax_2 = totalGoodsValueCHF - amountToTax_7;
-              } else {
-                amountToTax_7 = totalGoodsValueCHF;
-                amountToTax_2 = 0;
-              }
-            }
-          "
+          @keyup="onChangeAmountToTax_7"
+          @change="onChangeAmountToTax_7"
           id="total-value"
           v-model="amountToTax_7"
         />
@@ -64,16 +75,8 @@
         <label for="total-value">Goods with VAT 2.5%:</label>
         <input
           type="number"
-          @keyup="
-            () => {
-              if (amountToTax_2 <= totalGoodsValueCHF) {
-                amountToTax_7 = totalGoodsValueCHF - amountToTax_2;
-              } else {
-                amountToTax_2 = totalGoodsValueCHF;
-                amountToTax_7 = 0;
-              }
-            }
-          "
+          @keyup="onChangeAmountToTax_2"
+          @change="onChangeAmountToTax_2"
           id="total-value"
           v-model="amountToTax_2"
         />
@@ -125,6 +128,24 @@ watch(
 const changeNumberOfPeople = () => {
   emit("changeNumberOfPeople", numberOfPeople.value || 1);
   calculateDuties();
+};
+
+const onChangeAmountToTax_2 = () => {
+  if (amountToTax_2.value <= totalGoodsValueCHF.value) {
+    amountToTax_7.value = totalGoodsValueCHF.value - amountToTax_2.value;
+  } else {
+    amountToTax_2.value = totalGoodsValueCHF.value;
+    amountToTax_7.value = 0;
+  }
+};
+
+const onChangeAmountToTax_7 = () => {
+  if (amountToTax_7.value <= totalGoodsValueCHF.value) {
+    amountToTax_2.value = totalGoodsValueCHF.value - amountToTax_7.value;
+  } else {
+    amountToTax_7.value = totalGoodsValueCHF.value;
+    amountToTax_2.value = 0;
+  }
 };
 
 const changeTotalGoodsEUR = () => {
