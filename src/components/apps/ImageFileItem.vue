@@ -81,11 +81,7 @@ onMounted(async () => {
 
 .img-wrapper {
   overflow: auto;
-
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .img-wrapper > img {
