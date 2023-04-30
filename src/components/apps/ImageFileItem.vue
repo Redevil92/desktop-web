@@ -70,9 +70,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* .file-image {
-  object-fit: cover;
-} */
 .flex {
   display: flex;
   justify-content: center;
@@ -85,8 +82,6 @@ onMounted(async () => {
 }
 
 .img-wrapper > img {
-  /* height: 100%;
-  width: 100%; */
   vertical-align: bottom;
 }
 
