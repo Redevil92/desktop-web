@@ -16,30 +16,30 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    label: String,
-    rounded: Boolean,
-    placeholder: String,
-    modelValue: String, // previously was `value: String`
-    type: { type: String, default: "text" }, // previously was `value: String`
-    disabled: { type: Boolean, default: false }, // previously was `value: String`
-    autocomplete: { type: Boolean, default: true },
-    searchBar: { type: Boolean, default: false },
-  },
-  emits: ["update:modelValue", "onKeyDown", "onBlur"],
-  methods: {
-    change(event) {
-      this.$emit("update:modelValue", event.target.value); // previously was `this.$emit('input', title)`
-    },
-    onKeyDown(event) {
-      this.$emit("onKeyDown", event);
-    },
-    onBlur(event) {
-      this.$emit("onBlur", event);
-    },
-  },
+<script lang="ts" setup>
+const props = defineProps({
+  label: String,
+  rounded: Boolean,
+  placeholder: String,
+  modelValue: String, // previously was `value: String`
+  type: { type: String, default: "text" }, // previously was `value: String`
+  disabled: { type: Boolean, default: false }, // previously was `value: String`
+  autocomplete: { type: Boolean, default: true },
+  searchBar: { type: Boolean, default: false },
+});
+
+const emit = defineEmits(["update:modelValue", "onKeyDown", "onBlur"]);
+
+const change = (event: any) => {
+  emit("update:modelValue", event.target.value); // previously was `this.$emit('input', title)`
+};
+
+const onKeyDown = (event: any) => {
+  emit("onKeyDown", event);
+};
+
+const onBlur = (event: any) => {
+  emit("onBlur", event);
 };
 </script>
 
