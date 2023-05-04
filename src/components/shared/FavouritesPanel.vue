@@ -20,35 +20,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useSettingsStore } from "@/stores/settingsStore";
 import PathAndIcon from "@/models/PathAndIcon";
 
-export default defineComponent({
-  props: { pathSelected: { type: String, default: "" }, height: { type: Number, required: false } },
-  components: {},
-  emits: ["onFavouriteSelect"],
-  setup(_, ctx) {
-    const settingsStore = useSettingsStore();
+const props = defineProps({ pathSelected: { type: String, default: "" }, height: { type: Number, required: false } });
 
-    const favouritesPathList = computed(() => {
-      return settingsStore.favouritesPathListAndIcon as PathAndIcon[];
-    });
+const emit = defineEmits(["onFavouriteSelect"]);
 
-    const clickFavouriteHandler = (path: string) => {
-      ctx.emit("onFavouriteSelect", path);
-    };
+const settingsStore = useSettingsStore();
 
-    return {
-      favouritesPathList,
-      getFileNameFromPath,
-      clickFavouriteHandler,
-    };
-  },
+const favouritesPathList = computed(() => {
+  return settingsStore.favouritesPathListAndIcon as PathAndIcon[];
 });
+
+const clickFavouriteHandler = (path: string) => {
+  emit("onFavouriteSelect", path);
+};
 </script>
 <style scoped>
 .left-panel {
