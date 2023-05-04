@@ -76,15 +76,15 @@ input:focus {
 
 .search-input {
   font-size: var(--medium-font-size);
-  padding-top: 12px;
   border: none;
-  padding: 10px;
-  padding-left: 35px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0);
-  /* border-bottom: 1px solid white; */
+  padding-left: 30px;
+
   background-color: rgba(255, 255, 255, 0.21);
   color: white;
   width: 100%;
+  border-radius: calc(var(--border-radius) * 2);
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .search-input::placeholder {
@@ -101,16 +101,16 @@ input:focus {
 .search-input:-webkit-autofill:hover,
 .search-input:-webkit-autofill:focus {
   border: none;
-  border-bottom: 2px solid var(--primary-color);
-  outline: none;
+  /* border-bottom: 2px solid var(--primary-color); */
+  outline: 2px solid var(--selected-color);
   background-color: rgba(255, 255, 255, 0.21);
 }
 
 .search-icon {
   color: white;
   position: absolute;
-  font-size: var(--small-icon-size);
+  font-size: var(--x-small-icon-size);
   left: 7px;
-  top: 4px;
+  top: 3px;
 }
 </style>
