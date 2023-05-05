@@ -2,13 +2,9 @@
   <div :style="`height: ${height}px; width: 100%; `" class="detect-click-div"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: {
-    height: Number,
-  },
+<script lang="ts" setup>
+const props = defineProps({
+  height: { type: Number },
 });
 </script>
 <style scoped>
