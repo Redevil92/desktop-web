@@ -75,136 +75,115 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
+<script lang="ts" setup>
+import { computed, nextTick, PropType, ref, watch } from "vue";
 
 import FileIcon from "@/components/shared/FileIcon.vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
 
-export default defineComponent({
-  props: {
-    items: { type: Array as PropType<ItemDialog[]>, required: true },
-    previewOpened: { type: String },
-  },
-  components: { FileIcon },
-  emits: ["onPreviewOpenedChanged"],
-  setup(props, ctx) {
-    const fileSystemStore = useFileSystemStore();
-    const showItemsPreview = ref(false);
-    const isMouseHoveringItem = ref(false);
-    const itemToPreview = ref<ItemDialog | undefined>();
-    const itemsContainerRef = ref<HTMLElement | undefined>();
-    const isOutOfScreen = ref(false);
-
-    watch(
-      () => props.previewOpened,
-      async function (newValue: any, oldValue: any) {
-        if (newValue !== props.items[0].applicationToOpen) {
-          showItemsPreview.value = false;
-        }
-      }
-    );
-
-    const isItemFocused = computed(() => {
-      const index = props.items.findIndex((item) => item.isFocused === true && !item.isCollapsed);
-      return index !== -1;
-    });
-
-    const showItemsPreviewHandler = async (show: boolean) => {
-      if (!show) {
-        setTimeout(() => {
-          if (isMouseHoveringItem.value === false) {
-            showItemsPreview.value = false;
-            isOutOfScreen.value = false;
-          }
-        }, 300);
-      } else {
-        showItemsPreview.value = true;
-        await nextTick();
-
-        setIsPreviwOverflow();
-        ctx.emit("onPreviewOpenedChanged", props.items[0].applicationToOpen);
-      }
-    };
-
-    const iconClickHandler = () => {
-      if (props.items.length === 1) {
-        const itemDialog = props.items[0];
-        if (!itemDialog.isFocused) {
-          fileSystemStore.setFocusedItemDialog(itemDialog);
-        } else if (itemDialog.isCollapsed) {
-          fileSystemStore.openMinimizedItemDialog(itemDialog.guid);
-        } else {
-          fileSystemStore.minimizeItemDialog(itemDialog.guid);
-        }
-      }
-    };
-
-    const setIsPreviwOverflow = () => {
-      if (itemsContainerRef.value && !isOutOfScreen.value) {
-        const rect = itemsContainerRef.value.getBoundingClientRect();
-        console.log(rect.x, rect.width, window.innerWidth);
-        isOutOfScreen.value = rect.x + rect.width < 0 || rect.x + rect.width > window.innerWidth;
-      }
-    };
-
-    const closeItem = (item: ItemDialog) => {
-      fileSystemStore.closeItemDialog(item.guid);
-    };
-
-    const setItemToPreview = (item: ItemDialog) => {
-      // if item is hidden set item as focused
-      if (item.isCollapsed) {
-        itemToPreview.value = item;
-        fileSystemStore.openMinimizedItemDialog(item.guid);
-      }
-
-      fileSystemStore.setFocusedItemDialog(item);
-      // [[ if click while mouse hover remove itemToPreview without collapse item ]]
-    };
-
-    const removeItemToPreview = () => {
-      if (itemToPreview.value) {
-        fileSystemStore.minimizeItemDialog(itemToPreview.value.guid);
-        itemToPreview.value = undefined;
-      }
-    };
-
-    const taskBarItemClickHandler = (item: ItemDialog) => {
-      if (item.isCollapsed || itemToPreview.value) {
-        itemToPreview.value = undefined;
-        fileSystemStore.openMinimizedItemDialog(item.guid);
-        fileSystemStore.setFocusedItemDialog(item);
-        showItemsPreview.value = false;
-      } else {
-        fileSystemStore.minimizeItemDialog(item.guid);
-        fileSystemStore.setFocusedItemDialog({} as ItemDialog);
-      }
-    };
-
-    return {
-      getFileNameFromPath,
-      getFileExtensionFromName,
-      showItemsPreviewHandler,
-      taskBarItemClickHandler,
-      getPreviewImageFromSessionStorage,
-      setItemToPreview,
-      removeItemToPreview,
-      closeItem,
-      iconClickHandler,
-      isOutOfScreen,
-      isMouseHoveringItem,
-      isItemFocused,
-      showItemsPreview,
-      itemToPreview,
-      itemsContainerRef,
-    };
-  },
+const props = defineProps({
+  items: { type: Array as PropType<ItemDialog[]>, required: true },
+  previewOpened: { type: String },
 });
+
+const emit = defineEmits(["onPreviewOpenedChanged"]);
+
+const fileSystemStore = useFileSystemStore();
+const showItemsPreview = ref(false);
+const isMouseHoveringItem = ref(false);
+const itemToPreview = ref<ItemDialog | undefined>();
+const itemsContainerRef = ref<HTMLElement | undefined>();
+const isOutOfScreen = ref(false);
+
+watch(
+  () => props.previewOpened,
+  async function (newValue: any, oldValue: any) {
+    if (newValue !== props.items[0].applicationToOpen) {
+      showItemsPreview.value = false;
+    }
+  }
+);
+
+const isItemFocused = computed(() => {
+  const index = props.items.findIndex((item) => item.isFocused === true && !item.isCollapsed);
+  return index !== -1;
+});
+
+const showItemsPreviewHandler = async (show: boolean) => {
+  if (!show) {
+    setTimeout(() => {
+      if (isMouseHoveringItem.value === false) {
+        showItemsPreview.value = false;
+        isOutOfScreen.value = false;
+      }
+    }, 300);
+  } else {
+    showItemsPreview.value = true;
+    await nextTick();
+
+    setIsPreviwOverflow();
+    emit("onPreviewOpenedChanged", props.items[0].applicationToOpen);
+  }
+};
+
+const iconClickHandler = () => {
+  if (props.items.length === 1) {
+    const itemDialog = props.items[0];
+    if (!itemDialog.isFocused) {
+      fileSystemStore.setFocusedItemDialog(itemDialog);
+    } else if (itemDialog.isCollapsed) {
+      fileSystemStore.openMinimizedItemDialog(itemDialog.guid);
+    } else {
+      fileSystemStore.minimizeItemDialog(itemDialog.guid);
+    }
+  }
+};
+
+const setIsPreviwOverflow = () => {
+  if (itemsContainerRef.value && !isOutOfScreen.value) {
+    const rect = itemsContainerRef.value.getBoundingClientRect();
+    console.log(rect.x, rect.width, window.innerWidth);
+    isOutOfScreen.value = rect.x + rect.width < 0 || rect.x + rect.width > window.innerWidth;
+  }
+};
+
+const closeItem = (item: ItemDialog) => {
+  fileSystemStore.closeItemDialog(item.guid);
+};
+
+const setItemToPreview = (item: ItemDialog) => {
+  // if item is hidden set item as focused
+  if (item.isCollapsed) {
+    itemToPreview.value = item;
+    fileSystemStore.openMinimizedItemDialog(item.guid);
+  }
+
+  fileSystemStore.setFocusedItemDialog(item);
+  // [[ if click while mouse hover remove itemToPreview without collapse item ]]
+};
+
+const removeItemToPreview = () => {
+  if (itemToPreview.value) {
+    fileSystemStore.minimizeItemDialog(itemToPreview.value.guid);
+    itemToPreview.value = undefined;
+  }
+};
+
+const taskBarItemClickHandler = (item: ItemDialog) => {
+  if (item.isCollapsed || itemToPreview.value) {
+    itemToPreview.value = undefined;
+    fileSystemStore.openMinimizedItemDialog(item.guid);
+    fileSystemStore.setFocusedItemDialog(item);
+    showItemsPreview.value = false;
+  } else {
+    fileSystemStore.minimizeItemDialog(item.guid);
+    fileSystemStore.setFocusedItemDialog({} as ItemDialog);
+  }
+};
 </script>
 
 <style scoped>
