@@ -11,41 +11,35 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import SnackBar from "@/models/SnackBar";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { computed, defineComponent, watch } from "vue";
 
-export default defineComponent({
-  setup() {
-    const layoutStore = useLayoutStore();
+const layoutStore = useLayoutStore();
 
-    const snackbar = computed(function () {
-      return layoutStore.snackbar as SnackBar;
-    });
-
-    const durationTime = computed(function () {
-      return layoutStore.snackbarDurationTime;
-    });
-
-    const resetSnackbar = () => {
-      layoutStore.resetSnackBar();
-    };
-
-    watch(
-      () => snackbar.value,
-      function () {
-        if (snackbar.value.show) {
-          setTimeout(() => {
-            layoutStore.resetSnackBar();
-          }, durationTime.value);
-        }
-      }
-    );
-
-    return { snackbar, resetSnackbar };
-  },
+const snackbar = computed(function () {
+  return layoutStore.snackbar as SnackBar;
 });
+
+const durationTime = computed(function () {
+  return layoutStore.snackbarDurationTime;
+});
+
+const resetSnackbar = () => {
+  layoutStore.resetSnackBar();
+};
+
+watch(
+  () => snackbar.value,
+  function () {
+    if (snackbar.value.show) {
+      setTimeout(() => {
+        layoutStore.resetSnackBar();
+      }, durationTime.value);
+    }
+  }
+);
 </script>
 <style scoped>
 .snack-bar {
