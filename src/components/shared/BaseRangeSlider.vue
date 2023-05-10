@@ -23,98 +23,84 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, ref } from "vue";
 
-export default defineComponent({
-  props: {
-    min: { type: Number, required: true },
-    max: { type: Number, required: true },
-    startingMin: { type: Number },
-    startingMax: { type: Number },
-    formatValuesFunction: {
-      type: Function,
-      default: (x: string) => x,
-    },
-  },
-  setup(props, context) {
-    const sliderWidth = 15;
-    const barRangeLeftPos = ref(0);
-    const barRangeWidth = ref(0);
-    const sliderMoving = ref("");
-    const startX = ref(0);
-    const minValue = ref(props.startingMin || props.min);
-    const maxValue = ref(props.startingMax || props.max);
-
-    const barRef = ref(null as unknown as HTMLElement);
-    const sliderMinRef = ref(null as unknown as HTMLElement);
-    const sliderMaxRef = ref(null as unknown as HTMLElement);
-
-    const setSlidersPositionByValue = () => {
-      const xMaxPos = (barRef.value.getBoundingClientRect().width * maxValue.value) / (props.max - props.min);
-      const xMinPos = (barRef.value.getBoundingClientRect().width * minValue.value) / (props.max - props.min);
-
-      sliderMinRef.value.style.left = xMinPos + "px";
-      sliderMaxRef.value.style.left = xMaxPos + "px";
-    };
-
-    const setBarRangeWidthAndPosition = () => {
-      barRangeLeftPos.value = (sliderMinRef.value.offsetLeft || 0) + sliderWidth;
-      barRangeWidth.value = (sliderMaxRef.value.offsetLeft || 0) - (sliderMinRef.value.offsetLeft || 0) - sliderWidth;
-      setSlidersPositionByValue();
-    };
-
-    const clickSliderHandler = (slider = "max", event: any) => {
-      event.preventDefault();
-      sliderMoving.value = slider;
-      startX.value = event.clientX;
-      window.addEventListener("mouseup", mouseUpHandler);
-      window.addEventListener("mousemove", moveSliderHandler);
-    };
-
-    const mouseUpHandler = (): any => {
-      window.removeEventListener("mouseup", mouseUpHandler);
-      window.removeEventListener("mousemove", moveSliderHandler);
-      context.emit("onRangeSelectedUpdate", [minValue.value, maxValue.value]);
-    };
-
-    const moveSliderHandler = (event: any): any => {
-      event.preventDefault();
-      if (sliderMoving.value === "min" && sliderMinRef.value) {
-        const newXPosition = event.clientX - barRef.value.getBoundingClientRect().x;
-
-        const maxSliderPosition = sliderMaxRef.value.offsetLeft - sliderWidth;
-
-        if (newXPosition < maxSliderPosition && newXPosition >= 0) {
-          sliderMinRef.value.style.left = newXPosition + "px";
-          minValue.value = (props.max - props.min) * (newXPosition / barRef.value.getBoundingClientRect().width);
-        }
-      }
-
-      if (sliderMoving.value == "max") {
-        const newXPosition = event.clientx - barRef.value.getBoundingClientRect().x;
-        const minSliderPosition = sliderMinRef.value.offsetLeft + sliderWidth;
-
-        if (newXPosition > minSliderPosition && newXPosition <= barRef.value.getBoundingClientRect().width) {
-          sliderMaxRef.value.style.left = newXPosition + "px";
-          maxValue.value = (props.max - props.min) * (newXPosition / barRef.value.getBoundingClientRect().width);
-        }
-      }
-      setBarRangeWidthAndPosition();
-    };
-
-    return {
-      barRef,
-      sliderMaxRef,
-      sliderMinRef,
-      clickSliderHandler,
-      barRangeLeftPos,
-      barRangeWidth,
-      minValue,
-      maxValue,
-    };
+const props = defineProps({
+  min: { type: Number, required: true },
+  max: { type: Number, required: true },
+  startingMin: { type: Number },
+  startingMax: { type: Number },
+  formatValuesFunction: {
+    type: Function,
+    default: (x: string) => x,
   },
 });
+
+const sliderWidth = 15;
+const barRangeLeftPos = ref(0);
+const barRangeWidth = ref(0);
+const sliderMoving = ref("");
+const startX = ref(0);
+const minValue = ref(props.startingMin || props.min);
+const maxValue = ref(props.startingMax || props.max);
+
+const barRef = ref(null as unknown as HTMLElement);
+const sliderMinRef = ref(null as unknown as HTMLElement);
+const sliderMaxRef = ref(null as unknown as HTMLElement);
+
+const setSlidersPositionByValue = () => {
+  const xMaxPos = (barRef.value.getBoundingClientRect().width * maxValue.value) / (props.max - props.min);
+  const xMinPos = (barRef.value.getBoundingClientRect().width * minValue.value) / (props.max - props.min);
+
+  sliderMinRef.value.style.left = xMinPos + "px";
+  sliderMaxRef.value.style.left = xMaxPos + "px";
+};
+
+const setBarRangeWidthAndPosition = () => {
+  barRangeLeftPos.value = (sliderMinRef.value.offsetLeft || 0) + sliderWidth;
+  barRangeWidth.value = (sliderMaxRef.value.offsetLeft || 0) - (sliderMinRef.value.offsetLeft || 0) - sliderWidth;
+  setSlidersPositionByValue();
+};
+
+const clickSliderHandler = (slider = "max", event: any) => {
+  event.preventDefault();
+  sliderMoving.value = slider;
+  startX.value = event.clientX;
+  window.addEventListener("mouseup", mouseUpHandler);
+  window.addEventListener("mousemove", moveSliderHandler);
+};
+
+const mouseUpHandler = (): any => {
+  window.removeEventListener("mouseup", mouseUpHandler);
+  window.removeEventListener("mousemove", moveSliderHandler);
+  context.emit("onRangeSelectedUpdate", [minValue.value, maxValue.value]);
+};
+
+const moveSliderHandler = (event: any): any => {
+  event.preventDefault();
+  if (sliderMoving.value === "min" && sliderMinRef.value) {
+    const newXPosition = event.clientX - barRef.value.getBoundingClientRect().x;
+
+    const maxSliderPosition = sliderMaxRef.value.offsetLeft - sliderWidth;
+
+    if (newXPosition < maxSliderPosition && newXPosition >= 0) {
+      sliderMinRef.value.style.left = newXPosition + "px";
+      minValue.value = (props.max - props.min) * (newXPosition / barRef.value.getBoundingClientRect().width);
+    }
+  }
+
+  if (sliderMoving.value == "max") {
+    const newXPosition = event.clientx - barRef.value.getBoundingClientRect().x;
+    const minSliderPosition = sliderMinRef.value.offsetLeft + sliderWidth;
+
+    if (newXPosition > minSliderPosition && newXPosition <= barRef.value.getBoundingClientRect().width) {
+      sliderMaxRef.value.style.left = newXPosition + "px";
+      maxValue.value = (props.max - props.min) * (newXPosition / barRef.value.getBoundingClientRect().width);
+    }
+  }
+  setBarRangeWidthAndPosition();
+};
 </script>
 
 <style scoped>
