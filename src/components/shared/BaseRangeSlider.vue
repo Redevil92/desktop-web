@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
   min: { type: Number, required: true },
@@ -36,6 +36,8 @@ const props = defineProps({
     default: (x: string) => x,
   },
 });
+
+const emit = defineEmits(["onRangeSelectedUpdate"]);
 
 const sliderWidth = 15;
 const barRangeLeftPos = ref(0);
@@ -74,7 +76,7 @@ const clickSliderHandler = (slider = "max", event: any) => {
 const mouseUpHandler = (): any => {
   window.removeEventListener("mouseup", mouseUpHandler);
   window.removeEventListener("mousemove", moveSliderHandler);
-  context.emit("onRangeSelectedUpdate", [minValue.value, maxValue.value]);
+  emit("onRangeSelectedUpdate", [minValue.value, maxValue.value]);
 };
 
 const moveSliderHandler = (event: any): any => {
