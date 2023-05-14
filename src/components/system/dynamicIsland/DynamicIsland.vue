@@ -14,68 +14,55 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
 import { computed, defineAsyncComponent, defineComponent, ref, watch } from "vue";
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
 
-export default defineComponent({
-  setup() {
-    const dynamicIslandStore = useDynamicIslandStore();
+const dynamicIslandStore = useDynamicIslandStore();
 
-    const asyncComponent = ref({} as any);
+const asyncComponent = ref({} as any);
 
-    const dynamicItemIndexSelected = ref(0);
+const dynamicItemIndexSelected = ref(0);
 
-    const dynamicItems = computed(() => {
-      return dynamicIslandStore.items;
-    });
+const dynamicItems = computed(() => {
+  return dynamicIslandStore.items;
+});
 
-    const selectedDynamicItem = computed(() => {
-      return dynamicIslandStore.items[dynamicItemIndexSelected.value];
-    });
+const selectedDynamicItem = computed(() => {
+  return dynamicIslandStore.items[dynamicItemIndexSelected.value];
+});
 
-    const showDynamicIsland = computed(() => {
-      return dynamicIslandStore.showDynamicIsland;
-    });
+const showDynamicIsland = computed(() => {
+  return dynamicIslandStore.showDynamicIsland;
+});
 
-    watch(dynamicItems.value, function () {
-      if (dynamicItems.value.length > 0) {
-        loadAndSetAsyncComponent(dynamicItems.value[dynamicItemIndexSelected.value].componentPath);
-      }
-    });
+watch(dynamicItems.value, function () {
+  if (dynamicItems.value.length > 0) {
+    loadAndSetAsyncComponent(dynamicItems.value[dynamicItemIndexSelected.value].componentPath);
+  }
+});
 
-    const dynamicIslandRef = ref<HTMLElement | null>(null);
+const dynamicIslandRef = ref<HTMLElement | null>(null);
 
-    const loadAndSetAsyncComponent = (componentName: string) => {
-      asyncComponent.value = defineAsyncComponent({
-        loader: () => import("@/components/apps/" + componentName),
-        loadingComponent: LoadingComponent,
-        delay: 200,
-        errorComponent: ErrorComponent,
-        timeout: 3000,
-      });
-      dynamicIslandStore.setShowDynamicIsland(true);
-    };
+const loadAndSetAsyncComponent = (componentName: string) => {
+  asyncComponent.value = defineAsyncComponent({
+    loader: () => import("@/components/apps/" + componentName),
+    loadingComponent: LoadingComponent,
+    delay: 200,
+    errorComponent: ErrorComponent,
+    timeout: 3000,
+  });
+  dynamicIslandStore.setShowDynamicIsland(true);
+};
 
-    const dynamicIslandWidth = computed(() => {
-      if (dynamicIslandRef.value) {
-        return dynamicIslandRef.value.clientWidth;
-      }
-      return 200;
-    });
-
-    return {
-      dynamicIslandWidth,
-      dynamicItems,
-      asyncComponent,
-      showDynamicIsland,
-      dynamicItemIndexSelected,
-      selectedDynamicItem,
-    };
-  },
+const dynamicIslandWidth = computed(() => {
+  if (dynamicIslandRef.value) {
+    return dynamicIslandRef.value.clientWidth;
+  }
+  return 200;
 });
 </script>
 
