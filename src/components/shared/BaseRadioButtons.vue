@@ -10,23 +10,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { PropType } from "vue";
 
-export default defineComponent({
-  props: {
-    selectionList: Array as PropType<string[]>,
-    selected: String,
-  },
-  components: {},
-  emits: ["onSelect"],
-  setup(_, context) {
-    const selectHandler = (selection: string) => {
-      context.emit("onSelect", selection);
-    };
-    return { selectHandler };
-  },
+const props = defineProps({
+  selectionList: { type: Array as PropType<string[]>, required: true },
+  selected: { type: String, required: true },
 });
+
+const emit = defineEmits(["onSelect"]);
+
+const selectHandler = (selection: string) => {
+  emit("onSelect", selection);
+};
 </script>
 <style scoped>
 .radio-button {
