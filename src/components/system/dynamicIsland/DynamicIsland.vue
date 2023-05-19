@@ -8,7 +8,7 @@
     <component
       v-if="showDynamicIsland && selectedDynamicItem"
       :is="asyncComponent"
-      :audioElement="selectedDynamicItem.audioElement"
+      :audioElement="(selectedDynamicItem as DynamicIslandAudioItem).audioElement"
       :height="30"
     ></component>
   </div>
@@ -20,6 +20,7 @@ import { computed, defineAsyncComponent, defineComponent, ref, watch } from "vue
 
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
+import { DynamicIslandAudioItem } from "@/models/DynamicIslandItem";
 
 const dynamicIslandStore = useDynamicIslandStore();
 
