@@ -74,7 +74,6 @@ const canGoForward = computed(() => {
 
 const keyDownHandler = (event: KeyboardEvent) => {
   if (event.key === "Enter" && event.target) {
-    console.log("AHHHH", event.target);
     setNewUrl((event.target as HTMLInputElement).value);
   }
 };

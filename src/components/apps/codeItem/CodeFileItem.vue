@@ -84,7 +84,6 @@ const monacoEditorOptions = {
 
 const saveFile = () => {
   if (props.itemDialog?.path && canSave.value) {
-    console.log("saving", code.value);
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,
       content: utf8ToB64(code.value),
