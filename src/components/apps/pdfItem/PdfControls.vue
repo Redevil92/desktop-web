@@ -76,7 +76,6 @@ const emit = defineEmits(["onChangePage", "onDownload", "onRotateLeft", "onZoomI
 const showViewOption = ref(false);
 
 const changePage = (selectedPage: number | undefined) => {
-  console.log(selectedPage);
   if (selectedPage === undefined || (selectedPage > 0 && selectedPage <= props.pageCount)) {
     emit("onChangePage", selectedPage);
   }

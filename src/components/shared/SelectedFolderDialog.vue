@@ -127,7 +127,6 @@ const closeDialog = () => {
 
 const folderSelected = () => {
   if (((props.showSaveAsInput && saveAs.value) || !props.showSaveAsInput) && selectedFolder.value) {
-    console.log("PATH TO EMIT", selectedFolder.value);
     let pathToEmit = selectedFolder.value;
     if (props.showSaveAsInput) {
       pathToEmit += "/" + saveAs.value;
