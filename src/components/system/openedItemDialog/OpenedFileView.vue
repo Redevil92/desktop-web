@@ -24,7 +24,7 @@
         :id="itemDialog.guid"
         ref="itemContentRef"
       >
-      <!-- TODO: we should not pass height to the component , we should set the height direclty to the component
+        <!-- TODO: we should not pass height to the component , we should set the height direclty to the component
             maybe we should just pass the file in the correct format to the content and have apps components that
             just display the content -->
         <component

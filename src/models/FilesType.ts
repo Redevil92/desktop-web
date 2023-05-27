@@ -209,7 +209,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     title: "Settings",
     icon: "settings.svg",
-    application: "SystemSettings",
+    application: "systemSettings/SystemSettings",
     canOpenWithoutFile: true,
   },
   dutiesTaxCalculator: {
