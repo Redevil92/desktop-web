@@ -81,7 +81,6 @@ const applicationComponent = defineAsyncComponent({
 });
 
 const headerRef = ref({} as HTMLElement);
-const draggableElement = ref({} as HTMLElement);
 
 const contentHeight = computed(function () {
   if (props.itemDialog.isFullscreen) {
