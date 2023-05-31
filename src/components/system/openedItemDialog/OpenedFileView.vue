@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, PropType, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 
@@ -89,6 +89,12 @@ const contentHeight = computed(function () {
     return window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4;
   }
   return props.itemDialog.dimension.height - headerRef.value.clientHeight;
+});
+
+onMounted(() => {
+  // load file from itemDialog
+  // pass it as props
+  // height should be 100%, not pass it as props
 });
 </script>
 
