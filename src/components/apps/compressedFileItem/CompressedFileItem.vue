@@ -26,7 +26,7 @@ import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { getFiles, isDir, readFile } from "@/context/fileSystemController";
+import { isDir, readFile } from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
