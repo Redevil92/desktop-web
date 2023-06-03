@@ -1,6 +1,5 @@
 import { TEMP_PATH } from "@/constants";
 import Coordinates from "@/models/Coordinates";
-import { createDirectory, createFile, existsFile } from "./fileSystemController";
 
 export const generateUniqueName = (nameWithoutExtension: string, nameList: string[]) => {
   let myName = nameWithoutExtension;

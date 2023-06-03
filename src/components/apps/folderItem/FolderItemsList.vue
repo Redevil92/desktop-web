@@ -99,7 +99,7 @@ import { computed, onMounted, onUnmounted, PropType, ref, watch, watchEffect } f
 import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { getStat } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import FileStats from "@/models/FileSystem/FileStats";
 import { formatBytes } from "@/utils/byteConversionUtils";
 import { formatStringDate, formatTimeFromStringDate } from "@/utils/dateAndTimeConversionUtils";
@@ -157,7 +157,7 @@ const dragStart = () => {
 const updateItemListWithProperties = async () => {
   const itemWithProp = [];
   for (const item of props.itemsList) {
-    const properties = props.showProperties ? ((await getStat(item)) as FileStats) : undefined;
+    const properties = props.showProperties ? ((await fileSystem.getStat(item)) as FileStats) : undefined;
 
     itemWithProp.push({
       path: item,

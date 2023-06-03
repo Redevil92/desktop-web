@@ -24,7 +24,7 @@ import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
 
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 
 import useBase64Handler from "@/hooks/useBase64Handler";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
@@ -99,7 +99,7 @@ const fileType = getFileTypeFromExtension();
 
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
-    let codeBase64 = await readFile(props.itemDialog?.path);
+    let codeBase64 = await fileSystem.readFile(props.itemDialog?.path);
     try {
       const codeToShow = b64ToText(codeBase64, true);
       fileLanguage.value = (extensionToFileType as any)[getFileExtensionFromName(props.itemDialog?.path)];

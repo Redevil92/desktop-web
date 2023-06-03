@@ -3,7 +3,7 @@ import App from "./App.vue";
 import { createFilesStructure } from "./context/createInitialFilesStructure";
 import router from "./router";
 import { createPinia } from "pinia";
-import fileSystemConfig from "./context/fileSystemConfiguration";
+import browserFSConfiguration from "./browserFSConfiguration";
 import { clearIndexedDB } from "./hooks/indexedDB";
 import { DEBUG_MODE, INDEXED_DB_NAME } from "./constants";
 import { clearLocalStorage } from "./hooks/useLocalStorage";
@@ -20,7 +20,7 @@ export async function initializeAppAndFileSystem() {
 
   BrowserFS.install(window);
 
-  BrowserFS.configure(fileSystemConfig, async function (e: any) {
+  BrowserFS.configure(browserFSConfiguration, async function (e: any) {
     if (e) {
       // An error occurred.
       console.error("Error in initialization BrowserFS (main.ts):", e);

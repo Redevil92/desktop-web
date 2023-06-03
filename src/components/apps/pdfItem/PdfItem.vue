@@ -44,7 +44,7 @@ import ItemDialog from "@/models/ItemDialog";
 import VuePdfEmbed from "vue-pdf-embed";
 
 import { dowloadWithProgress } from "@/utils/downloadUtils";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 import PrintPdfDialog from "@/components/apps/pdfItem/PrintPdfDialog.vue";
@@ -132,7 +132,7 @@ const rotateLeft = () => {
 
 const loadPdf = async () => {
   if (props.itemDialog?.path) {
-    const file = await readFile(props.itemDialog?.path);
+    const file = await fileSystem.readFile(props.itemDialog?.path);
     pdfData.value = file.toString();
   }
 };

@@ -60,7 +60,7 @@ import FileIcon from "@/components/shared/FileIcon.vue";
 import DesktopItem from "@/models/DesktopItem";
 
 import { DESKTOP_PATH } from "@/constants";
-import { existsFile, isDir } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
 import Coordinates from "@/models/Coordinates";
 
@@ -214,7 +214,7 @@ const changeFileName = async () => {
   const newName = DESKTOP_PATH + "/" + fileName.value;
 
   if (isEditingText.value && newName !== props.fileItem.path) {
-    if (await existsFile(newName)) {
+    if (await fileSystem.existsFile(newName)) {
       showDialog.value = true;
       errorMessage.value = `The name "${fileName.value}" is already taken. Please find a new one.`;
       isEditingText.value = false;
@@ -343,7 +343,7 @@ const checkMouseOver = (event: any) => {
 };
 
 onMounted(async () => {
-  isFolder.value = await isDir(props.fileItem.path);
+  isFolder.value = await fileSystem.isDir(props.fileItem.path);
 
   window.addEventListener("mousemove", checkMouseOver);
 });

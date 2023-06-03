@@ -3,7 +3,8 @@
 <script lang="ts" setup>
 import ItemDialog from "@/models/ItemDialog";
 import { onBeforeMount, PropType } from "vue";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
+
 import LinkData from "@/models/LinkData";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import DesktopItem from "@/models/DesktopItem";
@@ -16,7 +17,7 @@ const props = defineProps({
 });
 
 onBeforeMount(async () => {
-  const linkData: LinkData = JSON.parse(await readFile(props.itemDialog.path));
+  const linkData: LinkData = JSON.parse(await fileSystem.readFile(props.itemDialog.path));
 
   const appToOpen: DesktopItem = {
     path: linkData.filePath || "",

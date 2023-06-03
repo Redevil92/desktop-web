@@ -1,14 +1,6 @@
 import { defineStore } from "pinia";
-import {
-  createDirectory,
-  createFile,
-  deleteFileSystemItem,
-  getDesktopFiles,
-  getFiles,
-  isDir,
-  moveFiles,
-  renameFile,
-} from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
+
 import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
 import ActionMenu from "@/models/ActionMenu/ActionMenu";
@@ -85,9 +77,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
         itemExtension = itemDialog.applicationExtension;
       } else {
         itemExtension = getFileExtensionFromName(itemDialog.path);
-        isFolder = await isDir(itemDialog.path);
+        isFolder = await fileSystem.isDir(itemDialog.path);
         if (isFolder) {
-          filesPath = await getFiles(itemDialog.path, true);
+          filesPath = await fileSystem.getFiles(itemDialog.path, true);
           itemExtension = "dir";
         }
       }
@@ -136,7 +128,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       itemToUpdate.path = pathAndItemToUpdate.newPath;
       itemToUpdate.name = getFileNameFromPath(pathAndItemToUpdate.newPath);
 
-      const filesPath = await getFiles(itemToUpdate.path, true);
+      const filesPath = await fileSystem.getFiles(itemToUpdate.path, true);
       itemToUpdate.filesPath = filesPath;
 
       const index = this.itemsDialog.findIndex((item) => item.guid === itemToUpdate.guid);
@@ -148,9 +140,9 @@ export const useFileSystemStore = defineStore("fileSystem", {
     refreshAllItemDialogFiles() {
       const itemsDialog = Object.assign([], this.itemsDialog) as ItemDialog[];
       itemsDialog.forEach(async (itemDialog) => {
-        const isFolder = await isDir(itemDialog.path);
+        const isFolder = await fileSystem.isDir(itemDialog.path);
         if (isFolder) {
-          const newFilespath = await getFiles(itemDialog.path, true);
+          const newFilespath = await fileSystem.getFiles(itemDialog.path, true);
           itemDialog.filesPath = newFilespath;
         }
       });
@@ -239,7 +231,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
     },
     async fetchDesktopItems() {
-      const desktopFiles = await getDesktopFiles(true);
+      const desktopFiles = await fileSystem.getDesktopFiles(true);
       const localStoragePathAndCoordinates = getDesktopFilesPositionFromLocalStorage();
       // get coordinates
       const desktopItems = [] as DesktopItem[];
@@ -259,21 +251,21 @@ export const useFileSystemStore = defineStore("fileSystem", {
       }
     },
     async updateFile(pathAndContent: PathAndContent) {
-      await createFile(pathAndContent.path, pathAndContent.content);
+      await fileSystem.createFile(pathAndContent.path, pathAndContent.content);
     },
     async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true): Promise<string> {
-      return await createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
+      return await fileSystem.createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
     },
     async deleteFileSystemItem(path: string) {
-      await deleteFileSystemItem(path);
+      await fileSystem.deleteFileSystemItem(path);
     },
     async createFolder(path: string): Promise<string> {
-      return await createDirectory(path, false, false);
+      return await fileSystem.createDirectory(path, false, false);
     },
 
     async renameFile(newFilePath: string, oldFilePath: string) {
       if (newFilePath !== oldFilePath) {
-        renameFile(newFilePath, oldFilePath);
+        fileSystem.renameFile(newFilePath, oldFilePath);
       }
     },
     setActionMenu(actionMenu: ActionMenu) {
@@ -328,7 +320,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       this.isSelectionBoxEnabled = isSelectionBoxEnabled;
     },
     async moveFiles(filesToMove: string[], destinationPath: string, keepOriginal = false) {
-      await moveFiles(filesToMove, destinationPath, keepOriginal);
+      await fileSystem.moveFiles(filesToMove, destinationPath, keepOriginal);
     },
   },
 });

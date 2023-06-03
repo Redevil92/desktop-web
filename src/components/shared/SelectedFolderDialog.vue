@@ -60,7 +60,7 @@ import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
 
 import { DESKTOP_PATH } from "@/constants";
-import { getFiles, isDir } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 
 const props = defineProps({
@@ -82,7 +82,7 @@ const selectedFolderNameToShow = computed(() => {
 
 const clickItemFolderHandler = async (filePath: string, index: number) => {
   setPathAndFileItem(filePath, index);
-  if (await isDir(filePath)) {
+  if (await fileSystem.isDir(filePath)) {
     selectedFolder.value = filePath;
   } else {
     saveAs.value = getFileNameFromPath(filePath);
@@ -108,11 +108,11 @@ const getListBeforeIndex = (list: any[], index: number): PathAndFiles[] => {
 const setPathAndFileItem = async (path: string, index: number) => {
   const pathAndFilesListToUpdate = getListBeforeIndex(pathAndFilesList.value, index);
 
-  const filesPath = await getFiles(path, true);
+  const filesPath = await fileSystem.getFiles(path, true);
   const pathsAndIsolder = [];
 
   for (const path of filesPath) {
-    const getIsFolder = await isDir(path);
+    const getIsFolder = await fileSystem.isDir(path);
     pathsAndIsolder.push({ path, isFolder: getIsFolder } as PathAndIsFolder);
   }
 

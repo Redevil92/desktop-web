@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { isDir } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { DESKTOP_PATH } from "@/constants";
 
 export default function useKeyboardShortcut() {
@@ -10,7 +10,7 @@ export default function useKeyboardShortcut() {
     const itemDialogFocused = fileSystemStore.itemsDialog.find((item) => item.isFocused);
     let isFolder = false;
     if (itemDialogFocused) {
-      isFolder = await isDir(itemDialogFocused.path);
+      isFolder = await fileSystem.isDir(itemDialogFocused.path);
     }
 
     let elementsSelected: string[] = [];

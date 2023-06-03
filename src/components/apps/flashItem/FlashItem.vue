@@ -2,9 +2,9 @@
 
 <script lang="ts" setup>
 import { onMounted, PropType } from "vue";
+import fileSystem from "@/context/fileSystemController";
 
 import ItemDialog from "@/models/ItemDialog";
-import { readFile } from "@/context/fileSystemController";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
@@ -13,7 +13,7 @@ const props = defineProps({
 
 onMounted(async () => {
   if (props.itemDialog) {
-    const flashData = await readFile(props.itemDialog?.path);
+    const flashData = await fileSystem.readFile(props.itemDialog?.path);
   }
 });
 </script>

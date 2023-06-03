@@ -23,7 +23,7 @@
 import { computed, nextTick, onBeforeMount, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
@@ -59,7 +59,7 @@ const zoomImage = (zoom: boolean) => {
 
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
-    const file = await readFile(props.itemDialog?.path);
+    const file = await fileSystem.readFile(props.itemDialog?.path);
     imageFile.value = file.toString();
   }
 });

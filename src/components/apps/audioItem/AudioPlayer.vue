@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { onMounted, PropType, ref, watch } from "vue";
 import ItemDialog from "@/models/ItemDialog";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 
 import AudioAnalyzer from "@/components/apps/audioItem/AudioAnalyzer.vue";
 import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
@@ -48,7 +48,7 @@ watch(
 
 onMounted(async () => {
   if (props.itemDialog?.path) {
-    const audioData = await readFile(props.itemDialog?.path);
+    const audioData = await fileSystem.readFile(props.itemDialog?.path);
     audioSource.value = audioData;
   }
 });

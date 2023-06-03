@@ -10,7 +10,7 @@ import {
   MIME_TYPES,
 } from "../fileSystemUtils";
 
-export class BrowserFSFileSystem implements IFileSystem {
+export default class BrowserFSFileSystem implements IFileSystem {
   ensureDirectoryExistence = async (filePath: string) => {
     const dirname = getSourcePathFromFilePath(filePath);
 

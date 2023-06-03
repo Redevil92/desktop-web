@@ -1,4 +1,4 @@
-import { downloadFiles, getFiles, isDir, readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
 import { getDesktopFilePositionFromLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
@@ -53,7 +53,7 @@ export const pasteAction = async (
   const fileSystemStore = useFileSystemStore();
   const canPaste =
     (fileSystemStore.filePathsToCopy.length > 0 || fileSystemStore.filePathsToCut.length > 0) &&
-    (await isDir(destinationPath));
+    (await fileSystem.isDir(destinationPath));
 
   return {
     icon: "paste.svg",
@@ -222,7 +222,7 @@ export const downloadFileAction = (pathsToCopy: string[]): ActionItem => {
     horizontalGroup: false,
     actionName: "Download",
     callback: () => {
-      downloadFiles(pathsToCopy);
+      fileSystem.downloadFiles(pathsToCopy);
     },
     disabled: false,
   };
@@ -238,7 +238,7 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
     horizontalGroup: false,
     actionName: "Extract here",
     callback: async () => {
-      const compressed = await readFile(filePath);
+      const compressed = await fileSystem.readFile(filePath);
       const decompressedFiles = decompressFile(compressed);
       await saveDecompressedFilesToDestination(decompressedFiles, getSourcePathFromFilePath(filePath));
       const fileSystemStore = useFileSystemStore();
@@ -348,12 +348,12 @@ const addFilesFromPathRecursivelyToList = async (
   existingList: { fileName: string; contentBase64: string }[]
 ) => {
   for (const path of filePaths) {
-    const isFolder = await isDir(path);
+    const isFolder = await fileSystem.isDir(path);
     if (isFolder) {
-      const filesPathFromFolder = await getFiles(path, true);
+      const filesPathFromFolder = await fileSystem.getFiles(path, true);
       await addFilesFromPathRecursivelyToList(filesPathFromFolder, existingList);
     } else {
-      const fileContent = await readFile(path);
+      const fileContent = await fileSystem.readFile(path);
       existingList.push({ fileName: path, contentBase64: fileContent });
     }
   }

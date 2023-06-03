@@ -26,7 +26,7 @@ import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { isDir, readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 import DesktopItem from "@/models/DesktopItem";
@@ -59,7 +59,7 @@ onUnmounted(async () => {
 });
 
 const doubleClickHandler = async (filePath: string) => {
-  const isDirectory = await isDir(filePath);
+  const isDirectory = await fileSystem.isDir(filePath);
   if (isDirectory) {
     return;
   } else {
@@ -74,7 +74,7 @@ const doubleClickHandler = async (filePath: string) => {
 
 const decompressFileAndSave = async (destinationFile: string) => {
   if (props.itemDialog?.path) {
-    let compressed = await readFile(props.itemDialog?.path);
+    let compressed = await fileSystem.readFile(props.itemDialog?.path);
 
     const decompressedFiles = decompressFile(compressed);
 

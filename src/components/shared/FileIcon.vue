@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { isDir, readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import { getFileExtensionFromName } from "@/context/fileSystemUtils";
 import fileTypesConfiguration from "@/models/FilesType";
 import LinkData from "@/models/LinkData";
@@ -61,14 +61,14 @@ watch(
   () => props.filePath,
   async function () {
     if (props.filePath) {
-      isFolder.value = await isDir(props.filePath);
+      isFolder.value = await fileSystem.isDir(props.filePath);
     }
   }
 );
 
 const getLinkFileIcon = async () => {
   if (props.filePath) {
-    const linkData: LinkData = JSON.parse(await readFile(props.filePath));
+    const linkData: LinkData = JSON.parse(await fileSystem.readFile(props.filePath));
     try {
       if (linkData.filePath) {
         console.log(linkData.filePath);
@@ -118,7 +118,7 @@ const fileExtensionIcon = computed(function () {
 
 const getFileIconFromPath = async (path: string) => {
   if (path) {
-    const isPathDir = await isDir(path);
+    const isPathDir = await fileSystem.isDir(path);
     if (isPathDir) {
       return "folder.svg";
     }
@@ -138,7 +138,7 @@ onBeforeMount(async () => {
 });
 onMounted(async () => {
   if (props.filePath) {
-    isFolder.value = await isDir(props.filePath);
+    isFolder.value = await fileSystem.isDir(props.filePath);
   }
 });
 </script>

@@ -36,7 +36,7 @@ import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 
 import Editor from "@tinymce/tinymce-vue";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 import PathAndContent from "@/models/PathAndContent";
 import { getFileNameFromPath } from "@/context/fileSystemUtils";
 import { useLayoutStore } from "@/stores/layoutStore";
@@ -95,7 +95,7 @@ const saveTextFileHandler = async (destinationPath: string) => {
 
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
-    let fileData = await readFile(props.itemDialog?.path);
+    let fileData = await fileSystem.readFile(props.itemDialog?.path);
     console.log(fileData, 1, isBase64(fileData));
 
     fileText.value = b64ToText(fileData, true);

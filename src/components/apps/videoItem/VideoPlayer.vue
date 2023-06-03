@@ -9,7 +9,7 @@
 import { onMounted, PropType, ref, reactive, nextTick } from "vue";
 import Artplayer from "artplayer";
 import ItemDialog from "@/models/ItemDialog";
-import { readFile } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
@@ -54,7 +54,7 @@ const options = reactive({
 onMounted(async () => {
   nextTick(async () => {
     if (player.value && props.itemDialog) {
-      const videoData = await readFile(props.itemDialog?.path);
+      const videoData = await fileSystem.readFile(props.itemDialog?.path);
       options.url = videoData;
 
       new Artplayer({

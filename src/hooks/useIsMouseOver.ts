@@ -1,7 +1,4 @@
-import { ComputedRef, onMounted, onUnmounted, ref, Ref } from "vue";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { isDir } from "@/context/fileSystemController";
-import { DESKTOP_PATH } from "@/constants";
+import { onMounted, onUnmounted, ref, Ref } from "vue";
 
 export default function useIsMouseOver(elementRef: Ref<HTMLElement | null>) {
   const isMouseOver = ref(false);
