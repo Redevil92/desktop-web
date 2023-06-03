@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts" setup>
-import { isDir } from "@/context/fileSystemController";
-import { computed, onMounted, onUnmounted, PropType, ref, watch } from "vue";
+import fileSystem from "@/context/fileSystemController";
+import { computed, PropType, ref, watch } from "vue";
 
 import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
@@ -117,7 +117,8 @@ const setSelectedItemsForFolder = (selectedItems: string[]) => {
 };
 
 const doubleClickHandler = async (filePath: string) => {
-  const isDirectory = await isDir(filePath);
+  console.log("HELLo");
+  const isDirectory = await fileSystem.isDir(filePath);
   if (isDirectory) {
     updateItemDialogPath(filePath);
   } else {

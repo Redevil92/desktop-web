@@ -30,7 +30,7 @@ import DropExternalFileZone from "@/components/shared/DropExtenalFilesZone.vue";
 import SelectionBoxZone from "@/components/shared/SelectionBoxZone.vue";
 import DesktopItem from "@/models/DesktopItem";
 import { DESKTOP_PATH } from "@/constants";
-import { isDir } from "@/context/fileSystemController";
+import fileSystem from "@/context/fileSystemController";
 
 import { useSettingsStore } from "@/stores/settingsStore";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
@@ -60,7 +60,7 @@ const isSelectionBoxEnabled = computed((): boolean => {
 const dropFilehandler = async (event: any, dropDestinationFileName = "") => {
   let isFolder = false;
   if (dropDestinationFileName) {
-    isFolder = await isDir(dropDestinationFileName);
+    isFolder = await fileSystem.isDir(dropDestinationFileName);
   }
   await moveFilesInFolder(event, dropDestinationFileName);
 };
