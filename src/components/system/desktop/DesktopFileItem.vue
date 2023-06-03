@@ -61,7 +61,7 @@ import DesktopItem from "@/models/DesktopItem";
 
 import { DESKTOP_PATH } from "@/constants";
 import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 import Coordinates from "@/models/Coordinates";
 
 import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";

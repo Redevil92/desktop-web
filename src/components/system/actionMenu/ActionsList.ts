@@ -1,5 +1,5 @@
 import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/utils/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
 import { getDesktopFilePositionFromLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
 import ActionItem from "@/models/ActionMenu/ActionItem";

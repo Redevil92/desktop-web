@@ -1,5 +1,5 @@
 import { DESKTOP_PATH } from "@/constants";
-import { getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getSourcePathFromFilePath } from "@/context/utils/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { computed } from "vue";
 

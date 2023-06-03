@@ -81,7 +81,7 @@ import { computed, nextTick, PropType, ref, watch } from "vue";
 import FileIcon from "@/components/shared/FileIcon.vue";
 
 import ItemDialog from "@/models/ItemDialog";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
 

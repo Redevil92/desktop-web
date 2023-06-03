@@ -1,7 +1,11 @@
 import { defineStore } from "pinia";
 import fileSystem from "@/context/fileSystemController";
 
-import { getFileExtensionFromName, getFileNameFromPath, getNewItemDialogPosition } from "@/context/fileSystemUtils";
+import {
+  getFileExtensionFromName,
+  getFileNameFromPath,
+  getNewItemDialogPosition,
+} from "@/context/utils/fileSystemUtils";
 import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
 import ActionMenu from "@/models/ActionMenu/ActionMenu";
 import DesktopItem from "@/models/DesktopItem";

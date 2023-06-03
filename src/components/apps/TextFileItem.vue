@@ -38,7 +38,7 @@ import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 import Editor from "@tinymce/tinymce-vue";
 import fileSystem from "@/context/fileSystemController";
 import PathAndContent from "@/models/PathAndContent";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 import { useLayoutStore } from "@/stores/layoutStore";
 import { SEVERITY } from "@/constants";
 import { useFileSystemStore } from "@/stores/fileSystemStore";

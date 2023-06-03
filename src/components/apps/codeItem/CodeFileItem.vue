@@ -23,7 +23,7 @@ import { computed, onBeforeMount, PropType, ref } from "vue";
 import MonacoEditor from "monaco-editor-vue3";
 import ItemDialog from "@/models/ItemDialog";
 
-import { getFileExtensionFromName } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName } from "@/context/utils/fileSystemUtils";
 import fileSystem from "@/context/fileSystemController";
 
 import useBase64Handler from "@/hooks/useBase64Handler";

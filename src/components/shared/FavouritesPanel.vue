@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 import { useSettingsStore } from "@/stores/settingsStore";
 import PathAndIcon from "@/models/PathAndIcon";
 

@@ -96,7 +96,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, PropType, ref, watch, watchEffect } from "vue";
 
-import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath, getSourcePathFromFilePath } from "@/context/utils/fileSystemUtils";
 import FileIcon from "@/components/shared/FileIcon.vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import fileSystem from "@/context/fileSystemController";

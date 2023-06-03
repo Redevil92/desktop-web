@@ -61,7 +61,7 @@ import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
 
 import { DESKTOP_PATH } from "@/constants";
 import fileSystem from "@/context/fileSystemController";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 
 const props = defineProps({
   to: String,

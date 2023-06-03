@@ -1,6 +1,6 @@
 import * as fflate from "fflate";
 import useBase64Handler from "@/hooks/useBase64Handler";
-import { getFileExtensionFromName, MIME_TYPES } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName, MIME_TYPES } from "@/context/utils/fileSystemUtils";
 import { TEMP_PATH } from "@/constants";
 import PathAndContent from "@/models/PathAndContent";
 import { useFileSystemStore } from "@/stores/fileSystemStore";

@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { createFilesStructure } from "./context/createInitialFilesStructure";
+import { createFilesStructure } from "./context/seeding/createInitialFilesStructure";
 import router from "./router";
 import { createPinia } from "pinia";
 import browserFSConfiguration from "./browserFSConfiguration";

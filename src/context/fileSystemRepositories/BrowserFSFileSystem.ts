@@ -8,7 +8,7 @@ import {
   getFileNameWithoutExtension,
   getSourcePathFromFilePath,
   MIME_TYPES,
-} from "../fileSystemUtils";
+} from "../utils/fileSystemUtils";
 
 export default class BrowserFSFileSystem implements IFileSystem {
   ensureDirectoryExistence = async (filePath: string) => {

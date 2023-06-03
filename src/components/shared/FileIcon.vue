@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName } from "@/context/fileSystemUtils";
+import { getFileExtensionFromName } from "@/context/utils/fileSystemUtils";
 import fileTypesConfiguration from "@/models/FilesType";
 import LinkData from "@/models/LinkData";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";

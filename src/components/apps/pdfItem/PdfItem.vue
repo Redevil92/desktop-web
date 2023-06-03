@@ -45,7 +45,7 @@ import VuePdfEmbed from "vue-pdf-embed";
 
 import { dowloadWithProgress } from "@/utils/downloadUtils";
 import fileSystem from "@/context/fileSystemController";
-import { getFileNameFromPath } from "@/context/fileSystemUtils";
+import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
 
 import PrintPdfDialog from "@/components/apps/pdfItem/PrintPdfDialog.vue";
 import PdfControls from "@/components/apps/pdfItem/PdfControls.vue";
