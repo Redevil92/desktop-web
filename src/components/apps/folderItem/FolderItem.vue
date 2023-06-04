@@ -37,7 +37,10 @@
       </div>
       <div class="flex-start">
         <FavouritesPanel :height="height - 35" @onFavouriteSelect="updateItemDialogPath($event)"></FavouritesPanel>
-        <DropExternalFileZone :dropPath="itemDialog.path" style="flex-grow: 1; overflow-x: auto; position: relative">
+        <DropExternalFileZone
+          :dropPath="itemDialog.path"
+          style="flex-grow: 1; overflow-x: auto; position: relative; padding-bottom: 30px"
+        >
           <div
             @mousedown="showPathAsText = false"
             @drop="dropFilehandler"
@@ -49,7 +52,7 @@
               :itemsList="itemDialog.filesPath"
               :canRename="true"
               :showProperties="true"
-              :height="height - 50"
+              :height="height - 50 - 20"
               :isFocused="itemDialog.isFocused"
               @onDoubleClick="doubleClickHandler"
               @onRightClick="openActionMenu($event, false)"

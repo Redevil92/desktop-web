@@ -74,21 +74,20 @@
         </div>
       </div>
     </div>
-
-    <div v-if="canChangeViewType" class="footer flex">
-      <div class="items-count">{{ itemsList.length }} item{{ itemsList.length > 1 ? "s" : "" }}</div>
-      <div style="margin-right: 15px">
-        <span
-          class="mdi mdi-format-list-bulleted preview-icon"
-          :class="{ 'preview-icon-selected': viewType === 'list' }"
-          @click="viewType = 'list'"
-        ></span>
-        <span
-          class="mdi mdi-card-outline preview-icon"
-          :class="{ 'preview-icon-selected': viewType === 'preview' }"
-          @click="viewType = 'preview'"
-        ></span>
-      </div>
+  </div>
+  <div v-if="canChangeViewType" class="footer flex">
+    <div class="items-count">{{ itemsList.length }} item{{ itemsList.length > 1 ? "s" : "" }}</div>
+    <div style="margin-right: 15px">
+      <span
+        class="mdi mdi-format-list-bulleted preview-icon"
+        :class="{ 'preview-icon-selected': viewType === 'list' }"
+        @click="viewType = 'list'"
+      ></span>
+      <span
+        class="mdi mdi-card-outline preview-icon"
+        :class="{ 'preview-icon-selected': viewType === 'preview' }"
+        @click="viewType = 'preview'"
+      ></span>
     </div>
   </div>
 </template>
@@ -261,6 +260,7 @@ onUnmounted(() => {
 
 .container {
   position: relative;
+  padding-top: 5px;
 }
 
 .grid-container {
@@ -371,8 +371,8 @@ input {
 
 .footer {
   position: absolute;
-  bottom: 2px;
-  width: 100%;
+  bottom: 4px;
+  width: 99%;
   justify-content: space-between;
   padding: 0px 5px;
 }
