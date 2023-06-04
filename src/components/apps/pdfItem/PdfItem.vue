@@ -69,6 +69,9 @@ const pdfWidth = ref(0);
 const pdfContainerRef = ref(null);
 const showPrintPdfDialog = ref(false);
 
+const throttleTimer = ref<boolean>(false);
+const throttlePeriod = ref(200);
+
 const pdfMargin = computed(() => {
   const dialogHeight = props.height || 0;
   let calculatedMargin = 0;
@@ -88,9 +91,19 @@ const pdfMargin = computed(() => {
   return calculatedMargin;
 });
 
+const throttle = (callback: any, time: number) => {
+  if (throttleTimer.value) return;
+  throttleTimer.value = true;
+  setTimeout(() => {
+    callback();
+    throttleTimer.value = false;
+  }, time);
+};
+
 const changePage = (currentPage: number) => {
-  console.log("chang page", currentPage);
-  page.value = currentPage;
+  throttle(() => {
+    page.value = currentPage;
+  }, throttlePeriod.value);
 };
 
 const handlePasswordRequest = (callback: any, _: any) => {
@@ -104,8 +117,9 @@ const handlePasswordRequest = (callback: any, _: any) => {
 
 const handleDocumentRender = async () => {
   isLoading.value = false;
+  console.log("PAge count", (pdfRef.value as any).pageCount);
 
-  pageCount.value = (pdfRef.value as any).pageCount;
+  pageCount.value = (pdfRef.value as any).pageCount || 1;
 
   if (pdfWidth.value === 0 && pdfContainerRef.value && (pdfContainerRef.value as unknown as HTMLElement).children[0]) {
     pdfWidth.value = (pdfContainerRef.value as unknown as HTMLElement).children[0].getBoundingClientRect().width;
@@ -118,16 +132,22 @@ const downloadPdf = () => {
 };
 
 const zoomIn = () => {
-  pdfHeight.value *= 1.1;
-  pdfWidth.value *= 1.1;
+  throttle(() => {
+    pdfHeight.value *= 1.1;
+    pdfWidth.value *= 1.1;
+  }, throttlePeriod.value);
 };
 const zoomOut = () => {
-  pdfHeight.value /= 1.1;
-  pdfWidth.value /= 1.1;
+  throttle(() => {
+    pdfHeight.value /= 1.1;
+    pdfWidth.value /= 1.1;
+  }, throttlePeriod.value);
 };
 
 const rotateLeft = () => {
-  pdfRotation.value -= 90;
+  throttle(() => {
+    pdfRotation.value -= 90;
+  }, throttlePeriod.value);
 };
 
 const loadPdf = async () => {
