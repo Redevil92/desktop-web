@@ -120,7 +120,6 @@ const setSelectedItemsForFolder = (selectedItems: string[]) => {
 };
 
 const doubleClickHandler = async (filePath: string) => {
-  console.log("HELLo");
   const isDirectory = await fileSystem.isDir(filePath);
   if (isDirectory) {
     updateItemDialogPath(filePath);

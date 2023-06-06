@@ -117,7 +117,6 @@ const handlePasswordRequest = (callback: any, _: any) => {
 
 const handleDocumentRender = async () => {
   isLoading.value = false;
-  console.log("PAge count", (pdfRef.value as any).pageCount);
 
   pageCount.value = (pdfRef.value as any).pageCount || 1;
 

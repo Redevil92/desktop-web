@@ -89,7 +89,6 @@ const taskBarItemByApplication = computed(function () {
 });
 
 const setStartMenuOpened = () => {
-  console.log(!isStartMenuOpened.value);
   layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
 };
 
