@@ -71,8 +71,6 @@ const getLinkFileIcon = async () => {
     const linkData: LinkData = JSON.parse(await fileSystem.readFile(props.filePath));
     try {
       if (linkData.filePath) {
-        console.log(linkData.filePath);
-
         const iconFromPath = await getFileIconFromPath(linkData.filePath);
         return require(`/src/assets/fileIcons/${iconFromPath}`);
       } else if (linkData.fileTypeToOpen) {

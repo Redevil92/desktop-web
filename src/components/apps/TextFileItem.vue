@@ -96,8 +96,6 @@ const saveTextFileHandler = async (destinationPath: string) => {
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
     let fileData = await fileSystem.readFile(props.itemDialog?.path);
-    console.log(fileData, 1, isBase64(fileData));
-
     fileText.value = b64ToText(fileData, true);
 
     isLoaded.value = true;
