@@ -150,7 +150,7 @@ watch(
 );
 
 const dragStart = () => {
-  console.log("DRag start");
+  console.log("Drag start");
 };
 
 const updateItemListWithProperties = async () => {
