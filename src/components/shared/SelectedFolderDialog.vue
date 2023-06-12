@@ -134,7 +134,7 @@ const folderSelected = () => {
 
     emit("onFolderSelected", pathToEmit);
   } else {
-    console.log("show error");
+    console.log("Show error");
   }
 };
 
