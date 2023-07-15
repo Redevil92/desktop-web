@@ -60,9 +60,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
   actions: {
     async createItemDialog(itemDialog: DesktopItem, additionalOptions?: any, applicationToOpen?: string) {
       // if path already opened dont create a new one but
-      console.log(itemDialog.path);
       const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
-      console.log("MY index", index);
       if (index !== -1) {
         this.setFocusedItemDialog(this.itemsDialog[index]);
         this.openMinimizedItemDialog(this.itemsDialog[index].guid);
