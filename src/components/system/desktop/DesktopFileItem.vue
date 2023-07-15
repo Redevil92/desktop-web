@@ -198,9 +198,9 @@ const clickHandler = () => {
   emit("onClick", props.fileItem);
 };
 
-const openFileItem = () => {
+const openFileItem = async () => {
   for (const desktopItem of fileSystemStore.getSelectedDesktopItems) {
-    fileSystemStore.createItemDialog(desktopItem);
+    await fileSystemStore.createItemDialog(desktopItem);
   }
 };
 

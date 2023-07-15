@@ -68,6 +68,7 @@ const doubleClickHandler = async (filePath: string) => {
       coordinates: { x: 0, y: 0 },
       isSelected: true,
     } as DesktopItem;
+
     await fileSystemStore.createItemDialog(newItemDialog);
   }
 };

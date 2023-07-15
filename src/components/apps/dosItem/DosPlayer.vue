@@ -1,13 +1,5 @@
 <template>
   <div :style="`height: ${height}px; width: calc(100% -4px); `">
-    <!-- <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 4" />
-    <iframe
-      class="frame"
-      :height="height - 4"
-      :width="itemDialog.dimension.width - 4"
-      title="dos-player"
-      :src="gameLink"
-    /> -->
     <div style="height: 100%; width: 100%" ref="rootRef"></div>
   </div>
 </template>
@@ -21,6 +13,7 @@ import { onMounted, PropType, ref } from "vue";
 import { dosGameLinks } from "@/components/apps/dosItem/DosGames";
 
 import { DosPlayer as Instance, DosPlayerFactoryType } from "js-dos";
+declare const Dos: DosPlayerFactoryType;
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
@@ -28,18 +21,24 @@ const props = defineProps({
 });
 
 const rootRef = ref<HTMLDivElement | null>(null);
+const dos = ref<Instance | null>(null);
 
 const gameLink = ref("");
 
 onMounted(() => {
-  // if (props.itemDialog?.name) {
-  //   props.itemDialog.isFocused;
-  //   gameLink.value = dosGameLinks[props.itemDialog.name];
-  // }
+  if (!rootRef.value) {
+    return;
+  }
+  gameLink.value = dosGameLinks[props.itemDialog.name];
+  const root = rootRef.value as HTMLDivElement;
+  const instance = Dos(root);
+  dos.value = instance;
+  const diggerUrl = `${process.env.BASE_URL}digger.jsdos`;
+  if (dos.value) dos.value.run(diggerUrl);
 });
 </script>
 
-<style scoped>
+<style scoped src="./js-dos.css">
 .frame {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
