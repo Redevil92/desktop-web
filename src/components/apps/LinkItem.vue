@@ -20,7 +20,7 @@ onBeforeMount(async () => {
   const linkData: LinkData = JSON.parse(await fileSystem.readFile(props.itemDialog.path));
 
   const appToOpen: DesktopItem = {
-    path: linkData.filePath || "",
+    path: linkData.filePath || linkData.fileTypeToOpen || "",
     applicationExtension: linkData.fileTypeToOpen,
     coordinates: { x: 0, y: 0 },
     isSelected: true,
