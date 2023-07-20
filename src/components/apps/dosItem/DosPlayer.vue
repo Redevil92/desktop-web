@@ -30,7 +30,7 @@ onMounted(() => {
     return;
   }
   gameLink.value = dosGameLinks[props.itemDialog.name];
-  const root = rootRef.value as HTMLDivElement;
+  const root = rootRef.value;
   const instance = Dos(root);
   dos.value = instance;
   const diggerUrl = `${process.env.BASE_URL}digger.jsdos`;
