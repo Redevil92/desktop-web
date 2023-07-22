@@ -22,7 +22,6 @@ const props = defineProps({
 
 const rootRef = ref<HTMLDivElement | null>(null);
 const dos = ref<Instance | null>(null);
-
 const gameLink = ref("");
 
 onMounted(() => {
@@ -33,7 +32,8 @@ onMounted(() => {
   const root = rootRef.value;
   const instance = Dos(root);
   dos.value = instance;
-  const diggerUrl = `${process.env.BASE_URL}digger.jsdos`;
+  const diggerUrl = `/digger.jsdos`;
+  console.log(diggerUrl);
   if (dos.value) dos.value.run(diggerUrl);
 });
 </script>
