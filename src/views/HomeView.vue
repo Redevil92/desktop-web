@@ -49,7 +49,7 @@ const rightClickHandler = async (event: Event) => {
     paths: [DESKTOP_PATH],
     position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
     customLayout: [
-      await pasteAction(DESKTOP_PATH, true, false),
+      await pasteAction(DESKTOP_PATH, false, false),
       createNewFile(pointerEvent, DESKTOP_PATH, false, false),
       createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
       openDesktopSettingPage(false, false),
