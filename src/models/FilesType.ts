@@ -255,6 +255,23 @@ const fileTypesConfiguration: FileTypes = {
   mp4: videoType,
   webm: videoType,
   ogg: videoType,
+  md: {
+    background: "rgb(82, 86, 89)",
+    allowResizing: false,
+    singleton: true,
+    defaultSize: {
+      height: 500,
+      width: 600,
+    },
+    minSize: {
+      height: 300,
+      width: 400,
+    },
+    title: "MD Editor",
+    icon: "markdown.svg",
+    application: "mdItem/MdEditor",
+    canOpenWithoutFile: true,
+  },
   swf: {
     allowResizing: true,
     singleton: false,
