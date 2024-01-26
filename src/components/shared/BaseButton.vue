@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
+defineProps({
   small: Boolean,
   neutralColor: Boolean,
   mdiIcon: {
