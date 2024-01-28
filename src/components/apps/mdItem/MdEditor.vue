@@ -1,11 +1,18 @@
 <template>
-  <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
-    <MdEditor @onSave="saveFile" codeTheme="github" language="en-US" style="height: 100%" v-model="mdText" />
+  <div @click.stop :style="`height: ${height - 14}px; width: calc(100% -4px); `">
+    <MdEditor
+      @onSave="saveFile"
+      @onUploadImg="uploadImageHandler"
+      codeTheme="github"
+      language="en-US"
+      style="height: 100%"
+      v-model="mdText"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeMount, PropType } from "vue";
+import { onBeforeMount, PropType } from "vue";
 import ItemDialog from "@/models/ItemDialog";
 
 import fileSystem from "@/context/fileSystemController";
@@ -24,14 +31,9 @@ const props = defineProps({
 });
 
 const fileSystemStore = useFileSystemStore();
-const { b64ToText, utf8ToB64 } = useBase64Handler();
+const { b64ToText, utf8ToB64, fileToBase64 } = useBase64Handler();
 
 const mdText = ref("");
-
-// const canSave = computed(function (): boolean {
-//   return false;
-//   //return savedCode.value !== code.value;
-// });
 
 const saveFile = () => {
   if (props.itemDialog?.path) {
@@ -42,6 +44,15 @@ const saveFile = () => {
   }
 };
 
+const uploadImageHandler = async (files: File[], callback: any) => {
+  // save file in base 64 inside the md file itself
+  const file = files[0];
+
+  const base64String = await fileToBase64(file);
+  mdText.value += `\n![${file.name}](${base64String})\n`;
+  console.log(base64String);
+};
+
 onBeforeMount(async () => {
   if (props.itemDialog?.path) {
     let codeBase64 = await fileSystem.readFile(props.itemDialog?.path);
@@ -50,5 +61,3 @@ onBeforeMount(async () => {
   }
 });
 </script>
-
-<style scoped></style>
