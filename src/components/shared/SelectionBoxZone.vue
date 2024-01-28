@@ -1,163 +1,154 @@
 <template>
-  <div ref="selectionRectArea">
+  <div ref="selectionRectArea" @mousedown="onMouseDown">
     <div ref="selectionRectRef" class="selection-rect" :style="`z-index: ${zIndex}`"></div>
     <slot> </slot>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Coordinates from "@/models/Coordinates";
-import { defineComponent, onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 
-export default defineComponent({
-  props: {
-    zIndex: { type: Number, default: 1 },
-    isEnabled: { type: Boolean, default: true },
-    itemsToSelectClass: { type: String, required: true },
-  },
-  components: {},
+const props = defineProps({
+  zIndex: { type: Number, default: 1 },
+  isEnabled: { type: Boolean, default: true },
+  itemsToSelectClass: { type: String, required: true },
+});
 
-  setup(props, context) {
-    const minimumRectangleDimension = ref(5);
+const emit = defineEmits(["onSelectingItems"]);
 
-    const isMouseDown = ref(false);
-    const selectionRectRef = ref(null as unknown as HTMLElement);
-    const selectionRectArea = ref(null as unknown as HTMLElement);
-    const selectionRectangle = ref({
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    } as any);
+const minimumRectangleDimension = ref(5);
 
-    const selectionRectangleOrigin = ref({ x: 0, y: 0 } as Coordinates);
+const isMouseDown = ref(false);
+const selectionRectRef = ref(null as unknown as HTMLElement);
+const selectionRectArea = ref(null as unknown as HTMLElement);
+const selectionRectangle = ref({
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+} as any);
 
-    const hideSelectionRectangle = () => {
-      selectionRectRef.value.style.opacity = "0";
-    };
+const selectionRectangleOrigin = ref({ x: 0, y: 0 } as Coordinates);
 
-    watch(
-      () => props.isEnabled,
-      function () {
-        resetSelectionBox();
-      }
-    );
+const hideSelectionRectangle = () => {
+  selectionRectRef.value.style.opacity = "0";
+};
 
-    const resetSelectionBox = () => {
-      selectionRectangle.value = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      };
-      isMouseDown.value = false;
-    };
+watch(
+  () => props.isEnabled,
+  function () {
+    resetSelectionBox();
+  }
+);
 
-    const onMouseDown = (e: any) => {
-      // e.preventDefault();
+const resetSelectionBox = () => {
+  selectionRectangle.value = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
+  isMouseDown.value = false;
+};
 
-      if (!props.isEnabled) {
-        return;
-      }
+const onMouseDown = (e: any) => {
+  // e.preventDefault();
 
-      isMouseDown.value = true;
-      //deselectBoxes();
-      selectionRectangle.value.left = e.clientX;
-      selectionRectangle.value.top = e.clientY;
+  if (!props.isEnabled) {
+    return;
+  }
 
-      const originPosition = { x: e.clientX, y: e.clientY } as Coordinates;
-      selectionRectangleOrigin.value = originPosition;
-    };
+  isMouseDown.value = true;
+  //deselectBoxes();
+  selectionRectangle.value.left = e.clientX;
+  selectionRectangle.value.top = e.clientY;
 
-    const onMouseMove = (e: any) => {
-      e.preventDefault();
+  const originPosition = { x: e.clientX, y: e.clientY } as Coordinates;
+  selectionRectangleOrigin.value = originPosition;
+};
 
-      if (!isMouseDown.value || !props.isEnabled) {
-        isMouseDown.value = false;
-        return;
-      }
+const onMouseMove = (e: any) => {
+  e.preventDefault();
 
-      const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
-      showSelectionRectangle(newMousePosition);
+  if (!isMouseDown.value || !props.isEnabled) {
+    isMouseDown.value = false;
+    return;
+  }
 
-      const elements = selectionRectArea.value.getElementsByClassName(props.itemsToSelectClass);
+  const newMousePosition = { x: e.clientX, y: e.clientY } as Coordinates;
+  showSelectionRectangle(newMousePosition);
 
-      let elementToSelect = [];
+  const elements = selectionRectArea.value.getElementsByClassName(props.itemsToSelectClass);
 
-      const selRect = selectionRectRef.value.getBoundingClientRect();
+  let elementToSelect = [];
 
-      for (const element of elements) {
-        const elementBoudingClientRect = element.getBoundingClientRect();
+  const selRect = selectionRectRef.value.getBoundingClientRect();
 
-        if (
-          ((elementBoudingClientRect.x > selRect.x && elementBoudingClientRect.x < selRect.x + selRect.width) ||
-            (elementBoudingClientRect.x + elementBoudingClientRect.width > selRect.x &&
-              elementBoudingClientRect.x + elementBoudingClientRect.width < selRect.x + selRect.width)) &&
-          ((elementBoudingClientRect.y > selRect.y && elementBoudingClientRect.y < selRect.y + selRect.height) ||
-            (elementBoudingClientRect.y + elementBoudingClientRect.height > selRect.y &&
-              elementBoudingClientRect.y + elementBoudingClientRect.height < selRect.y + selRect.height))
-        ) {
-          elementToSelect.push(element);
-        }
-      }
+  for (const element of elements) {
+    const elementBoudingClientRect = element.getBoundingClientRect();
 
-      if (
-        Math.abs(selectionRectangle.value.right - selectionRectangle.value.left) > minimumRectangleDimension.value &&
-        Math.abs(selectionRectangle.value.bottom - selectionRectangle.value.top) > minimumRectangleDimension.value
-      ) {
-        context.emit("onSelectingItems", elementToSelect);
-      }
-    };
+    if (
+      ((elementBoudingClientRect.x > selRect.x && elementBoudingClientRect.x < selRect.x + selRect.width) ||
+        (elementBoudingClientRect.x + elementBoudingClientRect.width > selRect.x &&
+          elementBoudingClientRect.x + elementBoudingClientRect.width < selRect.x + selRect.width)) &&
+      ((elementBoudingClientRect.y > selRect.y && elementBoudingClientRect.y < selRect.y + selRect.height) ||
+        (elementBoudingClientRect.y + elementBoudingClientRect.height > selRect.y &&
+          elementBoudingClientRect.y + elementBoudingClientRect.height < selRect.y + selRect.height))
+    ) {
+      elementToSelect.push(element);
+    }
+  }
 
-    const showSelectionRectangle = (newMousePosition: Coordinates) => {
-      selectionRectangle.value.right = newMousePosition.x;
-      selectionRectangle.value.bottom = newMousePosition.y;
+  if (
+    Math.abs(selectionRectangle.value.right - selectionRectangle.value.left) > minimumRectangleDimension.value &&
+    Math.abs(selectionRectangle.value.bottom - selectionRectangle.value.top) > minimumRectangleDimension.value
+  ) {
+    emit("onSelectingItems", elementToSelect);
+  }
+};
 
-      selectionRectRef.value.style.left = `${Math.min(selectionRectangleOrigin.value.x, newMousePosition.x)}px`;
-      selectionRectRef.value.style.top = `${Math.min(selectionRectangleOrigin.value.y, newMousePosition.y)}px`;
-      selectionRectRef.value.style.width = `${Math.abs(newMousePosition.x - selectionRectangleOrigin.value.x)}px`;
-      selectionRectRef.value.style.height = `${Math.abs(newMousePosition.y - selectionRectangleOrigin.value.y)}px`;
-      selectionRectRef.value.style.opacity = "0.5";
-    };
+const showSelectionRectangle = (newMousePosition: Coordinates) => {
+  selectionRectangle.value.right = newMousePosition.x;
+  selectionRectangle.value.bottom = newMousePosition.y;
 
-    const onMouseUp = (e: any) => {
-      isMouseDown.value = false;
-      //selectBoxes(selectionRectangle);
-      hideSelectionRectangle();
-      selectionRectangle.value = {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      };
-    };
+  selectionRectRef.value.style.left = `${Math.min(selectionRectangleOrigin.value.x, newMousePosition.x)}px`;
+  selectionRectRef.value.style.top = `${Math.min(selectionRectangleOrigin.value.y, newMousePosition.y)}px`;
+  selectionRectRef.value.style.width = `${Math.abs(newMousePosition.x - selectionRectangleOrigin.value.x)}px`;
+  selectionRectRef.value.style.height = `${Math.abs(newMousePosition.y - selectionRectangleOrigin.value.y)}px`;
+  selectionRectRef.value.style.opacity = "0.5";
+};
 
-    const initEventHandlers = () => {
-      document.addEventListener("mousedown", onMouseDown);
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    };
+const onMouseUp = (e: any) => {
+  isMouseDown.value = false;
+  //selectBoxes(selectionRectangle);
+  hideSelectionRectangle();
+  selectionRectangle.value = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
+};
 
-    const removeEventHandlers = () => {
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
+const initEventHandlers = () => {
+  //document.addEventListener("mousedown", onMouseDown);
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+};
 
-    onMounted(() => {
-      initEventHandlers();
-    });
+const removeEventHandlers = () => {
+  //document.removeEventListener("mousedown", onMouseDown);
+  document.removeEventListener("mousemove", onMouseMove);
+  document.removeEventListener("mouseup", onMouseUp);
+};
 
-    onUnmounted(() => {
-      removeEventHandlers();
-    });
+onMounted(() => {
+  initEventHandlers();
+});
 
-    return {
-      selectionRectRef,
-      selectionRectArea,
-      isMouseDown,
-    };
-  },
+onUnmounted(() => {
+  removeEventHandlers();
 });
 </script>
 
