@@ -2080,7 +2080,7 @@ const WinterHat4 = `
       </g>
 `;
 
-export const topTypes = {
+export const topTypes: { [key: string]: string } = {
   NoHair: NoHair,
   Eyepatch: Eyepatch,
   Hat: Hat,

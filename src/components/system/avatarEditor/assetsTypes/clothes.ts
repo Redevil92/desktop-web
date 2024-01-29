@@ -309,7 +309,7 @@ const ShirtVNeck = `
       </g>
 `;
 
-export const clothesType = {
+export const clothesType: { [key: string]: string } = {
   BlazerShirt: BlazerShirt,
   BlazerSweater: BlazerSweater,
   CollarSweater: CollarSweater,

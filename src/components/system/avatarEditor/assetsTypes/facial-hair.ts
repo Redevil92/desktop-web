@@ -106,7 +106,7 @@ const MoustacheMagnum = `
       </g>
 `;
 
-export const facialHairTypes = {
+export const facialHairTypes: { [key: string]: string } = {
   Blank: Blank,
   BeardMedium: BeardMedium,
   BeardLight: BeardLight,

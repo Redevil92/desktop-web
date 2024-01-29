@@ -217,7 +217,7 @@ const UpDownNatural = `
     </g>
 `;
 
-export const eyebrowTypes = {
+export const eyebrowTypes: { [key: string]: string } = {
   Angry: Angry,
   AngryNatural: AngryNatural,
   Default: Default,

@@ -6,7 +6,6 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <desc>Created with getavataaars.com</desc>
     <defs>
       <circle id="path-1" cx="120" cy="120" r="120"></circle>
       <path
@@ -81,6 +80,7 @@
 
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
+
 import { mouthTypes } from "./assetsTypes/mouth";
 import { eyeTypes } from "./assetsTypes/eyes";
 import { eyebrowTypes } from "./assetsTypes/eyebrows";
@@ -117,8 +117,10 @@ const props = defineProps({
 });
 
 const getRandomChoice = (items: Record<string, string>): string => {
-  const itemsLength = Object.keys(items).length;
-  return items[Object.keys(items)[Math.floor(Math.random() * itemsLength)]];
+  const itemKeys = Object.keys(items);
+  const itemsLength = itemKeys.length;
+
+  return Object.entries(itemKeys)[Math.floor(Math.random() * itemsLength)][1];
 };
 
 const cssVars = computed(() => {

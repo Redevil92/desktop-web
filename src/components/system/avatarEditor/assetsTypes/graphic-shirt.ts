@@ -435,7 +435,7 @@ const Bear = `
   </g>
 `;
 
-export const GraphicShirtTypes = {
+export const GraphicShirtTypes: { [key: string]: string } = {
   Skull: Skull,
   SkullOutline: SkullOutline,
   Bat: Bat,

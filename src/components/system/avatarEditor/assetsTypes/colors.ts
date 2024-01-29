@@ -1,4 +1,4 @@
-export const hatAndShirtColors = {
+export const hatAndShirtColors: { [key: string]: string } = {
   Black: "#262E33",
   Blue01: "#65C9FF",
   Blue02: "#5199E4",
@@ -16,7 +16,7 @@ export const hatAndShirtColors = {
   White: "#FFFFFF",
 };
 
-export const hairColors = {
+export const hairColors: { [key: string]: string } = {
   Auburn: "#A55728",
   Black: "#2C1B18",
   Blonde: "#B58143",
@@ -29,7 +29,7 @@ export const hairColors = {
   SilverGray: "#E8E1E1",
 };
 
-export const skinColors = {
+export const skinColors: { [key: string]: string } = {
   Tanned: "#FD9841",
   Yellow: "#F8D25C",
   Pale: "#FFDBB4",

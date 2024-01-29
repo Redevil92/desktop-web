@@ -255,7 +255,7 @@ const Wayfarers = `
 </g>
 `;
 
-export const accessoriesTypes = {
+export const accessoriesTypes: { [key: string]: string } = {
   Blank: Blank,
   Kurt: Kurt,
   Prescription01: Prescription01,

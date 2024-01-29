@@ -393,7 +393,7 @@ const Vomit = `
     </g>
 `;
 
-export const mouthTypes = {
+export const mouthTypes: { [key: string]: string } = {
   Concerned: Concerned,
   Default: Default,
   Disbelief: Disbelief,

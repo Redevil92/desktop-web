@@ -266,7 +266,7 @@ const WinkWacky = `
     </g>
 `;
 
-export const eyeTypes = {
+export const eyeTypes: { [key: string]: string } = {
   Close: Close,
   Cry: Cry,
   Default: Default,
