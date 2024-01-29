@@ -1,4 +1,3 @@
-
 const Angry = `
   <g transform='translate(76.000000, 82.000000)'>
       <g
@@ -231,5 +230,5 @@ export const eyebrowTypes = {
   SadConcernedNatural: SadConcernedNatural,
   UnibrowNatural: UnibrowNatural,
   UpDown: UpDown,
-  UpDownNatural: UpDownNatural
+  UpDownNatural: UpDownNatural,
 };

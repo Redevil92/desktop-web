@@ -1,5 +1,6 @@
 <template>
   <svg
+    :style="`height: ${height}px; `"
     viewBox="0 0 264 280"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
@@ -112,6 +113,7 @@ const props = defineProps({
   facialHairColor: { type: String, default: "random" },
   topColor: { type: String, default: "random" },
   clotheColor: { type: String, default: "random" },
+  height: { type: Number, default: 45 },
 });
 
 const getRandomChoice = (items: Record<string, string>): string => {
@@ -120,6 +122,7 @@ const getRandomChoice = (items: Record<string, string>): string => {
 };
 
 const cssVars = computed(() => {
+  console.log("ex", props.hairColor);
   return {
     "--avataaar-hair-color": props.hairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.hairColor],
     "--avataaar-facial-hair-color":

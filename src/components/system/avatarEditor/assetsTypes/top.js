@@ -1,4 +1,3 @@
-
 const Eyepatch = `
       <g id='Top' strokeWidth='1' fillRule='evenodd'>
         <defs>
@@ -2117,5 +2116,5 @@ export const topTypes = {
   ShortHairShortWaved: ShortHairShortWaved,
   ShortHairSides: ShortHairSides,
   ShortHairTheCaesar: ShortHairTheCaesar,
-  ShortHairTheCaesarSidePart: ShortHairTheCaesarSidePart
+  ShortHairTheCaesarSidePart: ShortHairTheCaesarSidePart,
 };

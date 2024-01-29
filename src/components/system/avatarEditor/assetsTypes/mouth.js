@@ -1,4 +1,3 @@
-
 const Concerned = `
   <g transform='translate(76.000000, 82.000000)'>
       <g id='Mouth/Concerned' transform='translate(2.000000, 52.000000)'>
@@ -406,5 +405,5 @@ export const mouthTypes = {
   Smile: Smile,
   Tongue: Tongue,
   Twinkle: Twinkle,
-  Vomit: Vomit
+  Vomit: Vomit,
 };

@@ -64,7 +64,6 @@ const SkullOutline = `
   </g>
 `;
 
-
 const Bat = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
     <defs>
@@ -88,7 +87,6 @@ const Bat = `
       </g>
   </g>
 `;
-
 
 const Cumbia = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
@@ -160,7 +158,6 @@ const Cumbia = `
   </g>
 `;
 
-
 const Deer = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
     <defs>
@@ -184,7 +181,6 @@ const Deer = `
       </g>
   </g>
 `;
-
 
 const Diamond = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
@@ -255,7 +251,6 @@ const Hola = `
   </g>
 `;
 
-
 const Selena = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
     <defs>
@@ -296,7 +291,6 @@ const Selena = `
   </g>
 `;
 
-
 const Pizza = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
     <defs>
@@ -336,8 +330,6 @@ const Pizza = `
       </g>
   </g>
 `;
-
-
 
 const Resist = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
@@ -404,7 +396,6 @@ const Resist = `
   </g>
 `;
 
-
 const Bear = `
   <g id="Clothing/Graphic-Shirt" transform="translate(0.000000, 170.000000)">
     <defs>
@@ -455,5 +446,5 @@ export const GraphicShirtTypes = {
   Diamond: Diamond,
   Pizza: Pizza,
   Resist: Resist,
-  Bear: Bear
+  Bear: Bear,
 };

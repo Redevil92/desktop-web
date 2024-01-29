@@ -1,4 +1,3 @@
-
 const BeardLight = `
       <g
         id='Facial-Hair/Beard-Light'
@@ -113,5 +112,5 @@ export const facialHairTypes = {
   BeardLight: BeardLight,
   BeardMajestic: BeardMajestic,
   MoustacheFancy: MoustacheFancy,
-  MoustacheMagnum: MoustacheMagnum
+  MoustacheMagnum: MoustacheMagnum,
 };

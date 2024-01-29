@@ -1,4 +1,3 @@
-
 const Close = `
   <g transform='translate(76.000000, 82.000000)'>
       <g
@@ -267,7 +266,6 @@ const WinkWacky = `
     </g>
 `;
 
-
 export const eyeTypes = {
   Close: Close,
   Cry: Cry,
@@ -280,5 +278,5 @@ export const eyeTypes = {
   Squint: Squint,
   Surprised: Surprised,
   Wink: Wink,
-  WinkWacky: WinkWacky
+  WinkWacky: WinkWacky,
 };

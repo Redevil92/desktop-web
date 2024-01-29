@@ -318,5 +318,5 @@ export const clothesType = {
   Overall: Overall,
   ShirtCrewNeck: ShirtCrewNeck,
   ShirtScoopNeck: ShirtScoopNeck,
-  ShirtVNeck: ShirtVNeck
+  ShirtVNeck: ShirtVNeck,
 };
