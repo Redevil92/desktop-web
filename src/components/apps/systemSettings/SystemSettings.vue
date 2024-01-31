@@ -2,7 +2,8 @@
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <div class="system-container">
       <div class="system-header-container">
-        <img height="70" :src="require('/src/assets/avatar/male.png')" alt="" />
+        <Avatar :height="70" />
+
         <div class="text-container">
           <div class="settings-page-title">Your avatar</div>
           <div class="sub-title">Click on your avatar to modify it (work in progress).</div>
@@ -14,6 +15,10 @@
           <div class="settings-button" @click="loadAndSetSettingComponent('ChangeDesktopImage.vue')">
             <img height="40" :src="require('/src/assets/icons/change-desktop.svg')" alt="" />
             <div class="settings-name">Desktop image</div>
+          </div>
+          <div class="settings-button" @click="loadAndSetSettingComponent('EditUserAvatar.vue')">
+            <img height="40" :src="require('/src/assets/icons/avatar.png')" alt="" />
+            <div class="settings-name">Avatar</div>
           </div>
           <div class="settings-button margin-left" @click="loadAndSetSettingComponent('TaskBarCustomization.vue')">
             <img height="40" :src="require('/src/assets/icons/task-bar.svg')" alt="" />
@@ -33,6 +38,8 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, PropType, ref } from "vue";
+
+import Avatar from "@/components/system/avatarEditor/Avatar.vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
