@@ -20,13 +20,13 @@
     <g id="Avataaar" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(-825.000000, -1100.000000)" id="Avataaar/Circle">
         <g transform="translate(825.000000, 1100.000000)">
-          <template v-if="isCircle">
+          <template v-if="avatar.isCircle">
             <g id="Circle" stroke-width="1" fill-rule="evenodd" transform="translate(12.000000, 39.000000)">
               <mask id="mask-1" fill="white">
                 <use xlink:href="#path-1"></use>
               </mask>
               <use id="Circle-Background" fill="#E6E6E6" xlink:href="#path-1"></use>
-              <g id="Color/Palette/Blue-01" mask="url(#mask-1)" :fill="circleColor">
+              <g id="Color/Palette/Blue-01" mask="url(#mask-1)" :fill="avatar.circleColor">
                 <rect id="🖍Color" x="0" y="0" width="240" height="240"></rect>
               </g>
             </g>
@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from "vue";
+import { defineProps, computed, PropType } from "vue";
 
 import { mouthTypes } from "./assetsTypes/mouth";
 import { eyeTypes } from "./assetsTypes/eyes";
@@ -91,28 +91,29 @@ import { facialHairTypes } from "./assetsTypes/facial-hair";
 import { GraphicShirtTypes } from "./assetsTypes/graphic-shirt";
 import { hairColors, skinColors, hatAndShirtColors } from "./assetsTypes/colors";
 
+import AvatarModel from "./Avatar";
+
 const props = defineProps({
-  isCircle: {
-    type: Boolean,
-    default: true,
+  avatar: {
+    type: Object as PropType<AvatarModel>,
+    default: () => ({
+      isCircle: true,
+      circleColor: "#E6E6E6",
+      topType: "random",
+      accessoriesType: "random",
+      hairColor: "random",
+      facialHairType: "random",
+      clotheType: "random",
+      clotheColor: "random",
+      graphicType: "random",
+      eyeType: "random",
+      eyebrowType: "random",
+      mouthType: "random",
+      skinColor: "random",
+      facialHairColor: "random",
+      topColor: "random",
+    }),
   },
-  circleColor: {
-    type: String,
-    default: "#6fb8e0",
-  },
-  topType: { type: String, default: "random" },
-  accessoriesType: { type: String, default: "random" },
-  facialHairType: { type: String, default: "random" },
-  clotheType: { type: String, default: "random" },
-  eyeType: { type: String, default: "random" },
-  eyebrowType: { type: String, default: "random" },
-  mouthType: { type: String, default: "random" },
-  skinColor: { type: String, default: "random" },
-  graphicType: { type: String, default: "random" },
-  hairColor: { type: String, default: "random" },
-  facialHairColor: { type: String, default: "random" },
-  topColor: { type: String, default: "random" },
-  clotheColor: { type: String, default: "random" },
   height: { type: Number, default: 45 },
 });
 
@@ -124,35 +125,50 @@ const getRandomChoice = (items: Record<string, string>): string => {
 };
 
 const cssVars = computed(() => {
-  console.log("ex", props.hairColor);
+  console.log("ex", props.avatar.hairColor);
   return {
-    "--avataaar-hair-color": props.hairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.hairColor],
+    "--avataaar-hair-color":
+      props.avatar.hairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.avatar.hairColor],
     "--avataaar-facial-hair-color":
-      props.facialHairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.facialHairColor],
+      props.avatar.facialHairColor === "random"
+        ? getRandomChoice(hairColors)
+        : hairColors[props.avatar.facialHairColor],
     "--avataaar-hat-color":
-      props.topColor === "random" ? getRandomChoice(hatAndShirtColors) : hatAndShirtColors[props.topColor],
+      props.avatar.topColor === "random"
+        ? getRandomChoice(hatAndShirtColors)
+        : hatAndShirtColors[props.avatar.topColor],
     "--avataaar-shirt-color":
-      props.clotheColor === "random" ? getRandomChoice(hatAndShirtColors) : hatAndShirtColors[props.clotheColor],
+      props.avatar.clotheColor === "random"
+        ? getRandomChoice(hatAndShirtColors)
+        : hatAndShirtColors[props.avatar.clotheColor],
   };
 });
 
-const topTypeValue = computed(() => (props.topType === "random" ? getRandomChoice(topTypes) : props.topType));
+const topTypeValue = computed(() =>
+  props.avatar.topType === "random" ? getRandomChoice(topTypes) : props.avatar.topType
+);
 const accessoriesTypeValue = computed(() =>
-  props.accessoriesType === "random" ? getRandomChoice(accessoriesTypes) : props.accessoriesType
+  props.avatar.accessoriesType === "random" ? getRandomChoice(accessoriesTypes) : props.avatar.accessoriesType
 );
 const facialHairTypeValue = computed(() =>
-  props.facialHairType === "random" ? getRandomChoice(facialHairTypes) : props.facialHairType
+  props.avatar.facialHairType === "random" ? getRandomChoice(facialHairTypes) : props.avatar.facialHairType
 );
 const clotheTypeValue = computed(() =>
-  props.clotheType === "random" ? getRandomChoice(clothesType) : props.clotheType
+  props.avatar.clotheType === "random" ? getRandomChoice(clothesType) : props.avatar.clotheType
 );
-const eyeTypeValue = computed(() => (props.eyeType === "random" ? getRandomChoice(eyeTypes) : props.eyeType));
+const eyeTypeValue = computed(() =>
+  props.avatar.eyeType === "random" ? getRandomChoice(eyeTypes) : props.avatar.eyeType
+);
 const eyebrowTypeValue = computed(() =>
-  props.eyebrowType === "random" ? getRandomChoice(eyebrowTypes) : props.eyebrowType
+  props.avatar.eyebrowType === "random" ? getRandomChoice(eyebrowTypes) : props.avatar.eyebrowType
 );
-const mouthTypeValue = computed(() => (props.mouthType === "random" ? getRandomChoice(mouthTypes) : props.mouthType));
-const skinColorValue = computed(() => (props.skinColor === "random" ? getRandomChoice(skinColors) : props.skinColor));
+const mouthTypeValue = computed(() =>
+  props.avatar.mouthType === "random" ? getRandomChoice(mouthTypes) : props.avatar.mouthType
+);
+const skinColorValue = computed(() =>
+  props.avatar.skinColor === "random" ? getRandomChoice(skinColors) : props.avatar.skinColor
+);
 const graphicTypeValue = computed(() =>
-  props.graphicType === "random" ? getRandomChoice(GraphicShirtTypes) : props.graphicType
+  props.avatar.graphicType === "random" ? getRandomChoice(GraphicShirtTypes) : props.avatar.graphicType
 );
 </script>
