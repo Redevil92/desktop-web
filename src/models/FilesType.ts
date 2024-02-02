@@ -200,12 +200,12 @@ const fileTypesConfiguration: FileTypes = {
     allowResizing: true,
     singleton: false,
     defaultSize: {
-      height: 480,
-      width: 760,
+      height: 590,
+      width: 840,
     },
     minSize: {
-      height: 400,
-      width: 650,
+      height: 590,
+      width: 840,
     },
     title: "Settings",
     icon: "settings.svg",

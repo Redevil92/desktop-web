@@ -125,7 +125,6 @@ const getRandomChoice = (items: Record<string, string>): string => {
 };
 
 const cssVars = computed(() => {
-  console.log("ex", props.avatar.hairColor);
   return {
     "--avataaar-hair-color":
       props.avatar.hairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.avatar.hairColor],
