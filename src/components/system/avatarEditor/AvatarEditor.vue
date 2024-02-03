@@ -1,47 +1,48 @@
 <template>
   <div v-if="editedAvatar" style="display: flex">
-    <div style="margin-top: 20px; margin-right: 15px; position: relative">
-      <div v-for="(item, key) of categories" :key="key" style="display: flex; align-items: center">
-        <div style="width: 130px" @click="openedCategory = { item, key }" :class="getCategoryClasses(key)">
-          {{ camelCaseToText(key) }}
+    <div style="margin-top: 20px; margin-right: 15px; margin-bottom: 15px; position: relative">
+      <div v-for="(category, index) in categories" :key="index">
+        <AvatarCategory
+          :category="category"
+          :isSelected="openedCategory?.key === category.key"
+          @selectCategory="openedCategory = $event"
+        />
+        <div v-for="(subCategory, index) in category.subCategories" :key="index" style="margin-left: 20px">
+          <AvatarCategory
+            :category="subCategory"
+            :isSelected="openedCategory?.key === subCategory.key"
+            @selectCategory="openedCategory = $event"
+          />
         </div>
-        <span
-          v-if="openedCategory?.key === key"
-          class="mdi mdi-menu-right"
-          style="
-            font-size: 32px;
-            color: var(--selected-color_light);
-            position: absolute;
-            right: -24px;
-            margin-top: -5px;
-          "
-        ></span>
       </div>
     </div>
 
     <div style="width: 240px; height: 400px; padding-right: 20px; overflow-y: auto; flex-shrink: 0">
       <div v-if="openedCategory" style="margin-top: 20px; margin-left: 10px">
-        <div
-          v-for="(item, key) of openedCategory.item"
-          :key="key"
-          @click="(editedAvatar as any)[openedCategory.key] = key"
-          style="display: flex; align-items: center; position: relative"
-        >
+        <div v-if="openedCategory.key === 'background'">BaseToogle Select background color</div>
+        <div v-else>
           <div
-            :class=" (editedAvatar as any)[openedCategory.key] === key ? 'category-item category-item-selected' : 'category-item'"
-            :style="`background-color: ${item} !important; cursor: pointer; width: 180px; `"
+            v-for="(item, key) of openedCategory.items"
+            :key="key"
+            @click="(editedAvatar as any)[openedCategory.key] = key"
+            style="display: flex; align-items: center; position: relative"
           >
-            {{ key }}
+            <div
+              :class=" (editedAvatar as any)[openedCategory.key] === key ? 'category-item category-item-selected' : 'category-item'"
+              :style="`background-color: ${item} !important; cursor: pointer; width: 180px; `"
+            >
+              {{ key }}
+            </div>
+            <span
+              v-if="(editedAvatar as any)[openedCategory.key] === key"
+              class="mdi mdi-checkbox-marked-circle"
+              style="font-size: 18px; color: var(--selected-color_light); position: absolute; right: -10px; top: -1px"
+            ></span>
           </div>
-          <span
-            v-if="(editedAvatar as any)[openedCategory.key] === key"
-            class="mdi mdi-checkbox-marked-circle"
-            style="font-size: 18px; color: var(--selected-color_light); position: absolute; right: -10px; top: -1px"
-          ></span>
         </div>
       </div>
     </div>
-    <div style="margin-left: 70px">
+    <div style="margin-left: 30px">
       <Avatar :avatar="editedAvatar" :height="300" />
       <div style="margin-top: 20px">
         <BaseButton>Save Configuration</BaseButton>
@@ -55,8 +56,9 @@
 import { defineProps, PropType, ref, watch, onMounted } from "vue";
 
 import Avatar from "./Avatar.vue";
-import AvatarModel from "./Avatar";
+import AvatarModel, { AvatarCategory as AvatarCategoryModel } from "./Avatar";
 import BaseButton from "@/components/shared/BaseButton.vue";
+import AvatarCategory from "./AvatarCategory.vue";
 
 import { camelCaseToText } from "@/utils/textManipulation";
 
@@ -81,56 +83,50 @@ watch(
   }
 );
 
-const categories = {
-  topType: topTypes,
-  topColor: hatAndShirtColors,
-  hairColor: hairColors,
-  accessoriesType: accessoriesTypes,
-  facialHairType: facialHairTypes,
-  facialHairColor: hairColors,
-  clotheType: clothesType,
-  clotheColor: hatAndShirtColors,
-  graphicType: GraphicShirtTypes,
-  eyeType: eyeTypes,
-  eyebrowType: eyebrowTypes,
-  mouthType: mouthTypes,
-  skinColor: skinColors,
-};
+const categories: AvatarCategoryModel[] = [
+  {
+    items: {},
+    key: "background",
+    mdiIcon: "mdi-image",
+  },
+  {
+    items: topTypes,
+    key: "topType",
+    mdiIcon: "mdi-tshirt-crew",
+    subCategories: [
+      { items: hatAndShirtColors, key: "topColor", mdiIcon: "mdi-arrow-right-bottom" },
+      { items: hairColors, key: "hairColor", mdiIcon: "mdi-arrow-right-bottom" },
+    ],
+  },
+  { items: accessoriesTypes, key: "accessoriesType", mdiIcon: "mdi-glasses" },
+  {
+    items: facialHairTypes,
+    key: "facialHairType",
+    mdiIcon: "mdi-mustache",
+    subCategories: [{ items: hairColors, key: "facialHairColor", mdiIcon: "mdi-arrow-right-bottom" }],
+  },
+  {
+    items: clothesType,
+    key: "clotheType",
+    mdiIcon: "mdi-tshirt-crew",
+    subCategories: [
+      { items: hatAndShirtColors, key: "clotheColor", mdiIcon: "mdi-arrow-right-bottom" },
+      { items: GraphicShirtTypes, key: "graphicType", mdiIcon: "mdi-arrow-right-bottom" },
+    ],
+  },
+  { items: eyeTypes, key: "eyeType", mdiIcon: "mdi-eye" },
+  { items: eyebrowTypes, key: "eyebrowType", mdiIcon: "mdi-eye-circle" },
+  { items: mouthTypes, key: "mouthType", mdiIcon: "mdi-emoticon" },
+  { items: skinColors, key: "skinColor", mdiIcon: "mdi-palette" },
+];
 
 const editedAvatar = ref<AvatarModel>();
 
-const openedCategory = ref({ item: topTypes, key: "topType" });
-
-const getCategoryClasses = (categoryKey: string) => {
-  return {
-    "category-item": true,
-    "category-item-selected": openedCategory.value?.key === categoryKey,
-  };
-};
+const openedCategory = ref<AvatarCategoryModel>({ items: topTypes, key: "topType" });
 
 onMounted(() => {
   editedAvatar.value = props.avatar;
 });
-
-// const selectedAvatar = computed(() => {
-//   return {
-//     circleColor: props.avatar.circleColor,
-//     isCircle: props.avatar.isCircle,
-//     topType: topTypes[props.avatar.topType],
-//     accessoriesType: accessoriesTypes[props.avatar.accessoriesType],
-//     facialHairType: facialHairTypes[props.avatar.facialHairType],
-//     clotheType: clothesType[props.avatar.clotheType],
-//     eyeType: eyeTypes[props.avatar.eyeType],
-//     eyebrowType: eyebrowTypes[props.avatar.eyebrowType],
-//     mouthType: mouthTypes[props.avatar.mouthType],
-//     skinColor: skinColors[props.avatar.skinColor],
-//     graphicType: GraphicShirtTypes[props.avatar.graphicType],
-//     hairColor: hairColors[props.avatar.hairColor],
-//     facialHairColor: hairColors[props.avatar.facialHairColor],
-//     topColor: hatAndShirtColors[props.avatar.topColor],
-//     clotheColor: hatAndShirtColors[props.avatar.clotheColor],
-//   };
-// });
 </script>
 <style scoped>
 .category-item {

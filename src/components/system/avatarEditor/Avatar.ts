@@ -15,3 +15,11 @@ export default interface Avatar {
   topColor: string;
   clotheColor: string;
 }
+
+export interface AvatarCategory {
+  items: Record<string, string>;
+  key: string;
+  mdiIcon?: string;
+  icon?: string;
+  subCategories?: AvatarCategory[];
+}
