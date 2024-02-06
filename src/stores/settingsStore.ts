@@ -1,3 +1,4 @@
+import Avatar from "@/components/system/avatarEditor/Avatar";
 import {
   DESKTOP_PATH,
   DOCUMENT_PATH,
@@ -25,9 +26,14 @@ export const useSettingsStore = defineStore("settings", {
     ] as PathAndIcon[],
     dateFormat: "DD/MM/YYYY",
     timeFormat: "HH:MM XM",
+    darkMode: true,
+    avatar: undefined as Avatar | undefined,
   }),
   getters: {},
   actions: {
+    setAvatar(avatar: Avatar) {
+      this.avatar = avatar;
+    },
     setDesktopImage(imageName: string) {
       this.desktopImage = imageName;
     },
@@ -44,4 +50,5 @@ export const useSettingsStore = defineStore("settings", {
       }
     },
   },
+  persist: true,
 });

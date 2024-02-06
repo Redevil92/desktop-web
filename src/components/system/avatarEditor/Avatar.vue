@@ -25,7 +25,7 @@
               <mask id="mask-1" fill="white">
                 <use xlink:href="#path-1"></use>
               </mask>
-              <use id="Circle-Background" fill="#E6E6E6" xlink:href="#path-1"></use>
+              <use id="Circle-Background" :fill="avatar.circleColor" xlink:href="#path-1"></use>
               <g id="Color/Palette/Blue-01" mask="url(#mask-1)" :fill="avatar.circleColor">
                 <rect id="🖍Color" x="0" y="0" width="240" height="240"></rect>
               </g>

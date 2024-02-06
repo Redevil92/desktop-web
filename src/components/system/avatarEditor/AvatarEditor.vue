@@ -17,27 +17,44 @@
       </div>
     </div>
 
-    <div style="width: 240px; height: 400px; padding-right: 20px; overflow-y: auto; flex-shrink: 0">
+    <div style="width: 310px; height: 400px; padding-right: 20px; overflow-y: auto; flex-shrink: 0">
       <div v-if="openedCategory" style="margin-top: 20px; margin-left: 10px">
-        <div v-if="openedCategory.key === 'background'">BaseToogle Select background color</div>
+        <div v-if="openedCategory.key === 'background'" style="width: 100px">
+          <BaseToggle
+            label="Has background"
+            :selected="editedAvatar.isCircle ? 'Yes' : 'No'"
+            firstOption="Yes"
+            secondOption="No"
+            @onToggle="editedAvatar.isCircle = !editedAvatar.isCircle"
+          />
+          <div v-if="editedAvatar.isCircle" style="margin-top: 15px">
+            <color-picker
+              isWidget
+              pickerType="chrome"
+              @pureColorChange="editedAvatar.circleColor = $event"
+              theme="black"
+              v-model="editedAvatar.circleColor"
+            />
+          </div>
+        </div>
         <div v-else>
           <div
             v-for="(item, key) of openedCategory.items"
             :key="key"
             @click="(editedAvatar as any)[openedCategory.key] = key"
-            style="display: flex; align-items: center; position: relative"
+            style="display: flex; align-items: center; position: relative; padding-left: 15px"
           >
+            <span
+              v-if="(editedAvatar as any)[openedCategory.key] === key"
+              class="mdi mdi-checkbox-marked-circle"
+              style="font-size: 18px; color: var(--selected-color_light); position: absolute; left: -10px; top: -1px"
+            ></span>
             <div
               :class=" (editedAvatar as any)[openedCategory.key] === key ? 'category-item category-item-selected' : 'category-item'"
               :style="`background-color: ${item} !important; cursor: pointer; width: 180px; `"
             >
               {{ key }}
             </div>
-            <span
-              v-if="(editedAvatar as any)[openedCategory.key] === key"
-              class="mdi mdi-checkbox-marked-circle"
-              style="font-size: 18px; color: var(--selected-color_light); position: absolute; right: -10px; top: -1px"
-            ></span>
           </div>
         </div>
       </div>
@@ -45,8 +62,8 @@
     <div style="margin-left: 30px">
       <Avatar :avatar="editedAvatar" :height="300" />
       <div style="margin-top: 20px">
-        <BaseButton>Save Configuration</BaseButton>
-        <BaseButton neutralColor style="margin-left: 15px">Reset</BaseButton>
+        <BaseButton mdiIcon="mdi-content-save" @click="saveConfiguration">Save Configuration</BaseButton>
+        <BaseButton neutralColor @click="resetConfiguration" style="margin-left: 15px">Reset</BaseButton>
       </div>
     </div>
   </div>
@@ -59,8 +76,7 @@ import Avatar from "./Avatar.vue";
 import AvatarModel, { AvatarCategory as AvatarCategoryModel } from "./Avatar";
 import BaseButton from "@/components/shared/BaseButton.vue";
 import AvatarCategory from "./AvatarCategory.vue";
-
-import { camelCaseToText } from "@/utils/textManipulation";
+import BaseToggle from "@/components/shared/BaseToggle.vue";
 
 import { mouthTypes } from "./assetsTypes/mouth";
 import { eyeTypes } from "./assetsTypes/eyes";
@@ -72,14 +88,38 @@ import { facialHairTypes } from "./assetsTypes/facial-hair";
 import { GraphicShirtTypes } from "./assetsTypes/graphic-shirt";
 import { hairColors, skinColors, hatAndShirtColors } from "./assetsTypes/colors";
 
+import { ColorPicker } from "vue3-colorpicker";
+import "vue3-colorpicker/style.css";
+
 const props = defineProps({
-  avatar: { type: Object as PropType<AvatarModel>, required: true },
+  avatar: {
+    type: Object as PropType<AvatarModel>,
+    default: () => ({
+      isCircle: true,
+      circleColor: "#E6E6E6",
+      topType: "random",
+      accessoriesType: "random",
+      hairColor: "random",
+      facialHairType: "random",
+      clotheType: "random",
+      clotheColor: "random",
+      graphicType: "random",
+      eyeType: "random",
+      eyebrowType: "random",
+      mouthType: "random",
+      skinColor: "random",
+      facialHairColor: "random",
+      topColor: "random",
+    }),
+  },
 });
+
+const emit = defineEmits(["onSave"]);
 
 watch(
   () => props.avatar,
-  (newAvatar) => {
-    editedAvatar.value = newAvatar;
+  (_) => {
+    editedAvatar.value = Object.assign({}, props.avatar);
   }
 );
 
@@ -92,7 +132,7 @@ const categories: AvatarCategoryModel[] = [
   {
     items: topTypes,
     key: "topType",
-    mdiIcon: "mdi-tshirt-crew",
+    mdiIcon: "mdi-hat-fedora",
     subCategories: [
       { items: hatAndShirtColors, key: "topColor", mdiIcon: "mdi-arrow-right-bottom" },
       { items: hairColors, key: "hairColor", mdiIcon: "mdi-arrow-right-bottom" },
@@ -124,8 +164,16 @@ const editedAvatar = ref<AvatarModel>();
 
 const openedCategory = ref<AvatarCategoryModel>({ items: topTypes, key: "topType" });
 
-onMounted(() => {
+const saveConfiguration = () => {
+  emit("onSave", editedAvatar.value);
+};
+
+const resetConfiguration = () => {
   editedAvatar.value = props.avatar;
+};
+
+onMounted(() => {
+  editedAvatar.value = Object.assign({}, props.avatar);
 });
 </script>
 <style scoped>

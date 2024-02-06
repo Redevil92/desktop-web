@@ -49,7 +49,7 @@
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
       <div class="user-profile-container">
         <div class="flex">
-          <Avatar />
+          <Avatar :avatar="settingsStore.avatar" />
           <!-- <img height="40" :src="require('/src/assets/avatar/male.png')" alt="" /> -->
           <div class="user-name">Your username</div>
         </div>
@@ -70,6 +70,7 @@ import { useLayoutStore } from "@/stores/layoutStore";
 import { useStartMenuStore } from "@/stores/startMenuStore";
 
 import fileTypesConfiguration from "@/models/FilesType";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const props = defineProps({
   openStartMenuButtonRef: HTMLElement,
@@ -77,6 +78,7 @@ const props = defineProps({
 
 const layoutStore = useLayoutStore();
 const startMenuStore = useStartMenuStore();
+const settingsStore = useSettingsStore();
 
 const search = ref("");
 const showAllApps = ref(false);

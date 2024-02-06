@@ -1,35 +1,26 @@
 <template>
   <div :style="`height: ${height}px`">
-    <AvatarEditor :avatar="currentAvatar" />
+    <AvatarEditor :avatar="currentAvatar" @onSave="saveConfiguration" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import Avatar from "@/components/system/avatarEditor/Avatar";
 import AvatarEditor from "@/components/system/avatarEditor/AvatarEditor.vue";
-import { ref } from "vue";
+import { useSettingsStore } from "@/stores/settingsStore";
+import { computed } from "vue";
 
-const props = defineProps({
+defineProps({
   height: Number,
 });
 
-const currentAvatar = ref<Avatar>({
-  isCircle: true,
-  circleColor: "#E6E6E6",
-  topType: "random",
-  accessoriesType: "random",
-  hairColor: "random",
-  facialHairType: "random",
-  clotheType: "random",
-  clotheColor: "random",
-  graphicType: "random",
-  eyeType: "random",
-  eyebrowType: "random",
-  mouthType: "random",
-  skinColor: "random",
-  facialHairColor: "random",
-  topColor: "random",
-});
+const settingsStore = useSettingsStore();
+
+const currentAvatar = computed(() => settingsStore.avatar);
+
+const saveConfiguration = (avatar: Avatar) => {
+  settingsStore.setAvatar(avatar);
+};
 </script>
 
 <style scoped></style>

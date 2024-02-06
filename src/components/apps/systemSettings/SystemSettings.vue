@@ -2,7 +2,7 @@
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <div class="system-container">
       <div class="system-header-container">
-        <Avatar :height="70" />
+        <Avatar :avatar="settingsStore.avatar" :height="70" />
 
         <div class="text-container">
           <div class="settings-page-title">Your avatar</div>
@@ -44,11 +44,14 @@ import Avatar from "@/components/system/avatarEditor/Avatar.vue";
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
 import ErrorComponent from "@/components/shared/ErrorComponent.vue";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
   height: { type: Number, required: true },
 });
+
+const settingsStore = useSettingsStore();
 
 const showSelectedSettingComponent = ref(false);
 

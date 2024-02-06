@@ -4,12 +4,22 @@
     :class="{ 'normal-button': !small, 'small-button': small, 'neutral-color': neutralColor }"
     @click="clickHandler"
   >
-    <slot></slot>
+    <div class="flex-center">
+      <span v-if="mdiIcon" :class="`mdi ${mdiIcon}`" style="font-size: 14px; margin-right: 5px"></span>
+      <slot></slot>
+    </div>
   </button>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({ small: Boolean, neutralColor: Boolean });
+const props = defineProps({
+  small: Boolean,
+  neutralColor: Boolean,
+  mdiIcon: {
+    type: String,
+    required: false,
+  },
+});
 const emit = defineEmits(["click"]);
 
 const clickHandler = (event: MouseEvent) => {
@@ -23,6 +33,13 @@ const clickHandler = (event: MouseEvent) => {
   color: white;
   outline: none;
   border: none;
+  cursor: pointer;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .normal-button {

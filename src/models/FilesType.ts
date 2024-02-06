@@ -200,11 +200,11 @@ const fileTypesConfiguration: FileTypes = {
     allowResizing: true,
     singleton: false,
     defaultSize: {
-      height: 590,
+      height: 630,
       width: 840,
     },
     minSize: {
-      height: 590,
+      height: 630,
       width: 840,
     },
     title: "Settings",
