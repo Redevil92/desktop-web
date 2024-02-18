@@ -8,7 +8,7 @@
   ></SelectedFolderDialog>
   <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
   <div id="textFileItem" :style="`height: ${height - 5}px; width: calc(100% -4px);`">
-    <editor
+    <Editor
       v-if="isLoaded"
       class="mce-editor"
       api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
