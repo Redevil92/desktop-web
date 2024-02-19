@@ -49,7 +49,7 @@ const filesDroppedHandler = (files: any) => {
             path: props.dropPath + "/" + file.name,
             content: reader.result?.toString(),
           } as PathAndContent,
-          false
+          false,
         );
 
         refreshFiles();

@@ -33,7 +33,7 @@ const drawVisualizer = (
   dataArray: Uint8Array,
 
   ctx: CanvasRenderingContext2D,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
 ) => {
   const style = getComputedStyle(document.body);
   ctx.fillStyle = style.getPropertyValue("--font-color");
@@ -84,7 +84,7 @@ const roundRect = function (
   y: number,
   width: number,
   height: number,
-  radius: number
+  radius: number,
 ) {
   if (width < 2 * radius) {
     radius = width / 2;

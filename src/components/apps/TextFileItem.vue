@@ -79,7 +79,7 @@ const saveTextFileHandler = async (destinationPath: string) => {
   await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(fileContent.value) });
   showSaveAsDialog.value = false;
 
-  const itemDialogToUpdate = Object.assign({}, props.itemDialog);
+  const itemDialogToUpdate = { ...props.itemDialog };
   itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
   fileSystemStore.updateItemDialog(itemDialogToUpdate);
 
@@ -105,5 +105,3 @@ onBeforeMount(async () => {
   }
 });
 </script>
-
-<style scoped></style>

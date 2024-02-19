@@ -48,7 +48,7 @@ export const pasteAction = async (
   destinationPath: string,
   disabled = false,
   iconOnly = true,
-  horizontalGroup = true
+  horizontalGroup = true,
 ): Promise<ActionItem> => {
   const fileSystemStore = useFileSystemStore();
   const canPaste =
@@ -94,7 +94,7 @@ export const createNewFile = (
   event: PointerEvent,
   destinationPath: string,
   disabled = false,
-  iconOnly = false
+  iconOnly = false,
 ): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
@@ -109,7 +109,7 @@ export const createNewFile = (
           path: destinationPath + "/" + "new file.txt",
           content: "",
         },
-        false
+        false,
       );
       saveDesktopFilePosition(createdFileName, { x: event.x, y: event.y });
       refreshFiles();
@@ -122,7 +122,7 @@ export const createNewFolder = (
   event: PointerEvent,
   destinationPath: string,
   disabled = false,
-  iconOnly = false
+  iconOnly = false,
 ): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
@@ -262,7 +262,7 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     callback: async () => {
       const filesToZip: { fileName: string; contentBase64: string }[] = await addFilesFromPathRecursivelyToList(
         filePaths,
-        []
+        [],
       );
       const zippedFile = await compressToZipFile(filesToZip);
       const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
@@ -345,7 +345,7 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
 
 const addFilesFromPathRecursivelyToList = async (
   filePaths: string[],
-  existingList: { fileName: string; contentBase64: string }[]
+  existingList: { fileName: string; contentBase64: string }[],
 ) => {
   for (const path of filePaths) {
     const isFolder = await fileSystem.isDir(path);

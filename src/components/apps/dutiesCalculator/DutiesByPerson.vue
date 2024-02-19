@@ -122,7 +122,7 @@ watch(
   () => taxToPay.value,
   () => {
     emit("changePersonDuty", taxToPay.value);
-  }
+  },
 );
 
 const changeNumberOfPeople = () => {

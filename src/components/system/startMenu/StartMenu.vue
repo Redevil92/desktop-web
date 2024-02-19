@@ -49,7 +49,7 @@
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
       <div class="user-profile-container">
         <div class="flex">
-          <Avatar :avatar="settingsStore.avatar" />
+          <TheAvatar :avatar="settingsStore.avatar" />
           <!-- <img height="40" :src="require('/src/assets/avatar/male.png')" alt="" /> -->
           <div class="user-name">Your username</div>
         </div>
@@ -64,7 +64,7 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import BaseInput from "@/components/shared/BaseInput.vue";
 import AppItem from "@/components/system/startMenu/AppItem.vue";
-import Avatar from "@/components/system/avatarEditor/Avatar.vue";
+import TheAvatar from "@/components/system/avatarEditor/TheAvatar.vue";
 
 import { useLayoutStore } from "@/stores/layoutStore";
 import { useStartMenuStore } from "@/stores/startMenuStore";
@@ -109,7 +109,7 @@ const allFilteredAppsToShow = computed(() => {
       (app) =>
         app.application.toLowerCase().includes(search.value.toLowerCase()) ||
         app.title.toLowerCase().includes(search.value.toLowerCase()) ||
-        app.key.toLowerCase().includes(search.value.toLowerCase())
+        app.key.toLowerCase().includes(search.value.toLowerCase()),
     );
 });
 

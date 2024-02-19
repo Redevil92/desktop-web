@@ -106,7 +106,7 @@ watch(
     if (oldValue?.path !== newValue?.path && newValue?.path) {
       pathToEdit.value = newValue.path;
     }
-  }
+  },
 );
 
 const isDraggingItem = computed(function () {

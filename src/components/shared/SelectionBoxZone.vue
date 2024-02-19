@@ -39,7 +39,7 @@ watch(
   () => props.isEnabled,
   function () {
     resetSelectionBox();
-  }
+  },
 );
 
 const resetSelectionBox = () => {

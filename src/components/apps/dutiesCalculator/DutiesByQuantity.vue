@@ -116,14 +116,14 @@ watch(
   () => totalQuantityDuty.value,
   () => {
     emit("changeQuantityDuty", totalQuantityDuty.value);
-  }
+  },
 );
 
 watch(
   () => props.numberOfPeople,
   () => {
     updateQuantityDuty();
-  }
+  },
 );
 
 const updateQuantityDuty = () => {

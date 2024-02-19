@@ -27,7 +27,7 @@
         :style="`margin-top: ${pdfMargin}px; margin-bottom:20px `"
         ref="pdfRef"
         :source="pdfData"
-        :page="(page as any)"
+        :page="page as any"
         :height="pdfHeight"
         :rotation="pdfRotation"
         @password-requested="handlePasswordRequest"

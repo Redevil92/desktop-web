@@ -43,7 +43,7 @@ watch(
       //CLOSE DYNAMIC ISLAND if any
       dynamicIslandStore.removeDynamicIslandItem(props.itemDialog?.guid || "");
     }
-  }
+  },
 );
 
 onMounted(async () => {

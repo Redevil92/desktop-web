@@ -146,7 +146,7 @@ watch(
   () => selectedItems.value,
   async function () {
     emit("onSelectedItemsChange", selectedItems.value);
-  }
+  },
 );
 
 const dragStart = () => {
@@ -221,14 +221,14 @@ const keyDownHandler = (event: { code: string }) => {
   if (props.isFocused && selectedItems.value.length > 0 && props.itemsList && props.keyEventsActive) {
     if (event.code === "ArrowDown") {
       const index = props.itemsList.findIndex(
-        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1]
+        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1],
       );
       if (index !== -1 && props.itemsList.length > index + 1) {
         selectedItems.value = [props.itemsList[index + 1]];
       }
     } else if (event.code === "ArrowUp") {
       const index = props.itemsList.findIndex(
-        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1]
+        (filePath) => filePath === selectedItems.value[selectedItems.value.length - 1],
       );
       if (index > 0) {
         selectedItems.value = [props.itemsList[index - 1]];

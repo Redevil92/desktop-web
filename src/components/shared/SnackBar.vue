@@ -38,7 +38,7 @@ watch(
         layoutStore.resetSnackBar();
       }, durationTime.value);
     }
-  }
+  },
 );
 </script>
 <style scoped>

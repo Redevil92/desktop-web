@@ -29,7 +29,7 @@ export default function useCompression() {
 
   const saveDecompressedFilesToDestination = async (
     decompressedFile: fflate.Unzipped,
-    destinationPath: string
+    destinationPath: string,
   ): Promise<string[]> => {
     const fileSystemStore = useFileSystemStore();
 

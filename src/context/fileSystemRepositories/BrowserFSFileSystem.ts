@@ -36,7 +36,7 @@ export default class BrowserFSFileSystem implements IFileSystem {
 
     return new Promise((resolve, reject) => {
       fs.mkdir(uniquePath, { flag: overwrite ? "w" : "wx" }, (error: any) =>
-        error ? reject(error) : resolve(uniquePath)
+        error ? reject(error) : resolve(uniquePath),
       );
     });
   };

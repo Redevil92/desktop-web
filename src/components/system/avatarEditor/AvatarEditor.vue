@@ -50,7 +50,11 @@
               style="font-size: 18px; color: var(--selected-color_light); position: absolute; left: -10px; top: -1px"
             ></span>
             <div
-              :class=" (editedAvatar as any)[openedCategory.key] === key ? 'category-item category-item-selected' : 'category-item'"
+              :class="
+                (editedAvatar as any)[openedCategory.key] === key
+                  ? 'category-item category-item-selected'
+                  : 'category-item'
+              "
               :style="`background-color: ${item} !important; cursor: pointer; width: 180px; `"
             >
               {{ key }}
@@ -60,7 +64,7 @@
       </div>
     </div>
     <div style="margin-left: 30px">
-      <Avatar :avatar="editedAvatar" :height="300" />
+      <TheAvatar :avatar="editedAvatar" :height="300" />
       <div style="margin-top: 20px">
         <BaseButton mdiIcon="mdi-content-save" @click="saveConfiguration">Save Configuration</BaseButton>
         <BaseButton neutralColor @click="resetConfiguration" style="margin-left: 15px">Reset</BaseButton>
@@ -70,9 +74,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, ref, watch, onMounted } from "vue";
+import { PropType, ref, watch, onMounted } from "vue";
 
-import Avatar from "./Avatar.vue";
+import TheAvatar from "./TheAvatar.vue";
 import AvatarModel, { AvatarCategory as AvatarCategoryModel } from "./Avatar";
 import BaseButton from "@/components/shared/BaseButton.vue";
 import AvatarCategory from "./AvatarCategory.vue";
@@ -119,8 +123,8 @@ const emit = defineEmits(["onSave"]);
 watch(
   () => props.avatar,
   (_) => {
-    editedAvatar.value = Object.assign({}, props.avatar);
-  }
+    editedAvatar.value = { ...props.avatar };
+  },
 );
 
 const categories: AvatarCategoryModel[] = [
@@ -173,7 +177,7 @@ const resetConfiguration = () => {
 };
 
 onMounted(() => {
-  editedAvatar.value = Object.assign({}, props.avatar);
+  editedAvatar.value = { ...props.avatar };
 });
 </script>
 <style scoped>

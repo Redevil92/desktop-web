@@ -103,7 +103,7 @@ const { moveFilesInFolderFromDesktop } = useMoveFiles();
 
 const isSelected = computed(function () {
   const index = selectedDesktopItems.value.findIndex(
-    (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path
+    (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path,
   );
   return index !== -1;
 });
@@ -116,14 +116,14 @@ watch(
   () => isSelected.value,
   function () {
     isEditingText.value = false;
-  }
+  },
 );
 
 watch(
   () => props.fileItem.path,
   function () {
     fileName.value = getFileNameFromPath(props.fileItem.path);
-  }
+  },
 );
 
 const fileExtension = computed(function () {
@@ -170,7 +170,7 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
 
   let desktopFileActions = [
     ...((await getFileActions(fileSystemStore.getSelectedDesktopItemsPath, event)).filter(
-      (action) => action !== undefined
+      (action) => action !== undefined,
     ) as ActionItem[]),
   ];
 
@@ -181,7 +181,7 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
 
   if (fileTypeConfiguration?.additionalActions) {
     desktopFileActions = desktopFileActions.concat(
-      fileTypeConfiguration.additionalActions.map((action) => action(item.path))
+      fileTypeConfiguration.additionalActions.map((action) => action(item.path)),
     );
   }
   if (desktopFileActions) {

@@ -105,7 +105,7 @@ watch(
     if (newValue !== props.items[0].applicationToOpen) {
       showItemsPreview.value = false;
     }
-  }
+  },
 );
 
 const isItemFocused = computed(() => {

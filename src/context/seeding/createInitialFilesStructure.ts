@@ -32,7 +32,7 @@ export const createFilesStructure = async () => {
         "my PC/Desktop/Duties tax calculator.lnk",
         JSON.stringify(taxCalculator),
         "utf8",
-        false
+        false,
       );
       saveDesktopFilePosition("my PC/Desktop/Duties tax calculator.lnk", { x: 240, y: 0 });
 

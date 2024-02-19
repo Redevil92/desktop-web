@@ -63,7 +63,7 @@ watch(
     if (props.filePath) {
       isFolder.value = await fileSystem.isDir(props.filePath);
     }
-  }
+  },
 );
 
 const getLinkFileIcon = async () => {

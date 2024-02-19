@@ -7,7 +7,9 @@
 
 @font-face {
   font-family: "Segoe";
-  src: local("Segoe"), url(./assets/fonts/SegoeUIVF.ttf) format("truetype");
+  src:
+    local("Segoe"),
+    url(./assets/fonts/SegoeUIVF.ttf) format("truetype");
 }
 
 #app {

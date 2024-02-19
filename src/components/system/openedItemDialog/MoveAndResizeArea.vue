@@ -6,9 +6,7 @@
     :style="
       !isFullscreen
         ? `top: ${topPosition}px; left: ${leftPosition}px; height: ${itemDialog.dimension.height}px; width: ${itemDialog.dimension.width}px; z-index: ${itemDialog.zIndex}`
-        : `top: ${0}px; left: ${0}px; z-index: ${
-            itemDialog.zIndex
-          }; width: calc(100% - 1px); height: calc(100% - 31px);   `
+        : `top: ${0}px; left: ${0}px; z-index: ${itemDialog.zIndex}; width: calc(100% - 1px); height: calc(100% - 31px);   `
     "
   >
     <div

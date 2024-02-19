@@ -2,7 +2,7 @@
   <div :style="`height: ${height - 14}px; width: calc(100% -4px); `">
     <div class="system-container">
       <div class="system-header-container">
-        <Avatar :avatar="settingsStore.avatar" :height="70" />
+        <TheAvatar :avatar="settingsStore.avatar" :height="70" />
 
         <div class="text-container">
           <div class="settings-page-title">Your avatar</div>
@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, PropType, ref } from "vue";
 
-import Avatar from "@/components/system/avatarEditor/Avatar.vue";
+import TheAvatar from "@/components/system/avatarEditor/TheAvatar.vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import LoadingComponent from "@/components/shared/LoadingComponent.vue";
