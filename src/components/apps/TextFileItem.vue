@@ -6,27 +6,58 @@
     to="textFileItem"
     :showSaveAsInput="true"
   ></SelectedFolderDialog>
+
   <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
   <div style="background-color: white">
     <div id="textFileItem" :style="`height: ${height}px;  width: calc(100% -4px); `">
-      <div id="editor" style="background-color: white; border-radius: 10px; height: 100%"></div>
-      <!-- <Editor
-      v-if="isLoaded"
-      class="mce-editor"
-      api-key="yxb2ealwgpgr85gcgcl311khnyuz4abs13akcuyqscr4y6fr"
-      :init="{
-        height: '100%',
-        resize: false,
-        selector: 'textarea', // change this value according to your HTML
-        plugins: 'save',
-        menubar: false,
-        toolbar:
-          'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | \
-           bullist numlist outdent indent | removeformat |',
-      }"
-      :initial-value="fileText"
-      @saveContent="saveFile"
-    /> -->
+      <QuillEditor
+        v-if="isLoaded"
+        theme="snow"
+        toolbar="#custom-toolbar"
+        contentType="html"
+        v-model:content="fileText"
+        @input="onTextChange"
+      >
+        <template #toolbar>
+          <div id="custom-toolbar">
+            <select class="ql-size">
+              <option value="small"></option>
+              <option selected></option>
+              <option value="large"></option>
+              <option value="huge"></option>
+            </select>
+            <select class="ql-header">
+              <option :value="1"></option>
+              <option :value="2"></option>
+              <option :value="3"></option>
+              <option :value="4"></option>
+              <option :value="5"></option>
+              <option :value="6"></option>
+              <option selected></option>
+            </select>
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+            <button class="ql-script" value="sub"></button>
+            <button class="ql-script" value="super"></button>
+            <select class="ql-align">
+              <option selected></option>
+              <option value="center"></option>
+              <option value="right"></option>
+              <option value="justify"></option>
+            </select>
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-blockquote"></button>
+            <button class="ql-code-block"></button>
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+
+            <button id="your-button"><span class="mdi mdi-save">Save</span></button>
+          </div>
+        </template>
+      </QuillEditor>
     </div>
   </div>
 </template>
@@ -38,10 +69,9 @@ import ItemDialog from "@/models/ItemDialog";
 import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
 import IFrameFocuser from "@/components/shared/IFrameFocuser.vue";
 
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
-import Editor from "@tinymce/tinymce-vue";
 import fileSystem from "@/context/fileSystemController";
 import PathAndContent from "@/models/PathAndContent";
 import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
@@ -62,18 +92,20 @@ const layoutStore = useLayoutStore();
 const fileSystemStore = useFileSystemStore();
 const { isBase64, b64ToText, utf8ToB64, removeDataUri } = useBase64Handler();
 
-const quill = ref<Quill>();
-const fileText = ref("");
+const fileText = ref("ddd");
 const isLoaded = ref(false);
 const showSaveAsDialog = ref(false);
 const fileContent = ref("");
 
+const onTextChange = (content: any) => {
+  console.log("onTextChange", content);
+};
+
 const saveFile = (_html: any, _body: any) => {
   if (props.itemDialog?.path) {
-    const content = quill.value?.getText();
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,
-      content: utf8ToB64(content ?? ""),
+      content: utf8ToB64(fileContent.value),
     } as PathAndContent);
   } else {
     showSaveAsDialog.value = true;
@@ -82,9 +114,8 @@ const saveFile = (_html: any, _body: any) => {
 
 const saveTextFileHandler = async (destinationPath: string) => {
   const destinationPathToSave = destinationPath + ".txt";
-  const content = quill.value?.getText();
 
-  await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(content ?? "") });
+  await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(fileContent.value) });
   showSaveAsDialog.value = false;
 
   const itemDialogToUpdate = { ...props.itemDialog };
@@ -101,56 +132,10 @@ const saveTextFileHandler = async (destinationPath: string) => {
   });
 };
 
-onMounted(() => {
-  const container = document.getElementById("editor");
-  console.log(container);
-
-  if (!container) return;
-  const toolbarOptions = [
-    [{ font: [] }, "bold", "italic", "underline", "strike"], // toggled buttons
-    ["blockquote", "code-block"],
-    ["link", "image", "video"],
-
-    [{ header: 1 }, { header: 2 }], // custom button values
-    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-    [{ script: "sub" }, { script: "super" }], // superscript/subscript
-    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-    [{ direction: "rtl" }], // text direction
-
-    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-
-    [{ align: [] }],
-
-    ["clean"], // remove formatting button
-  ];
-
-  quill.value = new Quill(container, {
-    theme: "snow",
-    modules: {
-      toolbar: toolbarOptions,
-    },
-  });
-
-  // quill.value.on("text-change", (delta, oldDelta, source) => {
-  //   console.log("change!", delta, oldDelta, source);
-  //   if (source == "api") {
-  //     console.log("An API call triggered this change.");
-  //   } else if (source == "user") {
-  //     console.log("A user action triggered this change.");
-  //   }
-  // });
-});
-
-onBeforeMount(async () => {
+onMounted(async () => {
   if (props.itemDialog?.path) {
     let fileData = await fileSystem.readFile(props.itemDialog?.path);
     fileText.value = b64ToText(fileData, true);
-    if (quill.value) {
-      quill.value.setText(fileText.value);
-    }
 
     isLoaded.value = true;
   } else {
