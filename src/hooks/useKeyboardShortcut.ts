@@ -8,8 +8,9 @@ export default function useKeyboardShortcut() {
 
   const keyDownHandler = async (event: KeyboardEvent) => {
     const itemDialogFocused = fileSystemStore.itemsDialog.find((item) => item.isFocused);
+
     let isFolder = false;
-    if (itemDialogFocused) {
+    if (itemDialogFocused && itemDialogFocused.path) {
       isFolder = await fileSystem.isDir(itemDialogFocused.path);
     }
 

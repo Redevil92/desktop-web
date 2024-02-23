@@ -12,14 +12,15 @@
     <div id="textFileItem" :style="`height: ${height}px;  width: calc(100% -4px); `">
       <QuillEditor
         v-if="isLoaded"
+        :id="itemDialog.guid + '-quill-editor'"
         theme="snow"
-        toolbar="#custom-toolbar"
+        :toolbar="`#custom-toolbar-${itemDialog.guid}`"
         contentType="html"
         v-model:content="fileText"
         @input="onTextChange"
       >
         <template #toolbar>
-          <div id="custom-toolbar">
+          <div :id="`custom-toolbar-${itemDialog.guid}`">
             <select class="ql-size">
               <option value="small"></option>
               <option selected></option>
@@ -54,7 +55,9 @@
             <button class="ql-link"></button>
             <button class="ql-image"></button>
 
-            <button id="your-button"><span class="mdi mdi-save">Save</span></button>
+            <button id="your-button" @click="saveFile" :class="!saveButtonEnabled ? 'button-disabled' : ''">
+              <img :src="require('/src/assets/icons/save.svg')" style="height: 17px" />
+            </button>
           </div>
         </template>
       </QuillEditor>
@@ -63,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, PropType, ref } from "vue";
+import { computed, onMounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
@@ -90,36 +93,43 @@ const props = defineProps({
 
 const layoutStore = useLayoutStore();
 const fileSystemStore = useFileSystemStore();
-const { isBase64, b64ToText, utf8ToB64, removeDataUri } = useBase64Handler();
+const { b64ToText, utf8ToB64, removeDataUri } = useBase64Handler();
 
-const fileText = ref("ddd");
+const fileText = ref("");
 const isLoaded = ref(false);
 const showSaveAsDialog = ref(false);
-const fileContent = ref("");
+
+const hasChanges = ref(false);
+
+const saveButtonEnabled = computed(() => {
+  return hasChanges.value || !props.itemDialog?.path;
+});
 
 const onTextChange = (content: any) => {
-  console.log("onTextChange", content);
+  hasChanges.value = true;
 };
 
-const saveFile = (_html: any, _body: any) => {
+const saveFile = () => {
   if (props.itemDialog?.path) {
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,
-      content: utf8ToB64(fileContent.value),
+      content: utf8ToB64(fileText.value),
     } as PathAndContent);
   } else {
     showSaveAsDialog.value = true;
   }
+  hasChanges.value = false;
 };
 
 const saveTextFileHandler = async (destinationPath: string) => {
   const destinationPathToSave = destinationPath + ".txt";
 
-  await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(fileContent.value) });
+  await fileSystemStore.createFile({ path: destinationPathToSave, content: utf8ToB64(fileText.value) });
   showSaveAsDialog.value = false;
 
   const itemDialogToUpdate = { ...props.itemDialog };
   itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
+  itemDialogToUpdate.path = destinationPathToSave;
   fileSystemStore.updateItemDialog(itemDialogToUpdate);
 
   fileSystemStore.refreshAllItemDialogFiles();
@@ -143,5 +153,12 @@ onMounted(async () => {
     isLoaded.value = true;
   }
 });
+
+// IMPLEMENT CTRL SAVE
 </script>
-<style></style>
+<style>
+.button-disabled {
+  pointer-events: none;
+  opacity: 0.1;
+}
+</style>
