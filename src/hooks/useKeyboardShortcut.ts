@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
 import fileSystem from "@/context/fileSystemController";
 import { DESKTOP_PATH } from "@/constants";

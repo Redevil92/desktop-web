@@ -73,7 +73,7 @@ watch(
   width: 100%;
   position: absolute;
   bottom: 50px;
-  padding: 0px var;
+  padding: 0px;
 }
 
 .flex {

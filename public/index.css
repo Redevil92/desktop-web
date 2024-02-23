@@ -59,7 +59,15 @@
   -webkit-box-sizing: inherit;
 }
 
+@font-face {
+  font-family: "Segoe";
+  src:
+    local("Segoe"),
+    url(../src/assets/fonts/SegoeUIVF.ttf) format("truetype");
+}
+
 html {
+  font-family: Segoe, Avenir, Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -webkit-box-sizing: border-box;

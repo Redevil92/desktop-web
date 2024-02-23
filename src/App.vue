@@ -5,13 +5,6 @@
 <style>
 @import "../public/index.css";
 
-@font-face {
-  font-family: "Segoe";
-  src:
-    local("Segoe"),
-    url(./assets/fonts/SegoeUIVF.ttf) format("truetype");
-}
-
 #app {
   font-family: Segoe, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

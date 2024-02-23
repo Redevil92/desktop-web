@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref } from "vue";
+import { computed, onMounted, onUnmounted, PropType, ref } from "vue";
 
 import ItemDialog from "@/models/ItemDialog";
 import SelectedFolderDialog from "@/components/shared/SelectedFolderDialog.vue";
@@ -115,6 +115,11 @@ const saveFile = () => {
       path: props.itemDialog?.path,
       content: utf8ToB64(fileText.value),
     } as PathAndContent);
+    layoutStore.setSnackBar({
+      show: true,
+      text: `File saved.`,
+      severity: SEVERITY.information,
+    });
   } else {
     showSaveAsDialog.value = true;
   }
@@ -142,7 +147,17 @@ const saveTextFileHandler = async (destinationPath: string) => {
   });
 };
 
+const keyDownHandler = async (event: KeyboardEvent) => {
+  console.log("keyDownHandler");
+  if (event.ctrlKey && event.key === "s" && props.itemDialog.isFocused) {
+    event.preventDefault();
+    saveFile();
+  }
+};
+
 onMounted(async () => {
+  window.addEventListener("keydown", keyDownHandler);
+
   if (props.itemDialog?.path) {
     let fileData = await fileSystem.readFile(props.itemDialog?.path);
     fileText.value = b64ToText(fileData, true);
@@ -154,7 +169,9 @@ onMounted(async () => {
   }
 });
 
-// IMPLEMENT CTRL SAVE
+onUnmounted(() => {
+  window.removeEventListener("keydown", keyDownHandler);
+});
 </script>
 <style>
 .save-button-disabled-quill {
