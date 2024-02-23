@@ -32,7 +32,7 @@ const textType: FileType = {
   },
   minSize: {
     height: 100,
-    width: 220,
+    width: 350,
   },
   application: "TextFileItem",
   title: "New text file",

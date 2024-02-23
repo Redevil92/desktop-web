@@ -8,7 +8,7 @@
   ></SelectedFolderDialog>
 
   <IFrameFocuser v-if="!itemDialog.isFocused" :height="height - 5" />
-  <div style="background-color: white">
+  <div>
     <div id="textFileItem" :style="`height: ${height}px;  width: calc(100% -4px); `">
       <QuillEditor
         v-if="isLoaded"
@@ -20,7 +20,7 @@
         @input="onTextChange"
       >
         <template #toolbar>
-          <div :id="`custom-toolbar-${itemDialog.guid}`">
+          <div :id="`custom-toolbar-${itemDialog.guid}`" style="height: 41px; overflow-y: auto">
             <select class="ql-size">
               <option value="small"></option>
               <option selected></option>
@@ -55,7 +55,7 @@
             <button class="ql-link"></button>
             <button class="ql-image"></button>
 
-            <button id="your-button" @click="saveFile" :class="!saveButtonEnabled ? 'button-disabled' : ''">
+            <button id="your-button" @click="saveFile" :class="!saveButtonEnabled ? 'save-button-disabled-quill' : ''">
               <img :src="require('/src/assets/icons/save.svg')" style="height: 17px" />
             </button>
           </div>
@@ -157,8 +157,21 @@ onMounted(async () => {
 // IMPLEMENT CTRL SAVE
 </script>
 <style>
-.button-disabled {
+.save-button-disabled-quill {
   pointer-events: none;
   opacity: 0.1;
+}
+
+.ql-container {
+  height: calc(100% - 44px);
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  background-color: white;
+}
+
+.ql-toolbar {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  background-color: white;
 }
 </style>
