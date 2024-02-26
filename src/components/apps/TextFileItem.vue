@@ -148,7 +148,6 @@ const saveTextFileHandler = async (destinationPath: string) => {
 };
 
 const keyDownHandler = async (event: KeyboardEvent) => {
-  console.log("keyDownHandler");
   if (event.ctrlKey && event.key === "s" && props.itemDialog.isFocused) {
     event.preventDefault();
     saveFile();
