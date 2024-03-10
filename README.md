@@ -1,6 +1,21 @@
-# desktop-web-vite
+# Desktop web
 
-This template should help get you started developing with Vue 3 in Vite.
+Hello there!<br/>
+The purpose of the project is to emulate the desktop environment in the browser. You can drop files from your pc inside the app, create and open various type of files.<br/>
+It's still a work in progress and some new feature will be added in the next months.<br/>
+In the coming weeks I will update the README file and provide more information about already implemented features and upcoming plans!
+
+## Clone repo
+
+```
+git clone https://github.com/Redevil92/desktop-web.git
+cd desktop-web
+```
+
+### Activate debug mode
+
+The debug mode will clear the indexedDB every time you refresh the page. You lose all your date at each refresh.
+To activate this mode you have to set to true the variable DEBUG_MODE in the .env.local file.
 
 ## Recommended IDE Setup
 
@@ -13,8 +28,8 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration
