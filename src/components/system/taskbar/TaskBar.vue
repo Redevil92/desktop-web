@@ -4,7 +4,7 @@
       <img
         @click="setStartMenuOpened"
         height="37"
-        :src="require('/src/assets/icons/start-menu.svg')"
+        :src="startMenuIcon"
         ref="windowIconRef"
         alt="Start menu icon, open menu panel"
         class="window-icon"
@@ -34,74 +34,76 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import ItemDialog from "@/models/ItemDialog";
-import TaskBarItem from "@/components/system/taskbar/TaskBarItem.vue";
-import StartMenu from "@/components/system/startMenu/StartMenu.vue";
+import { computed, onMounted, ref } from 'vue'
+import ItemDialog from '@/models/ItemDialog'
+import TaskBarItem from '@/components/system/taskbar/TaskBarItem.vue'
+import StartMenu from '@/components/system/startMenu/StartMenu.vue'
 
-import { useSettingsStore } from "@/stores/settingsStore";
-import { useLayoutStore } from "@/stores/layoutStore";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { formatDate, formatTimeFromDate } from "@/utils/dateAndTimeConversionUtils";
+import { useSettingsStore } from '@/stores/settingsStore'
+import { useLayoutStore } from '@/stores/layoutStore'
+import { useFileSystemStore } from '@/stores/fileSystemStore'
+import { formatDate, formatTimeFromDate } from '@/utils/dateAndTimeConversionUtils'
 
-const layoutStore = useLayoutStore();
-const fileSystemStore = useFileSystemStore();
-const settingsStore = useSettingsStore();
+const layoutStore = useLayoutStore()
+const fileSystemStore = useFileSystemStore()
+const settingsStore = useSettingsStore()
 
-const previewOpened = ref("");
+const startMenuIcon = new URL('/src/assets/icons/start-menu.svg', import.meta.url).href
+
+const previewOpened = ref('')
 
 const isStartMenuOpened = computed(() => {
-  return layoutStore.startMenuOpened;
-});
+  return layoutStore.startMenuOpened
+})
 
-const itemsContainerRef = ref(null);
-const currentDateRef = ref(null);
-const windowIconRef = ref(null);
+const itemsContainerRef = ref(null)
+const currentDateRef = ref(null)
+const windowIconRef = ref(null)
 
-const itemMargin = 4;
+const itemMargin = 4
 
-const currentDate = ref("");
-const currentTime = ref("");
+const currentDate = ref('')
+const currentTime = ref('')
 
 const dateFormat = computed(() => {
-  return settingsStore.dateFormat;
-});
+  return settingsStore.dateFormat
+})
 
 const timeFormat = computed(() => {
-  return settingsStore.timeFormat;
-});
+  return settingsStore.timeFormat
+})
 
 const taskBarItems = computed(function () {
-  return fileSystemStore.itemsDialog as ItemDialog[];
-});
+  return fileSystemStore.itemsDialog as ItemDialog[]
+})
 
 const taskBarItemByApplication = computed(function () {
-  const itemByApp: { [key: string]: ItemDialog[] } = {};
+  const itemByApp: { [key: string]: ItemDialog[] } = {}
 
   taskBarItems.value.forEach((itemDialog) => {
-    if (itemByApp[itemDialog.applicationToOpen || ""]) {
-      itemByApp[itemDialog.applicationToOpen || ""].push(itemDialog);
+    if (itemByApp[itemDialog.applicationToOpen || '']) {
+      itemByApp[itemDialog.applicationToOpen || ''].push(itemDialog)
     } else {
-      itemByApp[itemDialog.applicationToOpen || ""] = [itemDialog];
+      itemByApp[itemDialog.applicationToOpen || ''] = [itemDialog]
     }
-  });
-  return itemByApp;
-});
+  })
+  return itemByApp
+})
 
 const setStartMenuOpened = () => {
-  layoutStore.setStartMenuOpened(!isStartMenuOpened.value);
-};
+  layoutStore.setStartMenuOpened(!isStartMenuOpened.value)
+}
 
 const updateDate = () => {
-  const newDate = new Date(Date.now());
-  currentDate.value = formatDate(newDate, dateFormat.value);
-  currentTime.value = formatTimeFromDate(newDate, timeFormat.value);
-};
+  const newDate = new Date(Date.now())
+  currentDate.value = formatDate(newDate, dateFormat.value)
+  currentTime.value = formatTimeFromDate(newDate, timeFormat.value)
+}
 
 onMounted(function () {
-  updateDate();
-  setInterval(updateDate, 1000);
-});
+  updateDate()
+  setInterval(updateDate, 1000)
+})
 </script>
 
 <style scoped>

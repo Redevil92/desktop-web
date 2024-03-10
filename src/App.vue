@@ -3,7 +3,7 @@
 </template>
 
 <style>
-@import "../public/index.css";
+@import '../public/index.css';
 
 #app {
   font-family: Segoe, Avenir, Helvetica, Arial, sans-serif;

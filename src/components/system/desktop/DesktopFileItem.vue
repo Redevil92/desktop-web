@@ -1,7 +1,7 @@
 <template>
   <base-dialog v-if="showDialog">
     <div class="error-message">
-      <img height="85" :src="require('/src/assets/icons/error-robot.svg')" alt="" />
+      <img height="85" :src="errorIcon" alt="" />
       <div>{{ errorMessage }}</div>
       <BaseButton @clicks="showDialog = false" class="ok-button">OK</BaseButton>
     </div>
@@ -32,7 +32,11 @@
       />
     </div>
     <div
-      :class="isSelected || (isDraggingItem && isMouseOver && isFolder) ? 'file-text-preview-selected' : ''"
+      :class="
+        isSelected || (isDraggingItem && isMouseOver && isFolder)
+          ? 'file-text-preview-selected'
+          : ''
+      "
       class="file-text-preview"
     >
       <div v-show="!isEditingText" class="file-text-preview" @click="setIsEditingText">
@@ -52,35 +56,35 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, PropType, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, PropType, ref, watch } from 'vue';
 
-import BaseDialog from "@/components/shared/BaseDialog.vue";
-import BaseButton from "@/components/shared/BaseButton.vue";
-import FileIcon from "@/components/shared/FileIcon.vue";
-import DesktopItem from "@/models/DesktopItem";
+import BaseDialog from '@/components/shared/BaseDialog.vue';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import FileIcon from '@/components/shared/FileIcon.vue';
+import DesktopItem from '@/models/DesktopItem';
 
-import { DESKTOP_PATH } from "@/constants";
-import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName, getFileNameFromPath } from "@/context/utils/fileSystemUtils";
-import Coordinates from "@/models/Coordinates";
+import { DESKTOP_PATH } from '@/constants';
+import fileSystem from '@/context/fileSystemController';
+import { getFileExtensionFromName, getFileNameFromPath } from '@/context/utils/fileSystemUtils';
+import Coordinates from '@/models/Coordinates';
 
-import useMoveFiles from "@/hooks/useMoveFilesIntoFolders";
+import useMoveFiles from '@/hooks/useMoveFilesIntoFolders';
 import {
   renameDesktopFileInLocalStorage,
-  saveSelectedDesktopItemsPositionInLocalStorage,
-} from "@/hooks/useLocalStorage";
+  saveSelectedDesktopItemsPositionInLocalStorage
+} from '@/hooks/useLocalStorage';
 
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import fileTypesConfiguration from "@/models/FilesType";
-import { getFileActions } from "../actionMenu/fileActions";
-import ActionItem from "@/models/ActionMenu/ActionItem";
+import { useFileSystemStore } from '@/stores/fileSystemStore';
+import fileTypesConfiguration from '@/models/FilesType';
+import { getFileActions } from '../actionMenu/fileActions';
+import ActionItem from '@/models/ActionMenu/ActionItem';
 
 const props = defineProps({
-  fileItem: { type: Object as PropType<DesktopItem>, required: true },
+  fileItem: { type: Object as PropType<DesktopItem>, required: true }
   //isSelected: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["onClick", "onRightClick"]);
+const emit = defineEmits(['onClick', 'onRightClick']);
 
 const fileSystemStore = useFileSystemStore();
 
@@ -89,21 +93,23 @@ const fileName = ref(getFileNameFromPath(props.fileItem.path));
 const isEditingText = ref(false);
 const fileNameInputRef = ref(null);
 const showDialog = ref(false);
-const errorMessage = ref("");
+const errorMessage = ref('');
 const isFolder = ref(false);
 const fileItemRef = ref(null as unknown as HTMLElement);
 const zIndex = ref(null as null | number);
 
 const isMouseOver = ref(false as boolean);
 const isDraggingItem = computed(function () {
-  return fileSystemStore.dragginPath !== "";
+  return fileSystemStore.dragginPath !== '';
 });
+
+const errorIcon = new URL('/src/assets/icons/error-robot.svg', import.meta.url).href;
 
 const { moveFilesInFolderFromDesktop } = useMoveFiles();
 
 const isSelected = computed(function () {
   const index = selectedDesktopItems.value.findIndex(
-    (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path,
+    (desktopItem: DesktopItem) => desktopItem.path === props.fileItem.path
   );
   return index !== -1;
 });
@@ -116,14 +122,14 @@ watch(
   () => isSelected.value,
   function () {
     isEditingText.value = false;
-  },
+  }
 );
 
 watch(
   () => props.fileItem.path,
   function () {
     fileName.value = getFileNameFromPath(props.fileItem.path);
-  },
+  }
 );
 
 const fileExtension = computed(function () {
@@ -131,7 +137,8 @@ const fileExtension = computed(function () {
 });
 
 const isKnownFileExtension = computed(function () {
-  const fileTypeConfiguration = fileTypesConfiguration[getFileExtensionFromName(props.fileItem.path)];
+  const fileTypeConfiguration =
+    fileTypesConfiguration[getFileExtensionFromName(props.fileItem.path)];
   return fileTypeConfiguration && fileTypeConfiguration.icon;
 });
 
@@ -157,7 +164,7 @@ const selectFile = (newFileSelected: DesktopItem) => {
 
   if (index === -1) {
     fileSystemStore.setSelectedDesktopFiles([
-      { path: newFileSelected.path, coordinates: newFileSelected.coordinates },
+      { path: newFileSelected.path, coordinates: newFileSelected.coordinates }
     ] as DesktopItem[]);
   }
 };
@@ -170,8 +177,8 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
 
   let desktopFileActions = [
     ...((await getFileActions(fileSystemStore.getSelectedDesktopItemsPath, event)).filter(
-      (action) => action !== undefined,
-    ) as ActionItem[]),
+      (action) => action !== undefined
+    ) as ActionItem[])
   ];
 
   // TODO: based on the type of the element add new custom actions
@@ -181,7 +188,7 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
 
   if (fileTypeConfiguration?.additionalActions) {
     desktopFileActions = desktopFileActions.concat(
-      fileTypeConfiguration.additionalActions.map((action) => action(item.path)),
+      fileTypeConfiguration.additionalActions.map((action) => action(item.path))
     );
   }
   if (desktopFileActions) {
@@ -189,13 +196,13 @@ const openActionMenu = async (event: any, item: DesktopItem) => {
       show: true,
       paths: fileSystemStore.getSelectedDesktopItemsPath,
       position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-      customLayout: desktopFileActions,
+      customLayout: desktopFileActions
     });
   }
 };
 
 const clickHandler = () => {
-  emit("onClick", props.fileItem);
+  emit('onClick', props.fileItem);
 };
 
 const openFileItem = async () => {
@@ -210,8 +217,8 @@ const refreshFileSystemFiles = () => {
 };
 
 const changeFileName = async () => {
-  fileName.value = fileName.value.replace(/[\n\r]/g, "");
-  const newName = DESKTOP_PATH + "/" + fileName.value;
+  fileName.value = fileName.value.replace(/[\n\r]/g, '');
+  const newName = DESKTOP_PATH + '/' + fileName.value;
 
   if (isEditingText.value && newName !== props.fileItem.path) {
     if (await fileSystem.existsFile(newName)) {
@@ -299,12 +306,13 @@ async function closeDragElement(e: any) {
   fileItemRef.value.hidden = true;
 
   const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-  const currentDroppable = elementBelow?.closest(".droppable");
+  const currentDroppable = elementBelow?.closest('.droppable');
 
   const elementBelowPath = currentDroppable?.id;
   let isElementBelowSelected = false;
   if (elementBelowPath) {
-    isElementBelowSelected = selectedDesktopItems.value.findIndex((item) => item.path === elementBelowPath) !== -1;
+    isElementBelowSelected =
+      selectedDesktopItems.value.findIndex((item) => item.path === elementBelowPath) !== -1;
   }
 
   // check if element below is not selected, if yes dont drop
@@ -320,7 +328,7 @@ async function closeDragElement(e: any) {
   fileItemRef.value.hidden = false;
 
   fileSystemStore.setIsSelectionBoxEnabled(true);
-  fileSystemStore.setDragginPath("");
+  fileSystemStore.setDragginPath('');
   document.onmouseup = null;
   document.onmousemove = null;
 }
@@ -345,16 +353,16 @@ const checkMouseOver = (event: any) => {
 onMounted(async () => {
   isFolder.value = await fileSystem.isDir(props.fileItem.path);
 
-  window.addEventListener("mousemove", checkMouseOver);
+  window.addEventListener('mousemove', checkMouseOver);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("mousemove", checkMouseOver);
+  window.removeEventListener('mousemove', checkMouseOver);
 });
 </script>
 
 <style scoped>
-@import "@/css/fileItemPreview.css";
+@import '@/css/fileItemPreview.css';
 
 .file-item {
   position: absolute;

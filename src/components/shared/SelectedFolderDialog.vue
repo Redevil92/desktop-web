@@ -17,7 +17,7 @@
               <div class="input">
                 <div class="label">{{ inputLabelText }}:</div>
                 <div class="selected-folder flex">
-                  <img height="18" :src="require('/src/assets/fileIcons/folder.svg')" alt="" />
+                  <img height="18" :src="folderIcon" alt="" />
                   <p>{{ selectedFolderNameToShow }}</p>
                 </div>
               </div>
@@ -43,7 +43,9 @@
           </div>
           <div class="buttons-container">
             <BaseButton neutralColor @click="closeDialog">Cancel</BaseButton
-            ><BaseButton class="save-button" @click="folderSelected">{{ actionButtonText }}</BaseButton>
+            ><BaseButton class="save-button" @click="folderSelected">{{
+              actionButtonText
+            }}</BaseButton>
           </div>
         </div>
       </div>
@@ -52,29 +54,31 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import BaseInput from "@/components/shared/BaseInput.vue";
-import BaseDialog from "@/components/shared/BaseDialog.vue";
-import BaseButton from "@/components/shared/BaseButton.vue";
-import FolderItemsList from "@/components/apps/folderItem/FolderItemsList.vue";
-import FavouritesPanel from "@/components/shared/FavouritesPanel.vue";
+import { computed, onMounted, ref } from 'vue';
+import BaseInput from '@/components/shared/BaseInput.vue';
+import BaseDialog from '@/components/shared/BaseDialog.vue';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import FolderItemsList from '@/components/apps/folderItem/FolderItemsList.vue';
+import FavouritesPanel from '@/components/shared/FavouritesPanel.vue';
 
-import { DESKTOP_PATH } from "@/constants";
-import fileSystem from "@/context/fileSystemController";
-import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
+import { DESKTOP_PATH } from '@/constants';
+import fileSystem from '@/context/fileSystemController';
+import { getFileNameFromPath } from '@/context/utils/fileSystemUtils';
 
 const props = defineProps({
   to: String,
   showSaveAsInput: { type: Boolean, default: true },
-  inputLabelText: { type: String, default: "Destination" },
-  actionButtonText: { type: String, default: "Save" },
+  inputLabelText: { type: String, default: 'Destination' },
+  actionButtonText: { type: String, default: 'Save' }
 });
 
-const emit = defineEmits(["closeDialog", "onFolderSelected"]);
+const emit = defineEmits(['closeDialog', 'onFolderSelected']);
 
-const saveAs = ref("");
+const saveAs = ref('');
 const pathAndFilesList = ref<PathAndFiles[]>([]);
 const selectedFolder = ref(DESKTOP_PATH);
+
+const folderIcon = new URL('/src/assets/fileIcons/folder.svg', import.meta.url).href;
 
 const selectedFolderNameToShow = computed(() => {
   return getFileNameFromPath(selectedFolder.value);
@@ -122,19 +126,19 @@ const setPathAndFileItem = async (path: string, index: number) => {
 };
 
 const closeDialog = () => {
-  emit("closeDialog");
+  emit('closeDialog');
 };
 
 const folderSelected = () => {
   if (((props.showSaveAsInput && saveAs.value) || !props.showSaveAsInput) && selectedFolder.value) {
     let pathToEmit = selectedFolder.value;
     if (props.showSaveAsInput) {
-      pathToEmit += "/" + saveAs.value;
+      pathToEmit += '/' + saveAs.value;
     }
 
-    emit("onFolderSelected", pathToEmit);
+    emit('onFolderSelected', pathToEmit);
   } else {
-    console.log("Show error");
+    console.log('Show error');
   }
 };
 

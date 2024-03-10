@@ -16,37 +16,37 @@
 </template>
 
 <script lang="ts" setup>
-import DesktopItem from "@/models/DesktopItem";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { computed } from "vue";
+import DesktopItem from '@/models/DesktopItem';
+import { useFileSystemStore } from '@/stores/fileSystemStore';
+import { computed } from 'vue';
 
 const props = defineProps({
   lineLayout: { type: Boolean, default: false },
   app: { type: String, required: true },
   icon: { type: String, required: true },
-  name: { type: String, required: true },
+  name: { type: String, required: true }
 });
 
-const emit = defineEmits(["closeStartMenu"]);
+const emit = defineEmits(['closeStartMenu']);
 
 const fileSystemStore = useFileSystemStore();
 
 const imageRequire = computed(() => {
   try {
-    return require("/src/assets/fileIcons/" + props.icon);
+    return new URL('/src/assets/fileIcons/' + props.icon, import.meta.url).href;
   } catch (error) {
-    return "";
+    return '';
   }
 });
 
 const createItemDialog = (applicationToOpen: string) => {
-  emit("closeStartMenu");
+  emit('closeStartMenu');
 
   const settingsApp: DesktopItem = {
-    path: "",
+    path: '',
     coordinates: { x: 0, y: 0 },
     applicationExtension: applicationToOpen,
-    isSelected: true,
+    isSelected: true
   };
   fileSystemStore.createItemDialog(settingsApp);
 };

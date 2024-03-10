@@ -8,26 +8,28 @@
           class="desktop-image-item"
           :class="image === selectedDesktopImage ? 'selected-desktop-image-item' : ''"
           @click="setDesktopImage(image)"
-          :style="{ 'background-image': 'url(' + require('/src/assets/desktopImages/' + image) + ')' }"
+          :style="{ 'background-image': 'url(' + getDesktopImageUrl(image) + ')' }"
         ></div>
       </div>
     </div>
     <div
       class="desktop-image-preview"
-      :style="{ 'background-image': 'url(' + require('/src/assets/desktopImages/' + selectedDesktopImage) + ')' }"
+      :style="{
+        'background-image': 'url(' + getDesktopImageUrl(selectedDesktopImage) + ')'
+      }"
     ></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useSettingsStore } from "@/stores/settingsStore";
-import { computed } from "vue";
+import { useSettingsStore } from '@/stores/settingsStore';
+import { computed } from 'vue';
 
 const props = defineProps({
   height: {
     type: Number,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const settingsStore = useSettingsStore();
@@ -42,6 +44,10 @@ const selectedDesktopImage = computed(() => {
 
 const setDesktopImage = (desktopImageSelected: string) => {
   settingsStore.setDesktopImage(desktopImageSelected);
+};
+
+const getDesktopImageUrl = (desktopImage: string) => {
+  return new URL(`/src/assets/desktopImages/${desktopImage}`, import.meta.url).href;
 };
 </script>
 

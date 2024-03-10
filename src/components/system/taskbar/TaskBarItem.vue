@@ -47,21 +47,23 @@
       </div>
     </div>
     <div class="task-bar-item-container">
-      <div class="task-bar-item" :class="showItemsPreview || isItemFocused ? 'task-bar-item-focused' : ''">
+      <div
+        class="task-bar-item"
+        :class="showItemsPreview || isItemFocused ? 'task-bar-item-focused' : ''"
+      >
         <div>
           <img
             class="task-bar-icon"
             height="20"
-            :src="
-              items[0].icon
-                ? require('/src/assets/fileIcons/' + items[0].icon)
-                : require('/src/assets/fileIcons/unknow.svg')
-            "
+            :src="taskBarItemIcon"
             @click="iconClickHandler"
             alt=""
           />
           <div class="flex-center">
-            <div class="bottom-bar" :class="isItemFocused ? 'bottom-bar-selected' : 'bottom-bar-not-selected'"></div>
+            <div
+              class="bottom-bar"
+              :class="isItemFocused ? 'bottom-bar-selected' : 'bottom-bar-not-selected'"
+            ></div>
           </div>
         </div>
       </div>
@@ -76,21 +78,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, PropType, ref, watch } from "vue";
+import { computed, nextTick, PropType, ref, watch } from 'vue';
 
-import FileIcon from "@/components/shared/FileIcon.vue";
+import FileIcon from '@/components/shared/FileIcon.vue';
 
-import ItemDialog from "@/models/ItemDialog";
-import { getFileNameFromPath } from "@/context/utils/fileSystemUtils";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import { getPreviewImageFromSessionStorage } from "@/hooks/useSessionStorage";
+import ItemDialog from '@/models/ItemDialog';
+import { getFileNameFromPath } from '@/context/utils/fileSystemUtils';
+import { useFileSystemStore } from '@/stores/fileSystemStore';
+import { getPreviewImageFromSessionStorage } from '@/hooks/useSessionStorage';
 
 const props = defineProps({
   items: { type: Array as PropType<ItemDialog[]>, required: true },
-  previewOpened: { type: String },
+  previewOpened: { type: String }
 });
 
-const emit = defineEmits(["onPreviewOpenedChanged"]);
+const emit = defineEmits(['onPreviewOpenedChanged']);
 
 const fileSystemStore = useFileSystemStore();
 const showItemsPreview = ref(false);
@@ -105,8 +107,13 @@ watch(
     if (newValue !== props.items[0].applicationToOpen) {
       showItemsPreview.value = false;
     }
-  },
+  }
 );
+
+const taskBarItemIcon = computed(() => {
+  const iconName = props.items[0].icon ? props.items[0].icon : 'unknow.svg';
+  return new URL(`/src/assets/fileIcons/${iconName}`, import.meta.url).href;
+});
 
 const isItemFocused = computed(() => {
   const index = props.items.findIndex((item) => item.isFocused === true && !item.isCollapsed);
@@ -126,7 +133,7 @@ const showItemsPreviewHandler = async (show: boolean) => {
     await nextTick();
 
     setIsPreviwOverflow();
-    emit("onPreviewOpenedChanged", props.items[0].applicationToOpen);
+    emit('onPreviewOpenedChanged', props.items[0].applicationToOpen);
   }
 };
 

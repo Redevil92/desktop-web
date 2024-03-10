@@ -11,22 +11,25 @@
       </div>
       <hr />
       <div class="settings-section">
-        <div v-if="!showSelectedSettingComponent" class="settings-buttons-list">
-          <div class="settings-button" @click="loadAndSetSettingComponent('ChangeDesktopImage.vue')">
-            <img height="40" :src="require('/src/assets/icons/change-desktop.svg')" alt="" />
+        <div v-if="!openedSettingComponentPath" class="settings-buttons-list">
+          <div class="settings-button" @click="setSettingComponent('ChangeDesktopImage.vue')">
+            <img height="40" :src="changeDesktopImage" alt="" />
             <div class="settings-name">Desktop image</div>
           </div>
-          <div class="settings-button" @click="loadAndSetSettingComponent('EditUserAvatar.vue')">
-            <img height="40" :src="require('/src/assets/icons/avatar.png')" alt="" />
+          <div class="settings-button" @click="setSettingComponent('EditUserAvatar.vue')">
+            <img height="40" :src="editUserAvatar" alt="" />
             <div class="settings-name">Avatar</div>
           </div>
-          <div class="settings-button margin-left" @click="loadAndSetSettingComponent('TaskBarCustomization.vue')">
-            <img height="40" :src="require('/src/assets/icons/task-bar.svg')" alt="" />
+          <div
+            class="settings-button margin-left"
+            @click="setSettingComponent('TaskBarCustomization.vue')"
+          >
+            <img height="40" :src="taskBarCustomization" alt="" />
             <div class="settings-name">Task bar</div>
           </div>
         </div>
         <div v-else>
-          <div class="back-button" @click="showSelectedSettingComponent = false">
+          <div class="back-button" @click="openedSettingComponentPath = ''">
             <span class="mdi mdi-chevron-left"></span> Back
           </div>
           <component :is="settingAsyncComponent" :height="settingsComponentHeight"></component>
@@ -37,41 +40,47 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, PropType, ref } from "vue";
+import { computed, defineAsyncComponent, PropType, ref } from 'vue';
 
-import TheAvatar from "@/components/system/avatarEditor/TheAvatar.vue";
+import TheAvatar from '@/components/system/avatarEditor/TheAvatar.vue';
 
-import ItemDialog from "@/models/ItemDialog";
-import LoadingComponent from "@/components/shared/LoadingComponent.vue";
-import ErrorComponent from "@/components/shared/ErrorComponent.vue";
-import { useSettingsStore } from "@/stores/settingsStore";
+import ItemDialog from '@/models/ItemDialog';
+import LoadingComponent from '@/components/shared/LoadingComponent.vue';
+import ErrorComponent from '@/components/shared/ErrorComponent.vue';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 const props = defineProps({
   itemDialog: Object as PropType<ItemDialog>,
-  height: { type: Number, required: true },
+  height: { type: Number, required: true }
 });
 
 const settingsStore = useSettingsStore();
 
-const showSelectedSettingComponent = ref(false);
-
-const settingAsyncComponent = ref();
+const openedSettingComponentPath = ref();
+const changeDesktopImage = new URL('/src/assets/icons/change-desktop.svg', import.meta.url).href;
+const editUserAvatar = new URL('/src/assets/icons/avatar.png', import.meta.url).href;
+const taskBarCustomization = new URL('/src/assets/icons/task-bar.svg', import.meta.url).href;
 
 const settingsComponentHeight = computed(() => {
   return (props.itemDialog?.dimension.height || 200) - 180;
 });
 
-const loadAndSetSettingComponent = (componentName: string) => {
-  showSelectedSettingComponent.value = true;
+const setSettingComponent = (componentName: string) => {
+  openedSettingComponentPath.value = './' + componentName;
+};
 
-  settingAsyncComponent.value = defineAsyncComponent({
-    loader: () => import("@/components/apps/systemSettings/" + componentName),
+const settingAsyncComponent = computed(() => {
+  if (!openedSettingComponentPath.value) return;
+
+  console.log('openedSettingComponentPath.value', openedSettingComponentPath.value);
+  return defineAsyncComponent({
+    loader: () => import(openedSettingComponentPath.value),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
-    timeout: 3000,
+    timeout: 3000
   });
-};
+});
 </script>
 
 <style scoped>

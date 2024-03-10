@@ -2,7 +2,7 @@
   <div :style="`height: ${height - 4}px; width: calc(100% -4px); `" class="duties-calculator">
     <div style="margin-bottom: 30px">
       <div style="display: flex">
-        <img :src="require('/src/assets/fileIcons/taxCalculator.svg')" style="height: 25px; margin-right: 10px" />
+        <img :src="taxCalculatorIcon" style="height: 25px; margin-right: 10px" />
         <div>
           <h3>Duties calculator</h3>
           <small>
@@ -27,29 +27,33 @@
 
     <div class="total-duties">
       Total duties to pay:
-      <strong style="margin-left: 10px">{{ (dutiesByPerson + dutiesByQuantity).toFixed(2) }} .-</strong>
+      <strong style="margin-left: 10px"
+        >{{ (dutiesByPerson + dutiesByQuantity).toFixed(2) }} .-</strong
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import ItemDialog from "@/models/ItemDialog";
-import { PropType, ref } from "vue";
-import DutiesByPerson from "./DutiesByPerson.vue";
-import DutiesByQuantity from "./DutiesByQuantity.vue";
+import ItemDialog from '@/models/ItemDialog'
+import { PropType, ref } from 'vue'
+import DutiesByPerson from './DutiesByPerson.vue'
+import DutiesByQuantity from './DutiesByQuantity.vue'
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
-  height: { type: Number, required: true },
-});
+  height: { type: Number, required: true }
+})
+
+const taxCalculatorIcon = new URL('/src/assets/fileIcons/taxCalculator.svg', import.meta.url).href
 
 const linkMoreInformation =
-  "https://www.bazg.admin.ch/bazg/en/home/information-individuals/travel-and-purchases--allowances-and-duty-free-limit/importation-into-switzerland/duty-free-allowances--foodstuffs--alcohol-and-tobacco.html";
+  'https://www.bazg.admin.ch/bazg/en/home/information-individuals/travel-and-purchases--allowances-and-duty-free-limit/importation-into-switzerland/duty-free-allowances--foodstuffs--alcohol-and-tobacco.html'
 
-const numberOfPeople = ref(1);
+const numberOfPeople = ref(1)
 
-const dutiesByPerson = ref(0);
-const dutiesByQuantity = ref(0);
+const dutiesByPerson = ref(0)
+const dutiesByQuantity = ref(0)
 </script>
 
 <style scoped>

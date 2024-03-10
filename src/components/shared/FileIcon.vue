@@ -6,52 +6,38 @@
     </div>
   </div>
 
-  <img
-    v-else-if="icon"
-    :class="fileIconClasses"
-    :height="height"
-    :src="require(`/src/assets/fileIcons/${icon}`)"
-    alt=""
-  />
-
-  <img
-    v-else
-    :class="fileIconClasses"
-    :height="height"
-    :src="require(`/src/assets/fileIcons/${fileExtensionIcon}`)"
-    alt=""
-  />
+  <img v-else :class="fileIconClasses" :height="height" :src="iconUrl" alt="" />
 </template>
 
 <script lang="ts" setup>
-import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName } from "@/context/utils/fileSystemUtils";
-import fileTypesConfiguration from "@/models/FilesType";
-import LinkData from "@/models/LinkData";
-import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
+import fileSystem from '@/context/fileSystemController';
+import { getFileExtensionFromName } from '@/context/utils/fileSystemUtils';
+import fileTypesConfiguration from '@/models/FilesType';
+import LinkData from '@/models/LinkData';
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
   height: {
     type: Number,
-    required: true,
+    required: true
   },
   // if icon use it, otherwise find the icon with filePath
   icon: {
     type: String,
-    required: false,
+    required: false
   },
   filePath: {
     type: String,
-    required: false,
+    required: false
   },
   noStyle: {
     type: Boolean,
-    default: false,
+    default: false
   },
   selected: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 const isFolder = ref(false);
@@ -63,7 +49,7 @@ watch(
     if (props.filePath) {
       isFolder.value = await fileSystem.isDir(props.filePath);
     }
-  },
+  }
 );
 
 const getLinkFileIcon = async () => {
@@ -72,38 +58,46 @@ const getLinkFileIcon = async () => {
     try {
       if (linkData.filePath) {
         const iconFromPath = await getFileIconFromPath(linkData.filePath);
-        return require(`/src/assets/fileIcons/${iconFromPath}`);
+        return new URL(`/src/assets/fileIcons/${iconFromPath}`, import.meta.url).href;
       } else if (linkData.fileTypeToOpen) {
         const fileTypeConfig = fileTypesConfiguration[linkData.fileTypeToOpen];
 
-        return require(`/src/assets/fileIcons/${fileTypeConfig.icon}`);
+        return new URL(`/src/assets/fileIcons/${fileTypeConfig.icon}`, import.meta.url).href;
       }
     } catch (error) {
-      return "file.svg";
+      return 'file.svg';
     }
   }
-  return "file.svg";
+  return 'file.svg';
 };
 
+const iconUrl = computed(() => {
+  if (props.icon) {
+    return new URL(`/src/assets/fileIcons/${props.icon}`, import.meta.url).href;
+  } else {
+    return new URL(`/src/assets/fileIcons/${fileExtensionIcon.value}`, import.meta.url).href;
+  }
+});
+
 const isLinkFile = computed(function () {
-  return getFileExtensionFromName(props.filePath || "") === "lnk";
+  return getFileExtensionFromName(props.filePath || '') === 'lnk';
 });
 
 const fileIconClasses = computed(function () {
   if (props.noStyle) {
-    return "";
+    return '';
   }
   if (props.selected) {
-    return "file-item-selected";
+    return 'file-item-selected';
   } else {
-    return "invisible-border";
+    return 'invisible-border';
   }
 });
 
 const fileExtensionIcon = computed(function () {
   if (props.filePath) {
     if (isFolder.value) {
-      return "folder.svg";
+      return 'folder.svg';
     }
 
     const fileTypeConfiguration = fileTypesConfiguration[getFileExtensionFromName(props.filePath)];
@@ -111,14 +105,14 @@ const fileExtensionIcon = computed(function () {
       return fileTypeConfiguration.icon;
     }
   }
-  return "file.svg";
+  return 'file.svg';
 });
 
 const getFileIconFromPath = async (path: string) => {
   if (path) {
     const isPathDir = await fileSystem.isDir(path);
     if (isPathDir) {
-      return "folder.svg";
+      return 'folder.svg';
     }
 
     const fileTypeConfiguration = fileTypesConfiguration[getFileExtensionFromName(path)];
@@ -126,7 +120,7 @@ const getFileIconFromPath = async (path: string) => {
       return fileTypeConfiguration.icon;
     }
   }
-  return "file.svg";
+  return 'file.svg';
 };
 
 onBeforeMount(async () => {

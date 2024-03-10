@@ -1,9 +1,13 @@
 <template>
-  <div @mouseenter="setShowSubActions(true)" @mouseleave="setShowSubActions(false)" @click="actionItem.callback">
+  <div
+    @mouseenter="setShowSubActions(true)"
+    @mouseleave="setShowSubActions(false)"
+    @click="actionItem.callback"
+  >
     <div ref="actionRef" class="action" :class="{ 'disabled-action': actionItem.disabled }">
       <div></div>
       <div v-if="actionItem.icon">
-        <img height="18" :src="require(`/src/assets/icons/${actionItem.icon}`)" alt="" />
+        <img height="18" :src="iconUrl" alt="" />
       </div>
       <div v-else-if="actionItem.materialIcon">
         <span class="material-icon" :class="`mdi ${actionItem.materialIcon}`"></span>
@@ -17,34 +21,41 @@
     </div>
 
     <div v-if="actionItem.subActions && actionRef && showSubActions">
-      <ActionsContainer :action-list="actionItem.subActions" :position="subActionsContainerPosition"></ActionsContainer>
+      <ActionsContainer
+        :action-list="actionItem.subActions"
+        :position="subActionsContainerPosition"
+      ></ActionsContainer>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, ref, watch } from "vue";
+import { computed, PropType, ref, watch } from 'vue';
 
-import ActionItem from "@/models/ActionMenu/ActionItem";
-import ActionsContainer from "./ActionsContainer.vue";
-import Coordinates from "@/models/Coordinates";
+import ActionItem from '@/models/ActionMenu/ActionItem';
+import ActionsContainer from './ActionsContainer.vue';
+import Coordinates from '@/models/Coordinates';
 
 const props = defineProps({
   actionItem: {
     type: Object as PropType<ActionItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const actionRef = ref<HTMLElement | null>(null);
 const showSubActions = ref(false);
 const isMouseCurrentlyHover = ref(false);
 
+const iconUrl = computed(() => {
+  return new URL(`/src/assets/icons/${props.actionItem.icon}`, import.meta.url).href;
+});
+
 const subActionsContainerPosition = computed((): Coordinates => {
   if (actionRef.value) {
     return {
       x: actionRef.value.getBoundingClientRect().right,
-      y: actionRef.value.getBoundingClientRect().top,
+      y: actionRef.value.getBoundingClientRect().top
     };
   }
   return { x: 0, y: 0 };
