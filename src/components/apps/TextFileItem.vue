@@ -70,22 +70,22 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, PropType, ref } from 'vue'
+import { computed, onMounted, onUnmounted, PropType, ref } from 'vue';
 
-import ItemDialog from '@/models/ItemDialog'
-import SelectedFolderDialog from '@/components/shared/SelectedFolderDialog.vue'
-import IFrameFocuser from '@/components/shared/IFrameFocuser.vue'
+import ItemDialog from '@/models/ItemDialog';
+import SelectedFolderDialog from '@/components/shared/SelectedFolderDialog.vue';
+import IFrameFocuser from '@/components/shared/IFrameFocuser.vue';
 
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
-import fileSystem from '@/context/fileSystemController'
-import PathAndContent from '@/models/PathAndContent'
-import { getFileNameFromPath } from '@/context/utils/fileSystemUtils'
-import { useLayoutStore } from '@/stores/layoutStore'
-import { SEVERITY } from '@/constants'
-import { useFileSystemStore } from '@/stores/fileSystemStore'
-import useBase64Handler from '@/hooks/useBase64Handler'
+import fileSystem from '@/context/fileSystemController';
+import PathAndContent from '@/models/PathAndContent';
+import { getFileNameFromPath } from '@/context/utils/fileSystemUtils';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { SEVERITY } from '@/constants';
+import { useFileSystemStore } from '@/stores/fileSystemStore';
+import useBase64Handler from '@/hooks/useBase64Handler';
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
@@ -93,93 +93,93 @@ const props = defineProps({
     type: Number,
     required: true
   }
-})
+});
 
-const layoutStore = useLayoutStore()
-const fileSystemStore = useFileSystemStore()
-const { b64ToText, utf8ToB64, removeDataUri } = useBase64Handler()
+const layoutStore = useLayoutStore();
+const fileSystemStore = useFileSystemStore();
+const { b64ToText, utf8ToB64, removeDataUri } = useBase64Handler();
 
-const fileText = ref('')
-const isLoaded = ref(false)
-const showSaveAsDialog = ref(false)
+const fileText = ref('');
+const isLoaded = ref(false);
+const showSaveAsDialog = ref(false);
 
-const hasChanges = ref(false)
+const hasChanges = ref(false);
 
 const saveButtonEnabled = computed(() => {
-  return hasChanges.value || !props.itemDialog?.path
-})
+  return hasChanges.value || !props.itemDialog?.path;
+});
 
 const onTextChange = (content: any) => {
-  hasChanges.value = true
-}
+  hasChanges.value = true;
+};
 
-const saveIcon = new URL('/src/assets/icons/save.svg', import.meta.url).href
+const saveIcon = new URL('/src/assets/icons/save.svg', import.meta.url).href;
 
 const saveFile = () => {
   if (props.itemDialog?.path) {
     fileSystemStore.updateFile({
       path: props.itemDialog?.path,
       content: utf8ToB64(fileText.value)
-    } as PathAndContent)
+    } as PathAndContent);
     layoutStore.setSnackBar({
       show: true,
       text: `File saved.`,
       severity: SEVERITY.information
-    })
+    });
   } else {
-    showSaveAsDialog.value = true
+    showSaveAsDialog.value = true;
   }
-  hasChanges.value = false
-}
+  hasChanges.value = false;
+};
 
 const saveTextFileHandler = async (destinationPath: string) => {
-  const destinationPathToSave = destinationPath + '.txt'
+  const destinationPathToSave = destinationPath + '.txt';
 
   await fileSystemStore.createFile({
     path: destinationPathToSave,
     content: utf8ToB64(fileText.value)
-  })
-  showSaveAsDialog.value = false
+  });
+  showSaveAsDialog.value = false;
 
-  const itemDialogToUpdate = { ...props.itemDialog }
-  itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave)
-  itemDialogToUpdate.path = destinationPathToSave
-  fileSystemStore.updateItemDialog(itemDialogToUpdate)
+  const itemDialogToUpdate = { ...props.itemDialog };
+  itemDialogToUpdate.name = getFileNameFromPath(destinationPathToSave);
+  itemDialogToUpdate.path = destinationPathToSave;
+  fileSystemStore.updateItemDialog(itemDialogToUpdate);
 
-  fileSystemStore.refreshAllItemDialogFiles()
-  fileSystemStore.fetchDesktopItems()
+  fileSystemStore.refreshAllItemDialogFiles();
+  fileSystemStore.fetchDesktopItems();
 
   layoutStore.setSnackBar({
     show: true,
     text: `"${getFileNameFromPath(destinationPathToSave)}" created.`,
     severity: SEVERITY.information
-  })
-}
+  });
+};
 
 const keyDownHandler = async (event: KeyboardEvent) => {
   if (event.ctrlKey && event.key === 's' && props.itemDialog.isFocused) {
-    event.preventDefault()
-    saveFile()
+    event.preventDefault();
+    saveFile();
   }
-}
+};
 
 onMounted(async () => {
-  window.addEventListener('keydown', keyDownHandler)
+  window.addEventListener('keydown', keyDownHandler);
 
   if (props.itemDialog?.path) {
-    let fileData = await fileSystem.readFile(props.itemDialog?.path)
-    fileText.value = b64ToText(fileData, true)
+    let fileData = await fileSystem.readFile(props.itemDialog?.path);
+    fileText.value = b64ToText(fileData, true);
 
-    isLoaded.value = true
+    isLoaded.value = true;
   } else {
-    fileText.value = ''
-    isLoaded.value = true
+    fileText.value = '';
+    isLoaded.value = true;
   }
-})
+});
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', keyDownHandler)
-})
+  window.removeEventListener('keydown', keyDownHandler);
+});
 </script>
 <style>
 .save-button-disabled-quill {
