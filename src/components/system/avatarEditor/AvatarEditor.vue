@@ -7,7 +7,11 @@
           :isSelected="openedCategory?.key === category.key"
           @selectCategory="openedCategory = $event"
         />
-        <div v-for="(subCategory, index) in category.subCategories" :key="index" style="margin-left: 20px">
+        <div
+          v-for="(subCategory, index) in category.subCategories"
+          :key="index"
+          style="margin-left: 20px"
+        >
           <AvatarCategory
             :category="subCategory"
             :isSelected="openedCategory?.key === subCategory.key"
@@ -47,7 +51,13 @@
             <span
               v-if="(editedAvatar as any)[openedCategory.key] === key"
               class="mdi mdi-checkbox-marked-circle"
-              style="font-size: 18px; color: var(--selected-color_light); position: absolute; left: -10px; top: -1px"
+              style="
+                font-size: 18px;
+                color: var(--selected-color_light);
+                position: absolute;
+                left: -10px;
+                top: -1px;
+              "
             ></span>
             <div
               :class="
@@ -66,110 +76,116 @@
     <div style="margin-left: 30px">
       <TheAvatar :avatar="editedAvatar" :height="300" />
       <div style="margin-top: 20px">
-        <BaseButton mdiIcon="mdi-content-save" @click="saveConfiguration">Save Configuration</BaseButton>
-        <BaseButton neutralColor @click="resetConfiguration" style="margin-left: 15px">Reset</BaseButton>
+        <BaseButton mdiIcon="mdi-content-save" @click="saveConfiguration"
+          >Save Configuration</BaseButton
+        >
+        <BaseButton neutralColor @click="resetConfiguration" style="margin-left: 15px"
+          >Reset</BaseButton
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, ref, watch, onMounted } from "vue";
+import { PropType, ref, watch, onMounted } from 'vue';
 
-import TheAvatar from "./TheAvatar.vue";
-import AvatarModel, { AvatarCategory as AvatarCategoryModel } from "./Avatar";
-import BaseButton from "@/components/shared/BaseButton.vue";
-import AvatarCategory from "./AvatarCategory.vue";
-import BaseToggle from "@/components/shared/BaseToggle.vue";
+import TheAvatar from './TheAvatar.vue';
+import AvatarModel, { AvatarCategory as AvatarCategoryModel } from './Avatar';
+import BaseButton from '@/components/shared/BaseButton.vue';
+import AvatarCategory from './AvatarCategory.vue';
+import BaseToggle from '@/components/shared/BaseToggle.vue';
 
-import { mouthTypes } from "./assetsTypes/mouth";
-import { eyeTypes } from "./assetsTypes/eyes";
-import { eyebrowTypes } from "./assetsTypes/eyebrows";
-import { clothesType } from "./assetsTypes/clothes";
-import { topTypes } from "./assetsTypes/top";
-import { accessoriesTypes } from "./assetsTypes/accessories";
-import { facialHairTypes } from "./assetsTypes/facial-hair";
-import { GraphicShirtTypes } from "./assetsTypes/graphic-shirt";
-import { hairColors, skinColors, hatAndShirtColors } from "./assetsTypes/colors";
+import { mouthTypes } from './assetsTypes/mouth';
+import { eyeTypes } from './assetsTypes/eyes';
+import { eyebrowTypes } from './assetsTypes/eyebrows';
+import { clothesType } from './assetsTypes/clothes';
+import { topTypes } from './assetsTypes/top';
+import { accessoriesTypes } from './assetsTypes/accessories';
+import { facialHairTypes } from './assetsTypes/facial-hair';
+import { GraphicShirtTypes } from './assetsTypes/graphic-shirt';
+import { hairColors, skinColors, hatAndShirtColors } from './assetsTypes/colors';
 
-import { ColorPicker } from "vue3-colorpicker";
-import "vue3-colorpicker/style.css";
+import { ColorPicker } from 'vue3-colorpicker';
+import 'vue3-colorpicker/style.css';
 
 const props = defineProps({
   avatar: {
     type: Object as PropType<AvatarModel>,
     default: () => ({
       isCircle: true,
-      circleColor: "#E6E6E6",
-      topType: "random",
-      accessoriesType: "random",
-      hairColor: "random",
-      facialHairType: "random",
-      clotheType: "random",
-      clotheColor: "random",
-      graphicType: "random",
-      eyeType: "random",
-      eyebrowType: "random",
-      mouthType: "random",
-      skinColor: "random",
-      facialHairColor: "random",
-      topColor: "random",
-    }),
-  },
+      circleColor: 'rgb(189, 72, 72)',
+      topType: 'LongHairDreads',
+      accessoriesType: 'Blank',
+      hairColor: 'Blonde',
+      facialHairType: 'Blank',
+      clotheType: 'ShirtCrewNeck',
+      clotheColor: 'Black',
+      graphicType: 'Hola',
+      eyeType: 'Default',
+      eyebrowType: 'Default',
+      mouthType: 'Smile',
+      skinColor: 'Light',
+      facialHairColor: 'Blonde',
+      topColor: 'Blue02'
+    })
+  }
 });
 
-const emit = defineEmits(["onSave"]);
+const emit = defineEmits(['onSave']);
 
 watch(
   () => props.avatar,
   (_) => {
     editedAvatar.value = { ...props.avatar };
-  },
+  }
 );
 
 const categories: AvatarCategoryModel[] = [
   {
     items: {},
-    key: "background",
-    mdiIcon: "mdi-image",
+    key: 'background',
+    mdiIcon: 'mdi-image'
   },
   {
     items: topTypes,
-    key: "topType",
-    mdiIcon: "mdi-hat-fedora",
+    key: 'topType',
+    mdiIcon: 'mdi-hat-fedora',
     subCategories: [
-      { items: hatAndShirtColors, key: "topColor", mdiIcon: "mdi-arrow-right-bottom" },
-      { items: hairColors, key: "hairColor", mdiIcon: "mdi-arrow-right-bottom" },
-    ],
+      { items: hatAndShirtColors, key: 'topColor', mdiIcon: 'mdi-arrow-right-bottom' },
+      { items: hairColors, key: 'hairColor', mdiIcon: 'mdi-arrow-right-bottom' }
+    ]
   },
-  { items: accessoriesTypes, key: "accessoriesType", mdiIcon: "mdi-glasses" },
+  { items: accessoriesTypes, key: 'accessoriesType', mdiIcon: 'mdi-glasses' },
   {
     items: facialHairTypes,
-    key: "facialHairType",
-    mdiIcon: "mdi-mustache",
-    subCategories: [{ items: hairColors, key: "facialHairColor", mdiIcon: "mdi-arrow-right-bottom" }],
+    key: 'facialHairType',
+    mdiIcon: 'mdi-mustache',
+    subCategories: [
+      { items: hairColors, key: 'facialHairColor', mdiIcon: 'mdi-arrow-right-bottom' }
+    ]
   },
   {
     items: clothesType,
-    key: "clotheType",
-    mdiIcon: "mdi-tshirt-crew",
+    key: 'clotheType',
+    mdiIcon: 'mdi-tshirt-crew',
     subCategories: [
-      { items: hatAndShirtColors, key: "clotheColor", mdiIcon: "mdi-arrow-right-bottom" },
-      { items: GraphicShirtTypes, key: "graphicType", mdiIcon: "mdi-arrow-right-bottom" },
-    ],
+      { items: hatAndShirtColors, key: 'clotheColor', mdiIcon: 'mdi-arrow-right-bottom' },
+      { items: GraphicShirtTypes, key: 'graphicType', mdiIcon: 'mdi-arrow-right-bottom' }
+    ]
   },
-  { items: eyeTypes, key: "eyeType", mdiIcon: "mdi-eye" },
-  { items: eyebrowTypes, key: "eyebrowType", mdiIcon: "mdi-eye-circle" },
-  { items: mouthTypes, key: "mouthType", mdiIcon: "mdi-emoticon" },
-  { items: skinColors, key: "skinColor", mdiIcon: "mdi-palette" },
+  { items: eyeTypes, key: 'eyeType', mdiIcon: 'mdi-eye' },
+  { items: eyebrowTypes, key: 'eyebrowType', mdiIcon: 'mdi-eye-circle' },
+  { items: mouthTypes, key: 'mouthType', mdiIcon: 'mdi-emoticon' },
+  { items: skinColors, key: 'skinColor', mdiIcon: 'mdi-palette' }
 ];
 
 const editedAvatar = ref<AvatarModel>();
 
-const openedCategory = ref<AvatarCategoryModel>({ items: topTypes, key: "topType" });
+const openedCategory = ref<AvatarCategoryModel>({ items: topTypes, key: 'topType' });
 
 const saveConfiguration = () => {
-  emit("onSave", editedAvatar.value);
+  emit('onSave', editedAvatar.value);
 };
 
 const resetConfiguration = () => {
