@@ -91,7 +91,7 @@
 import { PropType, ref, watch, onMounted } from 'vue';
 
 import TheAvatar from './TheAvatar.vue';
-import AvatarModel, { AvatarCategory as AvatarCategoryModel } from './Avatar';
+import AvatarModel, { AvatarCategory as AvatarCategoryModel, defaultAvatar } from './Avatar';
 import BaseButton from '@/components/shared/BaseButton.vue';
 import AvatarCategory from './AvatarCategory.vue';
 import BaseToggle from '@/components/shared/BaseToggle.vue';
@@ -112,23 +112,7 @@ import 'vue3-colorpicker/style.css';
 const props = defineProps({
   avatar: {
     type: Object as PropType<AvatarModel>,
-    default: () => ({
-      isCircle: true,
-      circleColor: 'rgb(189, 72, 72)',
-      topType: 'LongHairDreads',
-      accessoriesType: 'Blank',
-      hairColor: 'Blonde',
-      facialHairType: 'Blank',
-      clotheType: 'ShirtCrewNeck',
-      clotheColor: 'Black',
-      graphicType: 'Hola',
-      eyeType: 'Default',
-      eyebrowType: 'Default',
-      mouthType: 'Smile',
-      skinColor: 'Light',
-      facialHairColor: 'Blonde',
-      topColor: 'Blue02'
-    })
+    default: () => defaultAvatar
   }
 });
 

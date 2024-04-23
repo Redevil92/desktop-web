@@ -20,6 +20,7 @@ pinia.use(piniaPluginPersistedstate);
 
 export async function initializeAppAndFileSystem() {
   if (import.meta.env.VITE_DEBUG_MODE === `true`) {
+    console.log('Clearing indexedDB and localStorage', import.meta.env.VITE_DEBUG_MODE);
     clearIndexedDB(INDEXED_DB_NAME);
     clearLocalStorage();
   }

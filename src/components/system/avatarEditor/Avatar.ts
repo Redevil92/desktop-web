@@ -23,3 +23,21 @@ export interface AvatarCategory {
   icon?: string;
   subCategories?: AvatarCategory[];
 }
+
+export const defaultAvatar: Avatar = {
+  isCircle: true,
+  circleColor: 'rgb(189, 72, 72)',
+  topType: 'LongHairDreads',
+  accessoriesType: 'Blank',
+  hairColor: 'Blonde',
+  facialHairType: 'Blank',
+  clotheType: 'ShirtCrewNeck',
+  clotheColor: 'Black',
+  graphicType: 'Hola',
+  eyeType: 'Default',
+  eyebrowType: 'Default',
+  mouthType: 'Smile',
+  skinColor: 'Light',
+  facialHairColor: 'Blonde',
+  topColor: 'Blue02'
+};

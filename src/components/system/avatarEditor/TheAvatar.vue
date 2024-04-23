@@ -21,7 +21,12 @@
       <g transform="translate(-825.000000, -1100.000000)" id="Avataaar/Circle">
         <g transform="translate(825.000000, 1100.000000)">
           <template v-if="avatar.isCircle">
-            <g id="Circle" stroke-width="1" fill-rule="evenodd" transform="translate(12.000000, 39.000000)">
+            <g
+              id="Circle"
+              stroke-width="1"
+              fill-rule="evenodd"
+              transform="translate(12.000000, 39.000000)"
+            >
               <mask id="mask-1" fill="white">
                 <use xlink:href="#path-1"></use>
               </mask>
@@ -79,42 +84,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from "vue";
+import { computed, PropType } from 'vue';
 
-import { mouthTypes } from "./assetsTypes/mouth";
-import { eyeTypes } from "./assetsTypes/eyes";
-import { eyebrowTypes } from "./assetsTypes/eyebrows";
-import { clothesType } from "./assetsTypes/clothes";
-import { topTypes } from "./assetsTypes/top";
-import { accessoriesTypes } from "./assetsTypes/accessories";
-import { facialHairTypes } from "./assetsTypes/facial-hair";
-import { GraphicShirtTypes } from "./assetsTypes/graphic-shirt";
-import { hairColors, skinColors, hatAndShirtColors } from "./assetsTypes/colors";
+import { mouthTypes } from './assetsTypes/mouth';
+import { eyeTypes } from './assetsTypes/eyes';
+import { eyebrowTypes } from './assetsTypes/eyebrows';
+import { clothesType } from './assetsTypes/clothes';
+import { topTypes } from './assetsTypes/top';
+import { accessoriesTypes } from './assetsTypes/accessories';
+import { facialHairTypes } from './assetsTypes/facial-hair';
+import { GraphicShirtTypes } from './assetsTypes/graphic-shirt';
+import { hairColors, skinColors, hatAndShirtColors } from './assetsTypes/colors';
 
-import AvatarModel from "./Avatar";
+import AvatarModel, { defaultAvatar } from './Avatar';
 
 const props = defineProps({
   avatar: {
     type: Object as PropType<AvatarModel>,
-    default: () => ({
-      isCircle: true,
-      circleColor: "#E6E6E6",
-      topType: "random",
-      accessoriesType: "random",
-      hairColor: "random",
-      facialHairType: "random",
-      clotheType: "random",
-      clotheColor: "random",
-      graphicType: "random",
-      eyeType: "random",
-      eyebrowType: "random",
-      mouthType: "random",
-      skinColor: "random",
-      facialHairColor: "random",
-      topColor: "random",
-    }),
+    default: () => defaultAvatar
   },
-  height: { type: Number, default: 45 },
+  height: { type: Number, default: 45 }
 });
 
 const getRandomChoice = (items: Record<string, string>): string => {
@@ -126,48 +115,56 @@ const getRandomChoice = (items: Record<string, string>): string => {
 
 const cssVars = computed(() => {
   return {
-    "--avataaar-hair-color":
-      props.avatar.hairColor === "random" ? getRandomChoice(hairColors) : hairColors[props.avatar.hairColor],
-    "--avataaar-facial-hair-color":
-      props.avatar.facialHairColor === "random"
+    '--avataaar-hair-color':
+      props.avatar.hairColor === 'random'
+        ? getRandomChoice(hairColors)
+        : hairColors[props.avatar.hairColor],
+    '--avataaar-facial-hair-color':
+      props.avatar.facialHairColor === 'random'
         ? getRandomChoice(hairColors)
         : hairColors[props.avatar.facialHairColor],
-    "--avataaar-hat-color":
-      props.avatar.topColor === "random"
+    '--avataaar-hat-color':
+      props.avatar.topColor === 'random'
         ? getRandomChoice(hatAndShirtColors)
         : hatAndShirtColors[props.avatar.topColor],
-    "--avataaar-shirt-color":
-      props.avatar.clotheColor === "random"
+    '--avataaar-shirt-color':
+      props.avatar.clotheColor === 'random'
         ? getRandomChoice(hatAndShirtColors)
-        : hatAndShirtColors[props.avatar.clotheColor],
+        : hatAndShirtColors[props.avatar.clotheColor]
   };
 });
 
 const topTypeValue = computed(() =>
-  props.avatar.topType === "random" ? getRandomChoice(topTypes) : props.avatar.topType,
+  props.avatar.topType === 'random' ? getRandomChoice(topTypes) : props.avatar.topType
 );
 const accessoriesTypeValue = computed(() =>
-  props.avatar.accessoriesType === "random" ? getRandomChoice(accessoriesTypes) : props.avatar.accessoriesType,
+  props.avatar.accessoriesType === 'random'
+    ? getRandomChoice(accessoriesTypes)
+    : props.avatar.accessoriesType
 );
 const facialHairTypeValue = computed(() =>
-  props.avatar.facialHairType === "random" ? getRandomChoice(facialHairTypes) : props.avatar.facialHairType,
+  props.avatar.facialHairType === 'random'
+    ? getRandomChoice(facialHairTypes)
+    : props.avatar.facialHairType
 );
 const clotheTypeValue = computed(() =>
-  props.avatar.clotheType === "random" ? getRandomChoice(clothesType) : props.avatar.clotheType,
+  props.avatar.clotheType === 'random' ? getRandomChoice(clothesType) : props.avatar.clotheType
 );
 const eyeTypeValue = computed(() =>
-  props.avatar.eyeType === "random" ? getRandomChoice(eyeTypes) : props.avatar.eyeType,
+  props.avatar.eyeType === 'random' ? getRandomChoice(eyeTypes) : props.avatar.eyeType
 );
 const eyebrowTypeValue = computed(() =>
-  props.avatar.eyebrowType === "random" ? getRandomChoice(eyebrowTypes) : props.avatar.eyebrowType,
+  props.avatar.eyebrowType === 'random' ? getRandomChoice(eyebrowTypes) : props.avatar.eyebrowType
 );
 const mouthTypeValue = computed(() =>
-  props.avatar.mouthType === "random" ? getRandomChoice(mouthTypes) : props.avatar.mouthType,
+  props.avatar.mouthType === 'random' ? getRandomChoice(mouthTypes) : props.avatar.mouthType
 );
 const skinColorValue = computed(() =>
-  props.avatar.skinColor === "random" ? getRandomChoice(skinColors) : props.avatar.skinColor,
+  props.avatar.skinColor === 'random' ? getRandomChoice(skinColors) : props.avatar.skinColor
 );
 const graphicTypeValue = computed(() =>
-  props.avatar.graphicType === "random" ? getRandomChoice(GraphicShirtTypes) : props.avatar.graphicType,
+  props.avatar.graphicType === 'random'
+    ? getRandomChoice(GraphicShirtTypes)
+    : props.avatar.graphicType
 );
 </script>

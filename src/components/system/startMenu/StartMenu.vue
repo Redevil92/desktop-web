@@ -11,9 +11,9 @@
       <!-- PINNED APPLICATION -->
       <div class="pinned-application">
         <div class="flex">
-          <div class="pinned-text">{{ showAllApps ? "All apps" : "Pinned" }}</div>
+          <div class="pinned-text">{{ showAllApps ? 'All apps' : 'Pinned' }}</div>
           <div class="all-apps-button" @click="showAllApps = !showAllApps">
-            {{ showAllApps ? "Pinned" : "All apps" }}
+            {{ showAllApps ? 'Pinned' : 'All apps' }}
           </div>
         </div>
       </div>
@@ -49,9 +49,11 @@
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
       <div class="user-profile-container">
         <div class="flex">
-          <TheAvatar :avatar="settingsStore.avatar" />
+          <div class="avatar-container">
+            <TheAvatar :avatar="settingsStore.avatar" />
+          </div>
           <!-- <img height="40" :src="require('/src/assets/avatar/male.png')" alt="" /> -->
-          <div class="user-name">Your username</div>
+          <!-- <div class="user-name">Your username</div> -->
         </div>
 
         <span @click="refreshPage" class="mdi mdi-power power-icon"></span>
@@ -61,26 +63,26 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from "vue";
-import BaseInput from "@/components/shared/BaseInput.vue";
-import AppItem from "@/components/system/startMenu/AppItem.vue";
-import TheAvatar from "@/components/system/avatarEditor/TheAvatar.vue";
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import BaseInput from '@/components/shared/BaseInput.vue';
+import AppItem from '@/components/system/startMenu/AppItem.vue';
+import TheAvatar from '@/components/system/avatarEditor/TheAvatar.vue';
 
-import { useLayoutStore } from "@/stores/layoutStore";
-import { useStartMenuStore } from "@/stores/startMenuStore";
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useStartMenuStore } from '@/stores/startMenuStore';
 
-import fileTypesConfiguration from "@/models/FilesType";
-import { useSettingsStore } from "@/stores/settingsStore";
+import fileTypesConfiguration from '@/models/FilesType';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 const props = defineProps({
-  openStartMenuButtonRef: HTMLElement,
+  openStartMenuButtonRef: HTMLElement
 });
 
 const layoutStore = useLayoutStore();
 const startMenuStore = useStartMenuStore();
 const settingsStore = useSettingsStore();
 
-const search = ref("");
+const search = ref('');
 const showAllApps = ref(false);
 
 const pinnedApps = computed(() => {
@@ -109,7 +111,7 @@ const allFilteredAppsToShow = computed(() => {
       (app) =>
         app.application.toLowerCase().includes(search.value.toLowerCase()) ||
         app.title.toLowerCase().includes(search.value.toLowerCase()) ||
-        app.key.toLowerCase().includes(search.value.toLowerCase()),
+        app.key.toLowerCase().includes(search.value.toLowerCase())
     );
 });
 
@@ -135,11 +137,11 @@ const refreshPage = () => {
 };
 
 onMounted(() => {
-  window.addEventListener("click", closeStartMenu);
+  window.addEventListener('click', closeStartMenu);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("click", closeStartMenu);
+  window.removeEventListener('click', closeStartMenu);
 });
 </script>
 
@@ -216,6 +218,17 @@ onUnmounted(() => {
   font-size: var(--medium-font-size);
   font-weight: 600;
   margin-left: var(--margin);
+}
+
+.avatar-container:hover {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: var(--border-radius);
+  background-color: var(--background-color_light);
+}
+
+.avatar-container {
+  padding: 5px;
 }
 
 .power-icon {
