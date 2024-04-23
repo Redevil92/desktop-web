@@ -1,25 +1,25 @@
-import TaskBarItem from "@/models/TaskBarItem";
-import { defineStore } from "pinia";
+import TaskBarItem from '@/models/TaskBarItem';
+import { defineStore } from 'pinia';
 
-export const useStartMenuStore = defineStore("startMenu", {
+export const useStartMenuStore = defineStore('startMenu', {
   state: () => ({
     pinnedApps: [
-      { app: "settings", name: "Settings", icon: "settings.svg" },
-      { app: "text", name: "Text File", icon: "txt.svg" },
-      { app: "browser", name: "Browser", icon: "browser.svg" },
-      { app: "Doom", name: "Doom", icon: "Doom.png" },
-      { app: "WarCraft- Orcs & Humans", name: "WarCraft", icon: "WarCraft- Orcs & Humans.png" },
-      { app: "Duke Nukem 3D", name: "Duke Nukem 3D", icon: "Duke Nukem 3D.png" },
-      { app: "Sim City", name: "Sim City", icon: "Sim City.png" },
-      { app: "Prince of Persia", name: "Prince of Persia", icon: "Prince of Persia.png" },
-      { app: "Grand Theft Auto", name: "GTA", icon: "Grand Theft Auto.png" },
-      { app: "Mortal Kombat", name: "Mortal Kombat", icon: "Mortal Kombat.png" },
-    ] as TaskBarItem[],
+      { app: 'settings', name: 'Settings', icon: 'settings.svg' },
+      { app: 'text', name: 'Text File', icon: 'txt.svg' },
+      { app: 'browser', name: 'Browser', icon: 'browser.svg' },
+      { app: 'Doom', name: 'Doom', icon: 'Doom.png' },
+      { app: 'Duke Nukem 2', name: 'Duke Nukem 2', icon: 'Duke Nukem 2.png' },
+      { app: 'Duke Nukem 3D', name: 'Duke Nukem 3D', icon: 'Duke Nukem 3D.png' },
+      { app: 'Wolfenstein 3D', name: 'Wolfenstein 3D', icon: 'Wolfenstein 3D.png' },
+      { app: 'Commander Keen 4', name: 'Commander Keen 4', icon: 'Commander Keen 4.png' },
+      { app: 'Digger', name: 'Digger', icon: 'Digger.png' },
+      { app: 'Blake Stone', name: 'Blake Stone', icon: 'Blake Stone.png' }
+    ] as TaskBarItem[]
   }),
   getters: {},
   actions: {
     setPinnedApps(pinnedApps: TaskBarItem[]) {
       this.pinnedApps = pinnedApps;
-    },
-  },
+    }
+  }
 });

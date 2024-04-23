@@ -22,24 +22,24 @@ const props = defineProps({
   rounded: Boolean,
   placeholder: String,
   modelValue: String, // previously was `value: String`
-  type: { type: String, default: "text" }, // previously was `value: String`
+  type: { type: String, default: 'text' }, // previously was `value: String`
   disabled: { type: Boolean, default: false }, // previously was `value: String`
   autocomplete: { type: Boolean, default: true },
-  searchBar: { type: Boolean, default: false },
+  searchBar: { type: Boolean, default: false }
 });
 
-const emit = defineEmits(["update:modelValue", "onKeyDown", "onBlur"]);
+const emit = defineEmits(['update:modelValue', 'onKeyDown', 'onBlur']);
 
 const change = (event: any) => {
-  emit("update:modelValue", event.target.value); // previously was `this.$emit('input', title)`
+  emit('update:modelValue', event.target.value); // previously was `this.$emit('input', title)`
 };
 
 const onKeyDown = (event: any) => {
-  emit("onKeyDown", event);
+  emit('onKeyDown', event);
 };
 
 const onBlur = (event: any) => {
-  emit("onBlur", event);
+  emit('onBlur', event);
 };
 </script>
 
@@ -89,6 +89,7 @@ input:focus {
 
 .search-input::placeholder {
   color: white;
+  font-weight: 500;
 }
 
 /* input:focus {

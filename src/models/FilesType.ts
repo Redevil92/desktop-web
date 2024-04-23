@@ -342,13 +342,15 @@ const fileTypesConfiguration: FileTypes = {
   'Commander Keen 4': applicationType('Commander Keen 4', 'dosItem/DosPlayer'),
   Raptor: applicationType('Raptor', 'dosItem/DosPlayer'),
   Skyroads: applicationType('Skyroads', 'dosItem/DosPlayer'),
-  'Wolfenstein 3D': applicationType('Wolfenstein 3D', 'dosItem/DosPlayer'),
+  'Wolfenstein 3D': applicationType('Wolfenstein 3D', 'dosItem/DosPlayer')
 
-  'WarCraft- Orcs & Humans': applicationType('WarCraft- Orcs & Humans', 'dosItem/DosPlayer'),
-  'Sim City': applicationType('Sim City', 'dosItem/DosPlayer'),
-  'Prince of Persia': applicationType('Prince of Persia', 'dosItem/DosPlayer'),
-  'Grand Theft Auto': applicationType('Grand Theft Auto', 'dosItem/DosPlayer'),
-  'Mortal Kombat': applicationType('Mortal Kombat', 'dosItem/DosPlayer')
+  //TODO: find the images for the games
+  // 'WarCraft- Orcs & Humans': applicationType('WarCraft- Orcs & Humans', 'dosItem/DosPlayer'),
+  // 'Sim City': applicationType('Sim City', 'dosItem/DosPlayer'),
+  // 'Prince of Persia': applicationType('Prince of Persia', 'dosItem/DosPlayer'),
+  // 'Grand Theft Auto': applicationType('Grand Theft Auto', 'dosItem/DosPlayer'),
+  // 'Mortal Kombat': applicationType('Mortal Kombat', 'dosItem/DosPlayer')
+
   // run: {
   //   allowResizing: false,
   //   defaultSize: {
