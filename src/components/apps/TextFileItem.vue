@@ -20,7 +20,7 @@
         @input="onTextChange"
       >
         <template #toolbar>
-          <div :id="`custom-toolbar-${itemDialog.guid}`" style="height: 41px; overflow-y: auto">
+          <div :id="`custom-toolbar-${itemDialog.guid}`" style="height: 42px; overflow-y: auto">
             <select class="ql-size">
               <option value="small"></option>
               <option selected></option>

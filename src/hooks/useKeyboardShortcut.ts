@@ -1,7 +1,7 @@
-import { onMounted, onUnmounted } from "vue";
-import { useFileSystemStore } from "@/stores/fileSystemStore";
-import fileSystem from "@/context/fileSystemController";
-import { DESKTOP_PATH } from "@/constants";
+import { onMounted, onUnmounted } from 'vue';
+import { useFileSystemStore } from '@/stores/fileSystemStore';
+import fileSystem from '@/context/fileSystemController';
+import { DESKTOP_PATH } from '@/constants';
 
 export default function useKeyboardShortcut() {
   const fileSystemStore = useFileSystemStore();
@@ -21,9 +21,9 @@ export default function useKeyboardShortcut() {
       elementsSelected = itemDialogFocused.selectedFilesPath;
     }
 
-    if (event.ctrlKey && event.key === "c") {
+    if (event.ctrlKey && event.key === 'c') {
       fileSystemStore.setFilePathsToCopy(elementsSelected);
-    } else if (event.ctrlKey && event.key === "v") {
+    } else if (event.ctrlKey && event.key === 'v') {
       if (itemDialogFocused) {
         if (isFolder) {
           fileSystemStore.pasteFiles(itemDialogFocused.path);
@@ -31,23 +31,23 @@ export default function useKeyboardShortcut() {
       } else {
         fileSystemStore.pasteFiles(DESKTOP_PATH);
       }
-    } else if (event.ctrlKey && event.key === "x") {
+    } else if (event.ctrlKey && event.key === 'x') {
       fileSystemStore.setFilePathsToCut(elementsSelected);
-    } else if (event.key === "Delete") {
+    } else if (event.key === 'Delete') {
       for (const path of elementsSelected) {
         await fileSystemStore.deleteFileSystemItem(path);
       }
       fileSystemStore.refreshAllItemDialogFiles();
-      fileSystemStore.fetchDesktopItems();
+      await fileSystemStore.fetchDesktopItems();
     }
   };
 
   onMounted(() => {
-    window.addEventListener("keydown", keyDownHandler);
+    window.addEventListener('keydown', keyDownHandler);
   });
 
   onUnmounted(() => {
-    window.removeEventListener("keydown", keyDownHandler);
+    window.removeEventListener('keydown', keyDownHandler);
   });
 
   return {};

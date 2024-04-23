@@ -1,23 +1,23 @@
-import { defineStore } from "pinia";
-import fileSystem from "@/context/fileSystemController";
+import { defineStore } from 'pinia';
+import fileSystem from '@/context/fileSystemController';
 
 import {
   getFileExtensionFromName,
   getFileNameFromPath,
-  getNewItemDialogPosition,
-} from "@/context/utils/fileSystemUtils";
-import { getDesktopFilesPositionFromLocalStorage } from "@/hooks/useLocalStorage";
-import ActionMenu from "@/models/ActionMenu/ActionMenu";
-import DesktopItem from "@/models/DesktopItem";
-import fileTypesConfiguration from "@/models/FilesType";
-import ItemDialog from "@/models/ItemDialog";
-import PathAndContent from "@/models/PathAndContent";
-import { v4 as uuidv4 } from "uuid";
-import { takeAndSaveItemPreviewScreenshotByItemGuid } from "@/hooks/useScreenshot";
-import { removeItemPreviewInSessionStorage } from "@/hooks/useSessionStorage";
-import { useDynamicIslandStore } from "@/stores/dynamicIslandStore";
+  getNewItemDialogPosition
+} from '@/context/utils/fileSystemUtils';
+import { getDesktopFilesPositionFromLocalStorage } from '@/hooks/useLocalStorage';
+import ActionMenu from '@/models/ActionMenu/ActionMenu';
+import DesktopItem from '@/models/DesktopItem';
+import fileTypesConfiguration from '@/models/FilesType';
+import ItemDialog from '@/models/ItemDialog';
+import PathAndContent from '@/models/PathAndContent';
+import { v4 as uuidv4 } from 'uuid';
+import { takeAndSaveItemPreviewScreenshotByItemGuid } from '@/hooks/useScreenshot';
+import { removeItemPreviewInSessionStorage } from '@/hooks/useSessionStorage';
+import { useDynamicIslandStore } from '@/stores/dynamicIslandStore';
 
-export const useFileSystemStore = defineStore("fileSystem", {
+export const useFileSystemStore = defineStore('fileSystem', {
   state: () => ({
     desktopItems: [] as DesktopItem[],
     itemsDialog: [] as ItemDialog[],
@@ -27,11 +27,11 @@ export const useFileSystemStore = defineStore("fileSystem", {
       show: false,
       paths: [],
       position: { x: 0, y: 0 },
-      isOpenedFolder: false,
+      isOpenedFolder: false
     } as ActionMenu,
     filePathsToMove: [] as string[],
     isSelectionBoxEnabled: true,
-    dragginPath: "",
+    dragginPath: ''
   }),
   getters: {
     getBigger_z_index() {
@@ -55,10 +55,14 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
     getSelectedDesktopItemsPath(): string[] {
       return this.desktopItems.filter((item) => item.isSelected).map((item) => item.path);
-    },
+    }
   },
   actions: {
-    async createItemDialog(itemDialog: DesktopItem, additionalOptions?: any, applicationToOpen?: string) {
+    async createItemDialog(
+      itemDialog: DesktopItem,
+      additionalOptions?: any,
+      applicationToOpen?: string
+    ) {
       // if path already opened dont create a new one but
       const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
       if (index !== -1) {
@@ -69,11 +73,11 @@ export const useFileSystemStore = defineStore("fileSystem", {
 
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
-      let icon = "";
+      let icon = '';
       let currentApplicationToOpen = applicationToOpen;
       let filesPath = [] as string[];
-      let name = "";
-      let itemExtension = "";
+      let name = '';
+      let itemExtension = '';
       let isFolder = false;
 
       // if itemDialog has applicationExtension this means is not a file
@@ -84,7 +88,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         isFolder = await fileSystem.isDir(itemDialog.path);
         if (isFolder) {
           filesPath = await fileSystem.getFiles(itemDialog.path, true);
-          itemExtension = "dir";
+          itemExtension = 'dir';
         }
       }
 
@@ -115,7 +119,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
         applicationToOpen: currentApplicationToOpen,
         filesPath,
         name,
-        additionalOptions,
+        additionalOptions
       } as ItemDialog;
 
       this.itemsDialog.push(newItemDialog);
@@ -145,6 +149,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       const itemsDialog = Object.assign([], this.itemsDialog) as ItemDialog[];
       itemsDialog.forEach(async (itemDialog) => {
         const isFolder = await fileSystem.isDir(itemDialog.path);
+
         if (isFolder) {
           const newFilespath = await fileSystem.getFiles(itemDialog.path, true);
           itemDialog.filesPath = newFilespath;
@@ -258,7 +263,12 @@ export const useFileSystemStore = defineStore("fileSystem", {
       await fileSystem.createFile(pathAndContent.path, pathAndContent.content);
     },
     async createFile(pathAndContent: PathAndContent, overwriteIfSameName = true): Promise<string> {
-      return await fileSystem.createFile(pathAndContent.path, pathAndContent.content, undefined, overwriteIfSameName);
+      return await fileSystem.createFile(
+        pathAndContent.path,
+        pathAndContent.content,
+        undefined,
+        overwriteIfSameName
+      );
     },
     async deleteFileSystemItem(path: string) {
       await fileSystem.deleteFileSystemItem(path);
@@ -279,7 +289,7 @@ export const useFileSystemStore = defineStore("fileSystem", {
       const emptyActionMenu: ActionMenu = {
         show: false,
         paths: [],
-        position: { x: 0, y: 0 },
+        position: { x: 0, y: 0 }
       };
 
       this.setActionMenu(emptyActionMenu);
@@ -325,6 +335,6 @@ export const useFileSystemStore = defineStore("fileSystem", {
     },
     async moveFiles(filesToMove: string[], destinationPath: string, keepOriginal = false) {
       await fileSystem.moveFiles(filesToMove, destinationPath, keepOriginal);
-    },
-  },
+    }
+  }
 });
