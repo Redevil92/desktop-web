@@ -168,7 +168,12 @@ onMounted(async () => {
 
   if (props.itemDialog?.path) {
     let fileData = await fileSystem.readFile(props.itemDialog?.path);
-    fileText.value = b64ToText(fileData, true);
+    try {
+      fileText.value = b64ToText(fileData, true);
+    } catch (error) {
+      fileText.value = fileData;
+    }
+    
 
     isLoaded.value = true;
   } else {

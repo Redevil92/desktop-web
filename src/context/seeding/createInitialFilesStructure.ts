@@ -50,6 +50,10 @@ export const createFilesStructure = async () => {
       await fileSystem.createFile('my PC/Desktop/Climbing.mp4', videoElement, 'utf8', false);
       saveDesktopFilePosition('my PC/Desktop/Climbing.mp4', { x: 0, y: 220 });
 
+      const resume = (await readLocalFile('./files/resume_stefano_badalucco.pdf')) as string;
+      await fileSystem.createFile('my PC/Desktop/resume_stefano_badalucco.pdf', resume, 'ASCII', false);
+      saveDesktopFilePosition('my PC/Desktop/resume_stefano_badalucco.pdf', { x: 0, y: 320 });
+
       await fileSystem.createDirectory('my PC/Desktop/About me');
       saveDesktopFilePosition('my PC/Desktop/About me', { x: 0, y: 110 });
 

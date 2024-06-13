@@ -106,7 +106,7 @@ const changePage = (currentPage: number) => {
   }, throttlePeriod.value);
 };
 
-const handlePasswordRequest = (callback: any, _: any) => {
+const handlePasswordRequest = (callback: any) => {
   const password = prompt("Enter password in order to see the file");
   if (password) {
     callback(password);
