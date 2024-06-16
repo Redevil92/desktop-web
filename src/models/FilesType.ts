@@ -170,7 +170,7 @@ const fileTypesConfiguration: FileTypes = {
       width: 840
     },
     minSize: {
-      height: 300,
+      height: 420,
       width: 820
     },
     icon: 'folder.svg',
