@@ -14,7 +14,8 @@ export const useStartMenuStore = defineStore('startMenu', {
       { app: 'Commander Keen 4', name: 'Commander Keen 4', icon: 'Commander Keen 4.png' },
       { app: 'Digger', name: 'Digger', icon: 'Digger.png' },
       { app: 'Blake Stone', name: 'Blake Stone', icon: 'Blake Stone.png' }
-    ] as TaskBarItem[]
+    ] as TaskBarItem[],
+    suggestionFiles: [""]
   }),
   getters: {},
   actions: {

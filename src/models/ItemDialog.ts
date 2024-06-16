@@ -19,7 +19,3 @@ export default interface ItemDialog {
   selectedFilesPath?: string[];
   additionalOptions?: any;
 }
-
-// export interface FolderDialog extends ItemDialog {
-
-// }

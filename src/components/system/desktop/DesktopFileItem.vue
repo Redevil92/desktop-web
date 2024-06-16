@@ -81,7 +81,6 @@ import ActionItem from '@/models/ActionMenu/ActionItem';
 
 const props = defineProps({
   fileItem: { type: Object as PropType<DesktopItem>, required: true }
-  //isSelected: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['onClick', 'onRightClick']);

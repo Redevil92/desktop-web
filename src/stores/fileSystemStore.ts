@@ -251,7 +251,6 @@ export const useFileSystemStore = defineStore('fileSystem', {
 
       this.desktopItems = desktopItems;
     },
-
     changeDesktopItemPosition(desktopItem: DesktopItem) {
       const index = this.desktopItems.findIndex((item) => item.path === desktopItem.path);
 

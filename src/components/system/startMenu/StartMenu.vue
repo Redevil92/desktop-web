@@ -8,16 +8,20 @@
       class="search-bar"
     />
     <div class="start-menu-content">
-      <!-- PINNED APPLICATION -->
+      
       <div class="pinned-application">
         <div class="flex">
-          <div class="pinned-text">{{ showAllApps ? 'All apps' : 'Pinned' }}</div>
-          <div class="all-apps-button" @click="showAllApps = !showAllApps">
-            {{ showAllApps ? 'Pinned' : 'All apps' }}
+          <div class="all-apps-button" :class="{'all-apps-selected': tabSelected === 'pinned'}" @click="tabSelected = 'pinned'">
+           Pinned
+          </div>
+          <div class="all-apps-button" :class="{'all-apps-selected': tabSelected === 'all'}" @click="tabSelected = 'all'" style="margin-left: 5px;">
+              All apps
           </div>
         </div>
       </div>
-      <div v-if="!showAllApps && search === ''">
+
+      <div v-if="tabSelected === 'pinned'">
+        <div class="pinned-text">Pinned</div>
         <div class="pinned-application-container">
           <div v-for="app in pinnedApps" :key="'pinned-' + app.app">
             <AppItem
@@ -29,26 +33,32 @@
           </div>
         </div>
         <div class="reccomanded-container">
-          <div class="pinned-text">Reccomanded</div>
-          <div style="margin-top: var(--margin)">No reccomandation for now</div>
+          <div class="pinned-text">Suggested files</div>
+          <div v-for="suggestion in suggestions">
+
+          </div>
         </div>
       </div>
-      <div v-else class="all-apps-container">
-        <div v-for="app in allFilteredAppsToShow" :key="'all-app-' + app.title">
+
+      <div v-if="tabSelected === 'all'" >
+        <div class="pinned-text">All apps</div>
+        <div class="pinned-application-container">
+          <div v-for="app in allFilteredAppsToShow" :key="'all-app-' + app.title">
           <AppItem
             @closeStartMenu="setStartMenuOpened(false)"
-            :lineLayout="true"
             :app="app.key"
             :name="app.title"
             :icon="app.icon"
           ></AppItem>
         </div>
+        </div>
+   
       </div>
 
       <!-- RECCOMANDED APPLICATION -->
       <!-- YOUR CUSTOMIZATION / POWER OFF -->
       <div class="user-profile-container">
-        <div class="flex">
+        <div class="flex-center">
           <div class="avatar-container">
             <TheAvatar :avatar="settingsStore.avatar" />
           </div>
@@ -83,7 +93,11 @@ const startMenuStore = useStartMenuStore();
 const settingsStore = useSettingsStore();
 
 const search = ref('');
-const showAllApps = ref(false);
+const tabSelected = ref('pinned');
+
+const suggestions = computed<string[]>(() => {
+  return startMenuStore.suggestionFiles;
+});
 
 const pinnedApps = computed(() => {
   return startMenuStore.pinnedApps;
@@ -161,12 +175,19 @@ onUnmounted(() => {
 }
 
 .pinned-text {
+  text-align: left;
   color: var(--font-color);
   font-size: var(--small-font-size);
   font-weight: 600;
+  margin-top: 10px;
 }
 
-.flex {
+.flex{
+  display: flex;
+
+}
+
+.flex-center {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -179,9 +200,23 @@ onUnmounted(() => {
 .all-apps-button {
   color: var(--font-color);
   font-size: var(--small-font-size);
-  background-color: var(--background-color_light);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
   padding: 5px;
   cursor: pointer;
+}
+
+.all-apps-selected {
+  background-color: var(--selected-color) !important;
+  font-weight: 600;
+}
+
+.all-apps-button:hover {
+  background-color: var(--neutral-color_light);
+}
+
+.pinned-application {
+  margin-bottom: calc(var(--margin)*2);
 }
 
 .pinned-application-container {
@@ -244,7 +279,7 @@ onUnmounted(() => {
 }
 
 .all-apps-container {
-  height: 417px;
+  height: 405px;
   overflow: auto;
   margin-top: var(--margin);
 }
