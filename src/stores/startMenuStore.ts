@@ -15,7 +15,7 @@ export const useStartMenuStore = defineStore('startMenu', {
       { app: 'Digger', name: 'Digger', icon: 'Digger.png' },
       { app: 'Blake Stone', name: 'Blake Stone', icon: 'Blake Stone.png' }
     ] as TaskBarItem[],
-    suggestionFiles: [""]
+    suggestionFiles: [ 'my PC/Desktop/resume_stefano_badalucco.pdf']
   }),
   getters: {},
   actions: {

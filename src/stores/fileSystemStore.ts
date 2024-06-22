@@ -58,19 +58,7 @@ export const useFileSystemStore = defineStore('fileSystem', {
     }
   },
   actions: {
-    async createItemDialog(
-      itemDialog: DesktopItem,
-      additionalOptions?: any,
-      applicationToOpen?: string
-    ) {
-      // if path already opened dont create a new one but
-      const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
-      if (index !== -1) {
-        this.setFocusedItemDialog(this.itemsDialog[index]);
-        this.openMinimizedItemDialog(this.itemsDialog[index].guid);
-        return;
-      }
-
+    async createItemDialogByPath(filePath: string,additionalOptions?: any, applicationToOpen?: string) {
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = '';
@@ -80,17 +68,14 @@ export const useFileSystemStore = defineStore('fileSystem', {
       let itemExtension = '';
       let isFolder = false;
 
-      // if itemDialog has applicationExtension this means is not a file
-      if (itemDialog.applicationExtension) {
-        itemExtension = itemDialog.applicationExtension;
-      } else {
-        itemExtension = getFileExtensionFromName(itemDialog.path);
-        isFolder = await fileSystem.isDir(itemDialog.path);
+
+        itemExtension = getFileExtensionFromName(filePath);
+        isFolder = await fileSystem.isDir(filePath);
         if (isFolder) {
-          filesPath = await fileSystem.getFiles(itemDialog.path, true);
+          filesPath = await fileSystem.getFiles(filePath, true);
           itemExtension = 'dir';
         }
-      }
+      
 
       const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
 
@@ -102,12 +87,12 @@ export const useFileSystemStore = defineStore('fileSystem', {
         name = fileTypeConfiguration.title;
       }
 
-      if (itemDialog.path) {
-        name = getFileNameFromPath(itemDialog.path);
+      if (filePath) {
+        name = getFileNameFromPath(filePath);
       }
 
       const newItemDialog = {
-        path: itemDialog.path,
+        path: filePath,
         guid: uuidv4(),
         isCollapsed: false,
         isFolder,
@@ -130,6 +115,81 @@ export const useFileSystemStore = defineStore('fileSystem', {
       setTimeout(() => {
         takeAndSaveItemPreviewScreenshotByItemGuid(newItemDialog.guid, newItemDialog.path);
       }, 500);
+    },
+    async createItemDialog(
+      itemDialog: DesktopItem,
+      additionalOptions?: any,
+      applicationToOpen?: string
+    ) {
+      // if path already opened dont create a new one but
+      const index = this.itemsDialog.findIndex((item) => item.path === itemDialog.path);
+      if (index !== -1) {
+        this.setFocusedItemDialog(this.itemsDialog[index]);
+        this.openMinimizedItemDialog(this.itemsDialog[index].guid);
+        return;
+      }
+
+      this.createItemDialogByPath(itemDialog.path, additionalOptions, applicationToOpen);
+
+      // let dimension = { height: 300, width: 500 };
+      // let minDimension = { height: 100, width: 220 };
+      // let icon = '';
+      // let currentApplicationToOpen = applicationToOpen;
+      // let filesPath = [] as string[];
+      // let name = '';
+      // let itemExtension = '';
+      // let isFolder = false;
+
+      // // if itemDialog has applicationExtension this means is not a file
+      // if (itemDialog.applicationExtension) {
+      //   itemExtension = itemDialog.applicationExtension;
+      // } else {
+      //   itemExtension = getFileExtensionFromName(itemDialog.path);
+      //   isFolder = await fileSystem.isDir(itemDialog.path);
+      //   if (isFolder) {
+      //     filesPath = await fileSystem.getFiles(itemDialog.path, true);
+      //     itemExtension = 'dir';
+      //   }
+      // }
+
+      // const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+
+      // if (fileTypeConfiguration) {
+      //   dimension = fileTypeConfiguration.defaultSize;
+      //   minDimension = fileTypeConfiguration.minSize;
+      //   icon = fileTypeConfiguration.icon;
+      //   currentApplicationToOpen = applicationToOpen || fileTypeConfiguration.application;
+      //   name = fileTypeConfiguration.title;
+      // }
+
+      // if (itemDialog.path) {
+      //   name = getFileNameFromPath(itemDialog.path);
+      // }
+
+      // const newItemDialog = {
+      //   path: itemDialog.path,
+      //   guid: uuidv4(),
+      //   isCollapsed: false,
+      //   isFolder,
+      //   zIndex: 1,
+      //   icon,
+      //   position: getNewItemDialogPosition(this.itemsDialog.length),
+      //   dimension,
+      //   minDimension,
+      //   applicationToOpen: currentApplicationToOpen,
+      //   filesPath,
+      //   name,
+      //   additionalOptions
+      // } as ItemDialog;
+
+      // this.itemsDialog.push(newItemDialog);
+
+      // this.itemsDialog = [...this.itemsDialog]; // TODO: check if needed
+
+      // this.setFocusedItemDialog(newItemDialog);
+      // setTimeout(() => {
+      //   takeAndSaveItemPreviewScreenshotByItemGuid(newItemDialog.guid, newItemDialog.path);
+      // }, 500);
     },
     async updateItemDialogPath(pathAndItemToUpdate: { newPath: string; itemDialog: ItemDialog }) {
       const itemToUpdate = Object.assign({}, pathAndItemToUpdate.itemDialog);

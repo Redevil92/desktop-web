@@ -34,9 +34,12 @@
         </div>
         <div class="reccomanded-container">
           <div class="pinned-text">Suggested files</div>
-          <div v-for="suggestion in suggestions">
-
+          <div style="margin-top: 10px;">
+            <div v-for="suggestion in suggestions">
+               <FileSuggestion :path="suggestion" />
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -77,6 +80,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import BaseInput from '@/components/shared/BaseInput.vue';
 import AppItem from '@/components/system/startMenu/AppItem.vue';
 import TheAvatar from '@/components/system/avatarEditor/TheAvatar.vue';
+import FileSuggestion from './FileSuggestion.vue';
 
 import { useLayoutStore } from '@/stores/layoutStore';
 import { useStartMenuStore } from '@/stores/startMenuStore';
