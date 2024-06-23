@@ -21,7 +21,7 @@ const props = defineProps({
   label: String,
   rounded: Boolean,
   placeholder: String,
-  modelValue: String, // previously was `value: String`
+  modelValue: {type: String || Number}, // previously was `value: String`
   type: { type: String, default: 'text' }, // previously was `value: String`
   disabled: { type: Boolean, default: false }, // previously was `value: String`
   autocomplete: { type: Boolean, default: true },

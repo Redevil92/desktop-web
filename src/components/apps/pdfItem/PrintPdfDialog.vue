@@ -52,7 +52,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const name = ref("");
-const resolution = ref(900);
+const resolution = ref<string>('900');
 const printOptions = ref(["All the pages", "Current page"]);
 const selectedPrintOption = ref("Current page");
 
@@ -75,7 +75,7 @@ const closeDialog = () => {
 
 onMounted(() => {
   if (props.pdfRef) {
-    if ((props.pdfRef as any).pageNums.length === (props.pdfRef as any).pageCount) {
+    if ((props.pdfRef as any).pageNums?.length === (props.pdfRef as any).pageCount) {
       printOptions.value = ["All the pages"];
       selectedPrintOption.value = "All the pages";
     } else {
