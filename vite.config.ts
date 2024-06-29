@@ -16,7 +16,8 @@ export default defineConfig({
     rollupOptions: {
       external: [
           "/src/apps/BrowserItem.vue",
-          "./src/apps/PdfItem/PdfItem.vue",
+          "./src/apps/pdfItem/PdfItem.vue",
+          "/src/apps/pdfItem/PdfItem.vue",
       ]
   }
   }
