@@ -13,6 +13,10 @@ export default defineConfig({
   },
   build: {
     commonjsOptions: { transformMixedEsModules: true }, // Change
-
+    rollupOptions: {
+      external: [
+          "/src/apps/BrowserItem.vue"
+      ]
+  }
   }
 })

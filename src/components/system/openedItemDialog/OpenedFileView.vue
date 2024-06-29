@@ -90,9 +90,9 @@ const applicationComponent = computed(() => {
     return;
   }
 
-  console.log("***",applicationPath.value)
+  console.log("***", props.itemDialog)
   return defineAsyncComponent({
-    loader: async () => await import(applicationPath.value),
+    loader: () =>  import(applicationPath.value),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
