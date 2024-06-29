@@ -2,7 +2,7 @@
   <div class="home" ref="desktopRef">
     <ActionMenu />
 
-    <div @click.right="rightClickHandler">
+    <div >
       <DesktopWorkSpace />
     </div>
     <DynamicIsland />
@@ -30,32 +30,32 @@ import ActionMenuModel from '@/models/ActionMenu/ActionMenu'
 import ItemDialog from '@/models/ItemDialog'
 import { DESKTOP_PATH } from '@/constants'
 import { useFileSystemStore } from '@/stores/fileSystemStore'
-import {
-  createNewFile,
-  createNewFolder,
-  openDesktopSettingPage,
-  pasteAction
-} from '@/components/system/actionMenu/actionsList'
+// import {
+//   createNewFile,
+//   createNewFolder,
+//   openDesktopSettingPage,
+//   pasteAction
+// } from '@/components/system/actionMenu/actionsList'
 
 const fileSystemStore = useFileSystemStore()
 
-const rightClickHandler = async (event: Event) => {
-  event.preventDefault()
+// const rightClickHandler = async (event: Event) => {
+//   event.preventDefault()
 
-  const pointerEvent = event as PointerEvent
+//   const pointerEvent = event as PointerEvent
 
-  fileSystemStore.setActionMenu({
-    show: true,
-    paths: [DESKTOP_PATH],
-    position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
-    customLayout: [
-      await pasteAction(DESKTOP_PATH, false, false),
-      createNewFile(pointerEvent, DESKTOP_PATH, false, false),
-      createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
-      openDesktopSettingPage(false, false)
-    ]
-  } as ActionMenuModel)
-}
+//   fileSystemStore.setActionMenu({
+//     show: true,
+//     paths: [DESKTOP_PATH],
+//     position: { x: pointerEvent.clientX, y: pointerEvent.clientY },
+//     customLayout: [
+//       await pasteAction(DESKTOP_PATH, false, false),
+//       createNewFile(pointerEvent, DESKTOP_PATH, false, false),
+//       createNewFolder(pointerEvent, DESKTOP_PATH, false, false),
+//       openDesktopSettingPage(false, false)
+//     ]
+//   } as ActionMenuModel)
+// }
 
 const itemsDialog = computed(function () {
   return fileSystemStore.itemsDialog as ItemDialog[]
