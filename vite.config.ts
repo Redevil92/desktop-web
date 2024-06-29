@@ -15,7 +15,8 @@ export default defineConfig({
     commonjsOptions: { transformMixedEsModules: true }, // Change
     rollupOptions: {
       external: [
-          "/src/apps/BrowserItem.vue"
+          "/src/apps/BrowserItem.vue",
+          "./src/apps/PdfItem/PdfItem.vue",
       ]
   }
   }
