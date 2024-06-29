@@ -89,8 +89,10 @@ const applicationComponent = computed(() => {
     console.error('Application path is not defined');
     return;
   }
+
+  console.log("***",applicationPath.value)
   return defineAsyncComponent({
-    loader: () => import(applicationPath.value),
+    loader: async () => await import(applicationPath.value),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
