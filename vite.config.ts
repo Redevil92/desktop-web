@@ -11,14 +11,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  build: {
-    commonjsOptions: { transformMixedEsModules: true }, // Change
-    rollupOptions: {
-      external: [
-          "/src/apps/BrowserItem.vue",
-          "./src/apps/pdfItem/PdfItem.vue",
-          "/src/apps/pdfItem/PdfItem.vue",
-      ]
-  }
-  }
+  // build: {
+    
+  //   rollupOptions: {
+  //     external: [
+  //       "PdfItem.vue",
+  //         "/src/apps/BrowserItem.vue",
+  //         "./src/apps/pdfItem/PdfItem.vue",
+  //         "/src/apps/pdfItem/PdfItem.vue",
+  //     ]
+  // }
+  // }
 })
