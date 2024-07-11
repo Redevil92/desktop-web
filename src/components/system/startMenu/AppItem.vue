@@ -1,6 +1,6 @@
 <template>
   <div v-if="lineLayout" @click="createItemDialog(app)" class="app-item">
-    <img width="30" v-if="imageRequire" :src="imageRequire" alt="" />
+    <img width="30" v-if="getImageURL()" :src="getImageURL()" alt="" />
     <span v-else class="mdi mdi-image-remove"></span>
     <div class="app-item-title">
       {{ name }}
@@ -8,8 +8,7 @@
   </div>
   <div v-else class="application-button" @click="createItemDialog(app)">
     <div class="icon-image">
-      <FileIcon :height="30"></FileIcon>
-      <img v-if="imageRequire" width="40" :src="imageRequire" alt="" />
+      <img v-if="getImageURL()" width="40" :src="getImageURL()" alt="" />
       <span v-else class="mdi mdi-image-remove image-not-found"></span>
     </div>
     <div class="application-name one-line-ellipsis">{{ name }}</div>
@@ -19,8 +18,6 @@
 <script lang="ts" setup>
 import DesktopItem from '@/models/DesktopItem';
 import { useFileSystemStore } from '@/stores/fileSystemStore';
-import { computed } from 'vue';
-import FileIcon from '@/components/shared/FileIcon.vue'; 
 
 
 const props = defineProps({
@@ -34,13 +31,15 @@ const emit = defineEmits(['closeStartMenu']);
 
 const fileSystemStore = useFileSystemStore();
 
-const imageRequire = computed(() => {
+const getImageURL = () => {
   try {
     return new URL('/src/assets/fileIcons/' + props.icon, import.meta.url).href;
   } catch (error) {
     return '';
   }
-});
+};
+
+
 
 const createItemDialog = (applicationToOpen: string) => {
   emit('closeStartMenu');
