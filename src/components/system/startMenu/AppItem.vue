@@ -8,7 +8,7 @@
   </div>
   <div v-else class="application-button" @click="createItemDialog(app)">
     <div class="icon-image">
-      <FileIcon></FileIcon>
+      <FileIcon :height="30"></FileIcon>
       <img v-if="imageRequire" width="40" :src="imageRequire" alt="" />
       <span v-else class="mdi mdi-image-remove image-not-found"></span>
     </div>
