@@ -8,6 +8,7 @@
   </div>
   <div v-else class="application-button" @click="createItemDialog(app)">
     <div class="icon-image">
+      <FileIcon></FileIcon>
       <img v-if="imageRequire" width="40" :src="imageRequire" alt="" />
       <span v-else class="mdi mdi-image-remove image-not-found"></span>
     </div>
@@ -19,6 +20,8 @@
 import DesktopItem from '@/models/DesktopItem';
 import { useFileSystemStore } from '@/stores/fileSystemStore';
 import { computed } from 'vue';
+import FileIcon from '@/components/shared/FileIcon.vue'; 
+
 
 const props = defineProps({
   lineLayout: { type: Boolean, default: false },
