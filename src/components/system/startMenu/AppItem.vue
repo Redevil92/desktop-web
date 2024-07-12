@@ -34,7 +34,7 @@ const fileSystemStore = useFileSystemStore();
 const getImageURL = () => {
   try {
     console.log("APPITEM",new URL('/src/assets/fileIcons/' + props.icon, import.meta.url).href) 
-    return new URL('/src/assets/fileIcons/' + props.icon, import.meta.url).href;
+    return new URL(`/src/assets/fileIcons/${props.icon}`  , import.meta.url).href;
   } catch (error) {
     return '';
   }
