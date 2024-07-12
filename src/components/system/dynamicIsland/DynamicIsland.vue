@@ -5,12 +5,12 @@
     ref="dynamicIslandRef"
     :style="`left: calc(50% - ${dynamicIslandWidth / 2}px)`"
   >
-    <component
+    <!-- <component
       v-if="showDynamicIsland && selectedDynamicItem"
       :is="asyncComponent"
       :audioElement="(selectedDynamicItem as DynamicIslandAudioItem).audioElement"
       :height="30"
-    ></component>
+    ></component> -->
   </div>
 </template>
 
@@ -40,24 +40,24 @@ const showDynamicIsland = computed(() => {
   return dynamicIslandStore.showDynamicIsland
 })
 
-watch(dynamicItems.value, function () {
-  if (dynamicItems.value.length > 0) {
-    loadAndSetAsyncComponent(dynamicItems.value[dynamicItemIndexSelected.value].componentPath)
-  }
-})
+// watch(dynamicItems.value, function () {
+//   if (dynamicItems.value.length > 0) {
+//     loadAndSetAsyncComponent(dynamicItems.value[dynamicItemIndexSelected.value].componentPath)
+//   }
+// })
 
 const dynamicIslandRef = ref<HTMLElement | null>(null)
 
-const loadAndSetAsyncComponent = (componentName: string) => {
-  asyncComponent.value = defineAsyncComponent({
-    loader: () => import(/* @vite-ignore */ '@/components/apps/' + componentName),
-    loadingComponent: LoadingComponent,
-    delay: 200,
-    errorComponent: ErrorComponent,
-    timeout: 3000
-  })
-  dynamicIslandStore.setShowDynamicIsland(true)
-}
+// const loadAndSetAsyncComponent = (componentName: string) => {
+//   asyncComponent.value = defineAsyncComponent({
+//     loader: () => import(/* @vite-ignore */ '@/components/apps/' + componentName),
+//     loadingComponent: LoadingComponent,
+//     delay: 200,
+//     errorComponent: ErrorComponent,
+//     timeout: 3000
+//   })
+//   dynamicIslandStore.setShowDynamicIsland(true)
+// }
 
 const dynamicIslandWidth = computed(() => {
   if (dynamicIslandRef.value) {

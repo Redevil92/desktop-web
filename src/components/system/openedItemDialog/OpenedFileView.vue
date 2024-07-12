@@ -80,19 +80,15 @@ const setFullScreen = (isFullscreen: boolean) => {
   fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
 };
 
-const applicationPath = computed(() => {
-  return `../../apps/${props.itemDialog.applicationToOpen}.vue`;
-});
-
 const applicationComponent = computed(() => {
-  if (!applicationPath.value) {
+  if (!props.itemDialog.applicationToOpen) {
     console.error('Application path is not defined');
     return;
   }
 
   console.log("***", props.itemDialog)
   return defineAsyncComponent({
-    loader: () =>  import(applicationPath.value),
+    loader: () =>  import(`./../../apps/${props.itemDialog.applicationToOpen}.vue`),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
