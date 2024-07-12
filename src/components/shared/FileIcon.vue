@@ -58,10 +58,11 @@ const getLinkFileIcon = async () => {
     try {
       if (linkData.filePath) {
         const iconFromPath = await getFileIconFromPath(linkData.filePath);
+        
         return new URL(`/src/assets/fileIcons/${iconFromPath}`, import.meta.url).href;
       } else if (linkData.fileTypeToOpen) {
         const fileTypeConfig = fileTypesConfiguration[linkData.fileTypeToOpen];
-
+        console.log("FILEICON", new URL(`/src/assets/fileIcons/${fileTypeConfig.icon}`, import.meta.url).href);
         return new URL(`/src/assets/fileIcons/${fileTypeConfig.icon}`, import.meta.url).href;
       }
     } catch (error) {
