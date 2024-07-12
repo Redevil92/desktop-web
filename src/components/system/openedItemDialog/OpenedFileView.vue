@@ -81,7 +81,7 @@ const setFullScreen = (isFullscreen: boolean) => {
 };
 
 const applicationPath = computed(() => {
-  return new URL(`/src/components/apps/${props.itemDialog.applicationToOpen}.vue`, import.meta.url).href;
+  return `../../apps/${props.itemDialog.applicationToOpen}.vue`;
 });
 
 const applicationComponent = computed(() => {
