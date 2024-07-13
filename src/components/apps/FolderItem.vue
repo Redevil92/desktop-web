@@ -114,9 +114,7 @@ const isDraggingItem = computed(function () {
 });
 
 const setSelectedItemsForFolder = (selectedItems: string[]) => {
-  const updatedItemDialog = Object.assign({}, props.itemDialog);
-  updatedItemDialog.selectedFilesPath = selectedItems;
-  fileSystemStore.updateItemDialog(updatedItemDialog);
+  props.itemDialog.selectedFilesPath = selectedItems;
 };
 
 const doubleClickHandler = async (filePath: string) => {
