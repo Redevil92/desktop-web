@@ -58,18 +58,31 @@ export const useFileSystemStore = defineStore('fileSystem', {
     }
   },
   actions: {
-    async createItemDialogByPath(filePath: string, additionalOptions?: any, applicationToOpen?: string) {
+    async createItemDialogByPath(filePath: string) {
       let dimension = { height: 300, width: 500 };
       let minDimension = { height: 100, width: 220 };
       let icon = '';
-      let currentApplicationToOpen = applicationToOpen;
+      let currentApplicationToOpen = '';
       let filesPath = [] as string[];
       let name = '';
       let itemExtension = '';
       let isFolder = false;
-
+      let additionalOptions = {}
 
       itemExtension = getFileExtensionFromName(filePath);
+      const fileTypeConfiguration = fileTypesConfiguration[itemExtension];
+
+      const applicationToOpen = ""
+
+      if (fileTypeConfiguration) {
+        dimension = fileTypeConfiguration.defaultSize;
+        minDimension = fileTypeConfiguration.minSize;
+        icon = fileTypeConfiguration.icon;
+        currentApplicationToOpen = applicationToOpen || fileTypeConfiguration.application;
+        name = fileTypeConfiguration.title;
+      }
+
+      
       isFolder = await fileSystem.isDir(filePath);
       if (isFolder) {
         filesPath = await fileSystem.getFiles(filePath, true);
