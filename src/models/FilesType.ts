@@ -52,7 +52,7 @@ const audioType: FileType = {
     height: 100,
     width: 220
   },
-  application: 'audioItem/AudioPlayer',
+  application: 'AudioPlayer',
   title: 'New text file',
   icon: 'music.svg',
   canOpenWithoutFile: false
@@ -98,7 +98,7 @@ const codeType = (codeExt: string): FileType => {
     },
     icon: `code.svg`,
     title: '',
-    application: 'codeItem/CodeFileItem',
+    application: 'CodeFileItem',
     canOpenWithoutFile: false // TODO implement this functionality
   };
 };
@@ -158,7 +158,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: 'folder.svg',
     title: 'Directory',
-    application: 'folderItem/FolderItem',
+    application: 'FolderItem',
     canOpenWithoutFile: false
   },
   dir: {
@@ -175,7 +175,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: 'folder.svg',
     title: 'Directory',
-    application: 'folderItem/FolderItem',
+    application: 'FolderItem',
     canOpenWithoutFile: false
   },
   browser: {
@@ -209,7 +209,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     title: 'Settings',
     icon: 'settings.svg',
-    application: 'systemSettings/SystemSettings',
+    application: 'SystemSettings',
     canOpenWithoutFile: true
   },
   dutiesTaxCalculator: {
@@ -226,7 +226,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     title: 'Duties & Tax Calculator',
     icon: 'taxCalculator.svg',
-    application: 'dutiesCalculator/DutiesCalculator',
+    application: 'DutiesCalculator',
     canOpenWithoutFile: true
   },
   lnk: {
@@ -269,7 +269,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     title: 'MD Editor',
     icon: 'markdown.svg',
-    application: 'mdItem/MdEditor',
+    application: 'MdEditor',
     canOpenWithoutFile: true
   },
   swf: {
@@ -286,7 +286,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: 'flash.svg',
     title: 'Flash',
-    application: 'flashItem/flashItem',
+    application: 'flashItem',
     canOpenWithoutFile: false
   },
   zip: {
@@ -303,7 +303,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: 'zip.svg',
     title: 'Zip',
-    application: 'compressedFileItem/CompressedFileItem',
+    application: 'CompressedFileItem',
     canOpenWithoutFile: false,
     additionalActions: [extractFilesInFolder, extractHere]
   },
@@ -321,7 +321,7 @@ const fileTypesConfiguration: FileTypes = {
     },
     icon: 'pdf.svg',
     title: 'PDF',
-    application: 'pdfItem/PdfItem',
+    application: 'PdfItem',
     canOpenWithoutFile: false // TODO: implement this functionality
   },
   mp3: audioType,
@@ -329,20 +329,20 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
-  Doom: applicationType('Doom', 'dosItem/DosPlayer'),
-  'Duke Nukem 3D': applicationType('Duke Nukem 3D', 'dosItem/DosPlayer'),
-  'Bio Menace': applicationType('Bio Menace', 'dosItem/DosPlayer'),
-  'Blake Stone': applicationType('Blake Stone', 'dosItem/DosPlayer'),
+  Doom: applicationType('Doom', 'DosPlayer'),
+  'Duke Nukem 3D': applicationType('Duke Nukem 3D', 'DosPlayer'),
+  'Bio Menace': applicationType('Bio Menace', 'DosPlayer'),
+  'Blake Stone': applicationType('Blake Stone', 'DosPlayer'),
   Digger: applicationType('Digger', 'dosItem/DosPlayer'),
   // Dn3d: applicationType('Dn3d', 'dosItem/DosPlayer'),
-  'Duke Nukem': applicationType('Duke Nukem', 'dosItem/DosPlayer', 'Duke Nukem.svg'),
-  'Duke Nukem 2': applicationType('Duke Nukem 2', 'dosItem/DosPlayer'),
-  'Jazz Jackrabbit': applicationType('Jazz Jackrabbit', 'dosItem/DosPlayer'),
-  'Commander Keen': applicationType('Commander Keen', 'dosItem/DosPlayer'),
-  'Commander Keen 4': applicationType('Commander Keen 4', 'dosItem/DosPlayer'),
-  Raptor: applicationType('Raptor', 'dosItem/DosPlayer'),
-  Skyroads: applicationType('Skyroads', 'dosItem/DosPlayer'),
-  'Wolfenstein 3D': applicationType('Wolfenstein 3D', 'dosItem/DosPlayer')
+  'Duke Nukem': applicationType('Duke Nukem', 'DosPlayer', 'Duke Nukem.svg'),
+  'Duke Nukem 2': applicationType('Duke Nukem 2', 'DosPlayer'),
+  'Jazz Jackrabbit': applicationType('Jazz Jackrabbit', 'DosPlayer'),
+  'Commander Keen': applicationType('Commander Keen', 'DosPlayer'),
+  'Commander Keen 4': applicationType('Commander Keen 4', 'DosPlayer'),
+  Raptor: applicationType('Raptor', 'DosPlayer'),
+  Skyroads: applicationType('Skyroads', 'DosPlayer'),
+  'Wolfenstein 3D': applicationType('Wolfenstein 3D', 'DosPlayer')
 
   //TODO: find the images for the games
   // 'WarCraft- Orcs & Humans': applicationType('WarCraft- Orcs & Humans', 'dosItem/DosPlayer'),

@@ -86,7 +86,6 @@ const applicationComponent = computed(() => {
     return;
   }
 
-  console.log("***", props.itemDialog)
   return defineAsyncComponent({
     loader: () =>  import(`./../../apps/${props.itemDialog.applicationToOpen}.vue`),
     loadingComponent: LoadingComponent,
