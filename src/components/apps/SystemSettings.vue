@@ -66,14 +66,14 @@ const settingsComponentHeight = computed(() => {
 });
 
 const setSettingComponent = (componentName: string) => {
-  openedSettingComponentPath.value = './' + componentName;
+  openedSettingComponentPath.value = componentName;
 };
 
 const settingAsyncComponent = computed(() => {
   if (!openedSettingComponentPath.value) return;
 
   return defineAsyncComponent({
-    loader: () => import(`${openedSettingComponentPath.value}.vue`),
+    loader: () => import(`./systemSettings/${openedSettingComponentPath.value}.vue`),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
