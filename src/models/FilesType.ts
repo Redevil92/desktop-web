@@ -333,8 +333,8 @@ const fileTypesConfiguration: FileTypes = {
   'Duke Nukem 3D': applicationType('Duke Nukem 3D', 'DosPlayer'),
   'Bio Menace': applicationType('Bio Menace', 'DosPlayer'),
   'Blake Stone': applicationType('Blake Stone', 'DosPlayer'),
-  Digger: applicationType('Digger', 'dosItem/DosPlayer'),
-  // Dn3d: applicationType('Dn3d', 'dosItem/DosPlayer'),
+  Digger: applicationType('Digger', 'DosPlayer'),
+  // Dn3d: applicationType('Dn3d', 'DosPlayer'),
   'Duke Nukem': applicationType('Duke Nukem', 'DosPlayer', 'Duke Nukem.svg'),
   'Duke Nukem 2': applicationType('Duke Nukem 2', 'DosPlayer'),
   'Jazz Jackrabbit': applicationType('Jazz Jackrabbit', 'DosPlayer'),
@@ -345,11 +345,11 @@ const fileTypesConfiguration: FileTypes = {
   'Wolfenstein 3D': applicationType('Wolfenstein 3D', 'DosPlayer')
 
   //TODO: find the images for the games
-  // 'WarCraft- Orcs & Humans': applicationType('WarCraft- Orcs & Humans', 'dosItem/DosPlayer'),
-  // 'Sim City': applicationType('Sim City', 'dosItem/DosPlayer'),
-  // 'Prince of Persia': applicationType('Prince of Persia', 'dosItem/DosPlayer'),
-  // 'Grand Theft Auto': applicationType('Grand Theft Auto', 'dosItem/DosPlayer'),
-  // 'Mortal Kombat': applicationType('Mortal Kombat', 'dosItem/DosPlayer')
+  // 'WarCraft- Orcs & Humans': applicationType('WarCraft- Orcs & Humans', 'DosPlayer'),
+  // 'Sim City': applicationType('Sim City', 'DosPlayer'),
+  // 'Prince of Persia': applicationType('Prince of Persia', 'DosPlayer'),
+  // 'Grand Theft Auto': applicationType('Grand Theft Auto', 'DosPlayer'),
+  // 'Mortal Kombat': applicationType('Mortal Kombat', 'DosPlayer')
 
   // run: {
   //   allowResizing: false,

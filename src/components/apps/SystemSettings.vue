@@ -72,7 +72,6 @@ const setSettingComponent = (componentName: string) => {
 const settingAsyncComponent = computed(() => {
   if (!openedSettingComponentPath.value) return;
 
-  console.log('openedSettingComponentPath.value', openedSettingComponentPath.value);
   return defineAsyncComponent({
     loader: () => import(`${openedSettingComponentPath.value}.vue`),
     loadingComponent: LoadingComponent,
