@@ -12,17 +12,17 @@
       <hr />
       <div class="settings-section">
         <div v-if="!openedSettingComponentPath" class="settings-buttons-list">
-          <div class="settings-button" @click="setSettingComponent('ChangeDesktopImage.vue')">
+          <div class="settings-button" @click="setSettingComponent('ChangeDesktopImage')">
             <img height="40" :src="changeDesktopImage" alt="" />
             <div class="settings-name">Desktop image</div>
           </div>
-          <div class="settings-button" @click="setSettingComponent('EditUserAvatar.vue')">
+          <div class="settings-button" @click="setSettingComponent('EditUserAvatar')">
             <img height="40" :src="editUserAvatar" alt="" />
             <div class="settings-name">Avatar</div>
           </div>
           <div
             class="settings-button margin-left"
-            @click="setSettingComponent('TaskBarCustomization.vue')"
+            @click="setSettingComponent('TaskBarCustomization')"
           >
             <img height="40" :src="taskBarCustomization" alt="" />
             <div class="settings-name">Task bar</div>
@@ -74,7 +74,7 @@ const settingAsyncComponent = computed(() => {
 
   console.log('openedSettingComponentPath.value', openedSettingComponentPath.value);
   return defineAsyncComponent({
-    loader: () => import(openedSettingComponentPath.value),
+    loader: () => import(`${openedSettingComponentPath.value}.vue`),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,

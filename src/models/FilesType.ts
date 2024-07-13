@@ -70,14 +70,14 @@ const videoType: FileType = {
     height: 100,
     width: 220
   },
-  application: 'videoItem/VideoPlayer',
+  application: 'VideoPlayer',
   title: 'Video player',
   icon: 'mp4.svg',
   canOpenWithoutFile: false,
   openWith: [
     {
       actionName: 'Monaco editor',
-      applicationToOpen: 'codeItem/CodeFileItem',
+      applicationToOpen: 'CodeFileItem',
       iconMdi: 'mdi-microsoft-visual-studio-code'
     }
   ]

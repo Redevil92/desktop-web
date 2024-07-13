@@ -37,8 +37,8 @@
 <script lang="ts" setup>
 import ItemDialog from '@/models/ItemDialog'
 import { PropType, ref } from 'vue'
-import DutiesByPerson from './DutiesByPerson.vue'
-import DutiesByQuantity from './DutiesByQuantity.vue'
+import DutiesByPerson from './dutiesCalculator/DutiesByPerson.vue'
+import DutiesByQuantity from './dutiesCalculator/DutiesByQuantity.vue'
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
