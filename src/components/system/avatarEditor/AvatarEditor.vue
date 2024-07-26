@@ -29,13 +29,13 @@
             :selected="editedAvatar.isCircle ? 'Yes' : 'No'"
             firstOption="Yes"
             secondOption="No"
-            @onToggle="editedAvatar.isCircle = !editedAvatar.isCircle"
+            @onToggle="() => {editedAvatar!.isCircle = !editedAvatar!.isCircle; hasChange = true;}"
           />
           <div v-if="editedAvatar.isCircle" style="margin-top: 15px">
             <color-picker
               isWidget
               pickerType="chrome"
-              @pureColorChange="editedAvatar.circleColor = $event"
+              @pureColorChange="(event) => {editedAvatar!.circleColor = event; hasChange = true;}"
               theme="black"
               v-model="editedAvatar.circleColor"
             />
@@ -45,7 +45,7 @@
           <div
             v-for="(item, key) of openedCategory.items"
             :key="key"
-            @click="(editedAvatar as any)[openedCategory.key] = key"
+            @click="() => {(editedAvatar as any)[openedCategory.key] = key; hasChange = true}"
             style="display: flex; align-items: center; position: relative; padding-left: 15px"
           >
             <span
@@ -76,7 +76,7 @@
     <div style="margin-left: 30px">
       <TheAvatar :avatar="editedAvatar" :height="300" />
       <div style="margin-top: 20px">
-        <BaseButton mdiIcon="mdi-content-save" @click="saveConfiguration"
+        <BaseButton mdiIcon="mdi-content-save" :disabled="!hasChange"  @click="saveConfiguration"
           >Save Configuration</BaseButton
         >
         <BaseButton neutralColor @click="resetConfiguration" style="margin-left: 15px"
@@ -117,6 +117,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['onSave']);
+
+const hasChange = ref<boolean>(false)
 
 watch(
   () => props.avatar,
@@ -170,10 +172,12 @@ const openedCategory = ref<AvatarCategoryModel>({ items: topTypes, key: 'topType
 
 const saveConfiguration = () => {
   emit('onSave', editedAvatar.value);
+  hasChange.value = false;
 };
 
 const resetConfiguration = () => {
-  editedAvatar.value = props.avatar;
+  editedAvatar.value = {...props.avatar};
+  hasChange.value = false;
 };
 
 onMounted(() => {
