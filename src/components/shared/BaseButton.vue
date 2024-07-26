@@ -1,7 +1,7 @@
 <template>
   <button
     class="base-button"
-    :class="{ 'normal-button': !small, 'small-button': small, 'neutral-color': neutralColor }"
+    :class="{ 'normal-button': !small, 'small-button': small, 'neutral-color': neutralColor, 'disabled-button': disabled }"
     @click="clickHandler"
   >
     <div class="flex-center">
@@ -12,9 +12,10 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   small: Boolean,
   neutralColor: Boolean,
+  disabled:{type:Boolean, default:false},
   mdiIcon: {
     type: String,
     required: false,
@@ -23,7 +24,9 @@ defineProps({
 const emit = defineEmits(["click"]);
 
 const clickHandler = (event: MouseEvent) => {
-  emit("click", event);
+  if(!props.disabled){
+    emit("click", event);
+  }
 };
 </script>
 <style scoped>
@@ -56,11 +59,20 @@ const clickHandler = (event: MouseEvent) => {
   background-color: var(--primary-color_darker);
 }
 
-.neutral-color {
+.neutral-color, .disabled-button {
   background-color: var(--neutral-color) !important;
 }
 
-.neutral-color:hover {
+.disabled-button {
   background-color: var(--neutral-color) !important;
+}
+
+.neutral-color:hover  {
+  background-color: var(--neutral-color_light) !important;
+}
+
+.disabled-button{
+  cursor: default;
+  opacity: 0.6;
 }
 </style>
