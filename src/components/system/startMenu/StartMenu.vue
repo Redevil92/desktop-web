@@ -104,7 +104,10 @@ const suggestions = computed<string[]>(() => {
 });
 
 const pinnedApps = computed(() => {
-  return startMenuStore.pinnedApps;
+  return startMenuStore.pinnedApps.filter(
+      (app) =>
+        app.name.toLowerCase().includes(search.value.toLowerCase())    
+    );
 });
 
 const allFilteredAppsToShow = computed(() => {

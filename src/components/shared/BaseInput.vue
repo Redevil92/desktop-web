@@ -5,13 +5,14 @@
     <input
       :readonly="disabled"
       :class="{ 'rounded-input': rounded, 'search-input': searchBar }"
-      @change="change"
+      @input="change"
       @keydown="onKeyDown"
       :placeholder="placeholder"
       :autocomplete="autocomplete ? 'on' : 'off'"
       :type="type"
       :value="modelValue"
       @blur="onBlur"
+
     />
   </div>
 </template>
@@ -31,6 +32,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'onKeyDown', 'onBlur']);
 
 const change = (event: any) => {
+  console.log('changing')
   emit('update:modelValue', event.target.value); // previously was `this.$emit('input', title)`
 };
 
