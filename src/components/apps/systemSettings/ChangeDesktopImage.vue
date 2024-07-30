@@ -2,6 +2,12 @@
   <div class="flex container" :style="`height: ${height}px`">
     <div class="file-list-container">
       <div class="grid">
+        <div  class="desktop-image-item add-new-image">
+          <div>
+            <span class="mdi mdi-plus add-icon"></span>
+          </div>
+        
+        </div>
         <div
           v-for="image in desktopImagesList"
           :key="'desktop-image-' + image"
@@ -96,7 +102,6 @@ const getDesktopImageUrl = (desktopImage: string) => {
 .desktop-image-preview {
   height: 100%;
   width: 600px;
-
   margin-left: calc(var(--margin));
   margin-bottom: calc(var(--margin) * 2);
   -webkit-background-size: cover;
@@ -104,5 +109,13 @@ const getDesktopImageUrl = (desktopImage: string) => {
   -o-background-size: cover;
   background-size: cover;
   border-radius: var(--border-radius);
+}
+
+.add-new-image{
+ background-color: white;
+}
+
+.add-icon{
+  font-size: 40px;
 }
 </style>
