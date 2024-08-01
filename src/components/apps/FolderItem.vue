@@ -114,6 +114,7 @@ const isDraggingItem = computed(function () {
 });
 
 const setSelectedItemsForFolder = (selectedItems: string[]) => {
+  // eslint-disable-next-line vue/no-mutating-props
   props.itemDialog.selectedFilesPath = selectedItems;
 };
 

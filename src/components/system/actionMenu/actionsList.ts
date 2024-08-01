@@ -1,12 +1,19 @@
 import fileSystem from "@/context/fileSystemController";
-import { getFileExtensionFromName, getSourcePathFromFilePath } from "@/context/utils/fileSystemUtils";
+import {
+  getFileExtensionFromName,
+  getSourcePathFromFilePath,
+} from "@/context/utils/fileSystemUtils";
 import useCompression from "@/hooks/useCompression";
-import { getDesktopFilePositionFromLocalStorage, saveDesktopFilePosition } from "@/hooks/useLocalStorage";
+import {
+  getDesktopFilePositionFromLocalStorage,
+  saveDesktopFilePosition,
+} from "@/hooks/useLocalStorage";
 import ActionItem from "@/models/ActionMenu/ActionItem";
 import DesktopItem from "@/models/DesktopItem";
 import fileTypesConfiguration from "@/models/FilesType";
 import LinkData from "@/models/LinkData";
 import { useFileSystemStore } from "@/stores/fileSystemStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const refreshFiles = () => {
   const fileSystemStore = useFileSystemStore();
@@ -14,7 +21,11 @@ const refreshFiles = () => {
   fileSystemStore.fetchDesktopItems();
 };
 
-export const copyAction = (pathsToCopy: string[], disabled = false, iconOnly = true): ActionItem => {
+export const copyAction = (
+  pathsToCopy: string[],
+  disabled = false,
+  iconOnly = true
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "copy.svg",
@@ -29,7 +40,11 @@ export const copyAction = (pathsToCopy: string[], disabled = false, iconOnly = t
   };
 };
 
-export const cutAction = (pathsToCut: string[], disabled = false, iconOnly = true): ActionItem => {
+export const cutAction = (
+  pathsToCut: string[],
+  disabled = false,
+  iconOnly = true
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "cut.svg",
@@ -48,11 +63,12 @@ export const pasteAction = async (
   destinationPath: string,
   disabled = false,
   iconOnly = true,
-  horizontalGroup = true,
+  horizontalGroup = true
 ): Promise<ActionItem> => {
   const fileSystemStore = useFileSystemStore();
   const canPaste =
-    (fileSystemStore.filePathsToCopy.length > 0 || fileSystemStore.filePathsToCut.length > 0) &&
+    (fileSystemStore.filePathsToCopy.length > 0 ||
+      fileSystemStore.filePathsToCut.length > 0) &&
     (await fileSystem.isDir(destinationPath));
 
   return {
@@ -72,7 +88,11 @@ export const pasteAction = async (
   };
 };
 
-export const deleteAction = (pathsToDelete: string[], disabled = false, iconOnly = true): ActionItem => {
+export const deleteAction = (
+  pathsToDelete: string[],
+  disabled = false,
+  iconOnly = true
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     icon: "trash.svg",
@@ -94,7 +114,7 @@ export const createNewFile = (
   event: PointerEvent,
   destinationPath: string,
   disabled = false,
-  iconOnly = false,
+  iconOnly = false
 ): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
@@ -109,7 +129,7 @@ export const createNewFile = (
           path: destinationPath + "/" + "new file.txt",
           content: "",
         },
-        false,
+        false
       );
       saveDesktopFilePosition(createdFileName, { x: event.x, y: event.y });
       refreshFiles();
@@ -122,7 +142,7 @@ export const createNewFolder = (
   event: PointerEvent,
   destinationPath: string,
   disabled = false,
-  iconOnly = false,
+  iconOnly = false
 ): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
@@ -132,7 +152,9 @@ export const createNewFolder = (
     horizontalGroup: false,
     actionName: "New folder",
     callback: async () => {
-      const createdFolderName = await fileSystemStore.createFolder(destinationPath + "/" + "new folder");
+      const createdFolderName = await fileSystemStore.createFolder(
+        destinationPath + "/" + "new folder"
+      );
       saveDesktopFilePosition(createdFolderName, { x: event.x, y: event.y });
       refreshFiles();
     },
@@ -140,7 +162,10 @@ export const createNewFolder = (
   };
 };
 
-export const openDesktopSettingPage = (disabled = false, iconOnly = false): ActionItem => {
+export const openDesktopSettingPage = (
+  disabled = false,
+  iconOnly = false
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     materialIcon: "mdi-monitor",
@@ -161,7 +186,11 @@ export const openDesktopSettingPage = (disabled = false, iconOnly = false): Acti
   };
 };
 
-export const createShortcut = (paths: string[], disabled = false, iconOnly = false): ActionItem => {
+export const createShortcut = (
+  paths: string[],
+  disabled = false,
+  iconOnly = false
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     materialIcon: "mdi-link-plus",
@@ -170,12 +199,6 @@ export const createShortcut = (paths: string[], disabled = false, iconOnly = fal
     horizontalGroup: false,
     actionName: "Create shortcut",
     callback: async () => {
-      const settingsApp: DesktopItem = {
-        path: "",
-        coordinates: { x: 0, y: 0 },
-        applicationExtension: "settings",
-        isSelected: true,
-      };
       const linkData: LinkData = { filePath: paths[0] };
       const createdFileName = await fileSystemStore.createFile({
         path: `${paths[0]}.lnk`,
@@ -190,7 +213,11 @@ export const createShortcut = (paths: string[], disabled = false, iconOnly = fal
 };
 
 // compression actions
-export const extractFilesInFolder = (filePath: string, disabled = false, iconOnly = false): ActionItem => {
+export const extractFilesInFolder = (
+  filePath: string,
+  disabled = false,
+  iconOnly = false
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   return {
     materialIcon: "mdi-folder-arrow-right-outline",
@@ -214,7 +241,6 @@ export const extractFilesInFolder = (filePath: string, disabled = false, iconOnl
 };
 
 export const downloadFileAction = (pathsToCopy: string[]): ActionItem => {
-  const fileSystemStore = useFileSystemStore();
   return {
     materialIcon: "mdi-download",
     iconOnly: false,
@@ -228,9 +254,13 @@ export const downloadFileAction = (pathsToCopy: string[]): ActionItem => {
   };
 };
 
-export const extractHere = (filePath: string, disabled = false, iconOnly = false): ActionItem => {
-  const fileSystemStore = useFileSystemStore();
-  const { decompressFile, saveDecompressedFilesToDestination } = useCompression();
+export const extractHere = (
+  filePath: string,
+  disabled = false,
+  iconOnly = false
+): ActionItem => {
+  const { decompressFile, saveDecompressedFilesToDestination } =
+    useCompression();
   return {
     materialIcon: "mdi-folder-download-outline",
     iconOnly,
@@ -240,7 +270,10 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
     callback: async () => {
       const compressed = await fileSystem.readFile(filePath);
       const decompressedFiles = decompressFile(compressed);
-      await saveDecompressedFilesToDestination(decompressedFiles, getSourcePathFromFilePath(filePath));
+      await saveDecompressedFilesToDestination(
+        decompressedFiles,
+        getSourcePathFromFilePath(filePath)
+      );
       const fileSystemStore = useFileSystemStore();
       await fileSystemStore.fetchDesktopItems();
       fileSystemStore.refreshAllItemDialogFiles();
@@ -249,7 +282,11 @@ export const extractHere = (filePath: string, disabled = false, iconOnly = false
   };
 };
 
-export const compressToZipFileAction = (filePaths: string[], disabled = false, iconOnly = false): ActionItem => {
+export const compressToZipFileAction = (
+  filePaths: string[],
+  disabled = false,
+  iconOnly = false
+): ActionItem => {
   const fileSystemStore = useFileSystemStore();
   const { compressToZipFile } = useCompression();
 
@@ -260,13 +297,15 @@ export const compressToZipFileAction = (filePaths: string[], disabled = false, i
     horizontalGroup: false,
     actionName: "Compress to ZIP file",
     callback: async () => {
-      const filesToZip: { fileName: string; contentBase64: string }[] = await addFilesFromPathRecursivelyToList(
-        filePaths,
-        [],
-      );
+      const filesToZip: { fileName: string; contentBase64: string }[] =
+        await addFilesFromPathRecursivelyToList(filePaths, []);
       const zippedFile = await compressToZipFile(filesToZip);
-      const zipFilePath = getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
-      await fileSystemStore.createFile({ path: zipFilePath, content: zippedFile }, false);
+      const zipFilePath =
+        getSourcePathFromFilePath(filePaths[0]) + "/" + "zipFile.zip";
+      await fileSystemStore.createFile(
+        { path: zipFilePath, content: zippedFile },
+        false
+      );
       await fileSystemStore.fetchDesktopItems();
       fileSystemStore.refreshAllItemDialogFiles();
     },
@@ -319,7 +358,11 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
                 isSelected: true,
               };
               console.log("OPEN", application);
-              fileSystemStore.createItemDialog(desktopItem, undefined, application.applicationToOpen);
+              fileSystemStore.createItemDialog(
+                desktopItem,
+                undefined,
+                application.applicationToOpen
+              );
             }
           },
           disabled: false,
@@ -345,17 +388,35 @@ export const openFileWith = (filePaths: string[]): ActionItem | undefined => {
 
 const addFilesFromPathRecursivelyToList = async (
   filePaths: string[],
-  existingList: { fileName: string; contentBase64: string }[],
+  existingList: { fileName: string; contentBase64: string }[]
 ) => {
   for (const path of filePaths) {
     const isFolder = await fileSystem.isDir(path);
     if (isFolder) {
       const filesPathFromFolder = await fileSystem.getFiles(path, true);
-      await addFilesFromPathRecursivelyToList(filesPathFromFolder, existingList);
+      await addFilesFromPathRecursivelyToList(
+        filesPathFromFolder,
+        existingList
+      );
     } else {
       const fileContent = await fileSystem.readFile(path);
       existingList.push({ fileName: path, contentBase64: fileContent });
     }
   }
   return existingList;
+};
+
+export const setDesktopPicture = (wallpaperPath: string): ActionItem => {
+  const settingsStore = useSettingsStore();
+  return {
+    materialIcon: "mdi-image",
+    iconOnly: false,
+    groupName: "other",
+    horizontalGroup: false,
+    actionName: "Set Desktop Picture",
+    callback: () => {
+      settingsStore.setWallpaperPath(wallpaperPath);
+    },
+    disabled: false,
+  };
 };

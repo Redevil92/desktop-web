@@ -1,4 +1,4 @@
-import Avatar, { defaultAvatar } from '@/components/system/avatarEditor/Avatar';
+import Avatar, { defaultAvatar } from "@/components/system/avatarEditor/Avatar";
 import {
   DESKTOP_PATH,
   DOCUMENT_PATH,
@@ -6,50 +6,46 @@ import {
   MY_PC_PATH,
   VIDEOS_PATH,
   PICTURES_PATH,
-  START_MENU_PATH
-} from '@/constants';
-import PathAndIcon from '@/models/PathAndIcon';
-import { defineStore } from 'pinia';
+  START_MENU_PATH,
+} from "@/constants";
+import fileSystem from "@/context/fileSystemController";
+import PathAndIcon from "@/models/PathAndIcon";
+import { defineStore } from "pinia";
 
-export const useSettingsStore = defineStore('settings', {
+export const useSettingsStore = defineStore("settings", {
   state: () => ({
-    desktopImage: 'mountain.png',
-    desktopImagePath: `/my PC/Desktop/IMG_3788.jpeg`,
-    desktopImagesList: ['mountain.png', 'mountain2.jpg', 'mountain3.png'],
+    wallpaperPath: `my PC/Pictures/Wallpapers/mountain.png`,
+    wallpaperList: [] as string[],
     favouritesPathListAndIcon: [
-      { path: DESKTOP_PATH, mdiIcon: 'mdi-monitor' },
-      { path: MY_PC_PATH, mdiIcon: 'mdi-folder-home' },
-      { path: DOCUMENT_PATH, mdiIcon: 'mdi-file-document-multiple-outline' },
-      { path: MUSIC_PATH, mdiIcon: 'mdi-folder-music-outline' },
-      { path: VIDEOS_PATH, mdiIcon: 'mdi-folder-play-outline' },
-      { path: PICTURES_PATH, mdiIcon: 'mdi-folder-image' },
-      { path: START_MENU_PATH, mdiIcon: 'mdi-apps-box' }
+      { path: DESKTOP_PATH, mdiIcon: "mdi-monitor" },
+      { path: MY_PC_PATH, mdiIcon: "mdi-folder-home" },
+      { path: DOCUMENT_PATH, mdiIcon: "mdi-file-document-multiple-outline" },
+      { path: MUSIC_PATH, mdiIcon: "mdi-folder-music-outline" },
+      { path: VIDEOS_PATH, mdiIcon: "mdi-folder-play-outline" },
+      { path: PICTURES_PATH, mdiIcon: "mdi-folder-image" },
+      { path: START_MENU_PATH, mdiIcon: "mdi-apps-box" },
     ] as PathAndIcon[],
-    dateFormat: 'DD/MM/YYYY',
-    timeFormat: 'HH:MM XM',
+    dateFormat: "DD/MM/YYYY",
+    timeFormat: "HH:MM XM",
     darkMode: true,
-    avatar: defaultAvatar as Avatar | undefined
+    avatar: defaultAvatar as Avatar | undefined,
   }),
   getters: {},
   actions: {
     setAvatar(avatar: Avatar) {
       this.avatar = avatar;
     },
-    setDesktopImage(imageName: string) {
-      this.desktopImage = imageName;
+    setWallpaperPath(path: string) {
+      this.wallpaperPath = path;
     },
-    setDesktopImagesList(images: string[]) {
-      this.desktopImagesList = images;
+    async loadWallpapers() {
+      // Load wallpapers
+      const wallpapers = await fileSystem.getFiles(
+        "my PC/Pictures/Wallpapers",
+        true
+      );
+      this.wallpaperList = wallpapers;
     },
-    addDesktopImageToList(image: string) {
-      this.desktopImagesList.push(image);
-    },
-    removeDesktopImageToList(imageToRemove: string) {
-      const index = this.desktopImagesList.findIndex((image) => image === imageToRemove);
-      if (index !== -1) {
-        this.desktopImagesList.splice(index, 1);
-      }
-    }
   },
-  persist: true
+  persist: true,
 });

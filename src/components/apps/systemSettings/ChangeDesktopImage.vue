@@ -2,59 +2,54 @@
   <div class="flex container" :style="`height: ${height}px`">
     <div class="file-list-container">
       <div class="grid">
-        <div  class="desktop-image-item add-new-image">
+        <div class="desktop-image-item add-new-image">
           <div>
             <span class="mdi mdi-plus add-icon"></span>
           </div>
-        
         </div>
         <div
-          v-for="image in desktopImagesList"
-          :key="'desktop-image-' + image"
-          class="desktop-image-item"
-          :class="image === selectedDesktopImage ? 'selected-desktop-image-item' : ''"
-          @click="setDesktopImage(image)"
-          :style="{ 'background-image': 'url(' + getDesktopImageUrl(image) + ')' }"
-        ></div>
+          v-for="wallpaperPath in wallpaperList"
+          :key="'desktop-image-' + wallpaperPath"
+          :class="
+            wallpaperPath === selectedDesktopImage
+              ? 'selected-desktop-image-item'
+              : ''
+          "
+          @click="settingsStore.setWallpaperPath(wallpaperPath)"
+        >
+          <WallpaperPreview :path="wallpaperPath" />
+        </div>
       </div>
     </div>
-    <div
-      class="desktop-image-preview"
-      :style="{
-        'background-image': 'url(' + getDesktopImageUrl(selectedDesktopImage) + ')'
-      }"
-    ></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useSettingsStore } from '@/stores/settingsStore';
-import { computed } from 'vue';
+import { useSettingsStore } from "@/stores/settingsStore";
+import { computed, onMounted } from "vue";
 
-const props = defineProps({
+import WallpaperPreview from "@/components/apps/systemSettings/WallpaperPreview.vue";
+
+defineProps({
   height: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const settingsStore = useSettingsStore();
 
-const desktopImagesList = computed(() => {
-  return settingsStore.desktopImagesList;
+const wallpaperList = computed(() => {
+  return settingsStore.wallpaperList;
 });
 
 const selectedDesktopImage = computed(() => {
-  return settingsStore.desktopImage;
+  return settingsStore.wallpaperPath;
 });
 
-const setDesktopImage = (desktopImageSelected: string) => {
-  settingsStore.setDesktopImage(desktopImageSelected);
-};
-
-const getDesktopImageUrl = (desktopImage: string) => {
-  return new URL(`/src/assets/desktopImages/${desktopImage}`, import.meta.url).href;
-};
+onMounted(async () => {
+  await settingsStore.loadWallpapers();
+});
 </script>
 
 <style scoped>
@@ -111,11 +106,11 @@ const getDesktopImageUrl = (desktopImage: string) => {
   border-radius: var(--border-radius);
 }
 
-.add-new-image{
- background-color: white;
+.add-new-image {
+  background-color: white;
 }
 
-.add-icon{
+.add-icon {
   font-size: 40px;
 }
 </style>
