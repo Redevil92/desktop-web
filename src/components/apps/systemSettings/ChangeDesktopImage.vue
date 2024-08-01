@@ -2,24 +2,38 @@
   <div class="flex container" :style="`height: ${height}px`">
     <div class="file-list-container">
       <div class="grid">
-        <div class="desktop-image-item add-new-image">
+        <!-- <div class="desktop-image-item add-new-image">
           <div>
             <span class="mdi mdi-plus add-icon"></span>
           </div>
-        </div>
+        </div> -->
         <div
           v-for="wallpaperPath in wallpaperList"
           :key="'desktop-image-' + wallpaperPath"
-          :class="
-            wallpaperPath === selectedDesktopImage
-              ? 'selected-desktop-image-item'
-              : ''
-          "
           @click="settingsStore.setWallpaperPath(wallpaperPath)"
         >
           <WallpaperPreview :path="wallpaperPath" />
         </div>
       </div>
+    </div>
+    <div style="overflow-y: auto; padding-right: 10px">
+      <div
+        style="
+          color: var(--font-color);
+          text-align: left;
+          margin-left: 10px;
+          margin-bottom: 10px;
+          font-weight: 600;
+        "
+      >
+        Wallpaper
+      </div>
+
+      <WallpaperPreview
+        :path="settingsStore.wallpaperPath"
+        big
+        :showSelected="false"
+      />
     </div>
   </div>
 </template>
@@ -41,10 +55,6 @@ const settingsStore = useSettingsStore();
 
 const wallpaperList = computed(() => {
   return settingsStore.wallpaperList;
-});
-
-const selectedDesktopImage = computed(() => {
-  return settingsStore.wallpaperPath;
 });
 
 onMounted(async () => {
@@ -88,10 +98,6 @@ onMounted(async () => {
   border-radius: var(--border-radius);
   border: 3px solid grey;
   cursor: pointer;
-}
-
-.selected-desktop-image-item {
-  border: 3px solid var(--selected-color);
 }
 
 .desktop-image-preview {

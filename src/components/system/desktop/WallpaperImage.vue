@@ -1,7 +1,7 @@
 <template>
   <div class="desktop-container">
     <img
-      style="height: inherit; background-size: cover"
+      style="height: inherit; object-fit: cover; width: inherit"
       :src="`${desktopImage}`"
       alt=""
     />
