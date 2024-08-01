@@ -7,6 +7,7 @@
     </div>
   </base-dialog>
   <!-- do not remove 'desktop-item' class, because it is used by DesktopWorkSpace to get the selected elements -->
+ 
   <div
     class="file-item desktop-item"
     ref="fileItemRef"

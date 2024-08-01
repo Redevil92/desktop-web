@@ -14,6 +14,7 @@ import { defineStore } from 'pinia';
 export const useSettingsStore = defineStore('settings', {
   state: () => ({
     desktopImage: 'mountain.png',
+    desktopImagePath: `/my PC/Desktop/IMG_3788.jpeg`,
     desktopImagesList: ['mountain.png', 'mountain2.jpg', 'mountain3.png'],
     favouritesPathListAndIcon: [
       { path: DESKTOP_PATH, mdiIcon: 'mdi-monitor' },
