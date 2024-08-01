@@ -75,6 +75,7 @@ const setFolderDialogFullScreen = (isFullscreen: boolean) => {
 .action-group {
   font-size: 0px;
   margin-right: 10px;
+  margin-left: 10px;
 }
 
 .action-group:hover {

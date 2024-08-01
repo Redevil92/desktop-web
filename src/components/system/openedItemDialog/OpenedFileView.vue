@@ -6,19 +6,19 @@
         class="flex header"
         ref="headerRef"
       >
-        <div v-if="itemDialog.icon">
-          <img height="17" class="file-icon" :src="iconUrl" alt="" />
-        </div>
-
-        <div v-else class="mdi mdi-folder-open folder-icon"></div>
-
-        <div class="directory-name">{{ itemDialog.name }}</div>
         <DialogControls
           :itemDialog="itemDialog"
           @close="closeDialog"
           @minimize="minimizeDialog"
           @expand="setFullScreen"
         />
+        <!-- <div v-if="itemDialog.icon">
+          <img height="17" class="file-icon" :src="iconUrl" alt="" />
+        </div>
+
+        <div v-else class="mdi mdi-folder-open folder-icon"></div>
+
+        <div class="directory-name">{{ itemDialog.name }}</div> -->
       </div>
     </template>
     <template #default>
@@ -43,19 +43,19 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, PropType, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, PropType, ref } from "vue";
 
-import ItemDialog from '@/models/ItemDialog';
+import ItemDialog from "@/models/ItemDialog";
 
-import LoadingComponent from '@/components/shared/LoadingComponent.vue';
-import ErrorComponent from '@/components/shared/ErrorComponent.vue';
-import MoveAndResizeArea from '@/components/system/openedItemDialog/MoveAndResizeArea.vue';
-import DialogControls from '@/components/system/openedItemDialog/DialogControls.vue';
+import LoadingComponent from "@/components/shared/LoadingComponent.vue";
+import ErrorComponent from "@/components/shared/ErrorComponent.vue";
+import MoveAndResizeArea from "@/components/system/openedItemDialog/MoveAndResizeArea.vue";
+import DialogControls from "@/components/system/openedItemDialog/DialogControls.vue";
 
-import { useFileSystemStore } from '@/stores/fileSystemStore';
+import { useFileSystemStore } from "@/stores/fileSystemStore";
 
 const props = defineProps({
-  itemDialog: { type: Object as PropType<ItemDialog>, required: true }
+  itemDialog: { type: Object as PropType<ItemDialog>, required: true },
 });
 
 const fileSystemStore = useFileSystemStore();
@@ -63,7 +63,10 @@ const fileSystemStore = useFileSystemStore();
 const itemContentRef = ref<HTMLElement | undefined>();
 
 const iconUrl = computed(() => {
-  return new URL(`/src/assets/fileIcons/${props.itemDialog.icon}`, import.meta.url).href;
+  return new URL(
+    `/src/assets/fileIcons/${props.itemDialog.icon}`,
+    import.meta.url
+  ).href;
 });
 
 const closeDialog = () => {
@@ -77,21 +80,25 @@ const minimizeDialog = () => {
 };
 
 const setFullScreen = (isFullscreen: boolean) => {
-  fileSystemStore.setItemDialogFullScreen({ itemGuid: props.itemDialog.guid, isFullscreen });
+  fileSystemStore.setItemDialogFullScreen({
+    itemGuid: props.itemDialog.guid,
+    isFullscreen,
+  });
 };
 
 const applicationComponent = computed(() => {
   if (!props.itemDialog.applicationToOpen) {
-    console.error('Application path is not defined');
+    console.error("Application path is not defined");
     return;
   }
 
   return defineAsyncComponent({
-    loader: () =>  import(`./../../apps/${props.itemDialog.applicationToOpen}.vue`),
+    loader: () =>
+      import(`./../../apps/${props.itemDialog.applicationToOpen}.vue`),
     loadingComponent: LoadingComponent,
     delay: 200,
     errorComponent: ErrorComponent,
-    timeout: 3000
+    timeout: 3000,
   });
 });
 
@@ -101,9 +108,11 @@ const contentHeight = computed(function () {
   if (props.itemDialog.isFullscreen) {
     const style = getComputedStyle(document.body);
     const taskBarHeight = Number(
-      style.getPropertyValue('--task-bar-height').trim().replace('px', '')
+      style.getPropertyValue("--task-bar-height").trim().replace("px", "")
     );
-    return window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4;
+    return (
+      window.innerHeight - taskBarHeight - headerRef.value.clientHeight - 4
+    );
   }
   return props.itemDialog.dimension.height - headerRef.value.clientHeight;
 });
