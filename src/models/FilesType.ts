@@ -8,6 +8,26 @@ import {
 } from "@/components/system/actionMenu/actionsList";
 import { FileType } from "./FileType";
 
+const file3d = (codeExt: string): FileType => {
+  return {
+    singleton: false,
+    allowResizing: true,
+    background: "#222",
+    defaultSize: {
+      height: 480,
+      width: 550,
+    },
+    minSize: {
+      height: 100,
+      width: 220,
+    },
+    icon: `code.svg`,
+    title: "",
+    application: "Item3D",
+    canOpenWithoutFile: false, // TODO implement this functionality
+  };
+};
+
 const imageType: FileType = {
   background: "#222",
   singleton: false,
@@ -338,6 +358,9 @@ const fileTypesConfiguration: FileTypes = {
   jpg: imageType,
   jpeg: imageType,
   svg: imageType,
+  blend: file3d("blend"),
+  obj: file3d("obj"),
+  fbx: file3d("fbx"),
   Doom: applicationType("Doom", "DosPlayer"),
   "Duke Nukem 3D": applicationType("Duke Nukem 3D", "DosPlayer"),
   "Bio Menace": applicationType("Bio Menace", "DosPlayer"),

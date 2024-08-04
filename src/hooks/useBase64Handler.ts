@@ -1,6 +1,11 @@
 export default function useBase64Handler() {
-  const b64ToText = (base64Data: string, shouldRemoveDataUri = false): string => {
-    const textToDecrypt = shouldRemoveDataUri ? removeDataUri(base64Data) : base64Data;
+  const b64ToText = (
+    base64Data: string,
+    shouldRemoveDataUri = false
+  ): string => {
+    const textToDecrypt = shouldRemoveDataUri
+      ? removeDataUri(base64Data)
+      : base64Data;
     return decodeURIComponent(escape(window.atob(textToDecrypt)));
   };
 
@@ -45,7 +50,8 @@ export default function useBase64Handler() {
   };
 
   const isBase64 = (str: string) => {
-    const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+    const base64regex =
+      /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
     return base64regex.test(str);
   };
 
@@ -86,6 +92,16 @@ export default function useBase64Handler() {
     });
   };
 
+  const base64ToArrayBuffer = (base64: string) => {
+    console.log("base64", isBase64(removeDataUri(base64)));
+    const binaryString = window.atob(removeDataUri(base64));
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
   return {
     b64ToText,
     utf8ToB64,
@@ -97,5 +113,6 @@ export default function useBase64Handler() {
     b64ToBlob,
     blobToBase64,
     fileToBase64,
+    base64ToArrayBuffer,
   };
 }
