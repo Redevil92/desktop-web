@@ -43,11 +43,11 @@ const props = defineProps({
 const { base64ToArrayBuffer, removeDataUri } = useBase64Handler();
 
 // const file3d = ref<Group<Object3DEventMap>>();
-const primitive = ref<Group<Object3DEventMap>>();
+const primitive = ref();
 
 onMounted(async () => {
   if (props.itemDialog?.path) {
-    const file = await fileSystem.readFile(props.itemDialog?.path);
+    //const file = await fileSystem.readFile(props.itemDialog?.path);
 
     // // sting to array buffer
     // const arrayBuffer = base64ToArrayBuffer(file.toString());
