@@ -47,20 +47,6 @@ const primitive = ref();
 
 onMounted(async () => {
   if (props.itemDialog?.path) {
-    //const file = await fileSystem.readFile(props.itemDialog?.path);
-
-    // // sting to array buffer
-    // const arrayBuffer = base64ToArrayBuffer(file.toString());
-
-    // // obj case
-    // const loader = new OBJLoader();
-    // // fbx case
-    // //const loader = new FBXLoader();
-
-    // const fbxObj = loader.parse(removeDataUri(file));
-    // console.log(fbxObj);
-    // primitives.value = [fbxObj];
-
     const path =
       "https://raw.githubusercontent.com/" +
       "Tresjs/assets/main/models/fbx/low-poly-truck/Jeep_done.fbx";
