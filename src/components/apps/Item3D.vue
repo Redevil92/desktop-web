@@ -40,9 +40,6 @@ const props = defineProps({
   },
 });
 
-const { base64ToArrayBuffer, removeDataUri } = useBase64Handler();
-
-// const file3d = ref<Group<Object3DEventMap>>();
 const primitive = ref();
 
 onMounted(async () => {
