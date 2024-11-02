@@ -19,18 +19,11 @@
 </template>
 
 <script lang="ts" setup>
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-
-import { useLoader } from "@tresjs/core";
 import { OrbitControls, useFBX } from "@tresjs/cientos";
 import fileSystem from "@/context/fileSystemController";
 import ItemDialog from "@/models/ItemDialog";
 import { TresCanvas } from "@tresjs/core";
 import { onBeforeMount, onMounted, PropType, ref } from "vue";
-import useBase64Handler from "@/hooks/useBase64Handler";
-import { Group, Loader, Object3DEventMap } from "three";
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
