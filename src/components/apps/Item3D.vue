@@ -20,10 +20,10 @@
 
 <script lang="ts" setup>
 import { OrbitControls, useFBX } from "@tresjs/cientos";
-import fileSystem from "@/context/fileSystemController";
+// import fileSystem from "@/context/fileSystemController";
 import ItemDialog from "@/models/ItemDialog";
 import { TresCanvas } from "@tresjs/core";
-import { onBeforeMount, onMounted, PropType, ref } from "vue";
+import { onMounted, PropType, ref } from "vue";
 
 const props = defineProps({
   itemDialog: { type: Object as PropType<ItemDialog>, required: true },
